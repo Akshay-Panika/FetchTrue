@@ -6,6 +6,8 @@ class CustomContainer extends StatelessWidget {
   final Color? backgroundColor;
   final double? height;
   final double? width;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? padding;
   final Widget? child;
 
   const CustomContainer({
@@ -13,6 +15,8 @@ class CustomContainer extends StatelessWidget {
     this.backgroundColor,
     this.height,
     this.width,
+    this.margin,
+    this.padding,
     this.child
   });
 
@@ -23,10 +27,10 @@ class CustomContainer extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(10),
+        margin: margin ?? EdgeInsets.all(10),
+        padding: padding ?? EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Theme.of(context).hintColor.withOpacity(0.1),
+          color: backgroundColor ?? Theme.of(context).hintColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: child,

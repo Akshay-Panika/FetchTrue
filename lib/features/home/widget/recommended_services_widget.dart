@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_container.dart';
 
-class PopularServicesWidget extends StatelessWidget {
-  const PopularServicesWidget({super.key});
+class RecommendedServicesWidget extends StatelessWidget {
+  const RecommendedServicesWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class PopularServicesWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
           child: Text(
-            'Most Popular Services',
+            'Recommended Services',
             style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
           ),
         ),
@@ -43,25 +43,25 @@ class PopularServicesWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Service Name', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                         Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                             Row(
-                               children: [
-                                 Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Icon(Icons.currency_rupee, size: 12,)
-                               ],
-                             ),
-                             Row(
-                               children: [
-                                 Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Icon(Icons.currency_rupee, size: 12,)
-                               ],
-                             ),
-                           ],
-                         )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                                  Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                                  Icon(Icons.currency_rupee, size: 12,)
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                                  Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                                  Icon(Icons.currency_rupee, size: 12,)
+                                ],
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ),
