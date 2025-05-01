@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_headline.dart';
 
 class LeadsWidget extends StatelessWidget {
   const LeadsWidget({super.key});
@@ -11,10 +12,8 @@ class LeadsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: Text('Leads', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-        ),
+        CustomHeadline(headline: 'Leads',),
+
         SizedBox(
           height: 200,
           child: Row(
@@ -30,7 +29,14 @@ class LeadsWidget extends StatelessWidget {
                           margin: EdgeInsets.only(bottom: 20,right: 20),
                         ),
                       ),
-                      Text('Total Earning : 456', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                            TextSpan(text:'5000', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),),
@@ -41,14 +47,25 @@ class LeadsWidget extends StatelessWidget {
                      width: double.infinity,
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.start,
-                       crossAxisAlignment: CrossAxisAlignment.end,
+                       crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
                          Expanded(
                            child: CustomContainer(
-                             margin: EdgeInsets.only(bottom: 0,right: 10),
+                            margin: EdgeInsets.all(0),
                            ),
                          ),
-                         Text('My Leads : 105', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                         SizedBox(width: 10,),
+                         Expanded(
+                           child: RichText(
+                             text: TextSpan(
+                               children: [
+                                 TextSpan(text:'My Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                                 TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                               ],
+                             ),
+                           ),
+                         ),
+
                        ],
                      ),
                    ),),
@@ -58,10 +75,20 @@ class LeadsWidget extends StatelessWidget {
                        mainAxisAlignment: MainAxisAlignment.start,
                        crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
-                         Text('Team Leads : 456', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                         Expanded(
+                           child: RichText(
+                             text: TextSpan(
+                               children: [
+                                 TextSpan(text:'Team Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                                 TextSpan(text:'15', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                               ],
+                             ),
+                           ),
+                         ),
+                         SizedBox(width: 10,),
                          Expanded(
                            child: CustomContainer(
-                             margin: EdgeInsets.only(bottom: 0,left: 10),
+                             margin: EdgeInsets.all(0),
                            ),
                          ),
                        ],

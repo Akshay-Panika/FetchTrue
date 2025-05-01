@@ -1,15 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../../core/widgets/custom_container.dart';
+import 'custom_container.dart';
 
-class BannerWidget extends StatefulWidget {
-  const BannerWidget({super.key});
+class CustomBanner extends StatefulWidget {
+  const CustomBanner({super.key});
 
   @override
-  State<BannerWidget> createState() => _BannerWidgetState();
+  State<CustomBanner> createState() => _CustomBannerState();
 }
 
-class _BannerWidgetState extends State<BannerWidget> {
+class _CustomBannerState extends State<CustomBanner> {
   int _current = 0;
 
   final List<Map<String, String>> bannerData = [
@@ -87,7 +87,7 @@ class _BannerWidgetState extends State<BannerWidget> {
               height: 5,
               width: _current == index ? 24 : 10,
               decoration: BoxDecoration(
-                color: _current == index ? Colors.blue.shade200 : Colors.grey,
+                color: _current == index ? Colors.blueAccent : Colors.grey,
                 borderRadius: BorderRadius.circular(2),
               ),
             );

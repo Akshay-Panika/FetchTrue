@@ -131,20 +131,24 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Booking# ${booking['id']}',
+                'Service Name',
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
-              const Icon(Icons.more_vert, color: Colors.black54),
+              //const Icon(Icons.more_vert, color: Colors.black54),
+              _buildStatusBadge(booking['status']),
             ],
           ),
           const SizedBox(height: 5),
           Text('Booking Date : ${booking['bookingDate']}', style: const TextStyle(fontSize: 12)),
           Text('Service Date : ${booking['serviceDate']}', style: const TextStyle(fontSize: 12)),
-          const SizedBox(height: 10),
+         // const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildStatusBadge(booking['status']),
+              Text(
+                'Booking# ${booking['id']}',
+                style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
+              ),
               Row(
                 children: [
                   const Icon(Icons.currency_rupee, size: 14, color: Colors.blueAccent),

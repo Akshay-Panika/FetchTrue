@@ -1,15 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../../core/widgets/custom_container.dart';
+import 'custom_container.dart';
+import 'custom_headline.dart';
 
-class JustForYouWidget extends StatefulWidget {
-  const JustForYouWidget({super.key});
+class CustomHeightBanner extends StatefulWidget {
+  const CustomHeightBanner({super.key});
 
   @override
-  State<JustForYouWidget> createState() => _JustForYouWidgetState();
+  State<CustomHeightBanner> createState() => _CustomHeightBannerState();
 }
 
-class _JustForYouWidgetState extends State<JustForYouWidget> {
+class _CustomHeightBannerState extends State<CustomHeightBanner> {
   int _current = 0;
 
   final List<Map<String, String>> bannerData = [
@@ -35,16 +36,7 @@ class _JustForYouWidgetState extends State<JustForYouWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, bottom: 8),
-            child: Text(
-              'Just For You',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          CustomHeadline(headline: 'Just For You',),
 
           CarouselSlider(
             options: CarouselOptions(

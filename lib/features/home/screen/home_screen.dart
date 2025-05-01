@@ -1,13 +1,14 @@
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/features/search/screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../widget/banner_widget.dart';
-import '../widget/just_for_you_widget.dart';
+import '../../../core/widgets/custom_headline.dart';
+import '../../../core/widgets/custom_search_bar.dart';
+import '../../service/screen/service_screen.dart';
+import '../../../core/widgets/custom_banner.dart';
+import '../../../core/widgets/custom_height_banner.dart';
 import '../widget/leads_widget.dart';
-import '../widget/popular_services_widget.dart';
-import '../widget/recommended_services_widget.dart';
-import '../widget/services_widget.dart';
+import '../../../core/widgets/custom_service_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
          title: Column(
            crossAxisAlignment: CrossAxisAlignment.start,
            children: const [
-             Text("BizBooster2x", style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.w600,),),
+             Text("BizBooster2x", style: TextStyle(fontSize: 16, color: Colors.blueAccent, fontWeight: FontWeight.w600,),),
              SizedBox(height: 2),
              Text("Waidhan Singrauli Madhya Pradesh Pin- 486886", style: TextStyle(fontSize: 12, color: Colors.grey, overflow: TextOverflow.ellipsis,),),
            ],
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
            IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined, color: Colors.black87),),
          ],
        ),
-       body: _showServicePage ? Center(child: Text('${_services[_selectedServiceIndex]}'),):
+       body: _showServicePage ? ServiceScreen(serviceName: _services[_selectedServiceIndex],):
        CustomScrollView(
          slivers: [
 
@@ -67,15 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
              backgroundColor: Theme.of(context).cardColor,
              surfaceTintColor: Theme.of(context).cardColor,
              elevation: 0,
-             flexibleSpace:  CustomContainer(
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Text("Search here..."),
-                   Icon(CupertinoIcons.search, color: Colors.black54,)
-                 ],
-               ),
-             ),
+             flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
            ),
 
            SliverToBoxAdapter(
@@ -85,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                children: [
 
                  /// banner
-                 BannerWidget(),
+                 CustomBanner(),
                  SizedBox(height: 10,),
 
                  /// Leads
@@ -97,10 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                  Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
-                     Padding(
-                       padding: const EdgeInsets.only(left: 15.0),
-                       child: Text('Services', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-                     ),
+                     CustomHeadline(headline: 'Services',),
+
                      GridView.builder(
                        shrinkWrap: true,
                        physics: NeverScrollableScrollPhysics(),
@@ -143,19 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
                  SizedBox(height: 20,),
 
                  /// Popular Services
-                 PopularServicesWidget(),
-                 SizedBox(height: 20,),
-
-                 /// Popular Services
-                 RecommendedServicesWidget(),
+                 CustomServiceList(),
                  SizedBox(height: 20,),
 
                  /// Just for you
-                 JustForYouWidget(),
+                 CustomHeightBanner(),
                  SizedBox(height: 20,),
 
                  /// Popular Services
-                 PopularServicesWidget(),
+                 CustomServiceList(),
                  SizedBox(height: 20,),
                ],
              ),
@@ -165,3 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
      );
   }
 }
+
+
+

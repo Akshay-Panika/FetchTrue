@@ -8,9 +8,14 @@ import '../../home/screen/home_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
 import '../bloc/bottom_nav_cubit.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   final icons = const [
     Icons.home_outlined,
     Icons.insert_drive_file_outlined,
@@ -24,6 +29,7 @@ class DashboardScreen extends StatelessWidget {
     'Academy',
     'Menu',
   ];
+
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -39,26 +45,35 @@ class DashboardScreen extends StatelessWidget {
       create: (_) => NavigationCubit(),
       child: BlocBuilder<NavigationCubit, int>(
         builder: (context, selectedIndex) {
-          return Scaffold(
+          return WillPopScope(
+            onWillPop: () async {
+              if (selectedIndex != 0) {
+                //setState(() => selectedIndex = 0);
+                context.read<NavigationCubit>().updateIndex(0);
+                return false;
+              } else {
+                return true;
+              }
+            },
+            child: Scaffold(
+              body: IndexedStack(
+                index: selectedIndex,
+                children: _screens,
+              ),
 
-            /// Using IndexedStack for better performance
-            body: IndexedStack(
-              index: selectedIndex,
-              children: _screens,
-            ),
-
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: selectedIndex,
-              onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: Colors.blue,
-              unselectedItemColor: Colors.grey,
-              items: List.generate(icons.length, (index) {
-                return BottomNavigationBarItem(
-                  icon: Icon(icons[index]),
-                  label: labels[index],
-                );
-              }),
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: selectedIndex,
+                onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+                type: BottomNavigationBarType.fixed,
+                selectedItemColor: Colors.blueAccent,
+                unselectedItemColor: Colors.grey,
+                items: List.generate(icons.length, (index) {
+                  return BottomNavigationBarItem(
+                    icon: Icon(icons[index]),
+                    label: labels[index],
+                  );
+                }),
+              ),
             ),
           );
         },

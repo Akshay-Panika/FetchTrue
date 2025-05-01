@@ -1,23 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/custom_container.dart';
+import 'custom_container.dart';
+import 'custom_headline.dart';
 
-class PopularServicesWidget extends StatelessWidget {
-  const PopularServicesWidget({super.key});
+class CustomServiceList extends StatelessWidget {
+  const CustomServiceList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: Text(
-            'Most Popular Services',
-            style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
-          ),
-        ),
+        CustomHeadline(headline: 'Most Popular Services',),
         SizedBox(
           height: 200,
           child: ListView.builder(
