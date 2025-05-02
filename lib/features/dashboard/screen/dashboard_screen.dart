@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../more/screen/more_screen.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/service/screen/service_details_screen.dart';
 import 'custom_container.dart';
 import 'custom_headline.dart';
 
@@ -21,6 +22,7 @@ class CustomServiceList extends StatelessWidget {
             itemBuilder: (context, index) {
               return CustomContainer(
                 width: 300,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(),)),
                 padding: EdgeInsets.all(0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

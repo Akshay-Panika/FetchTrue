@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../../../core/widgets/custom_search_bar.dart';
+import '../../cart/screen/cart_screen.dart';
 import '../../service/screen/service_screen.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_height_banner.dart';
@@ -53,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
          ),
          actions:  [
            IconButton(onPressed: (){}, icon: Icon(Icons.notifications_active_outlined, ),),
-           IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined),),
+           IconButton(
+             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(),)),
+             icon: Icon(Icons.shopping_cart_outlined),),
          ],
        ),
        body: _showServicePage ? ServiceScreen(serviceName: _services[_selectedServiceIndex],):

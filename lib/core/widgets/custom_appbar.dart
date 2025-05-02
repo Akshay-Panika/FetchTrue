@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/cart/screen/cart_screen.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
@@ -20,13 +22,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Navigator.of(context).pop(),
       ) : null,
       title: Text(title),
-      actions: const [
+      actions:  [
         IconButton(
           onPressed: null,
           icon: Icon(Icons.notifications_active_outlined,color: Colors.black87,),
         ),
         IconButton(
-          onPressed: null,
+          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(),)),
           icon: Icon(Icons.shopping_cart_outlined,color: Colors.black87,),
         ),
       ],

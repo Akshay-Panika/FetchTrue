@@ -1,5 +1,6 @@
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/features/service/screen/service_details_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -69,6 +70,7 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                             return CustomContainer(
                               height: 180,
                               padding: EdgeInsets.all(0),
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(),)),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
