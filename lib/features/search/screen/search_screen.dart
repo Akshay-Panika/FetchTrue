@@ -12,9 +12,6 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
-        surfaceTintColor: Theme.of(context).cardColor,
-        elevation: 0,
         automaticallyImplyLeading: false,
         title: CustomContainer(
           margin: EdgeInsets.all(0),
@@ -56,6 +53,7 @@ class SearchScreen extends StatelessWidget {
               spacing: 8,
               children: List.generate(5, (index) {
                 return Chip(
+                  backgroundColor: Colors.white,
                   label: Text('Search $index'),
                   deleteIcon: const Icon(Icons.close, size: 16),
                   onDeleted: () {

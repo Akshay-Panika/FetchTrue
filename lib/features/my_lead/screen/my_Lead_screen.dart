@@ -3,7 +3,8 @@ import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
 class MyLeadScreen extends StatefulWidget {
-  const MyLeadScreen({super.key});
+  final String? isHome;
+  const MyLeadScreen({super.key, this.isHome});
 
   @override
   State<MyLeadScreen> createState() => _MyLeadScreenState();
@@ -65,7 +66,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'My Leads'),
+      appBar: CustomAppBar(title: 'My Leads', showBackButton: widget.isHome =='isHome'?true:false,),
       body: Column(
         children: [
           const SizedBox(height: 10),
@@ -138,6 +139,10 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
               _buildStatusBadge(booking['status']),
             ],
           ),
+          Text(
+            'Booking# ${booking['id']}',
+            style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
+          ),
           const SizedBox(height: 5),
           Text('Booking Date : ${booking['bookingDate']}', style: const TextStyle(fontSize: 12)),
           Text('Service Date : ${booking['serviceDate']}', style: const TextStyle(fontSize: 12)),
@@ -145,10 +150,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Booking# ${booking['id']}',
-                style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
-              ),
+             SizedBox(),
               Row(
                 children: [
                   const Icon(Icons.currency_rupee, size: 14, color: Colors.blueAccent),

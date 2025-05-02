@@ -31,8 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
     print('___________________________________ Build Home screen');
     return Scaffold(
        appBar: AppBar(
-         backgroundColor: Theme.of(context).cardColor,
-         surfaceTintColor: Theme.of(context).cardColor,
          elevation: 0,
          leading: !_showServicePage ? SizedBox(): Padding(
            padding: EdgeInsets.only(left: 16.0),
@@ -42,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                    _showServicePage = false;
                  });
                },
-               child: Icon(Icons.dashboard, color: Colors.black54, size: 40,)),
+               child: Icon(Icons.dashboard, color: Colors.black87, size: 40,)),
          ),
          leadingWidth: !_showServicePage ?0:52,
          title: Column(
@@ -54,8 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
            ],
          ),
          actions:  [
-           IconButton(onPressed: (){}, icon: Icon(Icons.notifications_active_outlined, color: Colors.black87),),
-           IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined, color: Colors.black87),),
+           IconButton(onPressed: (){}, icon: Icon(Icons.notifications_active_outlined, ),),
+           IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined),),
          ],
        ),
        body: _showServicePage ? ServiceScreen(serviceName: _services[_selectedServiceIndex],):
@@ -65,9 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
            SliverAppBar(
              toolbarHeight: 60,
              floating: true,
-             backgroundColor: Theme.of(context).cardColor,
-             surfaceTintColor: Theme.of(context).cardColor,
-             elevation: 0,
              flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
            ),
 
@@ -86,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                  SizedBox(height: 20,),
 
                  /// Services
-                 //ServicesWidget(),
                  Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [

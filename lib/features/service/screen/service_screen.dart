@@ -25,9 +25,6 @@ class _ServiceScreenState extends State<ServiceScreen> {
         SliverAppBar(
           toolbarHeight: 60,
           floating: true,
-          backgroundColor: Theme.of(context).cardColor,
-          surfaceTintColor: Theme.of(context).cardColor,
-          elevation: 0,
           flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
         ),
 

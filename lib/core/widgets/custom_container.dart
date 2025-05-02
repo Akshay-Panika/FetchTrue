@@ -30,7 +30,7 @@ class CustomContainer extends StatelessWidget {
         margin: margin ?? EdgeInsets.all(10),
         padding: padding ?? EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: backgroundColor ?? Theme.of(context).hintColor.withOpacity(0.1),
+          color: backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: child,

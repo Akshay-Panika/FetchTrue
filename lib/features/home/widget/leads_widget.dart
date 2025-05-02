@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/features/my_lead/screen/my_Lead_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,7 @@ class LeadsWidget extends StatelessWidget {
                   children: [
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
+                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isHome: 'isHome',),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.start,
                        crossAxisAlignment: CrossAxisAlignment.start,

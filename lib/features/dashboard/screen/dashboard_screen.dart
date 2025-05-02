@@ -66,7 +66,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
                 type: BottomNavigationBarType.fixed,
                 selectedItemColor: Colors.blueAccent,
-                unselectedItemColor: Colors.grey,
+                unselectedItemColor: Colors.black87,
+                backgroundColor: Colors.white,
                 items: List.generate(icons.length, (index) {
                   return BottomNavigationBarItem(
                     icon: Icon(icons[index]),
