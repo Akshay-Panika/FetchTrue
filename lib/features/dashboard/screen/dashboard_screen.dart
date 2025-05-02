@@ -61,19 +61,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: _screens,
               ),
 
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: selectedIndex,
-                onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: Colors.blueAccent,
-                unselectedItemColor: Colors.black87,
-                backgroundColor: Colors.white,
-                items: List.generate(icons.length, (index) {
-                  return BottomNavigationBarItem(
-                    icon: Icon(icons[index]),
-                    label: labels[index],
-                  );
-                }),
+              bottomNavigationBar: SafeArea(
+                child: BottomNavigationBar(
+                  currentIndex: selectedIndex,
+                  onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+                  type: BottomNavigationBarType.fixed,
+                  selectedItemColor: Colors.blueAccent,
+                  unselectedItemColor: Colors.black87,
+                  backgroundColor: Colors.white,
+                  elevation: 0.8,
+                  items: List.generate(icons.length, (index) {
+                    return BottomNavigationBarItem(
+                      icon: Icon(icons[index]),
+                      label: labels[index],
+                    );
+                  }),
+                ),
               ),
             ),
           );
