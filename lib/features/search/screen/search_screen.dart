@@ -35,44 +35,50 @@ class SearchScreen extends StatelessWidget {
           SizedBox(width: 10,),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding( padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Recent Searches', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
-                const Text('Clear', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.blueAccent),),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding( padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Recent Searches', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
+                  const Text('Clear', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.blueAccent),),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Wrap(
-              spacing: 8,
-              children: List.generate(5, (index) {
-                return Chip(
-                  backgroundColor: Colors.white,
-                  label: Text('Search $index'),
-                  deleteIcon: const Icon(Icons.close, size: 16),
-                  onDeleted: () {
-                    // Handle delete
-                  },
-                );
-              }),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Wrap(
+                spacing: 8,
+                children: List.generate(5, (index) {
+                  return Chip(
+                    backgroundColor: Colors.white,
+                    label: Text('Search $index'),
+                    deleteIcon: const Icon(Icons.close, size: 16),
+                    onDeleted: () {
+                      // Handle delete
+                    },
+                  );
+                }),
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
+        
+            /// Popular Services
+            CustomServiceList(),
+            SizedBox(height: 20,),
+        
+            /// Just for you
+            CustomHeightBanner(),
+            SizedBox(height: 20,),
 
-          /// Popular Services
-          CustomServiceList(),
-          SizedBox(height: 20,),
-
-          /// Just for you
-          CustomHeightBanner(),
-          SizedBox(height: 20,),
-        ],
+            /// Popular Services
+            CustomServiceList(),
+            SizedBox(height: 20,),
+          ],
+        ),
       ),
     );
   }

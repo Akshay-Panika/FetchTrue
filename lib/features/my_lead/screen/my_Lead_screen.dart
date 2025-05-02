@@ -67,20 +67,22 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'My Leads', showBackButton: widget.isHome =='isHome'?true:false,),
-      body: Column(
-        children: [
-          const SizedBox(height: 10),
-          _buildFilterChips(),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredBookings.length,
-              itemBuilder: (context, index) {
-                return _buildBookingCard(filteredBookings[index]);
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            _buildFilterChips(),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredBookings.length,
+                itemBuilder: (context, index) {
+                  return _buildBookingCard(filteredBookings[index]);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
