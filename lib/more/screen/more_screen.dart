@@ -10,7 +10,7 @@ class MoreScreen extends StatelessWidget {
     print('___________________________________ Build More screen');
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile', showBackButton: false),
+      appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showCartIcon: true,showNotificationIcon: true,),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/features/my_lead/screen/my_Lead_screen.dart';
+import 'package:bizbooster2x/features/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class LeadsWidget extends StatelessWidget {
                       Expanded(
                         child: CustomContainer(
                           margin: EdgeInsets.only(bottom: 20,right: 20),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
                         ),
                       ),
                       RichText(

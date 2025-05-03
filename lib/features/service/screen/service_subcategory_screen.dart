@@ -5,12 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ServiceSubcategoryScreen extends StatelessWidget {
-  const ServiceSubcategoryScreen({super.key});
+  final String headline;
+  const ServiceSubcategoryScreen({super.key, required this.headline});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Services',showBackButton: true,),
+      appBar: CustomAppBar(title: '$headline',showBackButton: true,showCartIcon: true, showSearchIcon: true,),
 
       body: SafeArea(
         child: Column(
@@ -18,24 +19,27 @@ class ServiceSubcategoryScreen extends StatelessWidget {
           children: [
         
             /// Filter
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, top: 20),
-              child: Text('Filter', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
+            CustomContainer(height: 40,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.all(0),
+            child: ListView.builder(
+              itemCount: 5,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+              return CustomContainer(
+                margin: EdgeInsets.all(5),
+                padding: EdgeInsets.all(5),
+                width: 100,child: Center(child: Text("Headline")),);
+            },),
             ),
-            CustomContainer(height: 40,),
-        
-            /// Filter
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0,),
-              child: Text('Services', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-            ),
+
+            /// Service type
             Expanded(
               child: CustomContainer(
                 padding: EdgeInsets.all(0),
                 child: Row(
                   children: [
-                        
-                    /// Service type
+
                     Expanded(child: ListView.builder(
                       itemCount: 12,
                       itemBuilder: (context, index) {

@@ -134,8 +134,7 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 children: [
                   _buildKeyValueRow('Total Items', '${cartItems.length}'),
-                  _buildKeyValueRow('Discount', '₹0.00'),
-                  _buildKeyValueRow('Shipping', '₹50.00'),
+                  _buildKeyValueRow('Discount', '00.0 %'),
                   _buildKeyValueRow('Total Price', '₹${getTotalPrice().toStringAsFixed(2)}'),
 
                 ],

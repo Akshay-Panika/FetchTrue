@@ -54,7 +54,7 @@ class ServiceCategoryWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               return CustomContainer(
                 padding: EdgeInsets.all(0),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceSubcategoryScreen(),)),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceSubcategoryScreen(headline: _services[index],),)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,

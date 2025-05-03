@@ -66,7 +66,8 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'My Leads', showBackButton: widget.isHome =='isHome'?true:false,),
+      appBar: CustomAppBar(title: 'My Leads',
+        showBackButton: widget.isHome =='isHome'?true:false, showCartIcon: true, showNotificationIcon: true,),
       body: SafeArea(
         child: Column(
           children: [
