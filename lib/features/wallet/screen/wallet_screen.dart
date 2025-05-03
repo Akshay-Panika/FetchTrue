@@ -23,41 +23,56 @@ class WalletScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'My Wallet', showBackButton: true, showSearchIcon: true,showCartIcon: true,),
       body: SafeArea(
-        child: Column(
-          children: [
-            
+        child:  CustomScrollView(
+          slivers: [
+
             /// Wallet BalanceCard
-            WalletBalanceCard(balance: balance, totalEarning: 00,),
-            SizedBox(height: 20),
-            /// history
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
+            SliverAppBar(
+              toolbarHeight: 200,
+              pinned: false,
+              floating: true,
+              automaticallyImplyLeading: false,
+              flexibleSpace: FlexibleSpaceBar(
+                background:  WalletBalanceCard(balance: balance, totalEarning: 00,),
+              ),
+            ),
+
+            SliverToBoxAdapter(
+              child: Column(
                 children: [
-                Text('Wallet History',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
-                Expanded(child: Divider()),
-        
-                SizedBox(width: 15,),
-                Row(
-                  spacing: 0,
-                  children: [
-                    Text('Filter',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-                    Icon(Icons.arrow_drop_down,size: 30,)
-                  ],
-                ),
+                  SizedBox(height: 20,),
+                  /// history
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('Wallet History',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                        Expanded(child: Divider()),
+
+                        SizedBox(width: 15,),
+                        Row(
+                          spacing: 0,
+                          children: [
+                            Text('Filter',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
+                            Icon(Icons.arrow_drop_down,size: 30,)
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListView.builder(
+                    itemCount: transactions.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return WalletTransactionTile(transaction: transactions[index]);
+                    },
+                  ),
                 ],
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  return WalletTransactionTile(transaction: transactions[index]);
-                },
-              ),
-            ),
+            )
           ],
         ),
       ),
@@ -154,9 +169,9 @@ class WalletTransactionTile extends StatelessWidget {
               children: [
                 Text(
                   "Earning from lead #${transaction.leadId}",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                 ),
-                Text(formattedDate, style: TextStyle(color: Colors.grey[600])),
+                Text(formattedDate, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
               ],
             ),
           ),
