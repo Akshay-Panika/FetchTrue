@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/features/my_lead/screen/my_Lead_screen.dart';
+import 'package:bizbooster2x/features/team_lead/screen/team_lead_screen.dart';
 import 'package:bizbooster2x/features/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,12 @@ class LeadsWidget extends StatelessWidget {
         CustomHeadline(headline: 'Leads',),
 
         SizedBox(
-          height: 200,
+          height: 150,
           child: Row(
             children: [
               Expanded(
                 child: CustomContainer(
+                  margin: EdgeInsets.all(5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -48,6 +50,7 @@ class LeadsWidget extends StatelessWidget {
                   children: [
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
+                     margin: EdgeInsets.all(5),
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isHome: 'isHome',),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.start,
@@ -75,6 +78,8 @@ class LeadsWidget extends StatelessWidget {
                    ),),
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
+                     margin: EdgeInsets.all(5),
+                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.start,
                        crossAxisAlignment: CrossAxisAlignment.start,

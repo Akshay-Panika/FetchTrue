@@ -17,7 +17,13 @@ class CustomHeadline extends StatelessWidget {
           Text(headline??'Headline', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
           if (viewSeeAll!)InkWell(
               onTap: onTap,
-              child: Text('See All', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),)),
+              child: Row(
+                spacing: 5,
+                children: [
+                  Text('See All', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                  Icon(Icons.arrow_forward_ios, size: 12,)
+                ],
+              )),
         ],
       ),
     );
