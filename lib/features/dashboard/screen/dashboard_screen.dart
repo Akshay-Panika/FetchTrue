@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/costants/custom_color.dart';
 import '../../../more/screen/more_screen.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';
@@ -15,12 +16,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
   final icons = const [
     Icons.home_outlined,
-    Icons.insert_drive_file_outlined,
+    Icons.bookmark_outline,
     Icons.video_collection_outlined,
     CupertinoIcons.profile_circled,
   ];
+
 
   final labels = const [
     'Home',
@@ -65,8 +68,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   currentIndex: selectedIndex,
                   onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
                   type: BottomNavigationBarType.fixed,
-                  selectedItemColor: Colors.blueAccent,
-                  unselectedItemColor: Colors.black87,
+                  selectedItemColor: CustomColor.appColor,
+                  unselectedItemColor: CustomColor.iconColor,
                   backgroundColor: Colors.white,
                   elevation: 0.8,
                   items: List.generate(icons.length, (index) {

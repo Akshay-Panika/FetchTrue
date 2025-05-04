@@ -20,7 +20,7 @@ class MoreScreen extends StatelessWidget {
               _buildTile(context, Icons.person_outline, "Profile", () {}),
               _buildTile(context, Icons.shopping_bag_outlined, "My Orders", () {}),
               _buildTile(context, Icons.bookmark_outline, "Saved Services", () {}),
-              _buildTile(context, Icons.bookmark_outline, "5X Guarantee", () {}),
+              _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
               _buildTile(context, Icons.leaderboard_outlined, "My Leads", () {}),
               _buildTile(context, Icons.favorite_border, "My Favorite", () {}),
               _buildTile(context, Icons.wallet_outlined, "My Wallet", () {}),

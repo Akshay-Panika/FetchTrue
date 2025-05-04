@@ -8,7 +8,6 @@ import 'package:bizbooster2x/core/widgets/custom_height_banner.dart';
 import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
 import 'package:bizbooster2x/features/home/widget/leads_widget.dart';
 import 'package:bizbooster2x/features/search/screen/search_screen.dart';
-
 import '../../../core/widgets/custom_appbar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,31 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     _selectedServiceIndex = 0;
                   });
                 },
-                child: const Icon(
-                  Icons.dashboard,
-                  color: Colors.black87,
-                  size: 25,
-                ),
-              ),
+                child:  Icon(Icons.dashboard, size: 25,),),
             ) : null,
           leadingWidth: !_showServicePage ?0:52,
-         titleWidget: _showServicePage
-             ? Text(_services[_selectedServiceIndex], style: TextStyle(
-           fontSize: 16,
-           color: Colors.blueAccent,
-           fontWeight: FontWeight.w600,
-         ),)
-             :Column(
+         titleWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "BizBooster2x",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              children:  [
+                Text(_showServicePage ? _services[_selectedServiceIndex]:"BizBooster2x", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,),),
                 SizedBox(height: 2),
                 Text(
                   "Waidhan Singrauli Madhya Pradesh Pin- 486886",
@@ -156,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 16),

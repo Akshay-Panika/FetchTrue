@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
 
 import 'features/dashboard/screen/dashboard_screen.dart';
@@ -22,13 +23,9 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black87),
-          actionsIconTheme: IconThemeData(color: Colors.black87),
-          titleTextStyle: const TextStyle(
-            fontSize: 16,
-            color: Colors.blueAccent,
-            fontWeight: FontWeight.w600,
-          ),
+          iconTheme: IconThemeData(color: CustomColor.iconColor),
+          actionsIconTheme: IconThemeData(color: CustomColor.iconColor),
+          titleTextStyle:  TextStyle(fontSize: 16, color: CustomColor.appColor, fontWeight: FontWeight.w600,),
         ),
 
       ),

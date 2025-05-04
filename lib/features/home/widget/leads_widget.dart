@@ -4,6 +4,7 @@ import 'package:bizbooster2x/features/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 
@@ -18,88 +19,78 @@ class LeadsWidget extends StatelessWidget {
         CustomHeadline(headline: 'Leads',),
 
         SizedBox(
-          height: 150,
+          height: 100,
           child: Row(
             children: [
               Expanded(
                 child: CustomContainer(
-                  margin: EdgeInsets.all(5),
+                  height: double.infinity,
+                  margin: EdgeInsets.only(left: 10),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: CustomContainer(
-                          margin: EdgeInsets.only(bottom: 20,right: 20),
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                            TextSpan(text:'5000', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                          ],
+                      Icon(Icons.currency_rupee,color: CustomColor.appColor, size: 50,),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                              TextSpan(text:'5000', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),),
+              SizedBox(width: 10,),
+
               Expanded(
                 child: Column(
                   children: [
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
-                     margin: EdgeInsets.all(5),
+                     margin: EdgeInsets.only(right: 10),
+                     // padding: EdgeInsets.all(0),
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isHome: 'isHome',),)),
                      child: Row(
-                       mainAxisAlignment: MainAxisAlignment.start,
-                       crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                        children: [
-                         Expanded(
-                           child: CustomContainer(
-                            margin: EdgeInsets.all(0),
-                           ),
-                         ),
-                         SizedBox(width: 10,),
-                         Expanded(
-                           child: RichText(
-                             text: TextSpan(
-                               children: [
-                                 TextSpan(text:'My Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                                 TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                               ],
-                             ),
+                        Icon(Icons.bookmark_outline, color: CustomColor.appColor,),
+
+                         RichText(
+                           text: TextSpan(
+                             children: [
+                               TextSpan(text:'My Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                               TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                             ],
                            ),
                          ),
 
                        ],
                      ),
                    ),),
+                   SizedBox(height:10,),
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
-                     margin: EdgeInsets.all(5),
+                     margin: EdgeInsets.only(right: 10),
+                    // padding: EdgeInsets.all(0),
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                      child: Row(
-                       mainAxisAlignment: MainAxisAlignment.start,
-                       crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                        children: [
-                         Expanded(
-                           child: RichText(
-                             text: TextSpan(
-                               children: [
-                                 TextSpan(text:'Team Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                                 TextSpan(text:'15', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                               ],
-                             ),
+                         RichText(
+                           text: TextSpan(
+                             children: [
+                               TextSpan(text:'Team Lead : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                               TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                             ],
                            ),
                          ),
-                         SizedBox(width: 10,),
-                         Expanded(
-                           child: CustomContainer(
-                             margin: EdgeInsets.all(0),
-                           ),
-                         ),
+                        Icon(Icons.leaderboard_outlined, color: CustomColor.appColor),
                        ],
                      ),
                    ),),
