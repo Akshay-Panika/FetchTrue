@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,11 +32,15 @@ class CustomServiceList extends StatelessWidget {
                     Expanded(
                       child: CustomContainer(
                         margin: EdgeInsets.all(0),
+                        padding: EdgeInsets.all(0),
+                        child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border))),
                       ),
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -46,15 +51,13 @@ class CustomServiceList extends StatelessWidget {
                              Row(
                                children: [
                                  Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Icon(Icons.currency_rupee, size: 12,)
+                                 CustomAmountText(amount: '100'),
                                ],
                              ),
                              Row(
                                children: [
-                                 Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 Icon(Icons.currency_rupee, size: 12,)
+                                 Text('Earn up to ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                                 CustomAmountText(amount: '50'),
                                ],
                              ),
                            ],

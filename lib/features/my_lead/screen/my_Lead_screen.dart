@@ -2,6 +2,8 @@ import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/custom_amount_text.dart';
+
 class MyLeadScreen extends StatefulWidget {
   final String? isHome;
   const MyLeadScreen({super.key, this.isHome});
@@ -149,22 +151,23 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
           const SizedBox(height: 5),
           Text('Booking Date : ${booking['bookingDate']}', style: const TextStyle(fontSize: 12)),
           Text('Service Date : ${booking['serviceDate']}', style: const TextStyle(fontSize: 12)),
-         // const SizedBox(height: 5),
+          const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-             SizedBox(),
+
               Row(
+                spacing: 5,
                 children: [
-                  const Icon(Icons.currency_rupee, size: 14, color: Colors.blueAccent),
-                  Text(
-                    booking['amount'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
-                      fontSize: 14,
-                    ),
-                  ),
+                  Text("Amount :",style: TextStyle(fontSize: 12,),),
+                  CustomAmountText(amount:  booking['amount']),
+                ],
+              ),
+              Row(
+                spacing: 5,
+                children: [
+                  Text("Cashback :",style: TextStyle(fontSize: 12,),),
+                  CustomAmountText(amount:  '00.00'),
                 ],
               ),
             ],
@@ -194,9 +197,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
           Icon(Icons.circle, size: 10, color: color),
           const SizedBox(width: 6),
           Text(
-            status,
-            style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w500),
-          ),
+            status, style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w500),),
         ],
       ),
     );

@@ -38,7 +38,8 @@ class LeadsWidget extends StatelessWidget {
                           text: TextSpan(
                             children: [
                               TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                              TextSpan(text:'5000', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                              WidgetSpan(child: Icon(Icons.currency_rupee, size: 14,)),
+                              TextSpan(text:'5000.00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
                             ],
                           ),
                         ),

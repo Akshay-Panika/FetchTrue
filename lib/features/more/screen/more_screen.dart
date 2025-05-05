@@ -1,6 +1,8 @@
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
-import '../../core/widgets/custom_appbar.dart';
+
+import '../../../core/widgets/custom_appbar.dart';
+import '../../profile/screen/profile_screen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -11,13 +13,14 @@ class MoreScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showCartIcon: true,showNotificationIcon: true,),
+      
       body: SingleChildScrollView(
         child: Column(
           children: [
             _buildProfileHeader(context),
             const SizedBox(height: 20),
             _buildSection("Account", [
-              _buildTile(context, Icons.person_outline, "Profile", () {}),
+              _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
               _buildTile(context, Icons.shopping_bag_outlined, "My Orders", () {}),
               _buildTile(context, Icons.bookmark_outline, "Saved Services", () {}),
               _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
