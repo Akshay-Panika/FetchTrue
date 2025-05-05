@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Welcome !',),
+      // appBar: CustomAppBar(title: 'Welcome !',),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -66,31 +66,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 20),
+                    Text(
+                      'Welcome!',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
 
                     CustomContainer(
-                      height: 120,
+                      height: 150,
+                      backgroundColor: Colors.transparent,
                       margin: EdgeInsets.all(0),
+                      child: Center(child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),)),
                     ),
 
                     // Sign Up Form Fields
                     CustomTextField(
                       controller: _firstNameController,
                       labelText: 'First Name',
-                      icon: Icons.person,
+                      icon: null,
                     ),
 
 
                     CustomTextField(
                       controller: _lastNameController,
                       labelText: 'Last Name',
-                      icon: Icons.person,
+                      icon: null,
                     ),
 
 
                     CustomTextField(
                       controller: _emailController,
                       labelText: 'Email',
-                      icon: Icons.email,
+                      icon: null,
                       keyboardType: TextInputType.emailAddress,
                     ),
 
@@ -98,7 +105,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomTextField(
                       controller: _phoneController,
                       labelText: 'Phone Number',
-                      icon: Icons.phone,
+                      icon: null,
                       keyboardType: TextInputType.phone,
                     ),
 
@@ -106,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomTextField(
                       controller: _passwordController,
                       labelText: 'Password',
-                      icon: Icons.lock,
+                      icon: null,
                       obscureText: _obscurePassword,
                     ),
 
@@ -114,14 +121,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomTextField(
                       controller: _confirmPasswordController,
                       labelText: 'Confirm Password',
-                      icon: Icons.lock,
+                      icon: null,
                       obscureText: _obscureConfirmPassword,
                     ),
 
                     CustomTextField(
                       controller: _raffController,
                       labelText: 'Referral Code',
-                      icon: Icons.local_offer,
+                      icon: null,
                       keyboardType: TextInputType.phone,
                     ),
 

@@ -4,16 +4,19 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
-  final IconData icon;
+  final String? hintText;
+  final IconData? icon;
   final bool obscureText;
-  final TextInputType keyboardType;
+  final TextInputType? keyboardType;
 
-  CustomTextField({
+  const CustomTextField({
+    super.key,
     required this.controller,
     required this.labelText,
-    required this.icon,
+    this.hintText,
+    this.icon,
     this.obscureText = false,
-    this.keyboardType = TextInputType.text,
+    this.keyboardType,
   });
 
   @override
@@ -22,33 +25,30 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      style: TextStyle(fontSize: 14),
       decoration: InputDecoration(
+        // filled: true,
+        // fillColor: Colors.white, // subtle background
         labelText: labelText,
-        prefixIcon: Icon(icon,),
-        labelStyle: TextStyle(
-          color: CustomColor.iconColor, // Custom color for the label
-        ),
-        border: OutlineInputBorder(
+        hintText: hintText ?? 'Enter $labelText',
+        hintStyle: TextStyle(fontSize: 14),
+        labelStyle: TextStyle(fontSize: 14),
+        prefixIcon: icon != null ? Icon(icon, color: CustomColor.appColor) : null,
+        // contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: CustomColor.iconColor, // Custom color for the border when focused
-            width: 0.5,
-          ),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(
-            color: CustomColor.iconColor, // Custom color for the border when focused
+            color: CustomColor.appColor,
             width: 0.5,
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: CustomColor.iconColor, // Custom color for the border when focused
+            color: CustomColor.appColor,
             width: 0.5,
           ),
-        )
+        ),
+        border: UnderlineInputBorder(
+        ),
       ),
     );
   }

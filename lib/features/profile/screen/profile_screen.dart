@@ -94,14 +94,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CustomTextField(
               controller: _nameController,
               labelText: "Full Name",
-              icon: Icons.person,
             ),
             SizedBox(height: 12),
 
             CustomTextField(
               controller: _emailController,
               labelText: "Email",
-              icon: Icons.email,
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 12),
@@ -109,7 +107,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CustomTextField(
               controller: _phoneController,
               labelText: "Phone Number",
-              icon: Icons.phone,
               keyboardType: TextInputType.phone,
             ),
             SizedBox(height: 12),
@@ -117,7 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CustomTextField(
               controller: _addressController,
               labelText: "Address",
-              icon: Icons.location_on,
             ),
             SizedBox(height: 40),
 
