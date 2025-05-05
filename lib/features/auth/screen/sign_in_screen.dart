@@ -7,7 +7,8 @@ import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  final Function(bool) onToggle;
+  const SignInScreen({super.key, required this.onToggle});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -40,8 +41,9 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
+      body:
+      Padding(
+        padding: const EdgeInsets.all(25.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
@@ -137,12 +139,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 Text('Don\'t have an account?'),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SignUpScreen(),
-                      ),
-                    );
+                    widget.onToggle(true); // Go to SignUpScreen
                   },
                   child: Text('Sign Up'),
                 ),
@@ -150,7 +147,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           ],
         ),
-      ),
+      )
     );
   }
 }

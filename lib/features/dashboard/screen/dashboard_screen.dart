@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
+import '../../auth/screen/auth_screen.dart';
 import '../../auth/screen/sign_in_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
@@ -38,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     HomeScreen(),
     MyLeadScreen(),
     AcademyScreen(),
-    SignInScreen(),
+    AuthPage(),
     // MoreScreen()
 
   ];

@@ -7,8 +7,12 @@ import 'package:flutter/services.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 
 class SignUpScreen extends StatefulWidget {
+  final Function(bool) onToggle;
+
+  const SignUpScreen({super.key, required this.onToggle});
+
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -54,111 +58,108 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: CustomAppBar(title: 'Welcome !',),
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20),
-                    Text(
-                      'Welcome!',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
+              Column(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    'Welcome!',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
 
-                    CustomContainer(
-                      height: 150,
-                      backgroundColor: Colors.transparent,
-                      margin: EdgeInsets.all(0),
-                      child: Center(child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),)),
-                    ),
+                  CustomContainer(
+                    height: 150,
+                    backgroundColor: Colors.transparent,
+                    margin: EdgeInsets.all(0),
+                    child: Center(child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),)),
+                  ),
 
-                    // Sign Up Form Fields
-                    CustomTextField(
-                      controller: _firstNameController,
-                      labelText: 'First Name',
-                      icon: null,
-                    ),
+                  // Sign Up Form Fields
+                  CustomTextField(
+                    controller: _firstNameController,
+                    labelText: 'First Name',
+                    icon: null,
+                  ),
 
 
-                    CustomTextField(
-                      controller: _lastNameController,
-                      labelText: 'Last Name',
-                      icon: null,
-                    ),
+                  CustomTextField(
+                    controller: _lastNameController,
+                    labelText: 'Last Name',
+                    icon: null,
+                  ),
 
 
-                    CustomTextField(
-                      controller: _emailController,
-                      labelText: 'Email',
-                      icon: null,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
+                  CustomTextField(
+                    controller: _emailController,
+                    labelText: 'Email',
+                    icon: null,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
 
 
-                    CustomTextField(
-                      controller: _phoneController,
-                      labelText: 'Phone Number',
-                      icon: null,
-                      keyboardType: TextInputType.phone,
-                    ),
+                  CustomTextField(
+                    controller: _phoneController,
+                    labelText: 'Phone Number',
+                    icon: null,
+                    keyboardType: TextInputType.phone,
+                  ),
 
 
-                    CustomTextField(
-                      controller: _passwordController,
-                      labelText: 'Password',
-                      icon: null,
-                      obscureText: _obscurePassword,
-                    ),
+                  CustomTextField(
+                    controller: _passwordController,
+                    labelText: 'Password',
+                    icon: null,
+                    obscureText: _obscurePassword,
+                  ),
 
 
-                    CustomTextField(
-                      controller: _confirmPasswordController,
-                      labelText: 'Confirm Password',
-                      icon: null,
-                      obscureText: _obscureConfirmPassword,
-                    ),
+                  CustomTextField(
+                    controller: _confirmPasswordController,
+                    labelText: 'Confirm Password',
+                    icon: null,
+                    obscureText: _obscureConfirmPassword,
+                  ),
 
-                    CustomTextField(
-                      controller: _raffController,
-                      labelText: 'Referral Code',
-                      icon: null,
-                      keyboardType: TextInputType.phone,
-                    ),
+                  CustomTextField(
+                    controller: _raffController,
+                    labelText: 'Referral Code',
+                    icon: null,
+                    keyboardType: TextInputType.phone,
+                  ),
 
 
-                    /// Show/Hide Password Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
+                  /// Show/Hide Password Button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                              icon: Icon(_obscurePassword ?Icons.check_box_outline_blank:Icons.check_box_outlined),
-                              label: Text(_obscurePassword ? 'Show Password' : 'Hide Password',),)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            icon: Icon(_obscurePassword ?Icons.check_box_outline_blank:Icons.check_box_outlined),
+                            label: Text(_obscurePassword ? 'Show Password' : 'Hide Password',),)
 
-                          ],
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
+                  ),
 
-                  ],
-                ),
+                ],
               ),
-          
+
               Column(
                 children: [
                   /// Sign Up Button
@@ -176,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-          
+
                   /// Already have an account? Login Button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -184,14 +185,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Text('Already have an account?'),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          widget.onToggle(false); // Go back to SignInScreen
                         },
-                        child: Text('Login'),
+                        child: Text('Sign In'),
                       ),
                     ],
                   ),
                 ],
-              )
+              ),
+
+              SizedBox(height: 50,)
             ],
           ),
         ),
@@ -199,3 +202,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
+
