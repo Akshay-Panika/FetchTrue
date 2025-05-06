@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
@@ -32,6 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
     'Education',
     'Finance Services',
     'Franchise',
+  ];
+  final List _servicesIcon = [
+    Icons.login,
+    Icons.business_center,
+    Icons.campaign,
+    Icons.gavel,
+    Icons.home_repair_service,
+    Icons.computer,
+    Icons.school,
+    Icons.attach_money,
+    Icons.storefront,
   ];
 
   @override
@@ -137,9 +149,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Expanded(child: CustomContainer(margin: EdgeInsets.zero)),
+                               Expanded(child: CustomContainer(
+                                 backgroundColor: Colors.transparent,
+                                child: Icon(_servicesIcon[index], size: 30, color: CustomColor.appColor,),
+                              )),
                               Padding(
-                                padding: const EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(10.0),
                                 child: Text(
                                   _services[index],
                                   style: const TextStyle(

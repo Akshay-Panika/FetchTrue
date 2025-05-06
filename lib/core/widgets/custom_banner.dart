@@ -14,16 +14,10 @@ class _CustomBannerState extends State<CustomBanner> {
 
   final List<Map<String, String>> bannerData = [
     {
-      'title': 'Welcome Back!',
-      'subtitle': 'Check your daily summary below.',
+      'image' : 'assets/image/thumbnail1.png'
     },
     {
-      'title': 'Best Franchise',
-      'subtitle': 'Track your Franchise progress.',
-    },
-    {
-      'title': 'Popular Franchise',
-      'subtitle': 'View Popular Franchise.',
+      'image' : 'assets/image/thumbnail2.png'
     },
   ];
 
@@ -49,28 +43,7 @@ class _CustomBannerState extends State<CustomBanner> {
               builder: (BuildContext context) {
                 return CustomContainer(
                   width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        data['title'] ?? '',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        data['subtitle'] ?? '',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                  assetsImg: data['image'],
                 );
               },
             );

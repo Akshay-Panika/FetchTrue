@@ -19,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
 
+  int _selectedIndex = 0;
   final icons = const [
     Icons.home_outlined,
     Icons.bookmark_outline,
@@ -40,53 +41,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
     MyLeadScreen(),
     AcademyScreen(),
     AuthPage(),
-    // MoreScreen()
-
   ];
 
   @override
   Widget build(BuildContext context) {
     print('___________________________________ Build dashboard screen');
-    return BlocProvider(
-      create: (_) => NavigationCubit(),
-      child: BlocBuilder<NavigationCubit, int>(
-        builder: (context, selectedIndex) {
-          return WillPopScope(
-            onWillPop: () async {
-              if (selectedIndex != 0) {
-                //setState(() => selectedIndex = 0);
-                context.read<NavigationCubit>().updateIndex(0);
-                return false;
-              } else {
-                return true;
-              }
-            },
-            child: Scaffold(
-              body: IndexedStack(
-                index: selectedIndex,
-                children: _screens,
-              ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (_selectedIndex != 0) {
+          setState(() => _selectedIndex = 0);
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
+        ),
 
-              bottomNavigationBar: SafeArea(
-                child: BottomNavigationBar(
-                  currentIndex: selectedIndex,
-                  onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: CustomColor.appColor,
-                  unselectedItemColor: CustomColor.iconColor,
-                  backgroundColor: Colors.white,
-                  elevation: 0.8,
-                  items: List.generate(icons.length, (index) {
-                    return BottomNavigationBarItem(
-                      icon: Icon(icons[index]),
-                      label: labels[index],
-                    );
-                  }),
-                ),
-              ),
-            ),
-          );
-        },
+        bottomNavigationBar: SafeArea(
+          child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: (index) => setState(() => _selectedIndex = index),
+            // onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: CustomColor.appColor,
+            unselectedItemColor: CustomColor.iconColor,
+            backgroundColor: Colors.white,
+            elevation: 0.8,
+            items: List.generate(icons.length, (index) {
+              return BottomNavigationBarItem(
+                icon: Icon(icons[index]),
+                label: labels[index],
+              );
+            }),
+          ),
+        ),
       ),
     );
   }

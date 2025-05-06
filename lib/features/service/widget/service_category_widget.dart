@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,32 +45,27 @@ class ServiceCategoryWidget extends StatelessWidget {
 
         /// Services list
         SizedBox(
-          height: 100,
+          height: 150,
           child: GridView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: _services.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
+              crossAxisCount: 2,
+              childAspectRatio: 1/2
             ),
             itemBuilder: (context, index) {
               return CustomContainer(
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.all(5),
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceSubcategoryScreen(headline: _services[index],),)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Row(
+                  spacing: 5,
                   children: [
+                    Expanded(child: Icon(_serviceIcons[index], size: 25,color: CustomColor.appColor,)),
+                    
                     Expanded(
-                      child: CustomContainer(
-                        backgroundColor: Colors.transparent,
-                        margin: EdgeInsets.all(0),
-                        child: Icon(_serviceIcons[index], size: 25,color: Colors.grey,),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(_services[index], style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
-                    ),
+                        flex: 2,
+                        child: Text(_services[index], style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.start,)),
                   ],
                 ),
               );

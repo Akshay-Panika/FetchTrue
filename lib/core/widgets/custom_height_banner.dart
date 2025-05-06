@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'custom_container.dart';
@@ -31,7 +32,8 @@ class _CustomHeightBannerState extends State<CustomHeightBanner> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black12,
+      color: CustomColor.appColor.withOpacity(0.08),
+      // color: Colors.teal.withOpacity(0.1),
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +58,7 @@ class _CustomHeightBannerState extends State<CustomHeightBanner> {
               return CustomContainer(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
-               // backgroundColor: Colors.white,
+                backgroundColor: Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -8,6 +8,8 @@ class CustomContainer extends StatelessWidget {
   final double? width;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
+  final String? assetsImg;
+  final String? networkImg;
   final Widget? child;
 
   const CustomContainer({
@@ -17,7 +19,9 @@ class CustomContainer extends StatelessWidget {
     this.width,
     this.margin,
     this.padding,
-    this.child
+    this.assetsImg,
+    this.networkImg,
+    this.child,
   });
 
   @override
@@ -32,6 +36,11 @@ class CustomContainer extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05),
           borderRadius: BorderRadius.circular(8.0),
+          image: (networkImg != null)
+              ? DecorationImage(image: NetworkImage(networkImg!), fit: BoxFit.cover)
+              : (assetsImg != null)
+              ? DecorationImage(image: AssetImage(assetsImg!), fit: BoxFit.cover)
+              : null,
         ),
         child: child,
       ),

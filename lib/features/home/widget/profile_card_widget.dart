@@ -18,7 +18,10 @@ class ProfileCardWidget extends StatelessWidget {
           Row(
             spacing: 10,
             children: [
-              CircleAvatar(radius: 25,backgroundColor: Colors.white,child: Icon(Icons.person,color: Colors.grey[500],),),
+              CircleAvatar(radius: 25,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage('assets/image/Null_Profile.jpg'),
+               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

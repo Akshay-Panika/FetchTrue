@@ -63,24 +63,30 @@ class TeamBuildSection extends StatelessWidget {
         /// Illustration or Banner
         Expanded(
           child: CustomContainer(
-            child:  Center(
-              child: Icon(Icons.groups, size: 80, color: Colors.grey),
+            width: double.infinity,
+            margin: EdgeInsets.all(0),
+            assetsImg: 'assets/image/emptyBoard.jpg',
+            child: Column(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text(
+                  'Invite Friends & Businesses',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  'Share your referral code below and\ngrow your team.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.blue),
+                ),
+
+                SizedBox(height: 60,),
+              ],
             ),
           ),
         ),
         const SizedBox(height: 30),
 
-        const Text(
-          'Invite Friends & Businesses',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Share your referral code below and grow your team.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 24),
 
         /// Referral Code Box
         DottedBorder(
@@ -156,8 +162,11 @@ class MyTeamSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 30),
-        Expanded(child: CustomContainer())
+        //const SizedBox(height: 30),
+        Expanded(child: CustomContainer(
+          margin: EdgeInsets.all(0),
+
+        ))
       ],
     );
   }

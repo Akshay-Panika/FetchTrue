@@ -74,7 +74,7 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                             return CustomContainer(
                               height: 180,
                               padding: EdgeInsets.all(0),
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(),)),
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),)),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,

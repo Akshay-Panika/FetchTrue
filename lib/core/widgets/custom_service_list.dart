@@ -4,10 +4,20 @@ import 'package:flutter/material.dart';
 
 import '../../features/service/screen/service_details_screen.dart';
 import 'custom_container.dart';
+import 'custom_favorite_button.dart';
 import 'custom_headline.dart';
 
 class CustomServiceList extends StatelessWidget {
-  const CustomServiceList({super.key});
+   CustomServiceList({super.key});
+
+  final List<Map<String, String>> bannerData = [
+    {
+      'image' : 'assets/image/thumbnail1.png'
+    },
+    {
+      'image' : 'assets/image/thumbnail2.png'
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +29,11 @@ class CustomServiceList extends StatelessWidget {
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 5,
+            itemCount: bannerData.length,
             itemBuilder: (context, index) {
               return CustomContainer(
                 width: 300,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(),)),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '${bannerData[index]['image']}',),)),
                 padding: EdgeInsets.all(0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -33,9 +43,11 @@ class CustomServiceList extends StatelessWidget {
                       child: CustomContainer(
                         margin: EdgeInsets.all(0),
                         padding: EdgeInsets.all(0),
+                        assetsImg: '${bannerData[index]['image']}',
                         child: Align(
                             alignment: Alignment.topRight,
-                            child: IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border))),
+                            child: CustomFavoriteButton(),
+                        ),
                       ),
                     ),
 

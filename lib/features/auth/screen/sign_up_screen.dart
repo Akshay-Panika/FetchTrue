@@ -4,6 +4,7 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -61,7 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: Column(
             children: [
               Column(
@@ -75,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
 
                   CustomContainer(
-                    height: 150,
+                    height: 100,
                     backgroundColor: Colors.transparent,
                     margin: EdgeInsets.all(0),
                     child: Center(child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),)),
@@ -163,20 +164,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Column(
                 children: [
                   /// Sign Up Button
-                  CustomContainer(
-                    backgroundColor: CustomColor.appColor,
+                  CustomButton(
+                    text:  'Sign Up',
                     onTap: _signUp,
-                    child: Center(
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
                   ),
+                  SizedBox(height: 20,),
 
                   /// Already have an account? Login Button
                   Row(

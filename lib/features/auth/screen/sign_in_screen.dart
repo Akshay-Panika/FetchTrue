@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 
+import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -40,114 +41,102 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body:
-      Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: ListView(
-          children: [
-            SizedBox(height: 20),
-            Text(
-              'Welcome!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(height: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: ListView(
+        children: [
+          SizedBox(height: 20),
+          Text(
+            'Welcome!',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(height: 20),
 
-            CustomContainer(
-              height: 150,
-              backgroundColor: Colors.transparent,
-              margin: EdgeInsets.all(0),
-              child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),),
-            ),
-            SizedBox(height: 50),
+          CustomContainer(
+            height: 150,
+            backgroundColor: Colors.transparent,
+            margin: EdgeInsets.all(0),
+            child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),),
+          ),
+          SizedBox(height: 50),
 
-            CustomTextField(
-              controller: _phoneController,
-              labelText: 'Email/Phone *',
-              hintText: 'Enter email or phone number',
-              icon: null,
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 12),
+          CustomTextField(
+            controller: _phoneController,
+            labelText: 'Email/Phone *',
+            hintText: 'Enter email or phone number',
+            icon: null,
+            keyboardType: TextInputType.phone,
+          ),
+          SizedBox(height: 12),
 
-            CustomTextField(
-              controller: _passwordController,
-              labelText: 'Password *',
-              hintText: 'Enter your password',
-              icon: null,
-              obscureText: _obscurePassword,
-            ),
-            SizedBox(height: 20),
+          CustomTextField(
+            controller: _passwordController,
+            labelText: 'Password *',
+            hintText: 'Enter your password',
+            icon: null,
+            obscureText: _obscurePassword,
+          ),
+          SizedBox(height: 20),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.check_box_outline_blank
-                        : Icons.check_box_outlined,
-                  ),
-                  label: Text(
-                    _obscurePassword ? 'Show Password' : 'Hide Password',
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+                icon: Icon(
+                  _obscurePassword
+                      ? Icons.check_box_outline_blank
+                      : Icons.check_box_outlined,
                 ),
-              ],
-            ),
-
-            CustomContainer(
-              backgroundColor: CustomColor.appColor,
-              onTap: _signIn,
-              child: Center(
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                label: Text(
+                  _obscurePassword ? 'Show Password' : 'Hide Password',
                 ),
               ),
-            ),
-            SizedBox(height: 20),
+            ],
+          ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Forgot Password')),
-                    );
-                  },
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: CustomColor.appColor),
-                  ),
-                ),
-              ],
-            ),
+          CustomButton(
+            text:  'Sign In',
+            onTap: _signIn,
+          ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Don\'t have an account?'),
-                TextButton(
-                  onPressed: () {
-                    widget.onToggle(true); // Go to SignUpScreen
-                  },
-                  child: Text('Sign Up'),
+          SizedBox(height: 20),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Forgot Password')),
+                  );
+                },
+                child: Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: CustomColor.appColor),
                 ),
-              ],
-            ),
-          ],
-        ),
-      )
+              ),
+            ],
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Don\'t have an account?'),
+              TextButton(
+                onPressed: () {
+                  widget.onToggle(true); // Go to SignUpScreen
+                },
+                child: Text('Sign Up'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

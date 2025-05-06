@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/features/more/screen/more_screen.dart';
 import 'package:flutter/material.dart';
 import 'sign_in_screen.dart';
 import 'sign_up_screen.dart';
@@ -11,6 +12,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   bool isSignUp = false;
+  bool isAuthenticated = false;
 
   void toggleScreen(bool value) {
     setState(() {
@@ -21,9 +23,11 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isSignUp
+      body: isAuthenticated
+          ? MoreScreen() :isSignUp
           ? SignUpScreen(onToggle: toggleScreen)
           : SignInScreen(onToggle: toggleScreen),
+
     );
   }
 }
