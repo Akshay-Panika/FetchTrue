@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class WalletScreen extends StatelessWidget {
-  final double balance = 21948.70;
+  final String? isBack;
+  WalletScreen({this.isBack});
 
+  final double balance = 21948.70;
   final List<WalletTransaction> transactions = [
     WalletTransaction(id: '8137be06', leadId: '100305', amount: 119.90, dateTime: DateTime(2025, 5, 2, 18, 21)),
     WalletTransaction(id: '2d8a83dc', leadId: '100304', amount: 149.90, dateTime: DateTime(2025, 5, 2, 16, 14)),

@@ -58,7 +58,7 @@ class LeadsWidget extends StatelessWidget {
                      margin: EdgeInsets.only(right: 10),
                      border: true,
                      // padding: EdgeInsets.all(0),
-                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isHome: 'isHome',),)),
+                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                        children: [

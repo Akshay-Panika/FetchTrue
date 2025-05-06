@@ -17,8 +17,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -30,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
+    _fullNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
@@ -40,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp() {
     // Basic validation to check if fields are empty
-    if (_firstNameController.text.isEmpty ||
+    if (_fullNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -83,14 +82,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
 
                   CustomTextField(
-                    controller: _firstNameController,
-                    labelText: 'First Name',
-                    icon: null,
-                  ),
-
-                  CustomTextField(
-                    controller: _lastNameController,
-                    labelText: 'Last Name',
+                    controller: _fullNameController,
+                    labelText: 'Full Name',
                     icon: null,
                   ),
 

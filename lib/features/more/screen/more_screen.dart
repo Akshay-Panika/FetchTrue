@@ -1,8 +1,14 @@
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/features/auth/screen/auth_screen.dart';
+import 'package:bizbooster2x/features/favorite/screen/favorite_screen.dart';
+import 'package:bizbooster2x/features/my_lead/screen/my_Lead_screen.dart';
+import 'package:bizbooster2x/features/team_lead/screen/team_lead_screen.dart';
+import 'package:bizbooster2x/features/wallet/screen/wallet_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_appbar.dart';
+import '../../package/screen/package_screen.dart';
 import '../../profile/screen/profile_screen.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -22,13 +28,12 @@ class MoreScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildSection("Account", [
               _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
-              _buildTile(context, Icons.shopping_bag_outlined, "My Orders", () {}),
-              _buildTile(context, Icons.bookmark_outline, "Saved Services", () {}),
               _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
-              _buildTile(context, Icons.leaderboard_outlined, "My Leads", () {}),
-              _buildTile(context, Icons.favorite_border, "My Favorite", () {}),
-              _buildTile(context, Icons.wallet_outlined, "My Wallet", () {}),
-              _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {}),
+              _buildTile(context, Icons.leaderboard_outlined, "My Lead", () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),),
+              _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),),
+              _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(isBack: 'isBack',),)),),
+              _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
+              _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
 
             ]),
             const SizedBox(height: 16),

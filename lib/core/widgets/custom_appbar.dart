@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/features/favorite/screen/favorite_screen.dart';
 import 'package:bizbooster2x/features/notification/screen/notification_screen.dart';
 import 'package:bizbooster2x/features/search/screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +49,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
         if(showFavoriteIcon)
         IconButton(
-          onPressed: () {},
+          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),
           icon: const Icon(Icons.favorite_border),
         ),
 

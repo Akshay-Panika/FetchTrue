@@ -1,5 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,43 +53,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         showBackButton: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        padding: const EdgeInsets.all(25.0),
+        child: Column(
           children: [
             // Profile Picture and Name Section
-            Row(
+            Stack(
               children: [
-                CircleAvatar(
-                  backgroundColor: CustomColor.appColor.withOpacity(0.2),
-                  radius: 30,
+                CustomContainer(
+                  width: 100,
+                  height: 100,
+                border: true,
+                assetsImg: 'assets/image/Null_Profile.jpg',
                 ),
-                SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Akshay Panika',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'Earning: ₹00.00',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
+                
+                Positioned(
+                    bottom: 0, right: 0,
+                    child: CircleAvatar(
+                        backgroundColor: Colors.grey.shade50,
+                        child: Icon(Icons.edit, color: CustomColor.appColor,)))
               ],
             ),
             SizedBox(height: 10),
-
-            // Divider
-            Divider(),
-            SizedBox(height: 40),
 
             // Profile Form Fields with CustomTextField
             CustomTextField(
@@ -115,23 +100,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               controller: _addressController,
               labelText: "Address",
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 50),
 
             // Update Profile Button
-            CustomContainer(
-              backgroundColor: CustomColor.appColor,
-              onTap: _updateProfile,
-              child: Center(
-                child: Text(
-                  "Update Profile",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
+            CustomButton(text: "Update Profile",),
           ],
         ),
       ),

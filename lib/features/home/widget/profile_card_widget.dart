@@ -1,8 +1,10 @@
+import 'package:bizbooster2x/features/favorite/screen/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../package/screen/package_screen.dart';
 
 class ProfileCardWidget extends StatelessWidget {
   const ProfileCardWidget({super.key,});
@@ -37,6 +39,7 @@ class ProfileCardWidget extends StatelessWidget {
               CustomContainer(
                 backgroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
                 child: Row(
                   spacing: 5,
                   children: [
@@ -45,7 +48,7 @@ class ProfileCardWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Scaffold(appBar: CustomAppBar(title: 'Favorite',showBackButton: true,),),)), icon: Icon(Icons.favorite_border,))
+              IconButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen())), icon: Icon(Icons.favorite_border,))
             ],
           )
 

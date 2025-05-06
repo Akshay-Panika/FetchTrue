@@ -3,10 +3,11 @@ import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_amount_text.dart';
+import 'lead_details_screen.dart';
 
 class MyLeadScreen extends StatefulWidget {
-  final String? isHome;
-  const MyLeadScreen({super.key, this.isHome});
+  final String? isBack;
+  const MyLeadScreen({super.key, this.isBack});
 
   @override
   State<MyLeadScreen> createState() => _MyLeadScreenState();
@@ -69,7 +70,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'My Leads',
-        showBackButton: widget.isHome =='isHome'?true:false, showNotificationIcon: true,),
+        showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
       body: SafeArea(
         child: Column(
           children: [
@@ -130,6 +131,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget _buildBookingCard(Map<String, dynamic> booking) {
     return CustomContainer(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(),)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
