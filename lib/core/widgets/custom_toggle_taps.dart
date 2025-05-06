@@ -31,7 +31,7 @@ class CustomToggleTabs extends StatelessWidget {
               widthFactor: 1 / labels.length,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.5),
+                  color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
