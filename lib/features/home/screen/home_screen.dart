@@ -88,8 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-          showCartIcon: true,
           showNotificationIcon: true,
+          //showFavoriteIcon: true,
         ),
 
         body: _showServicePage

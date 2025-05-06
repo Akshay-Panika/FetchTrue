@@ -69,7 +69,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'My Leads',
-        showBackButton: widget.isHome =='isHome'?true:false, showCartIcon: true, showNotificationIcon: true,),
+        showBackButton: widget.isHome =='isHome'?true:false, showNotificationIcon: true,),
       body: SafeArea(
         child: Column(
           children: [

@@ -40,7 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     HomeScreen(),
     MyLeadScreen(),
     AcademyScreen(),
-    AuthPage(),
+    MoreScreen(),
   ];
 
   @override

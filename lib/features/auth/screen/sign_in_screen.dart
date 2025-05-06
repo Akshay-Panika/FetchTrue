@@ -35,7 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
       );
     } else {
       print('Sign In Successful!');
-      // Firebase Auth or other sign-in logic
+      Navigator.pop(context);
     }
   }
 
@@ -76,8 +76,9 @@ class _SignInScreenState extends State<SignInScreen> {
             icon: null,
             obscureText: _obscurePassword,
           ),
-          SizedBox(height: 20),
 
+
+          /// Show/Hide Password Button
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -98,6 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ],
           ),
+          SizedBox(height: 20,),
 
           CustomButton(
             text:  'Sign In',

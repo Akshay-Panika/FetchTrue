@@ -4,14 +4,13 @@ import 'package:bizbooster2x/features/search/screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../features/cart/screen/cart_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final Widget? titleWidget;
   final bool showBackButton;
   final bool showNotificationIcon;
-  final bool showCartIcon;
+  final bool showFavoriteIcon;
   final bool showSearchIcon;
   final Widget? leading;
   final double? leadingWidth;
@@ -22,7 +21,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleWidget,
     this.showBackButton = false,
     this.showNotificationIcon = false,
-    this.showCartIcon = false,
+    this.showFavoriteIcon = false,
     this.showSearchIcon = false,
     this.leading,
     this.leadingWidth,
@@ -46,11 +45,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),
           icon: Icon(Icons.notifications_active_outlined,),
         ),
-        if(showCartIcon)
+
+        if(showFavoriteIcon)
         IconButton(
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(),)),
-          icon: Icon(Icons.shopping_cart_outlined,),
+          onPressed: () {},
+          icon: const Icon(Icons.favorite_border),
         ),
+
         if(showSearchIcon)
         IconButton(
           onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),

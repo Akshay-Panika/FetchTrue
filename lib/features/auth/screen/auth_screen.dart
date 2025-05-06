@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'sign_in_screen.dart';
 import 'sign_up_screen.dart';
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthScreenState extends State<AuthScreen> {
   bool isSignUp = false;
-  bool isAuthenticated = false;
-
   void toggleScreen(bool value) {
     setState(() {
       isSignUp = value;
@@ -23,8 +21,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isAuthenticated
-          ? MoreScreen() :isSignUp
+      body: isSignUp
           ? SignUpScreen(onToggle: toggleScreen)
           : SignInScreen(onToggle: toggleScreen),
 

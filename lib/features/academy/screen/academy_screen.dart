@@ -14,7 +14,7 @@ class AcademyScreen extends StatelessWidget {
     List _services = ['Certificate', '2 Min. Gyan', 'Live Webinars', 'Recorded Webinars', 'Documents',];
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Academy',showCartIcon: true, showNotificationIcon: true,),
+      appBar: CustomAppBar(title: 'Academy', showNotificationIcon: true,),
       body: Column(
         children: [
 

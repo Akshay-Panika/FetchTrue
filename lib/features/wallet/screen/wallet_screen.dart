@@ -21,7 +21,7 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'My Wallet', showBackButton: true, showSearchIcon: true,showCartIcon: true,),
+      appBar: CustomAppBar(title: 'My Wallet', showBackButton: true, showSearchIcon: true,),
       body: SafeArea(
         child:  CustomScrollView(
           slivers: [

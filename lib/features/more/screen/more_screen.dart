@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/features/auth/screen/auth_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_appbar.dart';
@@ -12,7 +13,7 @@ class MoreScreen extends StatelessWidget {
     print('___________________________________ Build More screen');
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showCartIcon: true,showNotificationIcon: true,),
+      appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showNotificationIcon: true,),
       
       body: SingleChildScrollView(
         child: Column(
@@ -40,7 +41,9 @@ class MoreScreen extends StatelessWidget {
             ]),
             const SizedBox(height: 16),
             _buildSection("Others", [
-              _buildTile(context, Icons.logout, "Log Out", () => _showLogoutDialog(context)),
+              _buildTile(context, Icons.logout, "Sign In", () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen(),));
+              }),
             ]),
 
             SizedBox(height: 50)
@@ -59,16 +62,16 @@ class MoreScreen extends StatelessWidget {
            CircleAvatar(
             radius: 30,
             backgroundColor: Theme.of(context).cardColor,
-            child: Icon(Icons.person, color: Colors.black54, size: 30),
+             backgroundImage: AssetImage('assets/image/Null_Profile.jpg'),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text("Akshay Panika", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                Text("User Name", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 SizedBox(height: 4),
-                Text("waidhan@bizbooster.com", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text("xyz@bizbooster.com", style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           ),
@@ -106,18 +109,4 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Log Out"),
-        titleTextStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.w600, color: Colors.black),
-        content: const Text("Are you sure you want to log out?"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel", style: TextStyle(color: Colors.blueAccent),)),
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Log Out", style: TextStyle(color: Colors.blueAccent),)),
-        ],
-      ),
-    );
-  }
 }

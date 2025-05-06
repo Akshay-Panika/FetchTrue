@@ -11,7 +11,7 @@ class ServiceSubcategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: '$headline',showBackButton: true,showCartIcon: true, showSearchIcon: true,),
+      appBar: CustomAppBar(title: '$headline',showBackButton: true,showSearchIcon: true,),
 
       body: SafeArea(
         child: Column(

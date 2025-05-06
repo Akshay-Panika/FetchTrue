@@ -4,6 +4,7 @@ import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ServiceDetailsScreen extends StatelessWidget {
   final String image;
@@ -12,7 +13,7 @@ class ServiceDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Service Details', showBackButton: true, showCartIcon: true,),
+      appBar: CustomAppBar(title: 'Service Details', showBackButton: true, showFavoriteIcon: true,),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -103,24 +104,43 @@ class ServiceDetailsScreen extends StatelessWidget {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 10),
+         // padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: CustomColor.appColor,)
+          ),
           child: Row(
-            spacing: 10,
             children: [
-              Expanded(child: CustomContainer(margin: EdgeInsets.all(5),
-              backgroundColor: CustomColor.appColor,
-              child: Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: Colors.white,),
-                  Text('Select Vendor',style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14,color: Colors.white)),
-                ],
+              Expanded(child: Container(
+              child: InkWell(
+                onTap: () {
+                  print('______________________shared');
+                },
+                child: Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: CustomColor.appColor,),
+                    Text('Self Add',style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14,color: CustomColor.appColor)),
+                  ],
+                ),
               ),)),
-              Expanded(child: CustomContainer(
-                margin: EdgeInsets.all(5),
-                backgroundColor: CustomColor.appColor,
-                child: Center(child: Text("Buy Now", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Colors.white),)),
+              Expanded(child: Container(
+                color: CustomColor.appColor,
+                height: double.infinity,
+                child: InkWell(
+                  onTap: () {
+                    print('______________________shared');
+                    Share.share('Check out our new product: https://your-link.com');
+                  },
+                  child: Row(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.share, color: Colors.white,),
+                      Text('Share To Customer',style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14,color: Colors.white)),
+                    ],
+                  ),
+                ),
               )),
             ],
           ),

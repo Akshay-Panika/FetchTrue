@@ -82,20 +82,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Center(child: Image.asset('assets/auth/signinImg.png', color: CustomColor.appColor.withOpacity(0.3),)),
                   ),
 
-                  // Sign Up Form Fields
                   CustomTextField(
                     controller: _firstNameController,
                     labelText: 'First Name',
                     icon: null,
                   ),
 
-
                   CustomTextField(
                     controller: _lastNameController,
                     labelText: 'Last Name',
                     icon: null,
                   ),
-
 
                   CustomTextField(
                     controller: _emailController,
@@ -104,7 +101,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
 
-
                   CustomTextField(
                     controller: _phoneController,
                     labelText: 'Phone Number',
@@ -112,14 +108,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyboardType: TextInputType.phone,
                   ),
 
-
                   CustomTextField(
                     controller: _passwordController,
                     labelText: 'Password',
                     icon: null,
                     obscureText: _obscurePassword,
                   ),
-
 
                   CustomTextField(
                     controller: _confirmPasswordController,
@@ -140,23 +134,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            icon: Icon(_obscurePassword ?Icons.check_box_outline_blank:Icons.check_box_outlined),
-                            label: Text(_obscurePassword ? 'Show Password' : 'Hide Password',),)
-
-                        ],
-                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(_obscurePassword ?Icons.check_box_outline_blank:Icons.check_box_outlined),
+                        label: Text(_obscurePassword ? 'Show Password' : 'Hide Password',),),
                     ],
                   ),
+                  SizedBox(height: 20,),
 
                 ],
               ),
