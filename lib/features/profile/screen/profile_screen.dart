@@ -54,57 +54,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
-        child: Column(
-          children: [
-            // Profile Picture and Name Section
-            Stack(
-              children: [
-                CustomContainer(
-                  width: 100,
-                  height: 100,
-                border: true,
-                assetsImg: 'assets/image/Null_Profile.jpg',
-                ),
-                
-                Positioned(
-                    bottom: 0, right: 0,
-                    child: CircleAvatar(
-                        backgroundColor: Colors.grey.shade50,
-                        child: Icon(Icons.edit, color: CustomColor.appColor,)))
-              ],
-            ),
-            SizedBox(height: 10),
-
-            // Profile Form Fields with CustomTextField
-            CustomTextField(
-              controller: _nameController,
-              labelText: "Full Name",
-            ),
-            SizedBox(height: 12),
-
-            CustomTextField(
-              controller: _emailController,
-              labelText: "Email",
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 12),
-
-            CustomTextField(
-              controller: _phoneController,
-              labelText: "Phone Number",
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 12),
-
-            CustomTextField(
-              controller: _addressController,
-              labelText: "Address",
-            ),
-            SizedBox(height: 50),
-
-            // Update Profile Button
-            CustomButton(text: "Update Profile",),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Profile Picture and Name Section
+              Stack(
+                children: [
+                  CustomContainer(
+                    width: 100,
+                    height: 100,
+                  border: true,
+                  assetsImg: 'assets/image/Null_Profile.jpg',
+                  ),
+                  
+                  Positioned(
+                      bottom: 0, right: 0,
+                      child: CircleAvatar(
+                          backgroundColor: Colors.grey.shade50,
+                          child: Icon(Icons.edit, color: CustomColor.appColor,)))
+                ],
+              ),
+              SizedBox(height: 10),
+          
+              // Profile Form Fields with CustomTextField
+              CustomTextField(
+                controller: _nameController,
+                labelText: "Full Name",
+              ),
+              SizedBox(height: 12),
+          
+              CustomTextField(
+                controller: _emailController,
+                labelText: "Email",
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: 12),
+          
+              CustomTextField(
+                controller: _phoneController,
+                labelText: "Phone Number",
+                keyboardType: TextInputType.phone,
+              ),
+              SizedBox(height: 12),
+          
+              CustomTextField(
+                controller: _addressController,
+                labelText: "Address",
+              ),
+              SizedBox(height: 50),
+          
+              // Update Profile Button
+              CustomButton(text: "Update Profile",),
+            ],
+          ),
         ),
       ),
     );

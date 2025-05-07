@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/features/service/screen/service_details_screen.dart';
@@ -6,7 +7,16 @@ import 'package:flutter/material.dart';
 
 class ServiceSubcategoryScreen extends StatelessWidget {
   final String headline;
-  const ServiceSubcategoryScreen({super.key, required this.headline});
+   ServiceSubcategoryScreen({super.key, required this.headline});
+
+  final List<Map<String, String>> serviceData = [
+    {
+      'image' : 'assets/image/thumbnail1.png'
+    },
+    {
+      'image' : 'assets/image/thumbnail2.png'
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +62,12 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: CustomContainer(
-                                  margin: EdgeInsets.all(0),
+                                  backgroundColor: Colors.transparent,
+                                  child: Icon(Icons.image, color: CustomColor.appColor,size: 30,),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(10.0),
                                 child: Text('Headline', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                               ),
                             ],
@@ -69,12 +80,12 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                         flex: 2,
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: 5,
+                          itemCount: serviceData.length,
                           itemBuilder: (context, index) {
                             return CustomContainer(
                               height: 180,
                               padding: EdgeInsets.all(0),
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),)),
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: serviceData[index]['image'].toString(),),)),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,6 +93,7 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                                   Expanded(
                                     child: CustomContainer(
                                       margin: EdgeInsets.all(0),
+                                      assetsImg: serviceData[index]['image'],
                                     ),
                                   ),
 

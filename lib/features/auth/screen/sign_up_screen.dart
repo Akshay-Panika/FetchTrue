@@ -117,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   CustomTextField(
                     controller: _raffController,
-                    labelText: 'Referral Code',
+                    labelText: 'Referral Code ( Optional )',
                     icon: null,
                     keyboardType: TextInputType.phone,
                   ),

@@ -15,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showSearchIcon;
   final Widget? leading;
   final double? leadingWidth;
+  final Color? bColor;
 
   const CustomAppBar({
     super.key,
@@ -25,12 +26,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showFavoriteIcon = false,
     this.showSearchIcon = false,
     this.leading,
-    this.leadingWidth,
+    this.leadingWidth, this.bColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: bColor,
       elevation: 1,
       automaticallyImplyLeading: false,
       leading: showBackButton ?
