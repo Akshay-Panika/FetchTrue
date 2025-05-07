@@ -35,6 +35,7 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
                 },
               ),
             ),
+            SizedBox(height: 10,),
         
             /// Tab Content
             Expanded(
@@ -97,11 +98,13 @@ class TeamBuildSection extends StatelessWidget {
           borderPadding: EdgeInsets.all(10),
           child: Row(
             children: [
+              SizedBox(width: 25,),
               Expanded(
                 child: TextField(
                   readOnly: true,
                   decoration:  InputDecoration(
                    hintText: 'Akshay0001',
+                    hintStyle: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
                     border: InputBorder.none, // removes all borders
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   ),
@@ -145,10 +148,14 @@ class MyTeamSection extends StatelessWidget {
           borderPadding: EdgeInsets.all(10),
           child: Row(
             children: [
+               SizedBox(width: 20,),
               Expanded(
                 child: TextField(
+                  style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
+
                   decoration: const InputDecoration(
                     hintText: 'Referral Code...',
+                    hintStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
                     border: InputBorder.none, // removes all borders
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                   ),

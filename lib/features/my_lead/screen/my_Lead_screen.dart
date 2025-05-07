@@ -71,6 +71,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'My Leads',
         showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -165,13 +166,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
                   CustomAmountText(amount:  booking['amount']),
                 ],
               ),
-              Row(
-                spacing: 5,
-                children: [
-                  Text("Cashback :",style: TextStyle(fontSize: 12,),),
-                  CustomAmountText(amount:  '00.00'),
-                ],
-              ),
+              Text("Cashback : 00.0",style: TextStyle(fontSize: 12,),),
             ],
           ),
         ],
