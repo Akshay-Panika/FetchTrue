@@ -60,7 +60,7 @@ class MoreScreen extends StatelessWidget {
 
   Widget _buildProfileHeader(BuildContext context) {
     return CustomContainer(
-      //margin: EdgeInsets.all(0),
+     backgroundColor: Colors.white,
       padding: EdgeInsets.symmetric(vertical: 20,horizontal: 15),
       child: Row(
         children: [
@@ -96,7 +96,8 @@ class MoreScreen extends StatelessWidget {
         ),
        // const SizedBox(height: 8),
         CustomContainer(
-          //margin: EdgeInsets.all(0),
+          border: true,
+         backgroundColor: Colors.white,
           padding: EdgeInsets.all(0),
           child: Column(children: children),
         )

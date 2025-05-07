@@ -33,6 +33,7 @@ class CustomServiceList extends StatelessWidget {
             itemBuilder: (context, index) {
               return CustomContainer(
                 width: 300,
+                backgroundColor: Colors.white,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '${bannerData[index]['image']}',),)),
                 padding: EdgeInsets.all(0),
                 child: Column(

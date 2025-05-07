@@ -157,6 +157,8 @@ class WalletTransactionTile extends StatelessWidget {
     final formattedDate = DateFormat('d MMM, y hh:mm a').format(transaction.dateTime);
 
     return CustomContainer(
+      border: true,
+      backgroundColor: Colors.white,
       child: Row(
         spacing: 5,
         children: [

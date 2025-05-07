@@ -99,11 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// Profile card
             SliverToBoxAdapter(child: ProfileCardWidget(),),
+            SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
             /// Search bar
             SliverAppBar(
               toolbarHeight: 60,
               floating: true,
+              backgroundColor: Colors.grey.shade100,
               flexibleSpace: CustomSearchBar(
                 onTap: () => Navigator.push(
                   context,
@@ -111,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
             /// Data
             SliverToBoxAdapter(
@@ -127,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 20),
 
                     /// Services
-                    CustomHeadline(headline: 'Services'),
+                    CustomHeadline(headline: 'Services', viewSeeAll: false,),
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),

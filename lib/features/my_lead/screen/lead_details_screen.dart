@@ -70,6 +70,8 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 /// Booking card
 Widget _buildBookingCard(){
   return CustomContainer(
+    border: true,
+    backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
     child: Column(
       spacing: 5,
@@ -131,6 +133,8 @@ Widget _buildStatusBadge(String status) {
 
 Widget _customerDetails(){
   return CustomContainer(
+    border: true,
+    backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
     child: Stack(
       children: [
@@ -170,6 +174,8 @@ Widget _customerDetails(){
 
 Widget _buildPaymentStatus(){
   return CustomContainer(
+    border: true,
+    backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
     child: Row(
       children: [
@@ -206,6 +212,8 @@ Widget _buildPaymentStatus(){
 
 Widget _buildBookingSummary(){
   return CustomContainer(
+    border: true,
+    backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
     child: Column(
       spacing: 10,

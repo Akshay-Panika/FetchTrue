@@ -40,7 +40,8 @@ class AcademyScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   return CustomContainer(
-
+                    border: true,
+                    backgroundColor: Colors.white,
                     padding: EdgeInsets.all(0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -67,7 +68,7 @@ class AcademyScreen extends StatelessWidget {
 
           Expanded(
             child: CustomContainer(
-
+             backgroundColor: Colors.white,
             ),
           )
         ],

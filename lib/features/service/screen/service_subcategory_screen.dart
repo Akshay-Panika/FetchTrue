@@ -29,14 +29,18 @@ class ServiceSubcategoryScreen extends StatelessWidget {
           children: [
         
             /// Filter
-            CustomContainer(height: 40,
-            margin: EdgeInsets.symmetric(horizontal: 10),
+            CustomContainer(
+              height: 40,
+            backgroundColor: Colors.transparent,
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             padding: EdgeInsets.all(0),
             child: ListView.builder(
               itemCount: 5,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
               return CustomContainer(
+                border: true,
+                backgroundColor: Colors.white,
                 margin: EdgeInsets.all(5),
                 padding: EdgeInsets.all(5),
                 width: 100,child: Center(child: Text("Headline")),);
@@ -46,16 +50,19 @@ class ServiceSubcategoryScreen extends StatelessWidget {
             /// Service type
             Expanded(
               child: CustomContainer(
+                backgroundColor: Colors.transparent,
                 padding: EdgeInsets.all(0),
+                margin: EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
-
                     Expanded(child: ListView.builder(
                       itemCount: 12,
                       itemBuilder: (context, index) {
                         return CustomContainer(
                           height: 100,
+                          backgroundColor: Colors.white,
                           padding: EdgeInsets.all(0),
+                          margin: EdgeInsets.all(5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,7 +91,10 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return CustomContainer(
                               height: 180,
+
+                              backgroundColor: Colors.white,
                               padding: EdgeInsets.all(0),
+                              margin: EdgeInsets.all(5),
                               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: serviceData[index]['image'].toString(),),)),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

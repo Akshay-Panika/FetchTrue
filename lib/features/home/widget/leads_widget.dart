@@ -27,6 +27,7 @@ class LeadsWidget extends StatelessWidget {
                   height: double.infinity,
                   margin: EdgeInsets.only(left: 10),
                   border: true,
+                  backgroundColor: Colors.white,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -57,7 +58,7 @@ class LeadsWidget extends StatelessWidget {
                      width: double.infinity,
                      margin: EdgeInsets.only(right: 10),
                      border: true,
-                     // padding: EdgeInsets.all(0),
+                     backgroundColor: Colors.white,
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -80,8 +81,8 @@ class LeadsWidget extends StatelessWidget {
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
                      margin: EdgeInsets.only(right: 10),
-                    // padding: EdgeInsets.all(0),
                      border: true,
+                     backgroundColor: Colors.white,
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceAround,

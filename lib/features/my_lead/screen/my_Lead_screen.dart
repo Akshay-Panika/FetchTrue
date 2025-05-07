@@ -110,6 +110,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
               });
             },
             child: CustomContainer(
+              backgroundColor: Colors.white,
               margin: const EdgeInsets.symmetric(horizontal: 5),
               padding: const EdgeInsets.symmetric(horizontal: 15),
              // color: isSelected ? Colors.blueAccent : Colors.white,
@@ -131,6 +132,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
   Widget _buildBookingCard(Map<String, dynamic> booking) {
     return CustomContainer(
+      backgroundColor: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(),)),
       child: Column(

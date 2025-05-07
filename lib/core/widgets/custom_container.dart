@@ -12,6 +12,7 @@ class CustomContainer extends StatelessWidget {
   final String? networkImg;
   final Gradient? gradient;
   final bool border;
+  final Color? borderColor;
   final Widget? child;
 
   const CustomContainer({
@@ -25,7 +26,7 @@ class CustomContainer extends StatelessWidget {
     this.networkImg,
     this.gradient,
     this.border = false,
-    this.child,
+    this.child, this.borderColor,
   });
 
   @override
@@ -41,7 +42,7 @@ class CustomContainer extends StatelessWidget {
          color:  (gradient == null)  ? backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
           borderRadius: BorderRadius.circular(8.0),
 
-          border: border ? Border.all(color: Colors.grey,width: 0.01):null,
+          border: border ? Border.all(color: borderColor ?? Colors.grey,width: 0.02):null,
           gradient: gradient,
           image: (networkImg != null)
               ? DecorationImage(image: NetworkImage(networkImg!), fit: BoxFit.cover)

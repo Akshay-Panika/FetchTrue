@@ -38,6 +38,8 @@ class ServiceDetailsScreen extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemBuilder:  (context, index) {
                       return CustomContainer(
+                        border: true,
+                        backgroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(horizontal: 20),
                           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                           child: Center(child: Text(labels[index], style: TextStyle(fontSize: 12,),)));
@@ -184,7 +186,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      //color: Colors.white,
       child: child,
     );
   }
