@@ -18,6 +18,7 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Team Lead', showBackButton: true),
       body: SafeArea(
         child: Column(

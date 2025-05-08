@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/features/team_lead/screen/team_lead_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
@@ -183,10 +184,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   CustomServiceList(headline: 'Services for you',),
 
-                  /// CustomHighlightService
+                  /// Custom Highlight Service
                   CustomHighlightService(),
 
                   CustomServiceList(headline: 'Popular Services',),
+
+
+                  CustomContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    backgroundColor: Colors.white,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Your BizBooster',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: CustomColor.appColor),),
+                            SizedBox(height: 5,),
+                            Text('Your friend are going to love us tool', style: TextStyle(fontSize: 14),),
+                            SizedBox(height: 5,),
+                            Text('Refer And Win up to ____', style: TextStyle(fontSize: 16, color: CustomColor.iconColor, fontWeight: FontWeight.w600),),
+                          ],
+                        ),
+                        
+                        Image.asset('assets/image/inviteFrnd.png',height: 200,width: double.infinity,)
+                      ],
+                    ),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
+                  ),
 
                   ServiceProviderWidget(),
 
