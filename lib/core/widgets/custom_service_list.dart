@@ -8,7 +8,8 @@ import 'custom_favorite_button.dart';
 import 'custom_headline.dart';
 
 class CustomServiceList extends StatelessWidget {
-   CustomServiceList({super.key});
+  final String headline;
+   CustomServiceList({super.key, required this.headline});
 
   final List<Map<String, String>> bannerData = [
     {
@@ -24,7 +25,7 @@ class CustomServiceList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomHeadline(headline: 'Most Popular Services',),
+        CustomHeadline(headline: headline,),
         SizedBox(
           height: 200,
           child: ListView.builder(

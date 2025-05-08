@@ -44,19 +44,23 @@ class ServiceCategoryWidget extends StatelessWidget {
 
 
         /// Services list
-        SizedBox(
+        Container(
           height: 150,
+          padding: EdgeInsets.symmetric(horizontal: 10, ),
           child: GridView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: _services.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 1/2
+              childAspectRatio: 1/2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10
             ),
             itemBuilder: (context, index) {
               return CustomContainer(
                 padding: EdgeInsets.all(5),
-                margin: EdgeInsets.all(5),
+                margin: EdgeInsets.zero,
+                backgroundColor: Colors.white,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceSubcategoryScreen(headline: _services[index],),)),
                 child: Row(
                   spacing: 5,

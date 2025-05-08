@@ -62,9 +62,10 @@ class ServiceListView extends StatelessWidget {
       itemCount: 8,
       itemBuilder: (context, index) {
         return CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: Colors.white,
           padding: EdgeInsets.zero,
+          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           height: 100,
           onTap: () => Navigator.push(
             context,
@@ -138,9 +139,10 @@ class VendorListView extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         return CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: Colors.white,
           padding: EdgeInsets.zero,
+          margin: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
           height: 100,
           child: Stack(
             children: [

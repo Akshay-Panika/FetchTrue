@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,14 @@ class AcademyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List _services = ['Certificate', '2 Min. Gyan', 'Live Webinars', 'Recorded Webinars', 'Documents',];
+
+    final List<Map<String, dynamic>> _services = [
+      {'title': 'Certificate', 'icon': Icons.verified},
+      {'title': '2 Min. Gyan', 'icon': Icons.lightbulb_outline},
+      {'title': 'Live Webinars', 'icon': Icons.wifi},
+      {'title': 'Recorded Webinars', 'icon': Icons.video_library},
+      {'title': 'Documents', 'icon': Icons.insert_drive_file},
+    ];
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Academy', showNotificationIcon: true,),
@@ -31,14 +39,14 @@ class AcademyScreen extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
                 itemCount: _services.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 1.11 / 1,
-                  // mainAxisExtent: 100,
                 ),
                 itemBuilder: (context, index) {
+                  final item = _services[index];
+
                   return CustomContainer(
                     border: true,
                     backgroundColor: Colors.white,
@@ -49,12 +57,17 @@ class AcademyScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: CustomContainer(
-                            margin: EdgeInsets.all(0),
+                            backgroundColor: Colors.transparent,
+                            child: Icon(item['icon'], size: 30,color: CustomColor.appColor,),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Text(_services[index].toString(), style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                          child: Text(
+                            item['title'],
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),

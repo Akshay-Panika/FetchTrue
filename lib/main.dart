@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // scaffoldBackgroundColor: Color.fromARGB(255, 242, 242, 247),
         scaffoldBackgroundColor: Colors.grey.shade100,
         // scaffoldBackgroundColor: Color(0xfff9fafb),
 

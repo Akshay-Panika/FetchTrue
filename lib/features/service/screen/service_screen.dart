@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/custom_height_banner.dart';
+import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_service_list.dart';
@@ -43,11 +43,11 @@ class _ServiceScreenState extends State<ServiceScreen> {
               SizedBox(height: 10,),
 
               /// Popular Services
-              CustomServiceList(),
+              CustomServiceList(headline: 'Popular Services',),
               SizedBox(height: 20,),
 
               /// Just for you
-              CustomHeightBanner(),
+              ServiceProviderWidget(),
               SizedBox(height: 20,),
 
             ],

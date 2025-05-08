@@ -2,7 +2,7 @@ import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/custom_height_banner.dart';
+import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_service_list.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -68,15 +68,11 @@ class SearchScreen extends StatelessWidget {
               const SizedBox(height: 20),
           
               /// Popular Services
-              CustomServiceList(),
+              CustomServiceList(headline: 'Popular Services',),
               SizedBox(height: 20,),
-          
-              /// Just for you
-              CustomHeightBanner(),
-              SizedBox(height: 20,),
-        
+
               /// Popular Services
-              CustomServiceList(),
+              CustomServiceList(headline: 'Requirement Services',),
               SizedBox(height: 20,),
             ],
           ),

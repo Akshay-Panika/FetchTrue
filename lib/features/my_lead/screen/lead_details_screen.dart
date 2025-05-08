@@ -46,13 +46,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 Column(
                   children: [
                     _buildBookingCard(),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 10,),
 
                     _customerDetails(),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 10,),
 
                     _buildPaymentStatus(),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 10,),
 
                     _buildBookingSummary()
                   ],

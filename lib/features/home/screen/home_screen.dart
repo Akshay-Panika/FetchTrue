@@ -1,15 +1,19 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:bizbooster2x/core/widgets/custom_search_bar.dart';
 import 'package:bizbooster2x/features/service/screen/service_screen.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
-import 'package:bizbooster2x/core/widgets/custom_height_banner.dart';
+import 'package:bizbooster2x/features/service_provider/widget/service_provider_widget.dart';
 import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
 import 'package:bizbooster2x/features/home/widget/leads_widget.dart';
 import 'package:bizbooster2x/features/search/screen/search_screen.dart';
 import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_highlight_service.dart';
+import '../../partner_review/widget/partner_review_widget.dart';
+import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
 import '../widget/profile_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -99,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// Profile card
             SliverToBoxAdapter(child: ProfileCardWidget(),),
-            SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
             /// Search bar
             SliverAppBar(
@@ -113,31 +116,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
             /// Data
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomBanner(),
-                    const SizedBox(height: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomBanner(),
+                  const SizedBox(height: 5),
 
-                    /// Leads
-                    LeadsWidget(),
-                    const SizedBox(height: 20),
+                  /// Leads
+                  LeadsWidget(),
+                  const SizedBox(height: 10),
 
-                    /// Services
-                    CustomHeadline(headline: 'Services', viewSeeAll: false,),
-                    GridView.builder(
+                  /// Services
+                  CustomHeadline(headline: 'Services', viewSeeAll: false,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _services.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         childAspectRatio: 1.11 / 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10
                       ),
                       itemBuilder: (context, index) {
                         return CustomContainer(
@@ -148,6 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             });
                           },
                           padding: EdgeInsets.zero,
+                          margin: EdgeInsets.zero,
+                          backgroundColor: Colors.white,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -172,17 +178,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
+                  ),
+                  const SizedBox(height: 20),
 
-                    CustomServiceList(),
-                    const SizedBox(height: 20),
+                  CustomServiceList(headline: 'Services for you',),
 
-                    CustomHeightBanner(),
-                    const SizedBox(height: 20),
+                  /// CustomHighlightService
+                  CustomHighlightService(),
 
-                    CustomServiceList(),
-                  ],
-                ),
+                  CustomServiceList(headline: 'Popular Services',),
+
+                  ServiceProviderWidget(),
+
+                  UnderstandingBizBoosterWidget(),
+
+                  PartnerReviewWidget(),
+                ],
               ),
             ),
           ],

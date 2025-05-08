@@ -27,7 +27,7 @@ class _CustomBannerState extends State<CustomBanner> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: 150,
+            height: 180,
             autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 1,

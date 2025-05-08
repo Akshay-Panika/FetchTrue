@@ -25,7 +25,7 @@ class MoreScreen extends StatelessWidget {
         child: Column(
           children: [
             _buildProfileHeader(context),
-            const SizedBox(height: 20),
+            const SizedBox(height: 5),
             _buildSection("Account", [
               _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
               _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
@@ -36,7 +36,7 @@ class MoreScreen extends StatelessWidget {
               _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
 
             ]),
-            const SizedBox(height: 16),
+            const SizedBox(height: 5),
             _buildSection("Preferences", [
               _buildTile(context, Icons.description_outlined, "About Us", () {}),
               _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {}),
@@ -44,7 +44,7 @@ class MoreScreen extends StatelessWidget {
               _buildTile(context, Icons.wb_incandescent_outlined, "Terms And Conditions", () {}),
               _buildTile(context, Icons.support_agent, "Help & Support", () {}),
             ]),
-            const SizedBox(height: 16),
+            const SizedBox(height: 5),
             _buildSection("Others", [
               _buildTile(context, Icons.logout, "Sign In", () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen(),));
@@ -60,6 +60,7 @@ class MoreScreen extends StatelessWidget {
 
   Widget _buildProfileHeader(BuildContext context) {
     return CustomContainer(
+      border: true,
      backgroundColor: Colors.white,
       padding: EdgeInsets.symmetric(vertical: 20,horizontal: 15),
       child: Row(

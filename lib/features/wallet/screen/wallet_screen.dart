@@ -14,6 +14,8 @@ class WalletScreen extends StatelessWidget {
     WalletTransaction(id: 'f1a7895c', leadId: '100303', amount: 49.90, dateTime: DateTime(2025, 5, 2, 11, 42)),
     WalletTransaction(id: '727c66b1', leadId: '100301', amount: 2499.90, dateTime: DateTime(2025, 5, 2, 10, 18)),
     WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
+    WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
+    WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
     WalletTransaction(id: '8137be06', leadId: '100305', amount: 119.90, dateTime: DateTime(2025, 5, 2, 18, 21)),
     WalletTransaction(id: '2d8a83dc', leadId: '100304', amount: 149.90, dateTime: DateTime(2025, 5, 2, 16, 14)),
     WalletTransaction(id: 'f1a7895c', leadId: '100303', amount: 49.90, dateTime: DateTime(2025, 5, 2, 11, 42)),
@@ -42,15 +44,15 @@ class WalletScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  SizedBox(height: 20,),
+                  SizedBox(height: 10,),
                   /// history
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('Wallet History',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                        Text('Wallet History',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600),),
                         Expanded(child: Divider()),
 
                         SizedBox(width: 15,),
@@ -157,10 +159,10 @@ class WalletTransactionTile extends StatelessWidget {
     final formattedDate = DateFormat('d MMM, y hh:mm a').format(transaction.dateTime);
 
     return CustomContainer(
-      border: true,
+      border: false,
       backgroundColor: Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: Row(
-        spacing: 5,
         children: [
           CustomContainer(
             margin: EdgeInsets.all(5),
@@ -175,7 +177,7 @@ class WalletTransactionTile extends StatelessWidget {
                   "Earning from lead #${transaction.leadId}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                 ),
-                Text(formattedDate, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                Text(formattedDate, style: TextStyle(color: Colors.grey.shade700, fontSize: 14)),
               ],
             ),
           ),

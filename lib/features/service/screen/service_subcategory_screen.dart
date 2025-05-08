@@ -55,11 +55,14 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
-                    Expanded(child: ListView.builder(
+                    SizedBox(
+                        width: 100,
+                        child: ListView.builder(
                       itemCount: 12,
                       itemBuilder: (context, index) {
                         return CustomContainer(
                           height: 100,
+                          border: true,
                           backgroundColor: Colors.white,
                           padding: EdgeInsets.all(0),
                           margin: EdgeInsets.all(5),
@@ -91,7 +94,7 @@ class ServiceSubcategoryScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return CustomContainer(
                               height: 180,
-
+                              border: true,
                               backgroundColor: Colors.white,
                               padding: EdgeInsets.all(0),
                               margin: EdgeInsets.all(5),

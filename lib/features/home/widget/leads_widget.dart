@@ -33,7 +33,7 @@ class LeadsWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.currency_rupee,color: CustomColor.appColor, size: 50,),
+                      Icon(Icons.wallet,color: CustomColor.appColor, size: 50,),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: RichText(
