@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
@@ -38,6 +39,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title: 'Provider',
         showBackButton: true,
@@ -49,37 +51,53 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
             SliverAppBar(
               toolbarHeight: 200,
               pinned: false,
-              floating: true,
+              floating: false,
               automaticallyImplyLeading: false,
               flexibleSpace: FlexibleSpaceBar(
-                background:CustomContainer(
-                  margin: EdgeInsets.zero,backgroundColor: Colors.grey.shade200,),
+                background:Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage(CustomImage.thumbnailImage),fit: BoxFit.cover)
+                  ),
+                 ),
               ),
             ),
 
-            SliverToBoxAdapter(child:  _ProfileCard(),),
-
-            SliverToBoxAdapter(child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-              labelColor: Colors.blueAccent,
-              unselectedLabelColor: Colors.black54,
-              indicatorColor: Colors.blueAccent,
-              tabAlignment: TabAlignment.start,
-              tabs: myTabs,
-            ),),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _StickyHeaderDelegate(
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(child: _ProfileCard()),
+                        TabBar(
+                          controller: _tabController,
+                          isScrollable: true,
+                          labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                          labelColor: Colors.blueAccent,
+                          unselectedLabelColor: Colors.black54,
+                          indicatorColor: Colors.blueAccent,
+                          tabAlignment: TabAlignment.start,
+                          tabs: myTabs,
+                        )
+                      ],
+                    ),
+                  )),
+            ),
 
 
             SliverToBoxAdapter(
               child:  SizedBox(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height,
                 child: TabBarView(
                 controller: _tabController,
                 children: [
                   ListView(
                     physics: NeverScrollableScrollPhysics(),
                     children: [
+                      SizedBox(height: 10,),
                       CustomServiceList(headline: 'Best Service'),
                       CustomServiceList(headline: 'Popular Service'),
                       CustomServiceList(headline: 'Service'),
@@ -87,31 +105,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
                     ],
                   ),
 
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text('Headline', style: TextStyle(fontSize: 16, color: CustomColor.appColor),),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 100,
-                          width: 200,
-                          child: ReviewBarGraph(
-                            ratings: {
-                              1: 2,
-                              2: 4,
-                              3: 5,
-                              4: 3,
-                              5: 6,
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  Reviews(),
 
                   Column(
                     children: [
@@ -130,7 +124,9 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2),
                     itemBuilder: (context, index) {
-                      return CustomContainer(backgroundColor: Colors.white,);
+                      return CustomContainer(border: true,
+                        backgroundColor: Colors.white,
+                      );
                     },)
                 ],
                             ),
@@ -145,7 +141,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
 
   Widget _ProfileCard() {
     return CustomContainer(
-      border: true,
+     // border: true,
       backgroundColor: Colors.white,
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
@@ -312,4 +308,172 @@ class _BarGraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+
+class Reviews extends StatelessWidget {
+  final List<Map<String, dynamic>> reviews = [
+    {
+      "name": "Anika Srishty",
+      "rating": 5.0,
+      "comment": "Your service is excellent",
+      "date": "23 Jan, 2023",
+    },
+    {
+      "name": "Anika Srishty",
+      "rating": 5.0,
+      "comment": "Great job",
+      "date": "23 Jan, 2023",
+    },
+    {
+      "name": "Anika Srishty",
+      "rating": 5.0,
+      "comment": "Great services",
+      "date": "23 Jan, 2023",
+    },
+    {
+      "name": "Anika Srishty",
+      "rating": 4.0,
+      "comment": "Excellent service",
+      "date": "23 Jan, 2023",
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ratingSummary(),
+        SizedBox(height: 20),
+        Padding(
+         padding: EdgeInsets.only(left: 15),
+          child: Text("4 Reviews", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+        ),
+        SizedBox(height: 10),
+        ...reviews.map((review) => reviewCard(review)).toList(),
+      ],
+    );
+  }
+
+  Widget ratingSummary() {
+    return CustomContainer(
+      backgroundColor: Colors.transparent,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber, size: 16,),
+              SizedBox(width: 4),
+              Text("4.75 / 5", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              Spacer(),
+              Text("4 Ratings", style: TextStyle(color: Colors.grey.shade700)),
+            ],
+          ),
+          SizedBox(height: 10),
+          ratingBar("Excellent", 3),
+          ratingBar("Good", 1),
+          ratingBar("Average", 0),
+          ratingBar("Below Average", 0),
+          ratingBar("Poor", 0),
+        ],
+      ),
+    );
+  }
+
+  Widget ratingBar(String label, int value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(width: 80, child: Text(label, style: TextStyle(fontSize: 14),)),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: value / 3,
+              backgroundColor: Colors.grey[300],
+              color: Colors.blue,
+              minHeight: 6,
+            ),
+          ),
+          SizedBox(width: 10),
+          Text(value.toString()),
+        ],
+      ),
+    );
+  }
+
+  Widget reviewCard(Map<String, dynamic> review) {
+    return CustomContainer(
+      backgroundColor: Colors.transparent,
+      margin: EdgeInsets.symmetric(vertical: 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage(CustomImage.nullImage), // Replace with your own image or use NetworkImage
+            radius: 20,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(review['name'], style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+                    Spacer(),
+                    Text(review['date'], style: TextStyle(color: Colors.grey.shade700,fontSize: 14)),
+                  ],
+                ),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Row(
+                      children: List.generate(5,
+                            (index) => Icon(
+                               index < review['rating'].round()
+                              ? Icons.star
+                              : Icons.star_border, size: 14, color: Colors.blue,),
+                      ),
+                    ),
+                    SizedBox(width: 5,),
+                    Text('4.0')
+                  ],
+                ),
+                SizedBox(height: 4),
+                Text(review['comment'], style: TextStyle(fontSize: 12),),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+/// Sticky TabBar Delegate
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _StickyHeaderDelegate({required this.child});
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+        color: Colors.white,
+        child: child);
+  }
+
+  @override
+  double get maxExtent => 180;
+
+  @override
+  double get minExtent => 180;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
