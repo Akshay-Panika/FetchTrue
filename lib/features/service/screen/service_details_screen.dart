@@ -2,10 +2,13 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'demo.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
   final String image;
@@ -19,9 +22,15 @@ class ServiceDetailsScreen extends StatefulWidget {
 class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
     with SingleTickerProviderStateMixin {
 
-  final List<Tab> myTabs = const [
+  final List<Tab> myServiceTabs = const [
     Tab(text: 'Overview'),
     Tab(text: 'Document'),
+    Tab(text: 'How it work'),
+    Tab(text: 'T&C'),
+    Tab(text: 'FAQs'),
+  ];
+  final List<Tab> myFranchiseTabs = const [
+    Tab(text: 'Overview'),
     Tab(text: 'How it work'),
     Tab(text: 'T&C'),
     Tab(text: 'FAQs'),
@@ -33,20 +42,24 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
 
   final List<Map<String, String>> bannerData = [
-    {
-      'image' : 'assets/image/thumbnail1.png'
-    },
-    {
-      'image' : 'assets/image/thumbnail2.png'
-    },
+    {'image': 'assets/image/thumbnail1.png'},
+    {'image': 'assets/image/thumbnail2.png'},
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: myTabs.length, vsync: this);
+    _updateTabController();
   }
 
+  void _updateTabController() {
+    if (mounted) {
+      _tabController = TabController(
+        length: _indexTap == 0 ? myServiceTabs.length : myFranchiseTabs.length,
+        vsync: this,
+      );
+    }
+  }
   @override
   void dispose() {
     _tabController.dispose();
@@ -56,8 +69,9 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: myTabs.length,
+      length: _indexTap ==0 ? myServiceTabs.length : myFranchiseTabs.length,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: CustomAppBar(
           title: 'Service Details',
           showBackButton: true,
@@ -118,28 +132,41 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
               /// Data
               SliverToBoxAdapter(child: _buildData()),
+
+              SliverToBoxAdapter(child:_buildBenefits(),),
               SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
-              SliverToBoxAdapter(child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: CustomToggleTabs(labels: ['Service details', 'Franchise details'], selectedIndex: _indexTap, onTap: (index) {
-                 setState(() {
-                   _indexTap = index;
-                 });
-                },),
-              ),),
+              /// Toggle Tabs
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: CustomToggleTabs(
+                    labels: ['Service details', 'Franchise details'],
+                    selectedIndex: _indexTap,
+                    onTap: (index) {
+                      setState(() {
+                        _indexTap = index;
+                        // _tabController.dispose();
+                        // _updateTabController();
+                      });
+                    },
+
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(child: SizedBox(height: 10,),),
 
               /// Tab Bar
               SliverPersistentHeader(
                 pinned: true,
                 delegate: _StickyHeaderDelegate(
                   child: Container(
-                    color: Colors.transparent,
+                    color: Colors.white,
                     child: TabBar(
                       controller: _tabController,
                       isScrollable: true,
                       labelPadding: EdgeInsets.symmetric(horizontal: 20),
-                      tabs: myTabs,
+                      tabs: _indexTap == 0 ? myServiceTabs : myFranchiseTabs,
                       tabAlignment: TabAlignment.start,
                       labelStyle: TextStyle(fontSize: 12),
                       labelColor: CustomColor.appColor,
@@ -150,76 +177,30 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                 ),
               ),
 
-              /// tap bar view
-              SliverList(
-                  delegate: SliverChildListDelegate(
-                      [
-                Text('''
-                       
-                            Why do we use it?
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            
-                            
-                            Where does it come from?
-                            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                            
-                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-                                                        
-                             ''',key: Key('Overview')),
-                Text('''
-                       
-                            Why do we use it?
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            
-                            
-                            Where does it come from?
-                            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                            
-                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-                                                        
-                             ''',key: Key('Document'),),
-                Text('''
-                       
-                            Why do we use it?
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            
-                            
-                            Where does it come from?
-                            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                            
-                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-                                                        
-                             ''',key:Key('How it work'),),
-                Text('''
-                            What is Lorem Ipsum?
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                            
-                            Why do we use it?
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            
-                            
-                            Where does it come from?
-                            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                            
-                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-                                                        
-                             ''', key: Key('T&C')),
-                Text('''
-                            What is Lorem Ipsum?
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                            
-                            Why do we use it?
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                            
-                            
-                            Where does it come from?
-                            Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                            
-                            The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-                                                        
-                             ''', key: Key('FAQs'),)
-              ]))
-
+              /// tap bar view scroll vertical
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height, // Adjust height based on content
+                  child: TabBarView(
+                    controller: _tabController,
+                    children:
+                    _indexTap == 0 ? [
+                      OverviewTab(),
+                      DocumentTab(),
+                      HowItWorksTab(),
+                      TermsTab(),
+                      FaqTab(),
+                    ]
+                    :[
+                      OverviewTab(),
+                      HowItWorksTab(),
+                      TermsTab(),
+                      FaqTab(),
+                    ],
+                  ),
+                ),
+              ),
 
             ],
           ),
@@ -260,6 +241,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                     height: double.infinity,
                     child: InkWell(
                       onTap: () {
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeDemo(),));
                         print('Shared to customer');
                       },
                       child: Row(
@@ -288,13 +270,60 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
   }
 }
 
-/// Data Section
-Widget _buildData() {
-  return Padding(
-    padding: const EdgeInsets.all(15),
+
+
+
+Widget _buildBenefits(){
+  List _benefits = [
+    'It is a long established fact that a reader will be distraoking at its layout',
+    'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
+    'It is a long established fact that a when looking at its layout',
+    'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
+    'It is a long established fact of a page when looking at its layout',
+  ];
+  return CustomContainer(
+    border: true,
+    backgroundColor: Colors.white,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+       Text('Benefits :', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
+
+        ListView.builder(
+          itemCount: _benefits.length,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+               Padding(
+                 padding: const EdgeInsets.only(top: 5.0),
+                 child: Icon(Icons.circle, color: CustomColor.iconColor.withOpacity(0.5), size: 13, ),
+               ),
+                SizedBox(width: 5,),
+                Expanded(child: Text(_benefits[index], style: TextStyle(fontSize: 14, color: Colors.grey.shade700),)),
+              ],
+            ),
+          );
+        },),
+        
+        
+      ],
+    ),
+  );
+}
+
+/// Data Section
+Widget _buildData() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 10,),
         Text('App Development',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
 
@@ -302,21 +331,12 @@ Widget _buildData() {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('⭐ 4.8 (120 Reviews)', style: TextStyle(fontSize: 14)),
             CustomAmountText(
-                amount: '150.00', fontSize: 16, fontWeight: FontWeight.w600),
+                amount: '150.00', fontSize: 14, fontWeight: FontWeight.w600),
+            Text('⭐ 4.8 (120 Reviews)', style: TextStyle(fontSize: 14)),
           ],
         ),
-        SizedBox(height: 16),
-
-        /// Description
-        Text('Description',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        SizedBox(height: 8),
-        Text(
-          'This is a sample service description. It explains the benefits and features of the service in detail.',
-          style: TextStyle(fontSize: 14),
-        ),
+       
       ],
     ),
   );
@@ -345,4 +365,73 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
+}
+// Overview Tab Widget
+class OverviewTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Text(
+        'all applicable rules and regulaticy, and dispute resolution. It is impor'*70,
+        style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
+}
+
+// Document Tab Widget
+class DocumentTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Text(
+        'all applicable rules and regulaticy, and dispute resolution. It is impor'*80,
+        style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
+}
+
+// How It Works Tab Widget
+class HowItWorksTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Text(
+        'all applicable rules and regulaticy, and dispute resolution. It is impor'*100,
+        style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
+}
+
+// Terms & Conditions Tab Widget
+class TermsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Text(
+        'all applicable rules and regulaticy, and dispute resolution. It is impor'*50,
+        style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
+}
+
+// FAQs Tab Widget
+class FaqTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Text(
+        'all applicable rules and regulaticy, and dispute resolution. It is impor'*50,
+        style: TextStyle(fontSize: 14),
+      ),
+    );
+  }
 }
