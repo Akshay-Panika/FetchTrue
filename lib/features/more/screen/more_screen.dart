@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/features/auth/screen/auth_screen.dart';
 import 'package:bizbooster2x/features/favorite/screen/favorite_screen.dart';
@@ -21,39 +22,50 @@ class MoreScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showNotificationIcon: true,),
       
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildProfileHeader(context),
-            const SizedBox(height: 5),
-            _buildSection("Account", [
-              _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
-              _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
-              _buildTile(context, Icons.leaderboard_outlined, "My Lead", () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),),
-              _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),),
-              _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(isBack: 'isBack',),)),),
-              _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
-              _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
+      body:  CustomScrollView(
+        slivers: [
 
-            ]),
-            const SizedBox(height: 5),
-            _buildSection("Preferences", [
-              _buildTile(context, Icons.description_outlined, "About Us", () {}),
-              _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {}),
-              _buildTile(context, Icons.settings_outlined, "Settings", () {}),
-              _buildTile(context, Icons.wb_incandescent_outlined, "Terms And Conditions", () {}),
-              _buildTile(context, Icons.support_agent, "Help & Support", () {}),
-            ]),
-            const SizedBox(height: 5),
-            _buildSection("Others", [
-              _buildTile(context, Icons.logout, "Sign In", () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen(),));
-              }),
-            ]),
+          SliverAppBar(
+            floating: true,
+            toolbarHeight: 120,
+            backgroundColor: CustomColor.canvasColor,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildProfileHeader(context),
+            ),
+          ),
 
-            SizedBox(height: 50)
-          ],
-        ),
+          SliverToBoxAdapter(
+            child:Column(
+              children: [
+                const SizedBox(height: 5),
+                _buildSection("Account", [
+                  _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
+                  _buildTile(context, Icons.workspace_premium, "5X Guarantee", () {}),
+                  _buildTile(context, Icons.leaderboard_outlined, "My Lead", () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),),
+                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),),
+                  _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(isBack: 'isBack',),)),),
+                  _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
+                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
+
+                ]),
+                const SizedBox(height: 5),
+                _buildSection("Preferences", [
+                  _buildTile(context, Icons.description_outlined, "About Us", () {}),
+                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {}),
+                  _buildTile(context, Icons.settings_outlined, "Settings", () {}),
+                  _buildTile(context, Icons.wb_incandescent_outlined, "Terms And Conditions", () {}),
+                  _buildTile(context, Icons.support_agent, "Help & Support", () {}),
+                ]),
+                const SizedBox(height: 5),
+                _buildSection("Others", [
+                  _buildTile(context, Icons.logout, "Sign In", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen(),));
+                  }),
+                ]),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

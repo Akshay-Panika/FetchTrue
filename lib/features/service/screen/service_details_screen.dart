@@ -26,15 +26,14 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
     with SingleTickerProviderStateMixin {
 
   final List<String> serviceTabs =  [
-    'Overview','Document','How it work','T&C','FAQs',];
+    'Overview','Highlight', 'Document','How it work','T&C','FAQs',];
 
   final  List<String>  franchiseTabs =  [
-    'How it work','T&C',];
+    'Overview','How it work','T&C',];
 
   int _indexTap = 0;
   int _current = 0;
   late TabController _tabController;
-
 
   final List<Map<String, String>> bannerData = [
     {'image': 'assets/image/thumbnail1.png'},
@@ -214,8 +213,10 @@ Widget _buildServiceSection({required List<String> serviceTabs}) {
   return Column(
     children: [
       CustomContainer(
+        border: true,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        backgroundColor: CustomColor.appColor.withOpacity(0.09),
+        backgroundColor: Colors.white,
+        // backgroundColor: CustomColor.appColor.withOpacity(0.09),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -258,8 +259,10 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
   return Column(
     children: [
       CustomContainer(
+        border: true,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        backgroundColor: CustomColor.appColor.withOpacity(0.09),
+        backgroundColor: CustomColor.whiteColor,
+        // backgroundColor: CustomColor.appColor.withOpacity(0.09),
         child: Row(
           children: [
             Expanded(
@@ -367,21 +370,23 @@ Widget _buildCard({required List<String> serviceTabs}){
           children: [
             0.height,
             Text(serviceTabs[index],style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
-            Text(
-              'all applicable rules and regulaticy,\nand dispute resolution. It is import'*10,
+
+            index == 1 ? SizedBox()
+            :Text(
+              'This is HTML Paragraph',
               style: TextStyle(fontSize: 14,color: CustomColor.descriptionColor),
             ),
 
-            index == 0 ?
-            CustomContainer(
-              height: 200,
-              assetsImg: CustomImage.thumbnailImage,
-            ):
-            index == 2 ?
-            CustomContainer(
-              height: 200,
-              assetsImg: CustomImage.thumbnailImage,
-            ):SizedBox(),
+            if(index == 0 || index == 3)
+              CustomContainer(height: 200,
+              assetsImg: CustomImage.thumbnailImage,),
+
+            if(index ==1)
+              CustomContainer(
+                border: true,
+                height: 600,
+                backgroundColor: CustomColor.whiteColor,
+              )
           ],
         ),
       );

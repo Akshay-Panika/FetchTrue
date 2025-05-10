@@ -5,6 +5,8 @@ import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/features/package/screen/package_benefits_screen.dart';
+import 'package:bizbooster2x/features/package/screen/scratch_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +28,7 @@ class _PackageScreenState extends State<PackageScreen> {
     Dimensions dimensions = Dimensions(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: CustomColor.canvasColor,
       appBar: const CustomAppBar(title: 'Packages', showBackButton: true),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -79,6 +81,7 @@ class _PackageScreenState extends State<PackageScreen> {
   Widget _buildPackageCard(BuildContext context, Dimensions dimensions) {
     return Container(
       decoration: BoxDecoration(
+        color: CustomColor.whiteColor,
         border: Border.all(color: Colors.grey, width: 0.2),
         borderRadius: BorderRadius.circular(dimensions.screenHeight * 0.01),
       ),
@@ -148,9 +151,9 @@ class _PackageScreenState extends State<PackageScreen> {
                 ),
                 CustomContainer(
                   border: true,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   backgroundColor: CustomColor.whiteColor,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(),)),
                   child: Text(
                     'Know Benefits',
                     style: textStyle14(context, color: CustomColor.appColor),
@@ -263,7 +266,7 @@ class _PackageScreenState extends State<PackageScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                         CustomAmountText(amount: '7,00,000'),
+                         CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500, decoration: false),
                         10.width,
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
@@ -282,15 +285,19 @@ class _PackageScreenState extends State<PackageScreen> {
               ),
             ],
           ),
-          10.height,
+          20.height,
+
           CustomContainer(
             border: true,
-            borderColor: CustomColor.whiteColor,
+            borderColor: CustomColor.appColor,
+            backgroundColor: CustomColor.whiteColor,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
             child: Text(
               'Check Your Discount Eligibility',
               style: textStyle12(context),
             ),
+
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ScratchScreen(),)),
           ),
         ],
       ),

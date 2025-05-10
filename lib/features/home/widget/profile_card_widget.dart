@@ -41,7 +41,7 @@ class ProfileCardWidget extends StatelessWidget {
               InkWell(
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   decoration: BoxDecoration(
                     border: Border.all(color: CustomColor.appColor, width: 0.5),
                     borderRadius: BorderRadius.circular(10)
@@ -50,7 +50,7 @@ class ProfileCardWidget extends StatelessWidget {
                     spacing: 5,
                     children: [
                       Icon(Icons.leaderboard_outlined, size: 16,),
-                      Text('Silver', style: TextStyle(fontWeight: FontWeight.w600),)
+                      Text('GP', style: TextStyle(fontWeight: FontWeight.w600),)
                     ],
                   ),
                 ),
