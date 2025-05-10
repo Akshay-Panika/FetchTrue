@@ -8,7 +8,6 @@ import '../../auth/screen/sign_in_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
-import '../bloc/bottom_nav_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

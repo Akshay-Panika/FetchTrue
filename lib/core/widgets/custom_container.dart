@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../costants/dimension.dart';
+
 class CustomContainer extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? backgroundColor;
@@ -13,9 +15,10 @@ class CustomContainer extends StatelessWidget {
   final Gradient? gradient;
   final bool border;
   final Color? borderColor;
+  final bool borderRadius;
   final Widget? child;
 
-  const CustomContainer({
+  const CustomContainer({super.key,
     this.onTap,
     this.backgroundColor,
     this.height,
@@ -26,11 +29,14 @@ class CustomContainer extends StatelessWidget {
     this.networkImg,
     this.gradient,
     this.border = false,
-    this.child, this.borderColor,
+    this.child,
+    this.borderColor,
+    this.borderRadius = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -40,7 +46,7 @@ class CustomContainer extends StatelessWidget {
         padding: padding ?? EdgeInsets.all(10),
         decoration: BoxDecoration(
          color:  (gradient == null)  ? backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: borderRadius ? BorderRadius.circular(dimensions.screenHeight*0.01) :null,
 
           border: border ? Border.all(color: borderColor ?? Colors.grey,width: 0.02):null,
           gradient: gradient,

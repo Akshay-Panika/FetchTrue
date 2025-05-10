@@ -71,7 +71,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Center(child: _ProfileCard()),
+                        Center(child: _profileCard()),
                         TabBar(
                           controller: _tabController,
                           isScrollable: true,
@@ -139,7 +139,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
     );
   }
 
-  Widget _ProfileCard() {
+  Widget _profileCard() {
     return CustomContainer(
      // border: true,
       backgroundColor: Colors.white,
@@ -156,7 +156,7 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen>
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.grey.shade200,
-                  child: const Icon(Icons.person, size: 30),
+                  backgroundImage: AssetImage(CustomImage.nullImage),
                 ),
                 const SizedBox(width: 12),
                 Expanded(

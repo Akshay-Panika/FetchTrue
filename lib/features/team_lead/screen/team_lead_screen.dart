@@ -1,4 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
@@ -62,32 +64,33 @@ class TeamBuildSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        50.height,
         /// Illustration or Banner
-        Expanded(
-          child: CustomContainer(
-            width: double.infinity,
-            margin: EdgeInsets.all(0),
-            assetsImg: 'assets/image/emptyBoard.jpg',
-            child: Column(
-              spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text(
-                  'Invite Friends & Businesses',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  'Share your referral code below and\ngrow your team.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.blue),
-                ),
-
-                SizedBox(height: 60,),
-              ],
-            ),
-          ),
+        CustomContainer(
+          height: 200,
+          width: double.infinity,
+          margin: EdgeInsets.all(0),
+          assetsImg: CustomImage.inviteImage,
         ),
-        const SizedBox(height: 30),
+        20.height,
+        Column(
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Text(
+              'Invite Friends & Businesses',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              'Share your referral code below and\ngrow your team.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.blue),
+            ),
+
+            SizedBox(height: 60,),
+          ],
+        ),
+
 
 
         /// Referral Code Box
@@ -100,7 +103,7 @@ class TeamBuildSection extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(width: 25,),
-              Expanded(
+              Expanded(flex: 2,
                 child: TextField(
                   readOnly: true,
                   decoration:  InputDecoration(
@@ -111,10 +114,12 @@ class TeamBuildSection extends StatelessWidget {
                   ),
                 ),
               ),
-              CustomContainer(
-                padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                backgroundColor: CustomColor.appColor.withOpacity(0.8),
-                child: Icon(Icons.copy,color: Colors.white,)
+              Expanded(
+                flex: 1,
+                child: CustomContainer(
+                  backgroundColor: CustomColor.appColor.withOpacity(0.8),
+                  child: Icon(Icons.copy,color: Colors.white,)
+                ),
               ),
             ],
           ),
@@ -149,8 +154,8 @@ class MyTeamSection extends StatelessWidget {
           borderPadding: EdgeInsets.all(10),
           child: Row(
             children: [
-               SizedBox(width: 20,),
-              Expanded(
+               SizedBox(width: 25,),
+              Expanded(flex: 2,
                 child: TextField(
                   style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),
 
@@ -162,10 +167,11 @@ class MyTeamSection extends StatelessWidget {
                   ),
                 ),
               ),
-              CustomContainer(
-                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                backgroundColor: CustomColor.appColor.withOpacity(0.8),
-                child: const Text('Update', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.white),),
+              Expanded(
+                child: CustomContainer(
+                  backgroundColor: CustomColor.appColor.withOpacity(0.8),
+                  child: Center(child: const Text('Update', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.white),)),
+                ),
               ),
             ],
           ),
