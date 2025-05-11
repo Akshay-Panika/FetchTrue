@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
-import '../../auth/screen/auth_screen.dart';
-import '../../auth/screen/sign_in_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
@@ -41,17 +39,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     AcademyScreen(),
     MoreScreen(),
   ];
+  List<int> _history = [0];
 
   @override
   Widget build(BuildContext context) {
     print('___________________________________ Build dashboard screen');
-    return WillPopScope(
-      onWillPop: () async {
-        if (_selectedIndex != 0) {
-          setState(() => _selectedIndex = 0);
-          return false;
+
+    return PopScope(
+      canPop: _history.length == 1,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          if (_history.length > 1) {
+            _history.removeLast();
+            setState(() => _selectedIndex = _history.last);
+          } else {
+            SystemNavigator.pop(); // app close
+          }
         }
-        return true;
       },
       child: Scaffold(
         body: IndexedStack(
@@ -62,8 +66,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
-            onTap: (index) => setState(() => _selectedIndex = index),
-            // onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+            onTap: (index) {
+              if (_selectedIndex != index) {
+                _history.add(index);
+                setState(() => _selectedIndex = index);
+              }
+            },
             type: BottomNavigationBarType.fixed,
             selectedItemColor: CustomColor.appColor,
             unselectedItemColor: CustomColor.iconColor,

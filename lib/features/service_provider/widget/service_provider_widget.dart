@@ -1,4 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
           const CustomHeadline(headline: 'Service Provider'),
 
           Padding(
-            padding: const EdgeInsets.only(left: 10.0, bottom: 20),
+            padding: const EdgeInsets.only(left: 10, bottom: 20),
             child: CarouselSlider.builder(
               itemCount: 3,
               itemBuilder: (context, index, realIndex) {
@@ -33,7 +35,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                   width: double.infinity,
                   backgroundColor: Colors.white,
                   margin: EdgeInsets.zero,
-                  padding: const EdgeInsets.only(left: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceProviderScreen(),)),
                   child: Stack(
                     children: [
@@ -46,7 +48,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                CircleAvatar(
                                 radius: 30,
                                 backgroundColor: Color(0xFFF2F2F2),
-                                child: Icon(Icons.person, color: CustomColor.appColor),
+                                backgroundImage: AssetImage(CustomImage.nullImage),
                               ),
                               const SizedBox(width: 10),
                               Column(
@@ -80,7 +82,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                               )
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          10.height,
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -116,6 +118,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                 enlargeCenterPage: true,
                 viewportFraction: 0.80,
                 padEnds: false,
+                // pageSnapping: false,
                 autoPlayInterval: const Duration(seconds: 5),
               ),
             ),

@@ -46,7 +46,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
               CustomServiceList(headline: 'Popular Services',),
               SizedBox(height: 20,),
 
-              /// Just for you
+              /// ServiceProviderWidget
               ServiceProviderWidget(),
               SizedBox(height: 20,),
 
