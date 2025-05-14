@@ -1,7 +1,7 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
 
-import 'features/dashboard/screen/dashboard_screen.dart';
+import 'feature/dashboard/screen/dashboard_screen.dart';
 
 
 void main() {

@@ -1,8 +1,7 @@
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../features/service/screen/service_details_screen.dart';
+import '../../feature/service/screen/service_details_screen.dart';
 import 'custom_container.dart';
 import 'custom_favorite_button.dart';
 import 'custom_headline.dart';

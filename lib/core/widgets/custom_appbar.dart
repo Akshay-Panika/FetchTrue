@@ -1,9 +1,10 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/features/favorite/screen/favorite_screen.dart';
-import 'package:bizbooster2x/features/notification/screen/notification_screen.dart';
-import 'package:bizbooster2x/features/search/screen/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../feature/favorite/screen/favorite_screen.dart';
+import '../../feature/notification/screen/notification_screen.dart';
+import '../../feature/search/screen/search_screen.dart';
 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
