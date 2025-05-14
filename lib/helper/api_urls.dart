@@ -4,9 +4,9 @@ class ApiUrls{
   static const String baseUrl = 'https://biz-booster.vercel.app/api/';
 
   /// Auth api
-  static const String signUp = '${baseUrl}auth_bloc/register';
-  static const String signIn = '${baseUrl}auth_bloc/login';
-  static const String verifyOtp = '${baseUrl}auth_bloc/verify-otp';
+  static const String signUp = '${baseUrl}auth/register';
+  static const String signIn = '${baseUrl}auth/login';
+  static const String verifyOtp = '${baseUrl}auth/verify-otp';
 
 
   /// Module Api

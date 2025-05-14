@@ -11,7 +11,8 @@ import '../../service/screen/service_details_screen.dart';
 
 class ModuleSubcategoryScreen extends StatelessWidget {
   final String headline;
-  ModuleSubcategoryScreen({super.key, required this.headline});
+  final String categoryId;
+  ModuleSubcategoryScreen({super.key, required this.headline, required this.categoryId});
 
 
   final SubCategoryService _subCategoryService = SubCategoryService();
@@ -55,8 +56,19 @@ class ModuleSubcategoryScreen extends StatelessWidget {
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(child: Text('No subcategories'));
               }
-        
-              final subcategory = snapshot.data!;
+
+              final allSubCategories = snapshot.data!;
+              final filteredCategories = allSubCategories.where((element) {
+                final subCategoryId = element.category.id;
+                print('SubCategory Id: $subCategoryId');
+                print(' SubCategory ID: $categoryId');
+                return subCategoryId == categoryId;
+              }).toList();
+
+              if (filteredCategories.isEmpty) {
+                return Center(child: Text('No subcategories'));
+              }
+
               return Column(
                 children: [
 
@@ -67,41 +79,46 @@ class ModuleSubcategoryScreen extends StatelessWidget {
                       // color: Colors.green,
                       width: double.infinity,
                       child: ListView.builder(
-                        itemCount: subcategory.length,
+                        itemCount: filteredCategories.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
         
-                          final sub = subcategory[index];
-        
+                          final sub = filteredCategories[index];
+
                           return Container(
                             width: 110,
 
                             // padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                CircleAvatar(
-                                  radius: 35,
+                                // CircleAvatar(
+                                //   radius: 35,
+                                //   backgroundColor: CustomColor.whiteColor,
+                                //   backgroundImage: NetworkImage(sub.image),
+                                // ),
+                                Expanded(child: CustomContainer(
+                                  networkImg: sub.image,
                                   backgroundColor: CustomColor.whiteColor,
-                                  backgroundImage: NetworkImage(sub.image),
-                                ),
-        
-                                5.height,
+                                )),
+
                                 Text(sub.name, style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                               ],
                             ),
                           );
                         },)),
-        
+                  10.height,
+
+
                   /// Filter
-                  CustomContainer(
-                    height: 40,
-                    borderRadius: false,
-                    backgroundColor: Colors.white,
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    padding: EdgeInsets.all(0),
-                    child: Row(
-                      children: [
-                        Expanded(
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomContainer(
+                          height: 40,
+                          borderRadius: false,
+                          backgroundColor: Colors.white,
+                          margin: EdgeInsets.zero,
+                          padding: EdgeInsets.zero,
                           child: ListView.builder(
                             itemCount: 5,
                             scrollDirection: Axis.horizontal,
@@ -114,16 +131,18 @@ class ModuleSubcategoryScreen extends StatelessWidget {
                                 width: 100,child: Center(child: Text("Headline")),);
                             },),
                         ),
-        
-                        CustomContainer(
-                            border: true,
-                            backgroundColor: CustomColor.whiteColor,
-                            margin: EdgeInsets.zero,
-                            child: Center(child: Icon(Icons.menu))),
-                      ],
-                    ),
+                      ),
+                      CustomContainer(
+                        height: 40,
+                          border: true,
+                          borderRadius: false,
+                          backgroundColor: Colors.white,
+                          margin: EdgeInsets.zero,
+                          // padding: EdgeInsets.zero,
+                          child: Center(child: Icon(Icons.menu))),
+                    ],
                   ),
-        
+
                   /// Services
                   Expanded(
                       child: ListView.builder(

@@ -1,5 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
@@ -56,7 +57,7 @@ class _SignInScreenState extends State<SignInScreen> {
             height: 150,
             backgroundColor: Colors.transparent,
             margin: EdgeInsets.all(0),
-            child: Image.asset(CustomImage.logInImage, color: CustomColor.appColor.withOpacity(0.3),),
+            child: Center(child: Icon(CupertinoIcons.person_crop_circle_badge_checkmark,size: 90,color: CustomColor.appColor,)),
           ),
           SizedBox(height: 50),
 

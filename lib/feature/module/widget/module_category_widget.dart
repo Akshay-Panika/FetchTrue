@@ -6,7 +6,6 @@ import 'package:bizbooster2x/model/module_category_model.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/api_helper.dart';
-import '../../service/screen/service_subcategory_screen.dart';
 import '../screen/module_subcategory_screen.dart';
 
 class ModuleCategoryWidget extends StatelessWidget {
@@ -76,6 +75,7 @@ class ModuleCategoryWidget extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => ModuleSubcategoryScreen(
                             headline: category.name,
+                            categoryId: category.id,
                           ),
                         ),
                       );

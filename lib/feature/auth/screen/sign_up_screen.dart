@@ -1,12 +1,13 @@
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/services.dart';
-
 import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../../../helper/api_helper.dart';
+import '../../../model/sign_up_model.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -26,7 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _raffController = TextEditingController();
 
   bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -35,27 +36,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _raffController.dispose();
     super.dispose();
   }
 
-  void _signUp() {
-    // Basic validation to check if fields are empty
+  void _signUp() async {
     if (_fullNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _phoneController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all the fields')));
-    } else if (_passwordController.text != _confirmPasswordController.text) {
-      // Check if password and confirm password match
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Passwords do not match')));
-    } else {
-      // Proceed with the sign-up process
-      print('Sign Up Successful!');
-      // You can add Firebase or any other backend sign-up logic here
+      showCustomSnackBar(context,'Please fill all the fields');
+      return;
     }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      showCustomSnackBar(context,'Passwords do not match');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final user = UserRegistrationModel(
+      fullName: _fullNameController.text.trim(),
+      email: _emailController.text.trim(),
+      mobileNumber: _phoneController.text.trim(),
+      password: _passwordController.text.trim(),
+      confirmPassword: _confirmPasswordController.text.trim(),
+      referredBy: _raffController.text.trim(),
+      isAgree: true,
+    );
+
+    await registerUser(context,user);
+
+    setState(() {
+      _isLoading = false;
+    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +100,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 100,
                     backgroundColor: Colors.transparent,
                     margin: EdgeInsets.all(0),
-                    child: Center(child: Image.asset(CustomImage.logInImage, color: CustomColor.appColor.withOpacity(0.3),)),
+                    // assetsImg: CustomImage.logInImage,
+                    child: Center(child: Icon(CupertinoIcons.person_crop_circle_badge_checkmark,size: 90,color: CustomColor.appColor,)),
                   ),
+                  
 
                   CustomTextField(
                     controller: _fullNameController,
@@ -113,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     controller: _confirmPasswordController,
                     labelText: 'Confirm Password',
                     icon: null,
-                    obscureText: _obscureConfirmPassword,
+                    obscureText: _obscurePassword,
                   ),
 
                   CustomTextField(
@@ -146,10 +169,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Column(
                 children: [
                   /// Sign Up Button
+                  !_isLoading?
                   CustomButton(
                     text:  'Sign Up',
                     onTap: _signUp,
-                  ),
+                  ):Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: CircularProgressIndicator(
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(CustomColor.appColor),
+                      ),
+                    ),
                   SizedBox(height: 20,),
 
                   /// Already have an account? Login Button
