@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class LeadsWidget extends StatelessWidget {
         CustomHeadline(headline: 'Leads',),
 
         SizedBox(
-          height: 100,
+          height: 120,
           child: Row(
             children: [
               Expanded(
@@ -29,24 +30,27 @@ class LeadsWidget extends StatelessWidget {
                   border: true,
                   backgroundColor: Colors.white,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.wallet,color: CustomColor.appColor, size: 50,),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                              WidgetSpan(child: Icon(Icons.currency_rupee, size: 14,)),
-                              TextSpan(text:'5000.00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                            ],
+                  child: Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: Image.asset('assets/lead/total_earning_icon.png',)),
+                        10.height,
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                                WidgetSpan(child: Icon(Icons.currency_rupee, size: 14,)),
+                                TextSpan(text:'5000.00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),),
               SizedBox(width: 10,),
@@ -57,13 +61,14 @@ class LeadsWidget extends StatelessWidget {
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
                      margin: EdgeInsets.only(right: 10),
+                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                      border: true,
                      backgroundColor: Colors.white,
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                        children: [
-                        Icon(Icons.bookmark_outline, color: CustomColor.appColor,),
+                         Image.asset('assets/lead/my_lead_icon.jpg',),
 
                          RichText(
                            text: TextSpan(
@@ -81,6 +86,7 @@ class LeadsWidget extends StatelessWidget {
                    Expanded(child:  CustomContainer(
                      width: double.infinity,
                      margin: EdgeInsets.only(right: 10),
+                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                      border: true,
                      backgroundColor: Colors.white,
                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
@@ -95,7 +101,7 @@ class LeadsWidget extends StatelessWidget {
                              ],
                            ),
                          ),
-                        Icon(Icons.leaderboard_outlined, color: CustomColor.appColor),
+                         Image.asset('assets/lead/team_lead_icon.jpg',),
                        ],
                      ),
                    ),),

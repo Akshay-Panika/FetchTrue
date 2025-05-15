@@ -1,82 +1,119 @@
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_container.dart';
 
 class WalletScreen extends StatelessWidget {
   final String? isBack;
   WalletScreen({this.isBack});
 
   final double balance = 21948.70;
-  final List<WalletTransaction> transactions = [
-    WalletTransaction(id: '8137be06', leadId: '100305', amount: 119.90, dateTime: DateTime(2025, 5, 2, 18, 21)),
-    WalletTransaction(id: '2d8a83dc', leadId: '100304', amount: 149.90, dateTime: DateTime(2025, 5, 2, 16, 14)),
-    WalletTransaction(id: 'f1a7895c', leadId: '100303', amount: 49.90, dateTime: DateTime(2025, 5, 2, 11, 42)),
-    WalletTransaction(id: '727c66b1', leadId: '100301', amount: 2499.90, dateTime: DateTime(2025, 5, 2, 10, 18)),
-    WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
-    WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
-    WalletTransaction(id: 'e721cb95', leadId: '100300', amount: 2499.90, dateTime: DateTime(2025, 4, 30, 18, 16)),
-    WalletTransaction(id: '8137be06', leadId: '100305', amount: 119.90, dateTime: DateTime(2025, 5, 2, 18, 21)),
-    WalletTransaction(id: '2d8a83dc', leadId: '100304', amount: 149.90, dateTime: DateTime(2025, 5, 2, 16, 14)),
-    WalletTransaction(id: 'f1a7895c', leadId: '100303', amount: 49.90, dateTime: DateTime(2025, 5, 2, 11, 42)),
+  final double totalEarning = 42150.00;
 
+  final List<WalletTransaction> transactions = [
+    WalletTransaction(
+      id: 'b96573e2',
+      leadId: '100305',
+      amount: 119.90,
+      isCredit: true,
+      dateTime: DateTime(2025, 5, 2, 18, 21),
+    ),
+    WalletTransaction(
+      id: 'c713421f',
+      leadId: '100449',
+      amount: 219.50,
+      isCredit: true,
+      dateTime: DateTime(2025, 5, 3, 11, 04),
+    ),
+    WalletTransaction(
+      id: '2f74e6ac',
+      leadId: '100305',
+      amount: 119.90,
+      isCredit: false,
+      dateTime: DateTime(2025, 5, 4, 16, 38),
+    ),
+    WalletTransaction(
+      id: 'b96573e2',
+      leadId: '100305',
+      amount: 119.90,
+      isCredit: true,
+      dateTime: DateTime(2025, 5, 2, 18, 21),
+    ),
+    WalletTransaction(
+      id: 'c713421f',
+      leadId: '100449',
+      amount: 219.50,
+      isCredit: true,
+      dateTime: DateTime(2025, 5, 3, 11, 04),
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'My Wallet', showBackButton: true, showSearchIcon: true,),
+      appBar: CustomAppBar(
+        title: 'My Wallet',
+        showBackButton: true,
+      ),
       body: SafeArea(
-        child:  CustomScrollView(
+        child: CustomScrollView(
           slivers: [
-
-            /// Wallet BalanceCard
             SliverAppBar(
               toolbarHeight: 200,
               pinned: false,
               floating: true,
               automaticallyImplyLeading: false,
               flexibleSpace: FlexibleSpaceBar(
-                background:  WalletBalanceCard(balance: balance, totalEarning: 00,),
+                background: WalletBalanceCard(
+                  balance: balance,
+                  totalEarning: totalEarning,
+                ),
               ),
             ),
 
             SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SizedBox(height: 10,),
-                  /// history
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    20.height,
+                    /// Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Wallet History',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600),),
-                        Expanded(child: Divider()),
-
-                        SizedBox(width: 15,),
-                        Row(
-                          spacing: 0,
-                          children: [
-                            Text('Filter',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
-                            Icon(Icons.arrow_drop_down,size: 30,)
-                          ],
+                        Text(
+                          'Wallet History',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
+
+                        IconButton(
+                          icon: Icon(Icons.filter_list),
+                         onPressed: () {
+                           _showFilterSheet(context);
+                         },
+                        ),
+
                       ],
                     ),
-                  ),
-                  ListView.builder(
-                    itemCount: transactions.length,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return WalletTransactionTile(transaction: transactions[index]);
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    /// Transactions List
+                    ListView.builder(
+                      itemCount: transactions.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return WalletTransactionTile(transaction: transactions[index]);
+                      },
+                    ),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -88,61 +125,65 @@ class WalletBalanceCard extends StatelessWidget {
   final double balance;
   final double totalEarning;
 
-  const WalletBalanceCard({required this.balance, required this.totalEarning});
+  const WalletBalanceCard({
+    required this.balance,
+    required this.totalEarning,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.white,
-            Colors.blueAccent.withOpacity(0.3)
-          ],
+          colors: [Colors.white, Colors.blue.shade100],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
+      padding: EdgeInsets.all(20),
       child: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Your Balance", style: TextStyle(color: Colors.black, fontSize: 16)),
-              const SizedBox(height: 10),
+              Text("Your Balance", style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8),
               Text(
                 "₹ ${balance.toStringAsFixed(2)}",
-                style: TextStyle(color: Colors.green, fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.green[700]),
               ),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  _buildActionBtn(label: "Add", icon:Icons.add),
+                  _buildActionBtn(label: "Add", icon: Icons.add, color: Colors.green),
                   const SizedBox(width: 12),
-                  _buildActionBtn(label: "Withdraw", icon:Icons.arrow_upward),
+                  _buildActionBtn(label: "Withdraw", icon: Icons.arrow_upward, color: Colors.red),
                 ],
               ),
             ],
           ),
-          
           Align(
-              alignment: Alignment.topRight,
-              child: Text('Total Earning ₹ $totalEarning', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w600, color: Colors.blueAccent),))
+            alignment: Alignment.topRight,
+            child: Text(
+              'Total Earning ₹ ${totalEarning.toStringAsFixed(2)}',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.blueAccent),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildActionBtn({String? label, IconData? icon, Color? color}) {
+  Widget _buildActionBtn({required String label, required IconData icon, required Color color}) {
     return CustomContainer(
-      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      backgroundColor: color,
       child: Row(
-        spacing: 5,
         children: [
-           Icon(icon, size: 18, color: Colors.white,),
-          Text(label!, style: TextStyle(fontWeight: FontWeight.w500,fontSize: 14, color: Colors.white)),
+          Icon(icon, size: 18, color: Colors.white),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -159,39 +200,46 @@ class WalletTransactionTile extends StatelessWidget {
     final formattedDate = DateFormat('d MMM, y hh:mm a').format(transaction.dateTime);
 
     return CustomContainer(
-      border: false,
       backgroundColor: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      margin: EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.all(12),
       child: Row(
         children: [
-          CustomContainer(
-            margin: EdgeInsets.all(5),
-            height: 50,width: 50,
-            child: Center(child: Text('₹', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),))
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: transaction.isCredit ? Colors.green[100] : Colors.red[100],
+            child: Icon(
+              transaction.isCredit ? Icons.call_received : Icons.call_made,
+              color: transaction.isCredit ? Colors.green : Colors.red,
+              size: 22,
+            ),
           ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Earning from lead #${transaction.leadId}",
+                  transaction.isCredit
+                      ? "Credited from lead #${transaction.leadId}"
+                      : "Debited for lead #${transaction.leadId}",
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                 ),
-                Text(formattedDate, style: TextStyle(color: Colors.grey.shade700, fontSize: 14)),
+                const SizedBox(height: 4),
+                Text(
+                  formattedDate,
+                  style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                ),
               ],
             ),
           ),
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SizedBox(),
-              Text(
-                "+ ₹ ${transaction.amount.toStringAsFixed(2)}",
-                style: TextStyle(color: Colors.green[700], fontWeight: FontWeight.bold, fontSize: 14),
-              ),
-            ],
+          Text(
+            "${transaction.isCredit ? "+" : "-"} ₹ ${transaction.amount.toStringAsFixed(2)}",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: transaction.isCredit ? Colors.green : Colors.red,
+            ),
           ),
         ],
       ),
@@ -203,12 +251,153 @@ class WalletTransaction {
   final String id;
   final String leadId;
   final double amount;
+  final bool isCredit;
   final DateTime dateTime;
 
-  WalletTransaction({
+  const WalletTransaction({
     required this.id,
     required this.leadId,
     required this.amount,
+    required this.isCredit,
     required this.dateTime,
   });
+}
+
+
+
+void _showFilterSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      final List<String> filterTabs = [
+        'Months',
+        'Categories',
+        'Instruments',
+        'Payment status',
+        'Payment types',
+      ];
+
+      final List<String> months = [
+        'May 2025',
+        'Apr 2025',
+        'Mar 2025',
+        'Feb 2025',
+        'Jan 2025',
+        'Dec 2024',
+        'Nov 2024',
+        'Oct 2024',
+        'Sept 2024',
+        'Aug 2024',
+        'Jul 2024',
+        'Jun 2024',
+        'May 2024',
+      ];
+
+      return StatefulBuilder(builder: (context, setState) {
+        int selectedTabIndex = 0;
+        Set<String> selectedMonths = {};
+
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.85,
+          child: Column(
+            children: [
+              // Header with "Filters" and "Clear All"
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Filters', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    TextButton(
+                      onPressed: () {
+                        setState(() => selectedMonths.clear());
+                      },
+                      child: Text('Clear All'),
+                    ),
+                  ],
+                ),
+              ),
+
+              Divider(height: 1),
+
+              Expanded(
+                child: Row(
+                  children: [
+                    // Left Tab Menu
+                    Container(
+                      width: 150,
+                      child: ListView.builder(
+                        itemCount: filterTabs.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              filterTabs[index],
+                              style: textStyle12(context,
+                                fontWeight: selectedTabIndex == index
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                            selected: selectedTabIndex == index,
+                            onTap: () => setState(() => selectedTabIndex = index),
+                          );
+                        },
+                      ),
+                    ),
+
+                    VerticalDivider(width: 1),
+
+                    // Right Filter Content
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ListView.builder(
+                          itemCount: months.length,
+                          itemBuilder: (context, index) {
+                            String month = months[index];
+                            bool isSelected = selectedMonths.contains(month);
+
+                            return CheckboxListTile(
+                              value: isSelected,
+                              onChanged: (val) {
+                                setState(() {
+                                  if (val == true) {
+                                    selectedMonths.add(month);
+                                  } else {
+                                    selectedMonths.remove(month);
+                                  }
+                                });
+                              },
+                              title: Text(month, style: textStyle12(context),),
+                              controlAffinity: ListTileControlAffinity.trailing,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Apply Button
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomButton(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                 text: 'Apply',
+                ),
+              ),
+              20.height
+            ],
+          ),
+        );
+      });
+    },
+  );
 }

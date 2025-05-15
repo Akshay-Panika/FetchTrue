@@ -42,7 +42,6 @@ Future<void> registerUser(BuildContext context,UserRegistrationModel user) async
 }
 
 
-
 /// Module
 class ModuleService {
   final Dio _dio = Dio();
