@@ -30,27 +30,25 @@ class LeadsWidget extends StatelessWidget {
                   border: true,
                   backgroundColor: Colors.white,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
-                  child: Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: Image.asset('assets/lead/total_earning_icon.png',)),
-                        10.height,
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                                WidgetSpan(child: Icon(Icons.currency_rupee, size: 14,)),
-                                TextSpan(text:'5000.00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                              ],
-                            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: Image.asset('assets/lead/total_earning_icon.png',)),
+                      10.height,
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text:'Total Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                              WidgetSpan(child: Icon(Icons.currency_rupee, size: 14,)),
+                              TextSpan(text:'5000.00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),),
               SizedBox(width: 10,),

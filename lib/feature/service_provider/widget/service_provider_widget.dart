@@ -1,6 +1,7 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -64,15 +65,16 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                                  Text('Type of service', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      const Icon(Icons.star, size: 14),
+                                      Icon(Icons.star, size: 14, color: CustomColor.descriptionColor,),
                                       const SizedBox(width: 4),
                                       Text(
                                         '4.5 (1)',
                                         style: TextStyle(
-                                          color: Colors.grey.shade700,
+                                          color: CustomColor.descriptionColor,
                                           fontSize: 14,
                                         ),
                                       ),

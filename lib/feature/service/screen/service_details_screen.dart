@@ -5,8 +5,6 @@ import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_headline.dart';
-import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -228,17 +226,17 @@ Widget _buildServiceSection({required List<String> serviceTabs}) {
                 Row(
                   children: [
                     CustomAmountText(
-                      amount: '150.00',
+                      amount: '350.00',
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey,
+                      isLineThrough: true
                     ),
                     SizedBox(width: 10),
                     CustomAmountText(
                       amount: '250.00',
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      decoration: false,
                     ),
                   ],
                 ),
@@ -291,7 +289,6 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
-                        decoration: false,
                       ),
                     ],
                   ),

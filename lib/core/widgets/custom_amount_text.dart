@@ -1,12 +1,29 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget CustomAmountText({String? amount, Color? color, double? fontSize, FontWeight? fontWeight, bool decoration = true}){
+Widget CustomAmountText({
+  required String amount,
+  Color? color,
+  double? fontSize,
+  FontWeight? fontWeight,
+  bool isLineThrough = false,
+}) {
   return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-       Icon(Icons.currency_rupee, size: fontSize?? 12, color: color?? Colors.black),
-      Text(amount!,style: TextStyle(fontSize: fontSize?? 12,color: color?? Colors.black, fontWeight: fontWeight ?? null, decoration: decoration == true? TextDecoration.lineThrough :null),),
+      Icon(
+        Icons.currency_rupee,
+        size: fontSize ?? 12,
+        color: color ?? Colors.black,
+      ),
+      Text(
+        amount,
+        style: TextStyle(
+          fontSize: fontSize ?? 12,
+          color: color ?? Colors.black,
+          fontWeight: fontWeight,
+          decoration: isLineThrough ? TextDecoration.lineThrough : TextDecoration.none,
+        ),
+      ),
     ],
   );
 }

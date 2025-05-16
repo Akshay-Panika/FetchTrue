@@ -17,8 +17,6 @@ class LeadDetailsScreen extends StatefulWidget {
 
 class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
-  int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,37 +26,16 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-           CustomToggleTabs(
-               labels: ['Details', 'Status'],
-               selectedIndex: _selectedIndex,
-               onTap: (index) {
-                 setState(() {
-                   _selectedIndex = index;
-                 });
-               },),
-            SizedBox(height: 20,),
+            _buildBookingCard(),
+            SizedBox(height: 10,),
 
+            _customerDetails(),
+            SizedBox(height: 10,),
 
-                Expanded(
-                child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _selectedIndex ==0 ?
-                Column(
-                  children: [
-                    _buildBookingCard(),
-                    SizedBox(height: 10,),
+            _buildPaymentStatus(),
+            SizedBox(height: 10,),
 
-                    _customerDetails(),
-                    SizedBox(height: 10,),
-
-                    _buildPaymentStatus(),
-                    SizedBox(height: 10,),
-
-                    _buildBookingSummary()
-                  ],
-                )
-                    :_buildStatus(),
-                )),
+            _buildBookingSummary()
           ],
         ),
       )),
@@ -234,42 +211,10 @@ Widget _buildRow({String? label, Color? textColor, String? value}){
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(label!, style: TextStyle(color: textColor ?? Colors.grey.shade700),),
-      CustomAmountText(amount: value, color: textColor ?? Colors.grey.shade700, fontSize: 14)
+      CustomAmountText(amount: value!, color: textColor ?? Colors.grey.shade700, fontSize: 14),
     ],
   );
 }
 
 
-Widget _buildStatus() {
-  return Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          Icons.info_outline,
-          color: Colors.grey.shade400,
-          size: 60,
-        ),
-        const SizedBox(height: 15),
-        Text(
-          'No Status Available',
-          style: TextStyle(
-            color: Colors.grey.shade800,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Status updates will appear here once available.',
-          style: TextStyle(
-            color: Colors.grey.shade500,
-            fontSize: 14,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
-}
 

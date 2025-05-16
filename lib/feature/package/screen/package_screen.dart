@@ -28,7 +28,7 @@ class _PackageScreenState extends State<PackageScreen> {
     Dimensions dimensions = Dimensions(context);
 
     return Scaffold(
-      // backgroundColor: CustomColor.canvasColor,
+       backgroundColor: CustomColor.whiteColor,
       appBar: const CustomAppBar(title: 'Packages', showBackButton: true),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -70,6 +70,8 @@ class _PackageScreenState extends State<PackageScreen> {
                   },
                 ),
               ),
+
+              10.height,
               _buildAssuranceSection(context),
             ],
           ),
@@ -110,7 +112,6 @@ class _PackageScreenState extends State<PackageScreen> {
                     Text('Growth Partner (GB)', style: textStyle12(context, color: CustomColor.appColor)),
                      CustomAmountText(
                       amount: '7,00,000',
-                      decoration: false,
                       fontWeight: FontWeight.w500,
                     ),
                   ],
@@ -237,7 +238,7 @@ class _PackageScreenState extends State<PackageScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Image.asset(CustomImage.nullImage, height: 100)),
+              Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
               Expanded(
                 flex: 2,
                 child: Column(
@@ -266,7 +267,7 @@ class _PackageScreenState extends State<PackageScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                         CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500, decoration: false),
+                         CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500,),
                         10.width,
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
