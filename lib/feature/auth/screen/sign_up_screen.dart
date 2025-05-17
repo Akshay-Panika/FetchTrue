@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_logo.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,13 +94,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
               20.height,
 
-                  CustomContainer(
-                    height: 100,
-                    backgroundColor: Colors.transparent,
-                    margin: EdgeInsets.all(0),
-                    // assetsImg: CustomImage.logInImage,
-                    child: Center(child: Icon(CupertinoIcons.person_crop_circle_badge_checkmark,size: 90,color: CustomColor.appColor,)),
-                  ),
+                  Center(child: Image.asset(CustomLogo.bizBooster, height: 80,)),
+                  50.height,
                   
 
                   CustomTextField(

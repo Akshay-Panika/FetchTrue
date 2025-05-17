@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 
+import '../../../core/costants/custom_logo.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 
@@ -47,15 +48,10 @@ class _SignInScreenState extends State<SignInScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: ListView(
         children: [
-         10.height,
+         30.height,
 
-          CustomContainer(
-            height: 150,
-            backgroundColor: Colors.transparent,
-            margin: EdgeInsets.all(0),
-            child: Center(child: Icon(CupertinoIcons.person_crop_circle_badge_checkmark,size: 90,color: CustomColor.appColor,)),
-          ),
-          SizedBox(height: 50),
+          Center(child: Image.asset(CustomLogo.bizBooster, height: 80,)),
+          50.height,
 
           CustomTextField(
             controller: _phoneController,

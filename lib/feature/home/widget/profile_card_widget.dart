@@ -14,7 +14,7 @@ class ProfileCardWidget extends StatelessWidget {
     return CustomContainer(
       margin: EdgeInsets.all(0),
       backgroundColor: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

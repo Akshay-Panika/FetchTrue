@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_logo.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/model/module_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -56,19 +57,26 @@ class _HomeScreenState extends State<HomeScreen> {
           titleWidget: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children:  [
-              Text(
-                _showServicePage ? _selectedModule!.name ?? '': "BizBooster2x",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
+              _showServicePage ?
+            Text(
+            _selectedModule!.name ,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ):
+              Image.asset(CustomLogo.bizBooster,height: 35,),
               // Text(_showServicePage ? '':"BizBooster2x", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,),),
               SizedBox(height: 2),
-              Text(
-                "Waidhan Singrauli Madhya Pradesh Pin- 486886",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Row(
+                children: [
+                  Icon(Icons.location_on_outlined,size: 14, color: CustomColor.appColor,),
+                  Text(
+                    "Waidhan Singrauli Madhya Pradesh Pin- 486886",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
