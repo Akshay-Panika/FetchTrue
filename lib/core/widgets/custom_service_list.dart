@@ -1,3 +1,6 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +29,7 @@ class CustomServiceList extends StatelessWidget {
       children: [
         CustomHeadline(headline: headline,),
         SizedBox(
-          height: 200,
+          height: 300,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: bannerData.length,
@@ -53,8 +56,9 @@ class CustomServiceList extends StatelessWidget {
                       ),
                     ),
 
+                    10.height,
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -76,6 +80,27 @@ class CustomServiceList extends StatelessWidget {
                              ),
                            ],
                          )
+                        ],
+                      ),
+                    ),
+
+                    CustomContainer(
+                     // backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Text('Keys', style: textStyle12(context),),
+                              Text('value'),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text('Keys', style: textStyle12(context),),
+                              Text('value'),
+                            ],
+                          ),
                         ],
                       ),
                     ),

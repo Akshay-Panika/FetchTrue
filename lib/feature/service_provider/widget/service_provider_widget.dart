@@ -42,7 +42,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Row(
                             children: [
@@ -85,24 +85,16 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                               )
                             ],
                           ),
-                          10.height,
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.location_on_outlined, size: 16),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  'Address: Waidhan, Singrauli, Madhya Pradesh - 486886',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
+
+                          Wrap(
+                               spacing: 10,
+                               runSpacing: 10,
+                              children: List.generate(4, (index) {
+                                return CustomContainer(
+                                  margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    child: Text('type of tag'));
+                              }),
                           ),
                         ],
                       ),
@@ -116,7 +108,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                 );
               },
               options: CarouselOptions(
-                height: 150,
+                height: 180,
                 autoPlay: true,
                 enlargeCenterPage: true,
                 viewportFraction: 0.80,

@@ -24,7 +24,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
     with SingleTickerProviderStateMixin {
 
   final List<String> serviceTabs =  [
-    'Benefits','Overview','Highlight', 'Document','How it work','T&C','FAQs',];
+    'Benefits','Overview','Highlight', 'Document','Why Choose BizBooster','How it work','T&C','FAQs',];
 
   final  List<String>  franchiseTabs =  [
     'Overview','How it work','T&C',];
@@ -374,14 +374,17 @@ Widget _buildCard({required List<String> serviceTabs}){
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
-      return CustomContainer(
+      return
+        CustomContainer(
         border: true,
         backgroundColor: Colors.white,
-        child: Column(
+        child:
+        index == 4 ?  _buildWCB(context):
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             0.height,
-            Text(serviceTabs[index],style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
+            Text(serviceTabs[index],style: textStyle14(context),),
 
            Text(
               'This is HTML Paragraph',
@@ -391,8 +394,55 @@ Widget _buildCard({required List<String> serviceTabs}){
           ],
         ),
       );
-    },);
+    },
+  );
 }
+
+Widget _buildWCB(BuildContext context){
+  return Column(
+     crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+        Text('Why Choose BizBooster', style: textStyle14(context),),
+
+        ListView.builder(
+          itemCount: 3,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+             return CustomContainer(
+               border: true,
+               height: 100,
+               margin: EdgeInsets.symmetric(horizontal: 0,vertical: 5),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Expanded(
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.start,
+                       children: [
+                         Text('Headline', style: textStyle14(context),),
+                         Text('Declaimer', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                       ],
+                     ),
+                   ),
+
+                   Expanded(
+                     child: CustomContainer(
+                       margin: EdgeInsets.zero,
+                       assetsImg: CustomImage.thumbnailImage,
+                     ),
+                   )
+                 ],
+               ),
+             );
+        },)
+    ],
+  );
+}
+
 
 /// Sticky TabBar Delegate
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
