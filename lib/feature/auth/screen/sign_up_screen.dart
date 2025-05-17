@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
@@ -90,11 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 spacing: 10,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20),
-                  Text(
-                    'Welcome!',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
+              20.height,
 
                   CustomContainer(
                     height: 100,

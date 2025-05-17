@@ -4,6 +4,7 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,7 +24,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
     with SingleTickerProviderStateMixin {
 
   final List<String> serviceTabs =  [
-    'Overview','Highlight', 'Document','How it work','T&C','FAQs',];
+    'Benefits','Overview','Highlight', 'Document','How it work','T&C','FAQs',];
 
   final  List<String>  franchiseTabs =  [
     'Overview','How it work','T&C',];
@@ -153,7 +154,66 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    print('Self Add tapped');
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      // ),
+                      builder: (context) {
+                        return SizedBox(
+                          height: 500,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: CustomColor.whiteColor,
+                                    child: Icon(Icons.close),),
+                                ),
+                              ),
+                             
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10),
+                                    ),
+                                    color: CustomColor.whiteColor
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Row(
+                                          children: [
+                                            CustomContainer(
+                                              height: 45,width: 45,
+                                              assetsImg: CustomImage.nullImage,),
+                                            20.width,
+                                            Expanded(child: CustomButton(text: 'Process To',))
+                                          ],
+                                        ),
+                                      ),
+                                                        
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +238,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                   height: double.infinity,
                   child: InkWell(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeDemo(),));
                       print('Shared to customer');
                     },
                     child: Row(
@@ -212,6 +271,7 @@ Widget _buildServiceSection({required List<String> serviceTabs}) {
       CustomContainer(
         border: true,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         backgroundColor: Colors.white,
         // backgroundColor: CustomColor.appColor.withOpacity(0.09),
         child: Column(
@@ -246,7 +306,6 @@ Widget _buildServiceSection({required List<String> serviceTabs}) {
           ],
         ),
       ),
-      _buildBenefits(),
       _buildCard(serviceTabs: serviceTabs),
     ],
   );
@@ -258,6 +317,7 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
       CustomContainer(
         border: true,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         backgroundColor: CustomColor.whiteColor,
         // backgroundColor: CustomColor.appColor.withOpacity(0.09),
         child: Row(
@@ -299,7 +359,6 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
           ],
         ),
       ),
-      _buildBenefits(),
       _buildCard(serviceTabs: serviceTabs),
     ],
   );
@@ -308,49 +367,6 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
 
 
 
-Widget _buildBenefits(){
-  List _benefits = [
-    'It is a long established fact that a reader will be distraoking at its layout',
-    'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
-    'It is a long established fact that a when looking at its layout',
-    'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
-    'It is a long established fact of a page when looking at its layout',
-  ];
-  return CustomContainer(
-    border: true,
-    backgroundColor: Colors.white,
-    margin: EdgeInsets.symmetric(horizontal: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-       Text('Benefits', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
-
-        ListView.builder(
-          itemCount: _benefits.length,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-               Padding(
-                 padding: const EdgeInsets.only(top: 5.0),
-                 child: Icon(Icons.circle, color: CustomColor.iconColor.withOpacity(0.5), size: 13, ),
-               ),
-                SizedBox(width: 5,),
-                Expanded(child: Text(_benefits[index], style: TextStyle(fontSize: 14, color:CustomColor.descriptionColor),)),
-              ],
-            ),
-          );
-        },),
-        
-        
-      ],
-    ),
-  );
-}
 
 Widget _buildCard({required List<String> serviceTabs}){
   return  ListView.builder(
@@ -367,22 +383,11 @@ Widget _buildCard({required List<String> serviceTabs}){
             0.height,
             Text(serviceTabs[index],style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
 
-            index == 1 ? SizedBox()
-            :Text(
+           Text(
               'This is HTML Paragraph',
               style: TextStyle(fontSize: 14,color: CustomColor.descriptionColor),
             ),
 
-            if(index == 0 || index == 3)
-              CustomContainer(height: 200,
-              assetsImg: CustomImage.thumbnailImage,),
-
-            if(index ==1)
-              CustomContainer(
-                border: true,
-                height: 600,
-                backgroundColor: CustomColor.whiteColor,
-              )
           ],
         ),
       );

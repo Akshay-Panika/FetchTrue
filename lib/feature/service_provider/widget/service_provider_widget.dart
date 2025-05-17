@@ -51,7 +51,8 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                 backgroundColor: Color(0xFFF2F2F2),
                                 backgroundImage: AssetImage(CustomImage.nullImage),
                               ),
-                              const SizedBox(width: 10),
+                               10.height,
+
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

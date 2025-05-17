@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_image.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,12 +47,7 @@ class _SignInScreenState extends State<SignInScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: ListView(
         children: [
-          SizedBox(height: 20),
-          Text(
-            'Welcome!',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: 20),
+         10.height,
 
           CustomContainer(
             height: 150,
