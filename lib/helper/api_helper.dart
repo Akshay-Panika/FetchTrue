@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/helper/api_urls.dart';
+import 'package:bizbooster2x/model/banner_model.dart';
 import 'package:bizbooster2x/model/module_category_model.dart';
 import 'package:bizbooster2x/model/module_subcategory_model.dart';
 import 'package:dio/dio.dart';
@@ -62,6 +63,7 @@ class ModuleService {
   }
 }
 
+///  Category Service
 class CategoryService {
   final Dio _dio = Dio();
 
@@ -81,6 +83,8 @@ class CategoryService {
   }
 }
 
+
+/// Sub Category Service
 class SubCategoryService {
   final Dio _dio = Dio();
 
@@ -99,3 +103,30 @@ class SubCategoryService {
     }
   }
 }
+
+/// Banner
+class BannerService {
+  static final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://biz-booster.vercel.app/api/', // Base URL ends with a slash
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
+
+  static Future<List<BannerModel>> fetchBanners() async {
+    try {
+      final response = await _dio.get('banner'); // Only 'banner', not 'banners'
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((item) => BannerModel.fromJson(item)).toList();
+      } else {
+        throw Exception('Server returned error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch banners: $e');
+    }
+  }
+}
+

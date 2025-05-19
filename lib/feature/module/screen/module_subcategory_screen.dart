@@ -59,7 +59,7 @@ class ModuleSubcategoryScreen extends StatelessWidget {
 
               final allSubCategories = snapshot.data!;
               final filteredCategories = allSubCategories.where((element) {
-                final subCategoryId = element.category.id;
+                final subCategoryId = element.category!.id;
                 print('SubCategory Id: $subCategoryId');
                 print(' SubCategory ID: $categoryId');
                 return subCategoryId == categoryId;

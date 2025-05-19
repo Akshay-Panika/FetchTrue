@@ -19,6 +19,7 @@ import '../../search/screen/search_screen.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
+import '../widget/home_banner_widget.dart';
 import '../widget/leads_widget.dart';
 import '../widget/profile_card_widget.dart';
 
@@ -110,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomBanner(),
+                HomeBannerWidget(),
+                // CustomBanner(),
                 const SizedBox(height: 5),
 
                 /// Leads

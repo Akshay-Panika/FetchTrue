@@ -22,8 +22,17 @@ class ModuleSubCategoryModel {
       category: Category.fromJson(json['category']),
     );
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'image': image,
+      'isDeleted': isDeleted,
+      'category': category.toJson(),
+    };
+  }
+}
 class Category {
   final String id;
   final String name;
@@ -44,5 +53,14 @@ class Category {
       module: json['module'],
       image: json['image'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'module': module,
+      'image': image,
+    };
   }
 }

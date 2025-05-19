@@ -1,9 +1,20 @@
+import 'package:bizbooster2x/feature/module/screen/module_category_screen.dart';
+import 'package:bizbooster2x/feature/module/screen/module_subcategory_screen.dart';
+import 'package:bizbooster2x/helper/api_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import '../../feature/service/screen/service_details_screen.dart';
+import '../../model/banner_model.dart';
 import 'custom_container.dart';
 
+
+
 class CustomBanner extends StatefulWidget {
-  const CustomBanner({super.key});
+  final List<BannerModel> bannerData;
+  final double height;
+  final void Function(BannerModel banner) onTap;
+
+  const CustomBanner({super.key, required this.bannerData, required this.height, required this.onTap});
 
   @override
   State<CustomBanner> createState() => _CustomBannerState();
@@ -12,23 +23,22 @@ class CustomBanner extends StatefulWidget {
 class _CustomBannerState extends State<CustomBanner> {
   int _current = 0;
 
-  final List<Map<String, String>> bannerData = [
-    {
-      'image' : 'assets/image/thumbnail1.png'
-    },
-    {
-      'image' : 'assets/image/thumbnail2.png'
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CarouselSlider(
+        CarouselSlider.builder(
+          itemCount: widget.bannerData.length,
+          itemBuilder: (context, index, realIndex) {
+            final banner = widget.bannerData[index];
+            return CustomContainer(
+              networkImg: banner.file,
+              onTap: () => widget.onTap.call(banner),
+            );
+          },
           options: CarouselOptions(
-            height: 180,
-            autoPlay: true,
+            height: widget.height,
+            autoPlay:  true,
             enlargeCenterPage: true,
             viewportFraction: 1,
             autoPlayInterval: const Duration(seconds: 4),
@@ -38,22 +48,13 @@ class _CustomBannerState extends State<CustomBanner> {
               });
             },
           ),
-          items: bannerData.map((data) {
-            return Builder(
-              builder: (BuildContext context) {
-                return CustomContainer(
-                  width: double.infinity,
-                  assetsImg: data['image'],
-                );
-              },
-            );
-          }).toList(),
         ),
 
-
+        /// 🔘 Dot indicators
+        if(widget.bannerData.length >1)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(bannerData.length, (index) {
+          children: List.generate(widget.bannerData.length, (index) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(horizontal: 3),

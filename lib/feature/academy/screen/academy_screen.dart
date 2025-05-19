@@ -26,7 +26,7 @@ class AcademyScreen extends StatelessWidget {
       body: Column(
         children: [
 
-          CustomBanner(),
+          // CustomBanner(),
           SizedBox(height: 20,),
 
 

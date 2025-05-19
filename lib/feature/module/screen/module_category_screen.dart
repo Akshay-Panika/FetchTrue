@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/feature/module/widget/module_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../search/screen/search_screen.dart';
+import '../widget/category_banner_widget.dart';
 
 class ModuleCategoryScreen extends StatefulWidget {
   final String? serviceName;
@@ -35,8 +37,8 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
             children: [
 
               /// banner
-              CustomBanner(),
-              SizedBox(height: 10,),
+              CategoryBannerWidget(),
+             10.height,
 
               /// Services
               ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
