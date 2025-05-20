@@ -74,8 +74,8 @@ class ModuleCategoryWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ModuleSubcategoryScreen(
-                            headline: category.name,
-                            categoryId: category.id,
+                            // headline: category.name,
+                            categoryId: category.id.toString(),
                           ),
                         ),
                       );

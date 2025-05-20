@@ -69,8 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   Icon(Icons.location_on_outlined,size: 14, color: CustomColor.appColor,),
-                  Text(
-                    "Waidhan Singrauli Madhya Pradesh Pin- 486886",
+                  Text("Waidhan Singrauli Madhya Pradesh Pin- 486886",
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey,

@@ -45,14 +45,11 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
       bannerData: banners,
       height: 180,
       onTap: (banner) {
-        if(banner.selectionType == 'category'){
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleCategoryScreen(
-          //   serviceName: banner.category?.name ?? '',
-          //    moduleId:   banner.category?.module ?? '',
-          // ),));
-        }
         if(banner.selectionType == 'subcategory'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(headline: banner.subcategory!.name, categoryId: banner.subcategory!.id ),));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
+            categoryId: banner.subcategory?.category ?? '',
+          ),
+          ));
         }
         if(banner.selectionType == 'service'){
           Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),));

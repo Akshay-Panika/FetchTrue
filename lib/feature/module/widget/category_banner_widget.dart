@@ -35,9 +35,15 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
   @override
   Widget build(BuildContext context) {
     if (banners.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: SizedBox());
     }
- return SizedBox();
-    // return CustomBanner(bannerData: banners, height: 180, onTap: (index,banner) {  },);
+
+    return CustomBanner(
+      bannerData: banners,
+      height: 180,
+      onTap: (banner) {
+
+      },
+    );
   }
 }

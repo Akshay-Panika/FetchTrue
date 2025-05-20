@@ -10,6 +10,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../widget/self_add_widget.dart';
+
 
 class ServiceDetailsScreen extends StatefulWidget {
   final String image;
@@ -138,6 +140,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                       : _buildFranchiseSection(serviceTabs: franchiseTabs),
                 ),
               ),
+              SliverToBoxAdapter(child: SizedBox(height: 50,),)
 
             ],
           ),
@@ -154,66 +157,52 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                      // ),
-                      builder: (context) {
-                        return SizedBox(
-                          height: 500,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                    showCustomBottomSheet(context,Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundColor: CustomColor.whiteColor,
-                                    child: Icon(Icons.close),),
-                                ),
-                              ),
-                             
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10),
-                                    ),
-                                    color: CustomColor.whiteColor
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Row(
-                                          children: [
-                                            CustomContainer(
-                                              height: 45,width: 45,
-                                              assetsImg: CustomImage.nullImage,),
-                                            20.width,
-                                            Expanded(child: CustomButton(text: 'Process To',))
-                                          ],
-                                        ),
-                                      ),
-                                                        
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              CircleAvatar(radius: 40,
+                                backgroundImage: AssetImage(CustomImage.nullImage),),
+                              10.height,
+                              Text('Available Providers', style: textStyle14(context),),
+                              Text('0 Provider available ', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
                             ],
                           ),
-                        );
-                      },
-                    );
+                          30.height,
+
+                          CustomContainer(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage),),
+                                    20.width,
+                                    Text('Let Bizbooster choose for you', style: textStyle14(context, color: CustomColor.appColor),),
+                                  ],
+                                ),
+
+                                Icon(CupertinoIcons.check_mark_circled, color: CustomColor.greenColor,)
+                              ],
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomButton(text: 'Conform',
+                            onTap: () {
+                              Navigator.pop(context);
+                            },),
+                          ),
+                          50.height,
+                        ],
+                      ),
+                    ));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -306,7 +295,7 @@ Widget _buildServiceSection({required List<String> serviceTabs}) {
           ],
         ),
       ),
-      _buildCard(serviceTabs: serviceTabs),
+      _buildServiceCard(serviceTabs: serviceTabs),
     ],
   );
 }
@@ -359,16 +348,13 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
           ],
         ),
       ),
-      _buildCard(serviceTabs: serviceTabs),
+      _buildFranchiseCard(serviceTabs: serviceTabs),
     ],
   );
 }
 
 
-
-
-
-Widget _buildCard({required List<String> serviceTabs}){
+Widget _buildServiceCard({required List<String> serviceTabs}){
   return  ListView.builder(
     itemCount: serviceTabs.length,
     shrinkWrap: true,
@@ -379,7 +365,12 @@ Widget _buildCard({required List<String> serviceTabs}){
         border: true,
         backgroundColor: Colors.white,
         child:
-        index == 4 ?  _buildWCB(context):
+        index == 4 ?
+        _buildWCB(context):
+        index == 2 ?
+        _buildHighlight(context):
+        index == 7 ?
+        _buildFAQs(context):
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -397,7 +388,36 @@ Widget _buildCard({required List<String> serviceTabs}){
     },
   );
 }
+Widget _buildFranchiseCard({required List<String> serviceTabs}){
+  return  ListView.builder(
+    itemCount: serviceTabs.length,
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) {
+      return
+        CustomContainer(
+        border: true,
+        backgroundColor: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            0.height,
+            Text(serviceTabs[index],style: textStyle14(context),),
 
+            Text(
+              'This is HTML Paragraph',
+              style: TextStyle(fontSize: 14,color: CustomColor.descriptionColor),
+            ),
+
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
+/// WCB
 Widget _buildWCB(BuildContext context){
   return Column(
      crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,6 +462,62 @@ Widget _buildWCB(BuildContext context){
     ],
   );
 }
+
+/// Highlight Section
+Widget _buildHighlight(BuildContext context){
+  return Column(
+     crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+        Text('Highlight', style: textStyle14(context),),
+
+       CustomContainer(
+         height: 100,
+         width: double.infinity,
+         margin: EdgeInsets.symmetric(horizontal: 0,vertical: 5),
+         child: Center(child: Text('Log Banner')),
+       )
+    ],
+  );
+}
+
+/// FAQs Section
+Widget _buildFAQs(BuildContext context) {
+  final List<Map<String, String>> faqData = [
+    {
+      'question': 'What is your return policy?',
+      'answer': 'You can return items within 30 days of purchase.'*3
+    },
+    {
+      'question': 'How can I track my order?',
+      'answer': 'Use the tracking ID sent to your registered email.'*2
+    },
+  ];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text('FAQs', style: textStyle14(context)),
+      ListView.builder(
+        itemCount: faqData.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return ExpansionTile(
+            shape: InputBorder.none,
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: EdgeInsets.zero,
+            title: Text(faqData[index]['question'] ?? '',
+                style: textStyle14(context)),
+            children: [
+              Text(faqData[index]['answer'] ?? ''),
+            ],
+          );
+        },
+      ),
+    ],
+  );
+}
+
 
 
 /// Sticky TabBar Delegate

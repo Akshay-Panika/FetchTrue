@@ -1,3 +1,5 @@
+import 'package:bizbooster2x/model/module_model.dart';
+
 class BannerModel {
   final String id;
   final String page;
@@ -5,6 +7,7 @@ class BannerModel {
   final String file;
   final Category? category;
   final SubCategory? subcategory;
+  final ModuleModel? module;
 
   BannerModel({
     required this.id,
@@ -13,6 +16,7 @@ class BannerModel {
     required this.file,
     this.category,
     this.subcategory,
+    this.module,
   });
 
   factory BannerModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +35,8 @@ class BannerModel {
           : (json['subcategory'] is String
           ? SubCategory(id: json['subcategory'], name: '') // only id available
           : SubCategory.fromJson(json['subcategory'])),
+       module: json['module'] != null ? ModuleModel.fromJson(json['module']) : null,
+
     );
   }
 
@@ -71,7 +77,7 @@ class SubCategory {
   final String name;
   final String? image;
   final bool? isDeleted;
-  final Category? category;
+  final String? category;
 
   SubCategory({
     required this.id,
@@ -93,7 +99,7 @@ class SubCategory {
       name: json['name'] ?? '',
       image: json['image'],
       isDeleted: json['isDeleted'],
-      category: categoryObj,
+      category: json['category'],
     );
   }
 }
