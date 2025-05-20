@@ -34,7 +34,6 @@ class ModuleCategoryWidget extends StatelessWidget {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-
             final allCategories = snapshot.data!;
             final filteredCategories = allCategories.where((category) {
               final moduleId = category.module?.id;
@@ -42,6 +41,10 @@ class ModuleCategoryWidget extends StatelessWidget {
               print('Module index ID: $moduleIndexId');
               return moduleId == moduleIndexId;
             }).toList();
+
+            if (snapshot.data!.isEmpty || filteredCategories.isEmpty) {
+              return Center(child: Text('No categories'));
+            }
 
             if (snapshot.hasData || snapshot.data!.isNotEmpty) {
               return Container(
@@ -94,10 +97,6 @@ class ModuleCategoryWidget extends StatelessWidget {
                   },
                 ),
               );
-            }
-
-            if (filteredCategories.isEmpty) {
-              return Center(child: Text('No categories'));
             }
 
             else{

@@ -25,9 +25,16 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
+        }
+        else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
+        }
+
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No Banner.'));
+        }
+
+        else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
           final banners = snapshot.data ?? [];
           return CustomBanner(
             bannerData: banners,
@@ -47,7 +54,7 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
           );
         }
         else{
-          return Center(child: Text('No modules found.'));
+          return Center(child: Text('No Banner.'));
         }
       },);
 

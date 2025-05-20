@@ -33,6 +33,9 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
           else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
+          else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No Banner.'));
+          }
           else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
             final banners = snapshot.data ?? [];
             return CustomBanner(
