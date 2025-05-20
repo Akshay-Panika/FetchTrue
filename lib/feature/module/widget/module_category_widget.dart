@@ -34,9 +34,6 @@ class ModuleCategoryWidget extends StatelessWidget {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
 
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No categories found'));
-            }
 
             final allCategories = snapshot.data!;
             final filteredCategories = allCategories.where((category) {
@@ -46,61 +43,66 @@ class ModuleCategoryWidget extends StatelessWidget {
               return moduleId == moduleIndexId;
             }).toList();
 
+            if (snapshot.hasData || snapshot.data!.isNotEmpty) {
+              return Container(
+                height: 150,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: filteredCategories.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1 / 2.5,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemBuilder: (context, index) {
+                    final category = filteredCategories[index];
+
+                    return CustomContainer(
+                      padding: EdgeInsets.zero,
+                      margin: EdgeInsets.zero,
+                      backgroundColor: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModuleSubcategoryScreen(
+                              // headline: category.name,
+                              categoryId: category.id,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          CustomContainer(
+                            width: 80,
+                            networkImg: category.image ?? '',margin: EdgeInsets.zero,),
+
+                          Expanded(
+                            child: Text(
+                              category.name ?? '',
+                              style: textStyle12(context),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          10.width,
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+
             if (filteredCategories.isEmpty) {
               return Center(child: Text('No categories'));
             }
 
-            return Container(
-              height: 150,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: filteredCategories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1 / 2.5,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemBuilder: (context, index) {
-                  final category = filteredCategories[index];
-
-                  return CustomContainer(
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
-                    backgroundColor: Colors.white,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ModuleSubcategoryScreen(
-                            // headline: category.name,
-                            categoryId: category.id.toString(),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        CustomContainer(
-                          width: 80,
-                          networkImg: category.image ?? '',margin: EdgeInsets.zero,),
-
-                        Expanded(
-                          child: Text(
-                            category.name ?? '',
-                            style: textStyle12(context),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        10.width,
-                      ],
-                    ),
-                  );
-                },
-              ),
-            );
-
+            else{
+              return Center(child: Text('No categories'));
+            }
           },
         ),
       ],

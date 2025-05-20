@@ -1,5 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/custom_logo.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/model/module_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -111,12 +112,11 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HomeBannerWidget(),
-                // CustomBanner(),
-                const SizedBox(height: 5),
+                5.height,
 
                 /// Leads
                 LeadsWidget(),
-                const SizedBox(height: 10),
+               10.height,
 
                 /// Services
                 CustomHeadline(headline: 'Services', viewSeeAll: false,),
@@ -176,10 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No modules found.'));
-                      }
-                      else{
+                      } else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
                         final modules = snapshot.data!;
                         return  Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -223,6 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         );
+                      }
+                      else{
+                        return Center(child: Text('No modules found.'));
                       }
                     },),
 

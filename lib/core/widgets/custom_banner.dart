@@ -38,7 +38,8 @@ class _CustomBannerState extends State<CustomBanner> {
           },
           options: CarouselOptions(
             height: widget.height,
-            autoPlay:  true,
+            scrollPhysics:  widget.bannerData.length >1 ? AlwaysScrollableScrollPhysics(): NeverScrollableScrollPhysics(),
+            autoPlay:  widget.bannerData.length >1 ?true :false,
             enlargeCenterPage: true,
             viewportFraction: 1,
             autoPlayInterval: const Duration(seconds: 4),
