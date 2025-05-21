@@ -6,11 +6,14 @@ import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../service_provider/screen/service_provider_screen.dart';
 import '../widget/self_add_widget.dart';
+import '../widget/service_review_widget.dart';
 
 
 class ServiceDetailsScreen extends StatefulWidget {
@@ -136,7 +139,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   child: _indexTap == 0
-                      ? _buildServiceSection(serviceTabs: serviceTabs)
+                      ? _buildServiceSection(context,serviceTabs: serviceTabs)
                       : _buildFranchiseSection(serviceTabs: franchiseTabs),
                 ),
               ),
@@ -173,7 +176,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                               Text('0 Provider available ', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
                             ],
                           ),
-                          30.height,
+                          10.height,
 
                           CustomContainer(
                             child: Row(
@@ -199,7 +202,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                               Navigator.pop(context);
                             },),
                           ),
-                          50.height,
+
                         ],
                       ),
                     ));
@@ -254,46 +257,80 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
   }
 }
 
-Widget _buildServiceSection({required List<String> serviceTabs}) {
+Widget _buildServiceSection(BuildContext context,{required List<String> serviceTabs}) {
   return Column(
     children: [
-      CustomContainer(
-        border: true,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        backgroundColor: Colors.white,
-        // backgroundColor: CustomColor.appColor.withOpacity(0.09),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('App Development', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            5.height,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      Stack(
+        children: [
+          CustomContainer(
+            border: true,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            backgroundColor: Colors.white,
+            // backgroundColor: CustomColor.appColor.withOpacity(0.09),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text('App Development', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomAmountText(
-                      amount: '350.00',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey,
-                      isLineThrough: true
+                    Row(
+                      children: [
+                        CustomAmountText(
+                          amount: '350.00',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                          isLineThrough: true
+                        ),
+                        SizedBox(width: 10),
+                        CustomAmountText(
+                          amount: '250.00',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    CustomAmountText(
-                      amount: '250.00',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceReviewWidget(),));
+                        },
+                        child: Text('⭐ 4.8 (120 Reviews)', style: TextStyle(fontSize: 14))),
                   ],
                 ),
-                Text('⭐ 4.8 (120 Reviews)', style: TextStyle(fontSize: 14)),
+                10.height,
+                CustomContainer(
+                  border: true,
+                  margin: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          Text('Keys', style: textStyle12(context),),
+                          Text('value'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('Keys', style: textStyle12(context),),
+                          Text('value'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+              top: 0,right: 10,
+              child: CustomFavoriteButton())
+        ],
       ),
       _buildServiceCard(serviceTabs: serviceTabs),
     ],

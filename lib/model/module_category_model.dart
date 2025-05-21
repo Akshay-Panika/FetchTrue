@@ -1,4 +1,4 @@
-import 'module_model.dart';
+import '../feature/home/model/module_model.dart';
 
 class ModuleCategoryModel {
   final String id;

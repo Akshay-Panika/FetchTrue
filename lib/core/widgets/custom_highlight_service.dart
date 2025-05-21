@@ -2,7 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../costants/custom_color.dart';
+import '../costants/text_style.dart';
 import 'custom_container.dart';
+import 'custom_favorite_button.dart';
 
 class CustomHighlightService extends StatefulWidget {
   const CustomHighlightService({super.key});
@@ -59,7 +62,28 @@ class _CustomHighlightServiceState extends State<CustomHighlightService> {
                           child: CustomContainer(
                             width: double.infinity,
                             assetsImg: data['image'],
+                            padding: EdgeInsets.zero,
                             margin: EdgeInsets.symmetric(vertical: 10),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomFavoriteButton(),
+                                  Container(
+                                      padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
+                                        ),
+                                        color: CustomColor.blackColor.withOpacity(0.3),
+                                      ),
+                                      child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
 

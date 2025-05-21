@@ -9,7 +9,7 @@ void showCustomBottomSheet(BuildContext context, Widget child) {
     backgroundColor: Colors.transparent,
     builder: (context) {
       return SizedBox(
-        height: 500,
+        height: 450,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

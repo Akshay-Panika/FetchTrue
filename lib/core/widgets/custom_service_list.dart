@@ -15,6 +15,9 @@ class CustomServiceList extends StatelessWidget {
 
   final List<Map<String, String>> bannerData = [
     {
+      'image' : 'assets/image/thumbnail2.png'
+    },
+    {
       'image' : 'assets/image/thumbnail1.png'
     },
     {
@@ -29,7 +32,7 @@ class CustomServiceList extends StatelessWidget {
       children: [
         CustomHeadline(headline: headline,),
         SizedBox(
-          height: 300,
+          height: 250,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: bannerData.length,
@@ -51,7 +54,23 @@ class CustomServiceList extends StatelessWidget {
                         assetsImg: '${bannerData[index]['image']}',
                         child: Align(
                             alignment: Alignment.topRight,
-                            child: CustomFavoriteButton(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomFavoriteButton(),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                      ),
+                                      color: CustomColor.blackColor.withOpacity(0.3),
+                                    ),
+                                    child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                              ],
+                            ),
                         ),
                       ),
                     ),
@@ -62,48 +81,49 @@ class CustomServiceList extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Service Name', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                          Text('Service Name : Akshay Panika', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
                          Row(
                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                            children: [
                              Row(
                                children: [
-                                 Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 CustomAmountText(amount: '100'),
+                                 Text('Start from ', style: textStyle12(context),),
+                                 CustomAmountText(amount: '100', fontWeight: FontWeight.w500),
                                ],
                              ),
                              Row(
                                children: [
-                                 Text('Earn up to ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                 CustomAmountText(amount: '50'),
+                                 Text('Earn up to ', style: textStyle12(context),),
+                                 CustomAmountText(amount: '50', fontWeight: FontWeight.w500),
                                ],
                              ),
                            ],
-                         )
+                         ),
+                          // 5.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('Keys :', style: textStyle12(context),),
+                                  5.width,
+                                  Text('value',style: textStyle12(context),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('Keys :', style: textStyle12(context),),
+                                  5.width,
+                                  Text('value',style: textStyle12(context),),
+                                ],
+                              ),
+                            ],
+                          ),
+                          10.height,
                         ],
                       ),
                     ),
 
-                    CustomContainer(
-                     // backgroundColor: CustomColor.appColor.withOpacity(0.1),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Text('Keys', style: textStyle12(context),),
-                              Text('value'),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text('Keys', style: textStyle12(context),),
-                              Text('value'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               );

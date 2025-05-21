@@ -1,11 +1,11 @@
 import 'package:bizbooster2x/helper/api_urls.dart';
-import 'package:bizbooster2x/model/banner_model.dart';
+import 'package:bizbooster2x/feature/home/model/banner_model.dart';
 import 'package:bizbooster2x/model/module_category_model.dart';
 import 'package:bizbooster2x/model/module_subcategory_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import '../core/widgets/custom_snackbar.dart';
-import '../model/module_model.dart';
+import '../feature/home/model/module_model.dart';
 import '../model/sign_up_model.dart';
 
 
@@ -39,27 +39,6 @@ Future<void> registerUser(BuildContext context,UserRegistrationModel user) async
     }
   } catch (e) {
     print('Unknown Error: $e');
-  }
-}
-
-
-/// Module
-class ModuleService {
-  final Dio _dio = Dio();
-
-  Future<List<ModuleModel>> fetchModules() async {
-    try {
-      final response = await _dio.get(ApiUrls.modules);
-
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'];
-        return data.map((json) => ModuleModel.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load modules: ${response.statusMessage}');
-      }
-    } catch (e) {
-      throw Exception('API Error: $e');
-    }
   }
 }
 
@@ -106,17 +85,11 @@ class SubCategoryService {
 
 /// Banner
 class BannerService {
-  static final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://biz-booster.vercel.app/api/', // Base URL ends with a slash
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ),
-  );
+  static final Dio _dio = Dio();
 
   static Future<List<BannerModel>> fetchBanners() async {
     try {
-      final response = await _dio.get('banner'); // Only 'banner', not 'banners'
+      final response = await _dio.get('https://biz-booster.vercel.app/api/banner');
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;

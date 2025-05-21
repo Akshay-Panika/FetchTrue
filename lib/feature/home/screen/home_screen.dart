@@ -2,92 +2,105 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/custom_logo.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/model/module_model.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:bizbooster2x/feature/home/bloc/module/module_state.dart';
+import 'package:bizbooster2x/feature/home/model/module_model.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:bizbooster2x/core/widgets/custom_search_bar.dart';
-import 'package:bizbooster2x/core/widgets/custom_banner.dart';
 import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
-import '../../../helper/api_helper.dart';
 import '../../module/screen/module_category_screen.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
+import '../bloc/module/module_bloc.dart';
+import '../bloc/module/module_event.dart';
+import '../repository/module_service.dart';
 import '../widget/home_banner_widget.dart';
 import '../widget/leads_widget.dart';
+import '../widget/module_shimmer_grid_widget.dart';
 import '../widget/profile_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String moduleName;
+  final String moduleId;
+  final Function(bool, String,String ) onToggle;
+  const HomeScreen({super.key, required this.onToggle, required this.moduleName, required this.moduleId});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _showServicePage = false;
-  int _selectedServiceIndex = 0;
-  ModuleModel? _selectedModule;
 
-  final ModuleService moduleService = ModuleService();
+  // final ModuleService moduleService = ModuleService();
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: CustomAppBar(
-          leading: _showServicePage ? Padding(
-            padding: const EdgeInsets.only(left: 15.0),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _showServicePage = false;
-                  _selectedServiceIndex = 0;
-                });
-              },
-              child:  Icon(Icons.dashboard, size: 25, color: CustomColor.appColor,),),
-          ) : null,
-        leadingWidth: !_showServicePage ?0:40,
+      // appBar: CustomAppBar(
+      //     leading: _showServicePage ? Padding(
+      //       padding: const EdgeInsets.only(left: 15.0),
+      //       child: InkWell(
+      //         onTap: () {
+      //           setState(() {
+      //             _showServicePage = false;
+      //             _selectedServiceIndex = 0;
+      //           });
+      //         },
+      //         child:  Icon(Icons.dashboard, size: 25, color: CustomColor.appColor,),),
+      //     ) : null,
+      //   leadingWidth: !_showServicePage ?0:40,
+      //
+      //     titleWidget: Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children:  [
+      //         _showServicePage ?
+      //       Text(
+      //       _selectedModule!.name ,
+      //       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      //     ):
+      //         Image.asset(CustomLogo.bizBooster,height: 35,),
+      //         // Text(_showServicePage ? '':"BizBooster2x", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,),),
+      //         SizedBox(height: 2),
+      //         Row(
+      //           children: [
+      //             Icon(Icons.location_on_outlined,size: 14, color: CustomColor.appColor,),
+      //             Text("Waidhan Singrauli Madhya Pradesh Pin- 486886",
+      //               style: TextStyle(
+      //                 fontSize: 12,
+      //                 color: Colors.grey,
+      //                 overflow: TextOverflow.ellipsis,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //   showNotificationIcon: true,
+      //   //showFavoriteIcon: true,
+      // ),
 
-          titleWidget: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:  [
-              _showServicePage ?
-            Text(
-            _selectedModule!.name ,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ):
-              Image.asset(CustomLogo.bizBooster,height: 35,),
-              // Text(_showServicePage ? '':"BizBooster2x", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,),),
-              SizedBox(height: 2),
-              Row(
-                children: [
-                  Icon(Icons.location_on_outlined,size: 14, color: CustomColor.appColor,),
-                  Text("Waidhan Singrauli Madhya Pradesh Pin- 486886",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      appBar: CustomAppBar(
         showNotificationIcon: true,
-        //showFavoriteIcon: true,
+        titleWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('BizBooster2x', style: textStyle16(context, color: CustomColor.appColor),),
+            Text(
+              "Waidhan Singrauli Madhya Pradesh Pin- 486886",
+              style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          ],
+        ),
       ),
 
-      body: _showServicePage
-          ? ModuleCategoryScreen(moduleId: _selectedModule!.id??'',)
-          : CustomScrollView(
+      body: CustomScrollView(
           slivers: [
 
           /// Profile card
@@ -169,62 +182,124 @@ class _HomeScreenState extends State<HomeScreen> {
                 //   ),
                 // ),
 
-                FutureBuilder(
-                    future: moduleService.fetchModules(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
-                        final modules = snapshot.data!;
-                        return  Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: GridView.builder(
-                            itemCount: modules.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                childAspectRatio: 1.11 / 1,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10
-                            ),
-                            itemBuilder: (context, index) {
-                              final module = modules[index];
-                              return CustomContainer(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedServiceIndex = index;
-                                    _selectedModule = module;
-                                    _showServicePage = true;
-                                  });
-                                },
-                                // padding: EdgeInsets.zero,
-                                margin: EdgeInsets.zero,
-                                backgroundColor: Colors.white,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(child: CustomContainer(
-                                      backgroundColor: Colors.transparent,
-                                      networkImg: module.image,
-                                      padding: EdgeInsets.zero,
-                                      margin: EdgeInsets.zero,
-                                    )),
-                                    Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }
-                      else{
-                        return Center(child: Text('No modules found.'));
-                      }
-                    },),
+
+                BlocProvider(
+                  create: (_) => ModuleBloc(ModuleService())..add(GetModule()),
+                 child:  BlocBuilder<ModuleBloc, ModuleState>(
+                   builder: (context, state) {
+                     if (state is ModuleLoading) {
+                       return ModuleShimmerGrid();
+                     }
+                     else if(state is ModuleLoaded){
+                       final modules = state.moduleModel;
+                       if (modules.isEmpty) {
+                         return const Center(child: Text('No modules found.'));
+                       }
+                       return  Padding(
+                         padding: const EdgeInsets.symmetric(horizontal: 10),
+                         child: GridView.builder(
+                           itemCount: modules.length,
+                           shrinkWrap: true,
+                           physics: const NeverScrollableScrollPhysics(),
+                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                               crossAxisCount: 3,
+                               childAspectRatio: 1.11 / 1,
+                               crossAxisSpacing: 10,
+                               mainAxisSpacing: 10
+                           ),
+                           itemBuilder: (context, index) {
+                             final module = modules[index];
+                             return CustomContainer(
+                               onTap: () {
+                                 setState(() {
+                                   widget.onToggle(false, module.name, module.id);
+                                 });
+                               },
+                               // padding: EdgeInsets.zero,
+                               margin: EdgeInsets.zero,
+                               backgroundColor: Colors.white,
+                               child: Column(
+                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                 crossAxisAlignment: CrossAxisAlignment.center,
+                                 children: [
+                                   Expanded(child: CustomContainer(
+                                     backgroundColor: Colors.transparent,
+                                     networkImg: module.image,
+                                     padding: EdgeInsets.zero,
+                                     margin: EdgeInsets.zero,
+                                   )),
+                                   Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
+                                 ],
+                               ),
+                             );
+                           },
+                         ),
+                       );
+                     }
+
+                     else if (state is ModuleError) {
+                       return Center(child: Text(state.errorMessage));
+                     }
+                     return const SizedBox.shrink();
+                   },
+                 ),
+                ),
+                // FutureBuilder<List<ModuleModel>>(
+                //     future: moduleService.fetchModules(),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState == ConnectionState.waiting) {
+                //         return ModuleShimmerGrid();
+                //       } else if (snapshot.hasError) {
+                //         return Center(child: Text('Error: ${snapshot.error}'));
+                //       } else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
+                //         final modules = snapshot.data!;
+                //         return  Padding(
+                //           padding: const EdgeInsets.symmetric(horizontal: 10),
+                //           child: GridView.builder(
+                //             itemCount: modules.length,
+                //             shrinkWrap: true,
+                //             physics: const NeverScrollableScrollPhysics(),
+                //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                //                 crossAxisCount: 3,
+                //                 childAspectRatio: 1.11 / 1,
+                //                 crossAxisSpacing: 10,
+                //                 mainAxisSpacing: 10
+                //             ),
+                //             itemBuilder: (context, index) {
+                //               final module = modules[index];
+                //               return CustomContainer(
+                //                 onTap: () {
+                //                   setState(() {
+                //                     _selectedServiceIndex = index;
+                //                     _selectedModule = module;
+                //                     _showServicePage = true;
+                //                   });
+                //                 },
+                //                 // padding: EdgeInsets.zero,
+                //                 margin: EdgeInsets.zero,
+                //                 backgroundColor: Colors.white,
+                //                 child: Column(
+                //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //                   crossAxisAlignment: CrossAxisAlignment.center,
+                //                   children: [
+                //                     Expanded(child: CustomContainer(
+                //                       backgroundColor: Colors.transparent,
+                //                       networkImg: module.image,
+                //                       padding: EdgeInsets.zero,
+                //                       margin: EdgeInsets.zero,
+                //                     )),
+                //                     Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
+                //                   ],
+                //                 ),
+                //               );
+                //             },
+                //           ),
+                //         );
+                //       }
+                //       else{
+                //         return Center(child: Text('No modules found.'));
+                //       }
+                //     },),
 
                 const SizedBox(height: 20),
 

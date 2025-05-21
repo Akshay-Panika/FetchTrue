@@ -55,6 +55,7 @@ class MoreScreen extends StatelessWidget {
                   _buildTile(context, Icons.settings_outlined, "Settings", () {}),
                   _buildTile(context, Icons.wb_incandescent_outlined, "Terms And Conditions", () {}),
                   _buildTile(context, Icons.support_agent, "Help & Support", () {}),
+                  _buildTile(context, Icons.delete_outline, "Delete Account", () {}),
                 ]),
                 const SizedBox(height: 5),
                 _buildSection("Others", [

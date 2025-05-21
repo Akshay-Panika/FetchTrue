@@ -1,7 +1,10 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/feature/module/widget/module_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_banner.dart';
@@ -10,9 +13,10 @@ import '../../search/screen/search_screen.dart';
 import '../widget/category_banner_widget.dart';
 
 class ModuleCategoryScreen extends StatefulWidget {
-  final String? serviceName;
+  final String? moduleName;
   final String moduleId;
-  const ModuleCategoryScreen({super.key, this.serviceName, required this.moduleId});
+  final Function(bool) onToggle;
+  const ModuleCategoryScreen({super.key, this.moduleName, required this.moduleId, required this.onToggle});
 
   @override
   State<ModuleCategoryScreen> createState() => _ModuleCategoryScreenState();
@@ -21,41 +25,65 @@ class ModuleCategoryScreen extends StatefulWidget {
 class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return  CustomScrollView(
-      slivers: [
-
-        SliverAppBar(
-          toolbarHeight: 60,
-          floating: true,
-          flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
+    return  Scaffold(
+      appBar: CustomAppBar(
+        showNotificationIcon: true,
+        titleWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.moduleName ?? 'Module Name', style: textStyle16(context, color: CustomColor.appColor),),
+            Text(
+              "Waidhan Singrauli Madhya Pradesh Pin- 486886",
+              style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          ],
         ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 5.0),
+          child: IconButton(onPressed: () {
+            setState(() {
+              widget.onToggle(true);
+            });
+          }, icon: Icon(Icons.dashboard, color: CustomColor.appColor,)),
+        ),
+        leadingWidth: 40,
+      ),
 
-        SliverToBoxAdapter(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: CustomScrollView(
+        slivers: [
 
-              /// banner
-              CategoryBannerWidget(),
-             10.height,
-
-              /// Services
-              ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
-              SizedBox(height: 10,),
-
-              /// Popular Services
-              CustomServiceList(headline: 'Popular Services',),
-              SizedBox(height: 20,),
-
-              /// ServiceProviderWidget
-              ServiceProviderWidget(),
-              SizedBox(height: 20,),
-
-            ],
+          SliverAppBar(
+            toolbarHeight: 60,
+            floating: true,
+            flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
           ),
-        )
-      ],
+
+          SliverToBoxAdapter(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                /// banner
+                CategoryBannerWidget(),
+                10.height,
+
+                /// Services
+                ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
+                SizedBox(height: 10,),
+
+                /// Popular Services
+                CustomServiceList(headline: 'Popular Services',),
+                SizedBox(height: 20,),
+
+                /// ServiceProviderWidget
+                ServiceProviderWidget(),
+                SizedBox(height: 20,),
+
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

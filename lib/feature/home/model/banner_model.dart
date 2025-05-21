@@ -1,4 +1,4 @@
-import 'package:bizbooster2x/model/module_model.dart';
+import 'package:bizbooster2x/feature/home/model/module_model.dart';
 
 class BannerModel {
   final String id;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../helper/api_helper.dart';
-import '../../../model/banner_model.dart';
+import '../../home/model/banner_model.dart';
+import '../../home/widget/home_banner_shimmer_widget.dart';
 
 class CategoryBannerWidget extends StatefulWidget {
   const CategoryBannerWidget({super.key});
@@ -24,38 +25,26 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
       future: _homeBanners(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return HomeBannerShimmerWidget();
+        }
+
+        else if (!snapshot.hasData && snapshot.data!.isEmpty){
+          return Center(child: Text('No Banner.'));
         }
         else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No Banner.'));
-        }
+        final banners = snapshot.data!;
+        return CustomBanner(
+          bannerData: banners,
+          height: 180,
+         onTap: (banner) {
 
-        else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
-          final banners = snapshot.data ?? [];
-          return CustomBanner(
-            bannerData: banners,
-            height: 180,
-            onTap: (banner) => null,
-            // onTap: (banner) {
-            //   if(banner.selectionType == 'subcategory'){
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-            //       categoryId: banner.subcategory?.category ?? '',
-            //     ),
-            //     ));
-            //   }
-            //   if(banner.selectionType == 'service'){
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),));
-            //   }
-            // },
-          );
-        }
-        else{
-          return Center(child: Text('No Banner.'));
-        }
+         },
+        );
+
+
       },);
 
   }

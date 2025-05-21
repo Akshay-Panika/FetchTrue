@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';
+import '../../home/screen/initial_home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
 
@@ -34,7 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   final List<Widget> _screens = const [
-    HomeScreen(),
+    InitialHomeScreen(),
     MyLeadScreen(),
     AcademyScreen(),
     MoreScreen(),
