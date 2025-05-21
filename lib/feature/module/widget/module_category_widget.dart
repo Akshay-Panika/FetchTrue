@@ -51,7 +51,7 @@ class _ModuleCategoryWidgetState extends State<ModuleCategoryWidget> {
               return moduleId == widget.moduleIndexId;
             }).toList();
             if (filteredCategories.isEmpty) {
-              return const Center(child: Text('No categories for this module'));
+              return const Center(child: Text('No categories'));
             }
             return Container(
               height: 150,

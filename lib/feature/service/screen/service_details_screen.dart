@@ -47,7 +47,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title: 'Service Details',
         showBackButton: true,
@@ -61,56 +61,60 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
               /// Banner
               SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 200,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        viewportFraction: 1,
-                        autoPlayInterval: const Duration(seconds: 4),
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _current = index;
-                          });
-                        },
-                      ),
-                      items: bannerData.map((data) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return CustomContainer(
-                              width: double.infinity,
-                              assetsImg: data['image'],
-                              borderRadius: false,
-                              margin: EdgeInsets.zero,
-                            );
+                child: Container(
+                  color: CustomColor.whiteColor,
+                  child: Column(
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 200,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          viewportFraction: 1,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
                           },
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                        items: bannerData.map((data) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return CustomContainer(
+                                width: double.infinity,
+                                assetsImg: data['image'],
+                                borderRadius: false,
+                                margin: EdgeInsets.zero,
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
 
 
-                    10.height,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(bannerData.length, (index) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          height: 5,
-                          width: _current == index ? 24 : 10,
-                          decoration: BoxDecoration(
-                            color: _current == index ? Colors.blueAccent : Colors.grey,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
+                      10.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(bannerData.length, (index) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            height: 5,
+                            width: _current == index ? 24 : 10,
+                            decoration: BoxDecoration(
+                              color: _current == index ? Colors.blueAccent : Colors.grey,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          );
+                        }),
+                      ),
+                      10.height,
+                    ],
+                  ),
                 ),
               ),
-              SliverToBoxAdapter(child: SizedBox(height: 10,),),
+
 
               SliverPersistentHeader(
                 pinned: true,
@@ -122,6 +126,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                         Tab(text: 'Service Details',),
                         Tab(text: 'Franchise Details',),
                       ],
+                        dividerColor: CustomColor.greyColor,
+                        dividerHeight: 0.2,
                         labelStyle: textStyle14(context, color: CustomColor.appColor),
                          indicatorColor: CustomColor.appColor,
                         unselectedLabelColor: CustomColor.descriptionColor,
@@ -264,10 +270,10 @@ Widget _buildServiceSection(BuildContext context,{required List<String> serviceT
         children: [
           CustomContainer(
             border: true,
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            borderColor: CustomColor.greyColor,
             backgroundColor: Colors.white,
-            // backgroundColor: CustomColor.appColor.withOpacity(0.09),
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -302,27 +308,24 @@ Widget _buildServiceSection(BuildContext context,{required List<String> serviceT
                   ],
                 ),
                 10.height,
-                CustomContainer(
-                  border: true,
-                  margin: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Text('Keys', style: textStyle12(context),),
-                          Text('value'),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text('Keys', style: textStyle12(context),),
-                          Text('value'),
-                        ],
-                      ),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text('Keys :', style: textStyle12(context),),
+                        5.width,
+                        Text('value',style: textStyle12(context),),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('Keys :', style: textStyle12(context),),
+                        5.width,
+                        Text('value',style: textStyle12(context),),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -342,9 +345,10 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
     children: [
       CustomContainer(
         border: true,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        borderColor: CustomColor.greyColor,
+        backgroundColor: Colors.white,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        backgroundColor: CustomColor.whiteColor,
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         // backgroundColor: CustomColor.appColor.withOpacity(0.09),
         child: Row(
           children: [
@@ -400,7 +404,9 @@ Widget _buildServiceCard({required List<String> serviceTabs}){
       return
         CustomContainer(
         border: true,
+        borderColor: CustomColor.greyColor,
         backgroundColor: Colors.white,
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child:
         index == 4 ?
         _buildWCB(context):
@@ -433,8 +439,10 @@ Widget _buildFranchiseCard({required List<String> serviceTabs}){
     itemBuilder: (context, index) {
       return
         CustomContainer(
-        border: true,
-        backgroundColor: Colors.white,
+          border: true,
+          borderColor: CustomColor.greyColor,
+          backgroundColor: Colors.white,
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

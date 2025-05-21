@@ -3,6 +3,8 @@ import '../../../core/widgets/custom_banner.dart';
 import '../../../helper/api_helper.dart';
 import '../../home/model/banner_model.dart';
 import '../../home/widget/home_banner_shimmer_widget.dart';
+import '../../service/screen/service_details_screen.dart';
+import '../screen/module_subcategory_screen.dart';
 
 class CategoryBannerWidget extends StatefulWidget {
   const CategoryBannerWidget({super.key});
@@ -12,38 +14,65 @@ class CategoryBannerWidget extends StatefulWidget {
 }
 
 class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
+  // Future<List<BannerModel>> _homeBanners() async {
+  //   final fetched = await BannerService.fetchBanners();
+  //   return fetched.where((b) => b.page == 'category').toList();
+  // }
+
+  late Future<List<BannerModel>> _futureBanners;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureBanners = _homeBanners();
+  }
+
   Future<List<BannerModel>> _homeBanners() async {
     final fetched = await BannerService.fetchBanners();
     return fetched.where((b) => b.page == 'category').toList();
   }
 
-
   @override
   Widget build(BuildContext context) {
 
     return FutureBuilder<List<BannerModel>>(
-      future: _homeBanners(),
+      future: _futureBanners,
       builder: (context, snapshot) {
+
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return HomeBannerShimmerWidget();
+          return const HomeBannerShimmerWidget();
         }
 
-        else if (!snapshot.hasData && snapshot.data!.isEmpty){
-          return Center(child: Text('No Banner.'));
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const SizedBox.shrink();
         }
+
+        else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
+          final banners = snapshot.data!;
+          return CustomBanner(
+            bannerData: banners,
+            height: 180,
+            onTap: (banner) {
+              if(banner.selectionType == 'subcategory'){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
+                  categoryId: banner.subcategory?.category ?? '',
+                ),
+                ));
+              }
+              if(banner.selectionType == 'service'){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),));
+              }
+            },
+          );
+        }
+
         else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        final banners = snapshot.data!;
-        return CustomBanner(
-          bannerData: banners,
-          height: 180,
-         onTap: (banner) {
-
-         },
-        );
-
+        else{
+          return const Center(child: Text('No banner'));
+        }
 
       },);
 

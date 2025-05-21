@@ -7,6 +7,7 @@ import '../../home/screen/home_screen.dart';
 import '../../home/screen/initial_home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
+import '../../offer/screen/offer_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -21,6 +22,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final icons = const [
     Icons.home_outlined,
     Icons.bookmark_outline,
+    Icons.local_offer_outlined,
     Icons.video_collection_outlined,
     CupertinoIcons.profile_circled,
   ];
@@ -29,14 +31,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final labels = const [
     'Home',
     'My Lead',
+    'Offer',
     'Academy',
     'Menu',
   ];
 
 
+
   final List<Widget> _screens = const [
     InitialHomeScreen(),
     MyLeadScreen(),
+    OfferScreen(),
     AcademyScreen(),
     MoreScreen(),
   ];
@@ -44,7 +49,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('___________________________________ Build dashboard screen');
 
     return PopScope(
       canPop: _history.length == 1,
@@ -75,7 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             type: BottomNavigationBarType.fixed,
             selectedItemColor: CustomColor.appColor,
-            unselectedItemColor: CustomColor.iconColor,
+            unselectedItemColor: CustomColor.descriptionColor,
             backgroundColor: Colors.white,
             elevation: 0.8,
             items: List.generate(icons.length, (index) {

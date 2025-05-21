@@ -16,46 +16,64 @@ class HomeBannerWidget extends StatefulWidget {
 
 class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 
+  // Future<List<BannerModel>> _homeBanners() async {
+  //   final fetched = await BannerService.fetchBanners();
+  //   return fetched.where((b) => b.page == 'home').toList();
+  // }
+  late Future<List<BannerModel>> _futureBanners;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureBanners = _homeBanners();
+  }
+
   Future<List<BannerModel>> _homeBanners() async {
     final fetched = await BannerService.fetchBanners();
     return fetched.where((b) => b.page == 'home').toList();
   }
 
-
   @override
   Widget build(BuildContext context) {
 
     return FutureBuilder<List<BannerModel>>(
-        future: _homeBanners(),
+        future: _futureBanners,
         builder: (context, snapshot) {
+
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return HomeBannerShimmerWidget();
+            return const HomeBannerShimmerWidget();
           }
 
-          else if (!snapshot.hasData && snapshot.data!.isEmpty){
-            return Center(child: Text('No Banner.'));
+          else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const SizedBox.shrink();
           }
+
+          else if (snapshot.hasData || snapshot.data!.isNotEmpty) {
+            final banners = snapshot.data!;
+            return CustomBanner(
+              bannerData: banners,
+              height: 180,
+              onTap: (banner) {
+                if(banner.selectionType == 'subcategory'){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
+                    categoryId: banner.subcategory?.category ?? '',
+                  ),
+                  ));
+                }
+                if(banner.selectionType == 'service'){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),));
+                }
+              },
+            );
+          }
+
           else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          final banners = snapshot.data!;
-          return CustomBanner(
-            bannerData: banners,
-            height: 180,
-            onTap: (banner) {
-              if(banner.selectionType == 'subcategory'){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-                  categoryId: banner.subcategory?.category ?? '',
-                ),
-                ));
-              }
-              if(banner.selectionType == 'service'){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '',),));
-              }
-            },
-          );
-
+          else{
+            return const Center(child: Text('No banner'));
+          }
 
         },);
 
