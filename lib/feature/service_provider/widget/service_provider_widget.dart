@@ -51,7 +51,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                 backgroundColor: Color(0xFFF2F2F2),
                                 backgroundImage: AssetImage(CustomImage.nullImage),
                               ),
-                               10.height,
+                               10.width,
 
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      Icon(Icons.star, size: 14, color: CustomColor.descriptionColor,),
+                                      Icon(Icons.star, size: 14, color: CustomColor.amberColor,),
                                       const SizedBox(width: 4),
                                       Text(
                                         '4.5 (1)',
@@ -92,8 +92,8 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                               children: List.generate(4, (index) {
                                 return CustomContainer(
                                   margin: EdgeInsets.zero,
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    child: Text('type of tag'));
+                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                    child: Text('type of tag', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),));
                               }),
                           ),
                         ],

@@ -81,13 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// Banner
                 // HomeBannerWidget(),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+                SizedBox(height: dimensions.screenHeight*0.01,),
 
                 /// Leads
                 LeadsWidget(),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+                SizedBox(height: dimensions.screenHeight*0.01,),
 
-                CustomHeadline(headline: 'Modules',),
+                CustomHeadline(headline: 'Modules', viewSeeAll: false,),
                 /// module
                 BlocProvider(
                   create: (_) => ModuleBloc(ModuleService())..add(GetModule()),

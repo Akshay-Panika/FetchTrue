@@ -105,11 +105,11 @@ class SubcategoryShimmerList extends StatelessWidget {
                 )),
 
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomContainer(
                       height: 5,
-                      width: 80,
+                      width: 50,
                       margin: EdgeInsets.zero,
                       padding: EdgeInsets.zero,
                       backgroundColor: CustomColor.whiteColor,

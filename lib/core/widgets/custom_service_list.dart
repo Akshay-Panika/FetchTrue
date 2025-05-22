@@ -38,11 +38,12 @@ class CustomServiceList extends StatelessWidget {
             itemCount: bannerData.length,
             itemBuilder: (context, index) {
               return CustomContainer(
-                border: true,
+                border: false,
                 width: 300,
                 backgroundColor: Colors.white,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '${bannerData[index]['image']}',),)),
                 padding: EdgeInsets.all(0),
+                margin: EdgeInsets.only(right: 0, left: 10,bottom: 10,top: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,20 +82,20 @@ class CustomServiceList extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Service Name : Akshay Panika', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                          Text('Service Name : Akshay Panika', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
                          Row(
                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                            children: [
                              Row(
                                children: [
-                                 Text('Start from ', style: textStyle12(context),),
-                                 CustomAmountText(amount: '100', fontWeight: FontWeight.w500),
+                                 Text('Start from ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                 CustomAmountText(amount: '100', color: CustomColor.descriptionColor,),
                                ],
                              ),
                              Row(
                                children: [
-                                 Text('Earn up to ', style: textStyle12(context),),
-                                 CustomAmountText(amount: '50', fontWeight: FontWeight.w500),
+                                 Text('Earn up to ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                 CustomAmountText(amount: '50', color: CustomColor.descriptionColor),
                                ],
                              ),
                            ],
@@ -105,16 +106,16 @@ class CustomServiceList extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  Text('Keys :', style: textStyle12(context),),
+                                  Text('Keys :', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                                   5.width,
-                                  Text('value',style: textStyle12(context),),
+                                  Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Text('Keys :', style: textStyle12(context),),
+                                  Text('Keys :', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                                   5.width,
-                                  Text('value',style: textStyle12(context),),
+                                  Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                                 ],
                               ),
                             ],

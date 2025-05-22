@@ -13,6 +13,7 @@ import '../../home/screen/initial_home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
 import '../../offer/screen/offer_screen.dart';
+import '../widget/offer_dialog_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -53,47 +54,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      showModalBottomSheet(
+      showDialog(
         context: context,
-        isScrollControlled: true,
-        builder: (_) => Container(
-          height: 400,
-          decoration:BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15),
-              topLeft: Radius.circular(15),
-            ),
-            color: CustomColor.whiteColor,
-          ) ,
-          padding:  EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close))),
-              Column(
-               crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:  [
-                  Text(
-                    '🎉 Welcome Offer!',
-                    style: textStyle18(context, color: CustomColor.appColor),
-                  ),
-                  30.height,
-                  _buildAssuranceSection(context),
-                ],
-              ),
-            ],
-          ),
+        barrierDismissible: true,
+        builder: (context) => Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(horizontal: 10,),
+          child: OfferDialogWidget(),
         ),
       );
     });
+
   }
 
 
   @override
   Widget build(BuildContext context) {
-
+      Dimensions dimensions = Dimensions(context);
     return PopScope(
       canPop: _history.length == 1,
       onPopInvoked: (didPop) {
@@ -139,70 +116,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-Widget _buildAssuranceSection(BuildContext context) {
-  return CustomContainer(
-    border: true,
-    backgroundColor: CustomColor.whiteColor,
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: 'We assure you  ',
-                          style: textStyle14(context)),
-                      TextSpan(
-                        text: '5X Return ',
-                        style: textStyle16(context,
-                            color: CustomColor.appColor),
-                      ),
-                    ]),
-                  ),
-                  10.height,
-                  Text(
-                    'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
-                    style: textStyle12(context,
-                        color: CustomColor.descriptionColor),
-                    textAlign: TextAlign.right,
-                  ),
-                  10.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500,),
-                      10.width,
-                      CustomContainer(
-                        backgroundColor: CustomColor.appColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
-                        child: Text(
-                          'Buy Now',
-                          style: textStyle14(context,
-                              color: CustomColor.whiteColor),
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),));
-                        },
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
 
 

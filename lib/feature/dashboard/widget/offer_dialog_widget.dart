@@ -1,0 +1,122 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../../package/screen/package_screen.dart';
+
+class OfferDialogWidget extends StatelessWidget {
+  const OfferDialogWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Align(
+          alignment: Alignment.topRight,
+          child: CircleAvatar(
+            backgroundColor: CustomColor.whiteColor,
+            child: InkWell(
+             child: Icon(Icons.close, color: CustomColor.appColor,),
+              onTap: () => Navigator.pop(context),
+            ),
+          ),
+        ),
+        10.height,
+
+        CustomContainer(
+          backgroundColor: CustomColor.whiteColor,
+          margin: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+             SizedBox(height: dimensions.screenHeight*0.1,),
+              Text(
+                '🎉 Welcome Offer!',
+                style: textStyle18(context, color: CustomColor.appColor),
+              ),
+             50.height,
+              _buildAssuranceSection(context),
+              SizedBox(height: dimensions.screenHeight*0.1,),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+Widget _buildAssuranceSection(BuildContext context) {
+  return CustomContainer(
+    border: true,
+    backgroundColor: CustomColor.whiteColor,
+    margin: EdgeInsets.zero,
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: 'We assure you  ',
+                          style: textStyle14(context)),
+                      TextSpan(
+                        text: '5X Return ',
+                        style: textStyle16(context,
+                            color: CustomColor.appColor),
+                      ),
+                    ]),
+                  ),
+                  10.height,
+                  Text(
+                    'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
+                    style: textStyle12(context,
+                        color: CustomColor.descriptionColor),
+                    textAlign: TextAlign.right,
+                  ),
+                  10.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500,),
+                      10.width,
+                      CustomContainer(
+                        backgroundColor: CustomColor.appColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        child: Text(
+                          'Buy Now',
+                          style: textStyle14(context,
+                              color: CustomColor.whiteColor),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),));
+                        },
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
