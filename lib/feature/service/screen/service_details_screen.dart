@@ -139,7 +139,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                       ),
                     ),),
               ),
-              SliverToBoxAdapter(child: SizedBox(height: 10,),),
+              SliverToBoxAdapter(child: SizedBox(height: 5,),),
 
               SliverToBoxAdapter(
                 child: AnimatedSwitcher(
@@ -203,7 +203,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: CustomButton(text: 'Conform',
+                            child: CustomButton(text: 'Proceed To Checkout',
                             onTap: () {
                               Navigator.pop(context);
                             },),
@@ -278,7 +278,7 @@ Widget _buildServiceSection(BuildContext context,{required List<String> serviceT
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('App Development', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                Text('App Development', style: textStyle16(context,)),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -348,44 +348,49 @@ Widget _buildFranchiseSection({required List<String> serviceTabs}) {
         borderColor: CustomColor.greyColor,
         backgroundColor: Colors.white,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        // backgroundColor: CustomColor.appColor.withOpacity(0.09),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+        // padding: EdgeInsets.zero,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'You will earn commission',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: CustomColor.appColor,
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'You will earn commission',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColor.appColor,
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'Up To',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      CustomAmountText(
-                        amount: '00.00',
-                        fontSize: 20,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Up To',
+                      style: TextStyle(
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    CustomAmountText(
+                      amount: '00.00',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Icon(Icons.wallet, size: 50, color: Colors.blue),
+            Container(
+              height: 100,width: 150,
+              decoration: BoxDecoration(
+                  color: Colors.transparent,
+                image: DecorationImage(image: AssetImage('assets/package/packageBuyImg.png'), fit: BoxFit.cover)
+              ),
+            )
           ],
         ),
       ),

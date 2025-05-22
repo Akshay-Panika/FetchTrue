@@ -1,5 +1,3 @@
-import 'package:bizbooster2x/feature/module/screen/module_category_screen.dart';
-import 'package:bizbooster2x/feature/module/screen/module_subcategory_screen.dart';
 import 'package:bizbooster2x/helper/api_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +8,9 @@ import 'custom_container.dart';
 
 
 class CustomBanner extends StatefulWidget {
-  final List<BannerModel> bannerData;
+  final List<ModuleBannerModel> bannerData;
   final double height;
-  final void Function(BannerModel banner) onTap;
+  final void Function(ModuleBannerModel banner) onTap;
 
   const CustomBanner({super.key, required this.bannerData, required this.height, required this.onTap});
 

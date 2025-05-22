@@ -1,6 +1,6 @@
-import 'package:bizbooster2x/feature/module/screen/module_category_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../category/screen/module_category_screen.dart';
 import 'home_screen.dart';
 
 class InitialHomeScreen extends StatefulWidget {

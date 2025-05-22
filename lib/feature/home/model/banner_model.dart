@@ -1,6 +1,6 @@
 import 'package:bizbooster2x/feature/home/model/module_model.dart';
 
-class BannerModel {
+class ModuleBannerModel {
   final String id;
   final String page;
   final String selectionType;
@@ -9,7 +9,7 @@ class BannerModel {
   final SubCategory? subcategory;
   final ModuleModel? module;
 
-  BannerModel({
+  ModuleBannerModel({
     required this.id,
     required this.page,
     required this.selectionType,
@@ -19,8 +19,8 @@ class BannerModel {
     this.module,
   });
 
-  factory BannerModel.fromJson(Map<String, dynamic> json) {
-    return BannerModel(
+  factory ModuleBannerModel.fromJson(Map<String, dynamic> json) {
+    return ModuleBannerModel(
       id: json['_id'] ?? '',
       page: json['page'] ?? '',
       selectionType: json['selectionType'] ?? '',
@@ -35,7 +35,7 @@ class BannerModel {
           : (json['subcategory'] is String
           ? SubCategory(id: json['subcategory'], name: '') // only id available
           : SubCategory.fromJson(json['subcategory'])),
-       module: json['module'] != null ? ModuleModel.fromJson(json['module']) : null,
+       module: json['category'] != null ? ModuleModel.fromJson(json['category']) : null,
 
     );
   }
@@ -63,7 +63,7 @@ class Category {
       return Category(
         id: json['_id'] ?? '',
         name: json['name'] ?? '',
-        module: json['module'],
+        module: json['category'],
         image: json['image'],
       );
     } else {

@@ -1,6 +1,5 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/feature/module/widget/module_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
@@ -10,7 +9,8 @@ import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../search/screen/search_screen.dart';
-import '../widget/category_banner_widget.dart';
+import '../../banner/widget/category_banner_widget.dart';
+import '../widget/module_category_widget.dart';
 
 class ModuleCategoryScreen extends StatefulWidget {
   final String? moduleName;
@@ -25,6 +25,7 @@ class ModuleCategoryScreen extends StatefulWidget {
 class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return  Scaffold(
       appBar: CustomAppBar(
         showNotificationIcon: true,
@@ -64,20 +65,20 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
               children: [
 
                 /// banner
-                CategoryBannerWidget(),
-                10.height,
+                // CategoryBannerWidget(),
+                SizedBox(height: dimensions.screenHeight*0.02,),
 
                 /// Services
                 ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
-                SizedBox(height: 10,),
+                SizedBox(height: dimensions.screenHeight*0.02,),
 
                 /// Popular Services
                 CustomServiceList(headline: 'Popular Services',),
-                SizedBox(height: 20,),
+                SizedBox(height: dimensions.screenHeight*0.02,),
 
                 /// ServiceProviderWidget
                 ServiceProviderWidget(),
-                SizedBox(height: 20,),
+                SizedBox(height: dimensions.screenHeight*0.02,),
 
               ],
             ),

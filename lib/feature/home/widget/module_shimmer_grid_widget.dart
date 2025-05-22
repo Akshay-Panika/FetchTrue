@@ -1,6 +1,10 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../core/costants/custom_color.dart';
+import '../../../core/widgets/custom_container.dart';
 
 class ModuleShimmerGrid extends StatelessWidget {
   const ModuleShimmerGrid({super.key});
@@ -34,11 +38,13 @@ class ModuleShimmerGrid extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
-              Container(
-                height: 12,
-                width: 40,
-                color: Colors.white,
+             5.height,
+              CustomContainer(
+                height: 6,
+                width: 80,
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                backgroundColor: CustomColor.whiteColor,
               ),
             ],
           ),
