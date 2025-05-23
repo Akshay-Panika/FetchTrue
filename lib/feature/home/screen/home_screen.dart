@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
 
                 /// Banner
-                // HomeBannerWidget(),
+                HomeBannerWidget(),
                 SizedBox(height: dimensions.screenHeight*0.01,),
 
                 /// Leads

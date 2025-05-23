@@ -10,7 +10,7 @@ class ModuleBannerBloc extends Bloc<ModuleBannerEvent, ModuleBannerState> {
     on<GetModuleBanner>((event, emit) async {
       emit(ModuleBannerLoading());
       try {
-        final moduleBanner = await bannerService.fetchBanners();
+        final moduleBanner = await bannerService.fetchBanner();
         emit(ModuleBannerLoaded(moduleBanner));
       } catch (e) {
         emit(ModuleBannerError(e.toString()));

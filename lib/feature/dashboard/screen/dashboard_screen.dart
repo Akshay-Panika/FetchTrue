@@ -1,14 +1,9 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/feature/package/screen/package_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/widgets/custom_amount_text.dart';
-import '../../../core/widgets/custom_container.dart';
 import '../../academy/screen/academy_screen.dart';
-import '../../home/screen/home_screen.dart';
 import '../../home/screen/initial_home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
@@ -47,7 +42,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     MoreScreen(),
   ];
   List<int> _history = [0];
-
 
   @override
   void initState() {

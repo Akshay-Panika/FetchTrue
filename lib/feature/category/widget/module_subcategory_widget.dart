@@ -1,11 +1,11 @@
 
 
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../bloc/module_subcategory/module_subcategory_bloc.dart';
@@ -14,9 +14,26 @@ import '../bloc/module_subcategory/module_subcategory_state.dart';
 import '../repository/module_subcategory_service.dart';
 import 'module_category_widget.dart';
 
-class ModuleSubcategoryWidget extends StatelessWidget {
+class ModuleSubcategoryWidget extends StatefulWidget {
   final String categoryId;
-  const ModuleSubcategoryWidget({super.key, required this.categoryId});
+  final String subcategoryId;
+  final ValueChanged<String>? onChanged;
+  const ModuleSubcategoryWidget({super.key, required this.categoryId, required this.subcategoryId, this.onChanged,});
+
+  @override
+  State<ModuleSubcategoryWidget> createState() => _ModuleSubcategoryWidgetState();
+}
+
+class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
+
+  late String _selectedId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedId = widget.subcategoryId;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,36 +49,49 @@ class ModuleSubcategoryWidget extends StatelessWidget {
 
             // final modulesSubCategory = state.moduleSubcategoryModel;
             final modulesSubCategory = state.moduleSubcategoryModel.where((subcategory) =>
-            subcategory.category.id == categoryId
-            ).toList();
+            subcategory.category.id == widget.categoryId).toList();
 
             if (modulesSubCategory.isEmpty) {
               return const Center(child: Text('No modules found.'));
             }
 
-            return  SizedBox(
+            ///  Default subcategory selection (first one)
+            if (_selectedId.isEmpty && modulesSubCategory.isNotEmpty) {
+              _selectedId = modulesSubCategory.first.id;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                widget.onChanged?.call(_selectedId);
+                setState(() {}); // force rebuild with selected ID
+              });
+            }
+            return  Container(
                 height: 110,
-                // color: Colors.green,
-                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: ListView.builder(
                   itemCount: modulesSubCategory.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-
                     final sub = modulesSubCategory[index];
-
-                    return Container(
-                      width: 110,
-                      // padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Expanded(child: CustomContainer(
-                            networkImg: sub.image,
-                            backgroundColor: CustomColor.whiteColor,
-                          )),
-
-                          Text(sub.name, style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
-                        ],
+                    final isSelected = sub.id == _selectedId;
+                    return InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        setState(() => _selectedId = sub.id);
+                        widget.onChanged?.call(_selectedId);
+                      },
+                      child: Container(
+                        width: 100,
+                        child: Column(
+                          children: [
+                            Expanded(child: CustomContainer(
+                              backgroundColor: CustomColor.whiteColor,
+                              networkImg: sub.image,
+                            )),
+                            SizedBox(
+                                width: 100,
+                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black),textAlign: TextAlign.center,)),
+                          ],
+                        ),
                       ),
                     );
                   },));
@@ -96,8 +126,7 @@ class SubcategoryShimmerList extends StatelessWidget {
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
           child: Container(
-            width: 110,
-            // padding: const EdgeInsets.all(8.0),
+            width: 100,
             child: Column(
               children: [
                 Expanded(child: CustomContainer(
@@ -108,7 +137,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomContainer(
-                      height: 5,
+                      height: 6,
                       width: 50,
                       margin: EdgeInsets.zero,
                       padding: EdgeInsets.zero,
@@ -116,7 +145,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                     ),
                     5.height,
                     CustomContainer(
-                      height: 5,
+                      height: 6,
                       width: 80,
                       margin: EdgeInsets.zero,
                       padding: EdgeInsets.zero,

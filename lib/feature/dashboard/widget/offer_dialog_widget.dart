@@ -22,9 +22,10 @@ class OfferDialogWidget extends StatelessWidget {
         Align(
           alignment: Alignment.topRight,
           child: CircleAvatar(
+            radius: 16,
             backgroundColor: CustomColor.whiteColor,
             child: InkWell(
-             child: Icon(Icons.close, color: CustomColor.appColor,),
+             child: Icon(Icons.close, color: CustomColor.appColor, size: 16,),
               onTap: () => Navigator.pop(context),
             ),
           ),
@@ -37,11 +38,12 @@ class OfferDialogWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-             SizedBox(height: dimensions.screenHeight*0.1,),
+              SizedBox(height: dimensions.screenHeight*0.05,),
               Text(
                 '🎉 Welcome Offer!',
                 style: textStyle18(context, color: CustomColor.appColor),
               ),
+              SizedBox(height: dimensions.screenHeight*0.05,),
              50.height,
               _buildAssuranceSection(context),
               SizedBox(height: dimensions.screenHeight*0.1,),

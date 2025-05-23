@@ -72,7 +72,7 @@ class ServiceListView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) =>  ServiceDetailsScreen(
-                image: 'assets/image/thumbnail1.png',
+               serviceId: '',
               ),
             ),
           ),

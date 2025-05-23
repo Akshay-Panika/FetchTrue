@@ -14,7 +14,7 @@ class  ModuleCategoryService{
 
         return data.map((json) => ModuleCategoryModel.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load module_banner Category: ${response.statusMessage}');
+        throw Exception('Server returned error: ${response.statusMessage}');
       }
     } catch (e) {
       throw Exception('API Error: $e');

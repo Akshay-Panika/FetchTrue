@@ -1,19 +1,21 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/feature/service/bloc/module_service/module_service_event.dart';
+import 'package:bizbooster2x/feature/service/bloc/module_service/module_service_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../bloc/module_subcategory/module_subcategory_bloc.dart';
-import '../bloc/module_subcategory/module_subcategory_event.dart';
-import '../bloc/module_subcategory/module_subcategory_state.dart';
-import '../model/module_subcategory_model.dart';
+import '../../../core/widgets/custom_favorite_button.dart';
+import '../../service/bloc/module_service/module_service_bloc.dart';
+import '../../service/repository/api_service.dart';
 import '../../service/screen/service_details_screen.dart';
 import '../model/module_category_model.dart';
 import '../repository/module_category_service.dart';
 import '../repository/module_subcategory_service.dart';
-import '../widget/module_category_widget.dart';
 import '../widget/module_subcategory_widget.dart';
 
 class ModuleSubcategoryScreen extends StatefulWidget {
@@ -51,6 +53,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
   ModuleCategoryModel? _selectedCategory;
   bool _isLoading = true;
   String? _error;
+  String selectedSubcategoryId = '';
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
       });
     }
   }
+  final ApiService apiService = ApiService();
 
 
   @override
@@ -101,7 +105,16 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
           children: [
 
             SizedBox(height: dimensions.screenHeight*0.01,),
-            ModuleSubcategoryWidget(categoryId: widget.categoryId,),
+            ModuleSubcategoryWidget(
+              categoryId: widget.categoryId,
+              subcategoryId: selectedSubcategoryId,
+              onChanged: (id) {
+                setState(() {
+                  selectedSubcategoryId = id;
+                });
+                print('Selected Subcategory ID: $id');
+              },
+            ),
             SizedBox(height: dimensions.screenHeight*0.02,),
 
             /// Filter
@@ -138,61 +151,117 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
             SizedBox(height: dimensions.screenHeight*0.01,),
 
             /// Services
-            Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: serviceData.length,
-                  itemBuilder: (context, index) {
-                    return CustomContainer(
-                      height: 190,
-                      border: true,
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.all(0),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: serviceData[index]['image'].toString(),),)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: CustomContainer(
-                              margin: EdgeInsets.all(0),
-                              assetsImg: serviceData[index]['image'],
-                            ),
-                          ),
+            BlocProvider(
+              create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
+              child:  BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
+                builder: (context, state) {
+                  if (state is ModuleServiceLoading) {
+                    return Center(child: LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,),);
+                  }
 
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Service Name', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
+                  else if(state is ModuleServiceLoaded){
+
+                    // final services = state.serviceModel;
+                    final services = state.serviceModel.where((moduleService) =>
+                    moduleService.subcategory.id == selectedSubcategoryId
+                    ).toList();
+
+                    if (services.isEmpty) {
+                      return const Center(child: Text('No Service found.'));
+                    }
+
+                    return  Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: services.length,
+                          itemBuilder: (context, index) {
+
+                            final data = services[index];
+                            return CustomContainer(
+                              height: 190,
+                              border: false,
+                              backgroundColor: Colors.white,
+                              padding: EdgeInsets.zero,
+                              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
+                               serviceId: data.id,
+                              ),
+                              )),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: CustomContainer(
+                                      margin: EdgeInsets.zero,
+                                      padding: EdgeInsets.zero,
+                                      networkImg: data.thumbnailImage,
+                                      backgroundColor: CustomColor.whiteColor,
+                                      child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CustomFavoriteButton(),
+                                            Container(
+                                                padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(10),
+                                                    bottomRight: Radius.circular(10),
+                                                  ),
+                                                  color: CustomColor.blackColor.withOpacity(0.3),
+                                                ),
+                                                child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                        Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                        Icon(Icons.currency_rupee, size: 12,)
+                                        Text(data.serviceName, style: textStyle14(context,fontWeight: FontWeight.w400),),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('Start from : ', style: textStyle12(context,fontWeight: FontWeight.w400),),
+                                                CustomAmountText(amount: data.price.toString(), fontSize: 12)
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text('Earn Up To : ', style: textStyle12(context,fontWeight: FontWeight.w400),),
+                                                CustomAmountText(amount: data.price.toString(), fontSize: 12)
+                                              ],
+                                            ),
+                                          ],
+                                        )
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Text('Start from: ', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                        Text('10.00', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
-                                        Icon(Icons.currency_rupee, size: 12,)
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                )),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ));
+
+                  }
+
+                  else if (state is ModuleServiceError) {
+                    return Center(child: Text(state.errorMessage));
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+
           ],
         ),
       ),

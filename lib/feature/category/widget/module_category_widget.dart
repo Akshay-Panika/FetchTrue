@@ -48,7 +48,7 @@ class _ModuleCategoryWidgetState extends State<ModuleCategoryWidget> {
                 /// Headline
                 CustomHeadline(headline: "Services"),
 
-                /// Subcategory
+                /// Category
                 Container(
                   height: serviceCount > 3 ? 150 : 70,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -119,60 +119,65 @@ class CategoryShimmerGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: GridView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 6,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1 / 2.5,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: (_, __) => CustomContainer(
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-          backgroundColor: Colors.transparent,
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CustomContainer(
-                  width: 80,
-                  backgroundColor: Colors.white,
-                  margin: EdgeInsets.zero,),
+    return Column(
+      children: [
+        10.height,
+        Container(
+          height: 140,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: GridView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 6,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1 / 2.5,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (_, __) => CustomContainer(
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomContainer(
+                      width: 80,
+                      backgroundColor: Colors.white,
+                      margin: EdgeInsets.zero,),
 
-                 10.width,
-                 Expanded(
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     mainAxisAlignment: MainAxisAlignment.end,
-                     children: [
-                       CustomContainer(width: 50,height: 5,
-                           margin: EdgeInsets.zero,
-                           padding: EdgeInsets.zero,
-                         backgroundColor: Colors.white,
+                     10.width,
+                     Expanded(
+                       child: Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         mainAxisAlignment: MainAxisAlignment.end,
+                         children: [
+                           CustomContainer(width: 50,height: 5,
+                               margin: EdgeInsets.zero,
+                               padding: EdgeInsets.zero,
+                             backgroundColor: Colors.white,
+                           ),
+                           5.height,
+                           CustomContainer(width: 80,height: 5,
+                             margin: EdgeInsets.zero,
+                             padding: EdgeInsets.zero,
+                             backgroundColor: Colors.white,
+                           ),
+                           15.height,
+                         ],
                        ),
-                       5.height,
-                       CustomContainer(width: 80,height: 5,
-                         margin: EdgeInsets.zero,
-                         padding: EdgeInsets.zero,
-                         backgroundColor: Colors.white,
-                       ),
-                       15.height,
-                     ],
-                   ),
-                 )
-              ],
+                     )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -1,14 +1,15 @@
 
+import 'package:bizbooster2x/helper/api_urls.dart';
 import 'package:dio/dio.dart';
 
-import '../../home/model/banner_model.dart';
+import '../model/banner_model.dart';
 
 class BannerService {
    final Dio _dio = Dio();
 
-   Future<List<ModuleBannerModel>> fetchBanners() async {
+   Future<List<ModuleBannerModel>> fetchBanner() async {
     try {
-      final response = await _dio.get('https://biz-booster.vercel.app/api/banner');
+      final response = await _dio.get(ApiUrls.banner);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;

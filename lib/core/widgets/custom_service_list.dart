@@ -41,7 +41,7 @@ class CustomServiceList extends StatelessWidget {
                 border: false,
                 width: 300,
                 backgroundColor: Colors.white,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(image: '${bannerData[index]['image']}',),)),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: '',),)),
                 padding: EdgeInsets.all(0),
                 margin: EdgeInsets.only(right: 0, left: 10,bottom: 10,top: 10),
                 child: Column(

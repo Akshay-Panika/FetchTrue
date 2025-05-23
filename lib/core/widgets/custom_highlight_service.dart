@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _CustomHighlightServiceState extends State<CustomHighlightService> {
 
         Column(
           children: [
-            CarouselSlider(
+            CarouselSlider.builder(
               options: CarouselOptions(
                 height: 250,
                 autoPlay: true,
@@ -52,55 +53,61 @@ class _CustomHighlightServiceState extends State<CustomHighlightService> {
                   });
                 },
               ),
-              items: bannerData.map((data) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: CustomContainer(
-                            width: double.infinity,
-                            assetsImg: data['image'],
-                            padding: EdgeInsets.zero,
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomFavoriteButton(),
-                                  Container(
-                                      padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
-                                        ),
-                                        color: CustomColor.blackColor.withOpacity(0.3),
+              itemCount: bannerData.length,
+              itemBuilder: (context, index, realIndex) {
+                final data = bannerData[index];
+                return CustomContainer(
+                  border: true,
+                  padding: EdgeInsets.zero,
+                  backgroundColor: CustomColor.whiteColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CustomContainer(
+                          width: double.infinity,
+                          assetsImg: data['image'],
+                          padding: EdgeInsets.zero,
+                          margin: EdgeInsets.zero,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomFavoriteButton(),
+                                Container(
+                                    padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
                                       ),
-                                      child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
-                                ],
-                              ),
+                                      color: CustomColor.blackColor.withOpacity(0.3),
+                                    ),
+                                    child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                              ],
                             ),
                           ),
                         ),
+                      ),
 
-                        Column(
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Service Name', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600),),
                             Text('Service Description', style: TextStyle(fontSize: 14, color: Colors.grey.shade700),),
                           ],
                         ),
-                        SizedBox(height: 15,)
-                      ],
-                    );
-                  },
+                      ),
+                    ],
+                  ),
                 );
-              }).toList(),
+              },
             ),
+            5.height,
 
 
             Row(

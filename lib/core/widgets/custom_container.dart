@@ -37,7 +37,9 @@ class CustomContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return GestureDetector(
+    return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       onTap: onTap,
       child: Container(
         height: height,

@@ -55,6 +55,7 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
           SliverAppBar(
             toolbarHeight: 60,
             floating: true,
+            backgroundColor: CustomColor.canvasColor,
             flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
           ),
 
@@ -65,8 +66,8 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
               children: [
 
                 /// banner
-                // CategoryBannerWidget(),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+                CategoryBannerWidget(),
+                // SizedBox(height: dimensions.screenHeight*0.02,),
 
                 /// Services
                 ModuleCategoryWidget(moduleIndexId: widget.moduleId,),

@@ -1,5 +1,5 @@
 import 'package:bizbooster2x/helper/api_urls.dart';
-import 'package:bizbooster2x/feature/home/model/banner_model.dart';
+import 'package:bizbooster2x/feature/banner/model/banner_model.dart';
 import 'package:bizbooster2x/feature/category/model/module_subcategory_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
