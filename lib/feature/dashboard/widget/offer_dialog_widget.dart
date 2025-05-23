@@ -21,12 +21,12 @@ class OfferDialogWidget extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.topRight,
-          child: CircleAvatar(
-            radius: 16,
-            backgroundColor: CustomColor.whiteColor,
-            child: InkWell(
-             child: Icon(Icons.close, color: CustomColor.appColor, size: 16,),
-              onTap: () => Navigator.pop(context),
+          child: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: CustomColor.whiteColor,
+              child: Icon(Icons.close, color: CustomColor.appColor, size: 16,),
             ),
           ),
         ),

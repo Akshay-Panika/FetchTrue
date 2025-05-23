@@ -45,7 +45,7 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 
             return CustomBanner(
               bannerData: banner,
-              height: 180,
+              height: 200,
               onTap: (banner) {
                 if(banner.selectionType == 'subcategory'){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
@@ -75,17 +75,6 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 class HomeBannerShimmerWidget extends StatelessWidget {
   const HomeBannerShimmerWidget({super.key});
 
@@ -94,30 +83,34 @@ class HomeBannerShimmerWidget extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
-      child: Column(
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
           CustomContainer(
-              height: 160,
+              height: 180,
               backgroundColor: CustomColor.whiteColor
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 5,
-                  width: 24,
-                  backgroundColor: CustomColor.whiteColor
-              ),
-              CustomContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 5,
-                  width: 10,
-                  backgroundColor: CustomColor.whiteColor
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomContainer(
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    height: 5,
+                    width: 24,
+                    backgroundColor: CustomColor.whiteColor
+                ),
+                CustomContainer(
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    height: 5,
+                    width: 10,
+                    backgroundColor: CustomColor.whiteColor
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -121,7 +121,18 @@ class CategoryShimmerGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        10.height,
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+            ],
+          ),
+        ),
+
         Container(
           height: 140,
           padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -43,7 +43,7 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
 
             return CustomBanner(
               bannerData: banner,
-              height: 180,
+              height: 200,
               onTap: (banner) {
                 if(banner.selectionType == 'subcategory'){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(

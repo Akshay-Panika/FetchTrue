@@ -104,7 +104,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
         child: Column(
           children: [
 
-            SizedBox(height: dimensions.screenHeight*0.01,),
+            SizedBox(height: dimensions.screenHeight*0.02,),
             ModuleSubcategoryWidget(
               categoryId: widget.categoryId,
               subcategoryId: selectedSubcategoryId,

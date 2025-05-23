@@ -24,7 +24,8 @@ class _CustomBannerState extends State<CustomBanner> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
       children: [
         CarouselSlider.builder(
           itemCount: widget.bannerData.length,
@@ -52,22 +53,25 @@ class _CustomBannerState extends State<CustomBanner> {
 
         /// 🔘 Dot indicators
         if(widget.bannerData.length >1)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(widget.bannerData.length, (index) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              height: 5,
-              width: _current == index ? 24 : 10,
-              decoration: BoxDecoration(
-                color: _current == index ? Colors.blueAccent : Colors.grey,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            );
-          }),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 15.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: List.generate(widget.bannerData.length, (index) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 5,
+                  width: _current == index ? 24 : 10,
+                  decoration: BoxDecoration(
+                    color: _current == index ? Colors.blueAccent : Colors.grey,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                );
+              }),
+            ),
         ),
-        15.height,
       ],
     );
   }

@@ -65,7 +65,6 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
             }
             return  Container(
                 height: 110,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: ListView.builder(
                   itemCount: modulesSubCategory.length,
                   scrollDirection: Axis.horizontal,
@@ -81,15 +80,20 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
                       },
                       child: Container(
                         width: 100,
+                        padding: EdgeInsets.only(left: 10),
                         child: Column(
                           children: [
                             Expanded(child: CustomContainer(
+                              border: true,
                               backgroundColor: CustomColor.whiteColor,
                               networkImg: sub.image,
+                              margin: EdgeInsets.zero,
                             )),
+
+                            5.height,
                             SizedBox(
                                 width: 100,
-                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black),textAlign: TextAlign.center,)),
+                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: FontWeight.w400),textAlign: TextAlign.center,)),
                           ],
                         ),
                       ),
