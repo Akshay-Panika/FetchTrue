@@ -7,6 +7,7 @@ class ServiceModel {
   final List<String> bannerImages;
   final Subcategory subcategory;
   final ServiceDetails serviceDetails;
+  final FranchiseDetails franchiseDetails;
 
   ServiceModel({
     required this.id,
@@ -16,6 +17,7 @@ class ServiceModel {
     required this.bannerImages,
     required this.subcategory,
     required this.serviceDetails,
+    required this.franchiseDetails,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class ServiceModel {
       bannerImages: List<String>.from(json['bannerImages']),
       subcategory: Subcategory.fromJson(json['subcategory']),
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
+      franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
     );
   }
 }

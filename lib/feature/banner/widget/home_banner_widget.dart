@@ -80,40 +80,48 @@ class HomeBannerShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CustomContainer(
-              height: 180,
-              backgroundColor: CustomColor.whiteColor
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomContainer(
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    height: 5,
-                    width: 24,
-                    backgroundColor: CustomColor.whiteColor
-                ),
-                CustomContainer(
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    height: 5,
-                    width: 10,
-                    backgroundColor: CustomColor.whiteColor
-                ),
-              ],
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Center(
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: CustomContainer(
+                height: 180,
+                backgroundColor: CustomColor.whiteColor
             ),
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomContainer(
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 5,
+                  width: 24,
+                  backgroundColor: CustomColor.greyColor.withOpacity(0.5)
+              ),
+              CustomContainer(
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 5,
+                  width: 10,
+                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.2)
+              ),
+
+              CustomContainer(
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 5,
+                  width: 10,
+                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.2)
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
