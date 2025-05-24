@@ -3,16 +3,24 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/feature/checkout/screen/payment_done_screen.dart';
 import 'package:bizbooster2x/feature/checkout/screen/payment_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/checkout_details_widget.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   final String serviceBanner;
   const CheckoutScreen({super.key, required this.serviceBanner});
 
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+  var _paymentStep = 0;
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
 
@@ -35,9 +43,21 @@ class CheckoutScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _PaymentStep(context, icon: CupertinoIcons.pen,),
-                      _PaymentStep(context, icon: Icons.payment,),
-                      _PaymentStep(context,divider: false, icon: CupertinoIcons.check_mark_circled,),
+                      _PaymentStep(context, icon: CupertinoIcons.pen, onTap: () {
+                        setState(() {
+                          _paymentStep = 0;
+                        });
+                      },),
+                      _PaymentStep(context, icon: Icons.payment, onTap: () {
+                        setState(() {
+                          _paymentStep = 1;
+                        });
+                      },),
+                      _PaymentStep(context,divider: false, icon: CupertinoIcons.check_mark_circled, onTap: () {
+                      setState(() {
+                        _paymentStep = 2;
+                      });
+                      },),
                     ],
                   ),
                   5.height,
@@ -59,9 +79,11 @@ class CheckoutScreen extends StatelessWidget {
             SizedBox(height: dimensions.screenHeight*0.01,),
 
             /// Service
-            CheckoutDetailsWidget(serviceBanner: serviceBanner,),
-
-            PaymentScreen(),
+            _paymentStep ==0?
+            CheckoutDetailsWidget(serviceBanner: widget.serviceBanner,):
+            _paymentStep ==1?
+            PaymentScreen():
+            PaymentDoneScreen(),
             50.height,
           ],
         ),
@@ -74,16 +96,21 @@ class CheckoutScreen extends StatelessWidget {
 /// Tap Section
 Widget _PaymentStep(BuildContext context,{
   bool? divider = true,
-  required IconData icon}){
+  required IconData icon,
+  VoidCallback? onTap,
+}){
 
   Dimensions dimensions = Dimensions(context);
   return Row(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      CircleAvatar(
-        backgroundColor: CustomColor.canvasColor,
-        child: Icon(icon, color: CustomColor.appColor,),
+      InkWell(
+        onTap: onTap,
+        child: CircleAvatar(
+          backgroundColor: CustomColor.canvasColor,
+          child: Icon(icon, color: CustomColor.appColor,),
+        ),
       ),
 
       if( divider == true)

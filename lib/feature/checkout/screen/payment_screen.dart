@@ -24,12 +24,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
       children: [
 
         Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text("Select Payment Method", style: TextStyle(fontWeight: FontWeight.bold)),
+          padding:  EdgeInsets.all(10),
+          child: Text("Select Payment Method", style: textStyle14(context)),
         ),
 
-        buildCardPaymentForm(),
-        10.height,
+        buildDebitAndCreditOption('Debit / Credit Card'),
         buildExpandableOption("Net Banking"),
         buildExpandableOption("UPI"),
         buildExpandableOption("Payment After Consultation"),
@@ -37,76 +36,146 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget buildCardPaymentForm() {
-    return CustomContainer(
-      border: true,
-      backgroundColor: CustomColor.whiteColor,
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Icon(Icons.credit_card),
-              10.width,
-              Text("Debit / Credit Card", style: textStyle14(context)),
-            ],
-          ),
-         10.height,
-          TextField(
-            controller: _cardNumberController,
-            decoration: InputDecoration(labelText: 'Card Number'),
-            keyboardType: TextInputType.number,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _cvvController,
-                  decoration: InputDecoration(labelText: 'CVV/CVC No.'),
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                ),
-              ),
-             20.width,
-              Expanded(
-                child: TextField(
-                  controller: _expiryController,
-                  decoration: InputDecoration(labelText: 'Valid Thru'),
-                  keyboardType: TextInputType.datetime,
-                ),
-              ),
-            ],
-          ),
-          TextField(
-            controller: _nameController,
-            decoration: InputDecoration(labelText: 'Full Name'),
-          ),
 
-          20.height,
-          Row(
-            children: [
-              Checkbox(
-                value: _saveDetails,
-                onChanged: (value) {
-                  setState(() {
-                    _saveDetails = value!;
-                  });
-                },
-              ),
-              Text("Save details for future"),
-            ],
-          ),
-         CustomButton(text: 'Send OTP',),
-          20.height,
-        ],
+  Widget buildDebitAndCreditOption(String title) {
+    return CustomContainer(
+      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      backgroundColor: CustomColor.whiteColor,
+      padding: EdgeInsets.zero,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,    // disables ripple
+          highlightColor: Colors.transparent, // disables highlight
+        ),
+        child: ExpansionTile(
+          backgroundColor: CustomColor.whiteColor,
+          iconColor: CustomColor.appColor,
+          shape: InputBorder.none,
+          childrenPadding: EdgeInsets.zero,
+          collapsedShape: InputBorder.none,
+          leading: Icon(_getIcon(title)),
+          title: Text(title),
+          children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+
+                TextField(
+                  controller: _cardNumberController,
+                  decoration: InputDecoration(
+                      labelText: 'Card Number',
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color:Colors.grey.shade400)
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                    disabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                15.height,
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _cvvController,
+                        decoration: InputDecoration(labelText: 'CVV/CVC No.',
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color:Colors.grey.shade400)
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                          disabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        obscureText: true,
+                      ),
+                    ),
+                    15.width,
+                    Expanded(
+                      child: TextField(
+                        controller: _expiryController,
+                        decoration: InputDecoration(labelText: 'Valid Thru',
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color:Colors.grey.shade400)
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                          disabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade400)
+                          ),
+                        ),
+                        keyboardType: TextInputType.datetime,
+                      ),
+                    ),
+                  ],
+                ),
+                15.height,
+
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Full Name',
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color:Colors.grey.shade400)
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                    disabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade400)
+                    ),
+                  ),
+                ),
+
+                20.height,
+                Row(
+                  children: [
+                    Checkbox(
+                      activeColor: CustomColor.appColor,
+                      value: _saveDetails,
+                      onChanged: (value) {
+                        setState(() {
+                          _saveDetails = value!;
+                        });
+                      },
+                    ),
+                    Text("Save details for future"),
+                  ],
+                ),
+                CustomButton(text: 'Send OTP',),
+                20.height,
+              ],
+            ),
+          )],
+        ),
       ),
     );
   }
 
   Widget buildExpandableOption(String title) {
     return CustomContainer(
-      border: true,
-      margin: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
       backgroundColor: CustomColor.whiteColor,
       padding: EdgeInsets.zero,
       child: ExpansionTile(
@@ -114,6 +183,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         iconColor: CustomColor.appColor,
         shape: InputBorder.none,
         childrenPadding: EdgeInsets.zero,
+        collapsedShape: InputBorder.none,
         leading: Icon(_getIcon(title)),
         title: Text(title),
         children: [ListTile(title: Text('Coming Soon...'))],

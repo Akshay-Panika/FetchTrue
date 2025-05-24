@@ -2,6 +2,7 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../customer/screen/customer_screen.dart';
+import '../screen/coupon_screen.dart';
 import '../screen/submit_details_screen.dart';
 
 class CheckoutDetailsWidget extends StatelessWidget {
@@ -26,6 +28,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
           border: true,
           backgroundColor: CustomColor.whiteColor,
           padding: EdgeInsets.zero,
+          margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,12 +65,11 @@ class CheckoutDetailsWidget extends StatelessWidget {
           ),
         ),
 
-
-
         /// Add customer
         CustomContainer(
           border: true,
           backgroundColor: CustomColor.whiteColor,
+          margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             children: [
              Center(child: _buildHeadline(context, icon: CupertinoIcons.person_crop_circle_badge_checkmark, headline: 'My Customer')),
@@ -108,21 +110,39 @@ class CheckoutDetailsWidget extends StatelessWidget {
           ),
         ),
 
-
         /// Best Coupon For You
         CustomContainer(
           border: true,
           backgroundColor: CustomColor.whiteColor,
+          margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: _buildHeadline(context, icon: CupertinoIcons.circle, headline: 'Best Coupon For You')),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Center(child: _buildHeadline(context, icon: CupertinoIcons.circle, headline: 'Best Coupon For You')),
+                  
+                  InkWell(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),
+                    child: Row(
+                      children: [
+                        Text('See All', style: textStyle12(context),),
+                        5.width,
+                        Icon(Icons.arrow_forward_ios, size: 12,)
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              10.height,
 
               CustomContainer(
                 border: true,
                 width: double.infinity,
                 borderColor: CustomColor.greenColor,
                 backgroundColor: CustomColor.whiteColor,
+                margin: EdgeInsets.zero,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -130,25 +150,37 @@ class CheckoutDetailsWidget extends StatelessWidget {
                     Text('You save an extra ₹00 with this coupon.', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
 
                     5.height,
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: CustomContainer(
-                       border: true,
-                        padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                        child: Text('Apply Coupon', style: textStyle12(context, color: CustomColor.greenColor),),),
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                          style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                          decoration: InputDecoration(
+                            labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                            label: Text('Type Coupon Here...')
+                          ),
+                        )),
+                        50.width,
+                        CustomContainer(
+                         border: true,
+                          margin: EdgeInsets.zero,
+                          padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                          child: Text('Apply Coupon', style: textStyle12(context, color: CustomColor.greenColor),),),
+                      ],
                     )
                   ],
                 ),
-              )
+              ),
+              10.height,
 
             ],
           ),
         ),
 
-
+        /// Summery
         CustomContainer(
           border: true,
           backgroundColor: CustomColor.whiteColor,
+          margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             spacing: 10,
             children: [
@@ -166,8 +198,13 @@ class CheckoutDetailsWidget extends StatelessWidget {
             ],
           ),
         ),
-        20.height,
 
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: CustomButton(
+            text: 'Proceed',),
+        ),
+        20.height,
       ],
     );
   }
