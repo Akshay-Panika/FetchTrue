@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../costants/custom_color.dart';
 import '../costants/custom_icon.dart';
 
-Widget CustomSearchIcon(){
-  return Image.asset(CustomIcon.searchIcon, color: CustomColor.appColor,scale: 25,);
+Widget CustomSearchIcon({VoidCallback? onTap}){
+  return InkWell(
+      onTap: onTap,
+      child: Image.asset(CustomIcon.searchIcon, color: CustomColor.appColor,scale: 25,));
 }

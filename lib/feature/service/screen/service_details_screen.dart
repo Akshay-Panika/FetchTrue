@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import '../../checkout/screen/checkout_screen.dart';
 import '../bloc/module_service/module_service_bloc.dart';
 import '../bloc/module_service/module_service_event.dart';
 import '../bloc/module_service/module_service_state.dart';
@@ -45,6 +46,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
   final ApiService apiService = ApiService();
 
+  var thumbnailImage;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               moduleService.id == widget.serviceId
               ).toList();
 
+               thumbnailImage = state.serviceModel.first.thumbnailImage;
               if (services.isEmpty) {
                 return const Center(child: Text('No Service found.'));
               }
@@ -189,7 +192,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                             padding: const EdgeInsets.all(8.0),
                             child: CustomButton(text: 'Proceed To Checkout',
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutScreen(serviceBanner: thumbnailImage,),));
                             },),
                           ),
 

@@ -103,20 +103,20 @@ class HomeBannerShimmerWidget extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   height: 5,
                   width: 24,
-                  backgroundColor: CustomColor.greyColor.withOpacity(0.5)
+                  backgroundColor: CustomColor.greyColor.withOpacity(0.2)
               ),
               CustomContainer(
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   height: 5,
                   width: 10,
-                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.2)
+                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
               ),
 
               CustomContainer(
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   height: 5,
                   width: 10,
-                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.2)
+                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
               ),
             ],
           ),

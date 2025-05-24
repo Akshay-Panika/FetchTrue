@@ -1,10 +1,13 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_icon.dart';
+import 'package:bizbooster2x/core/widgets/custom_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../feature/favorite/screen/favorite_screen.dart';
 import '../../feature/notification/screen/notification_screen.dart';
 import '../../feature/search/screen/search_screen.dart';
+import 'custom_search_icon.dart';
 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -57,10 +60,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
 
         if(showSearchIcon)
-        IconButton(
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),
-          icon: Icon(CupertinoIcons.search),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: CustomSearchIcon(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),
+            ),
+          ),
+
+        // IconButton(
+        //   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),
+        //   icon: Icon(CupertinoIcons.search),
+        // ),
       ],
     );
   }
