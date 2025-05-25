@@ -46,7 +46,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
   final ApiService apiService = ApiService();
 
-  var thumbnailImage;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +73,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               moduleService.id == widget.serviceId
               ).toList();
 
-               thumbnailImage = state.serviceModel.first.thumbnailImage;
               if (services.isEmpty) {
                 return const Center(child: Text('No Service found.'));
               }
@@ -192,7 +190,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                             padding: const EdgeInsets.all(8.0),
                             child: CustomButton(text: 'Proceed To Checkout',
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutScreen(serviceBanner: thumbnailImage,),));
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutScreen(),));
                             },),
                           ),
 

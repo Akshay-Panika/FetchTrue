@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
@@ -15,8 +16,7 @@ import '../screen/new_submit_details_screen.dart';
 import '../screen/submit_details_screen.dart';
 
 class CheckoutDetailsWidget extends StatelessWidget {
-  final String serviceBanner;
-  const CheckoutDetailsWidget({super.key, required this.serviceBanner});
+  const CheckoutDetailsWidget({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
             children: [
               CustomContainer(
                 height: 150,
-                networkImg: serviceBanner,
+                assetsImg: CustomImage.thumbnailImage,
                 margin: EdgeInsets.zero,
               ),
 
@@ -80,8 +80,8 @@ class CheckoutDetailsWidget extends StatelessWidget {
                minTileHeight: 0,
                minVerticalPadding: 0,
                contentPadding: EdgeInsets.zero,
-               title: Text('Customer Name: _______', style: textStyle12(context, color: CustomColor.descriptionColor),),
-               subtitle: Text('Customer Phone: _______', style: textStyle12(context, color: CustomColor.descriptionColor),),
+               title: Text('Name: Akshay Panika', style: textStyle12(context, color: CustomColor.descriptionColor),),
+               subtitle: Text('Phone: +91 8989207770', style: textStyle12(context, color: CustomColor.descriptionColor),),
              ),
 
               10.height,

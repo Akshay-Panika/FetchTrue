@@ -2,6 +2,7 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
 import 'package:bizbooster2x/feature/service/bloc/module_service/module_service_event.dart';
 import 'package:bizbooster2x/feature/service/bloc/module_service/module_service_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -178,7 +179,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
 
                             final data = services[index];
                             return CustomContainer(
-                              height: 190,
+                              height: 200,
                               border: false,
                               backgroundColor: Colors.white,
                               padding: EdgeInsets.zero,
@@ -213,36 +214,60 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                                   ),
                                                   color: CustomColor.blackColor.withOpacity(0.3),
                                                 ),
-                                                child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                                              child: CustomRattingAndReviews(color: CustomColor.whiteColor,),
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
                                   ),
 
+
+                                  10.height,
                                   Padding(
-                                    padding: const EdgeInsets.all(5.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(data.serviceName, style: textStyle14(context,fontWeight: FontWeight.w400),),
+                                        Text(data.serviceName, style: textStyle12(context),),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               children: [
-                                                Text('Start from : ', style: textStyle12(context,fontWeight: FontWeight.w400),),
-                                                CustomAmountText(amount: data.price.toString(), fontSize: 12)
+                                                Text('Start from ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,),
                                               ],
                                             ),
                                             Row(
                                               children: [
-                                                Text('Earn Up To : ', style: textStyle12(context,fontWeight: FontWeight.w400),),
-                                                CustomAmountText(amount: data.price.toString(), fontSize: 12)
+                                                Text('Earn up to ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                CustomAmountText(amount: '00.0', color: CustomColor.descriptionColor),
                                               ],
                                             ),
                                           ],
-                                        )
+                                        ),
+                                        // 5.height,
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('Keys :', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                5.width,
+                                                Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text('Keys :', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                5.width,
+                                                Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        10.height,
                                       ],
                                     ),
                                   ),

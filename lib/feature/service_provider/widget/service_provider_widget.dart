@@ -3,6 +3,7 @@ import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
+import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_container.dart';
@@ -56,8 +57,8 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Provider Name',
+                                   Text(
+                                    'Akshay $index',
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     style: TextStyle(
@@ -66,21 +67,9 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  Text('Type of service', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.star, size: 14, color: CustomColor.amberColor,),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '4.5 (1)',
-                                        style: TextStyle(
-                                          color: CustomColor.descriptionColor,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  Text('Onboarding Service', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                  5.height,
+                                  CustomRattingAndReviews()
                                 ],
                               )
                             ],

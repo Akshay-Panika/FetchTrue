@@ -11,8 +11,7 @@ import 'package:flutter/material.dart';
 import '../widget/checkout_details_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  final String serviceBanner;
-  const CheckoutScreen({super.key, required this.serviceBanner});
+  const CheckoutScreen({super.key,});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -32,7 +31,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            15.height,
+            // 15.height,
 
             /// Tap section
             Container(
@@ -86,7 +85,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             /// Service
             _paymentStep ==0?
-            CheckoutDetailsWidget(serviceBanner: widget.serviceBanner,):
+            CheckoutDetailsWidget():
             _paymentStep ==1?
             CheckPaymentWidget():
             CheckoutPaymentDoneWidget(),

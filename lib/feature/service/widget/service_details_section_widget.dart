@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
 import 'package:bizbooster2x/feature/service/widget/service_review_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceReviewWidget(),));
                           },
-                          child: Text('⭐ 4.8 (120 Reviews)', style: TextStyle(fontSize: 14))),
+                          child: CustomRattingAndReviews()),
                     ],
                   ),
                   10.height,

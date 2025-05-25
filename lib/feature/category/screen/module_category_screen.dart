@@ -1,12 +1,11 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_highlight_service.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
-import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/category_banner_widget.dart';
@@ -69,17 +68,26 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
                 CategoryBannerWidget(),
                 // SizedBox(height: dimensions.screenHeight*0.02,),
 
-                /// Services
+                /// Module Category
                 ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+
+
+                /// Services for you
+                CustomServiceList(headline: 'Services for you',),
+
+                /// Highlight service
+                CustomHighlightService(),
 
                 /// Popular Services
                 CustomServiceList(headline: 'Popular Services',),
-                SizedBox(height: dimensions.screenHeight*0.02,),
 
-                /// ServiceProviderWidget
+                ///  Service Provider
                 ServiceProviderWidget(),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+
+                /// Popular Services
+                Container(
+                    color: CustomColor.appColor.withOpacity(0.1),
+                    child: CustomServiceList(headline: 'All Services',)),
 
               ],
             ),

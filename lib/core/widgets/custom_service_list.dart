@@ -2,6 +2,7 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
+import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../feature/service/screen/service_details_screen.dart';
@@ -69,7 +70,8 @@ class CustomServiceList extends StatelessWidget {
                                       ),
                                       color: CustomColor.blackColor.withOpacity(0.3),
                                     ),
-                                    child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
+                                  child: CustomRattingAndReviews(color: CustomColor.whiteColor,),
+                                )
                               ],
                             ),
                         ),
@@ -82,20 +84,20 @@ class CustomServiceList extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Service Name : Akshay Panika', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w400),),
+                          Text('Service Name : Akshay Panika', style: textStyle12(context),),
                          Row(
                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                            children: [
                              Row(
                                children: [
                                  Text('Start from ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                 CustomAmountText(amount: '100', color: CustomColor.descriptionColor,),
+                                 CustomAmountText(amount: '00.0', color: CustomColor.descriptionColor,),
                                ],
                              ),
                              Row(
                                children: [
                                  Text('Earn up to ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                 CustomAmountText(amount: '50', color: CustomColor.descriptionColor),
+                                 CustomAmountText(amount: '00.0', color: CustomColor.descriptionColor),
                                ],
                              ),
                            ],

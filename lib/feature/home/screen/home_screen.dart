@@ -85,10 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// Leads
                 LeadsWidget(),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+                SizedBox(height: dimensions.screenHeight*0.01,),
 
-                // CustomHeadline(headline: 'Modules', viewSeeAll: false,),
-                /// module
+                /// module list
+                CustomHeadline(headline: 'Modules', viewSeeAll: false,),
                 BlocProvider(
                   create: (_) => ModuleBloc(ModuleService())..add(GetModule()),
                  child:  BlocBuilder<ModuleBloc, ModuleState>(
