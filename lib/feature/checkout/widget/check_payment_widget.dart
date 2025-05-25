@@ -5,12 +5,12 @@ import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
-class PaymentScreen extends StatefulWidget {
+class CheckPaymentWidget extends StatefulWidget {
   @override
-  _PaymentScreenState createState() => _PaymentScreenState();
+  _CheckPaymentWidgetState createState() => _CheckPaymentWidgetState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   final _cardNumberController = TextEditingController();
   final _cvvController = TextEditingController();
   final _expiryController = TextEditingController();
@@ -53,8 +53,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           shape: InputBorder.none,
           childrenPadding: EdgeInsets.zero,
           collapsedShape: InputBorder.none,
-          leading: Icon(_getIcon(title)),
-          title: Text(title),
+          leading: Icon(_getIcon(title), size: 20,),
+          title: Text(title,style: textStyle14(context, fontWeight: FontWeight.w400),),
           children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -63,8 +63,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                 TextField(
                   controller: _cardNumberController,
+                  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                       labelText: 'Card Number',
+                    labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                     border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey.shade400)
                     ),
@@ -87,7 +89,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Expanded(
                       child: TextField(
                         controller: _cvvController,
+                        style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(labelText: 'CVV/CVC No.',
+                          labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                           border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey.shade400)
                           ),
@@ -109,7 +113,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Expanded(
                       child: TextField(
                         controller: _expiryController,
+                        style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                         decoration: InputDecoration(labelText: 'Valid Thru',
+                          labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                           border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey.shade400)
                           ),
@@ -132,7 +138,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                 TextField(
                   controller: _nameController,
+                  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(labelText: 'Full Name',
+                    labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                     border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey.shade400)
                     ),
@@ -147,8 +155,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                 ),
+                10.height,
 
-                20.height,
                 Row(
                   children: [
                     Checkbox(
@@ -163,6 +171,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     Text("Save details for future"),
                   ],
                 ),
+                15.height,
+
                 CustomButton(text: 'Send OTP',),
                 20.height,
               ],
@@ -178,15 +188,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
       margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
       backgroundColor: CustomColor.whiteColor,
       padding: EdgeInsets.zero,
-      child: ExpansionTile(
-        backgroundColor: CustomColor.whiteColor,
-        iconColor: CustomColor.appColor,
-        shape: InputBorder.none,
-        childrenPadding: EdgeInsets.zero,
-        collapsedShape: InputBorder.none,
-        leading: Icon(_getIcon(title)),
-        title: Text(title),
-        children: [ListTile(title: Text('Coming Soon...'))],
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,    // disables ripple
+          highlightColor: Colors.transparent, // disables highlight
+        ),
+        child: ExpansionTile(
+          backgroundColor: CustomColor.whiteColor,
+          iconColor: CustomColor.appColor,
+          shape: InputBorder.none,
+          childrenPadding: EdgeInsets.zero,
+          collapsedShape: InputBorder.none,
+          leading: Icon(_getIcon(title), size: 20,),
+          title: Text(title,style: textStyle14(context, fontWeight: FontWeight.w400),),
+          children: [ListTile(title: Text('Coming Soon...'))],
+        ),
       ),
     );
   }

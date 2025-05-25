@@ -11,6 +11,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../screen/coupon_screen.dart';
+import '../screen/new_submit_details_screen.dart';
 import '../screen/submit_details_screen.dart';
 
 class CheckoutDetailsWidget extends StatelessWidget {
@@ -72,38 +73,57 @@ class CheckoutDetailsWidget extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             children: [
-             Center(child: _buildHeadline(context, icon: CupertinoIcons.person_crop_circle_badge_checkmark, headline: 'My Customer')),
+             Center(child: _buildHeadline(context, icon: CupertinoIcons.text_badge_checkmark, headline: 'Select Customer')),
+              10.height,
+
+              ListTile(
+               minTileHeight: 0,
+               minVerticalPadding: 0,
+               contentPadding: EdgeInsets.zero,
+               title: Text('Customer Name: _______', style: textStyle12(context, color: CustomColor.descriptionColor),),
+               subtitle: Text('Customer Phone: _______', style: textStyle12(context, color: CustomColor.descriptionColor),),
+             ),
 
               10.height,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomContainer(
-                    border: true,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: CustomColor.appColor,size: 16,),
-                        10.width,
-                        Text('My Customer', style: textStyle12(context, color: CustomColor.appColor),),
-                      ],
-                    ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(),)),
-                  ),
-                  CustomContainer(
-                    border: true,
-                      onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitDetailsScreen(),));
-                      }, child: Row(
+                  Expanded(
+                    child: CustomContainer(
+                      border: true,
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.add, color: CustomColor.appColor, size: 16,),
+                          Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: CustomColor.appColor,size: 16,),
                           10.width,
-                          Text('Add New Customer', style: textStyle12(context, color: CustomColor.appColor),),
+                          Text('My Customer', style: textStyle12(context, color: CustomColor.appColor),),
                         ],
-                      )),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(),)),
+                    ),
+                  ),
+                  Expanded(
+                    child: CustomContainer(
+                      border: true,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add, color: CustomColor.appColor, size: 16,),
+                            10.width,
+                            Text('Add New Customer', style: textStyle12(context, color: CustomColor.appColor),),
+                          ],
+                        ),
+                        onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewSubmitDetailsScreen(),));
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitDetailsScreen(),));
+                      },
+                    ),
+                  ),
+
                 ],
               ),
             ],
@@ -121,7 +141,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Center(child: _buildHeadline(context, icon: CupertinoIcons.circle, headline: 'Best Coupon For You')),
+                  Center(child: _buildHeadline(context, icon: Icons.card_giftcard, headline: 'Best Coupon For You')),
                   
                   InkWell(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),
@@ -149,22 +169,33 @@ class CheckoutDetailsWidget extends StatelessWidget {
                     Text('Extra 00 Off', style: textStyle12(context),),
                     Text('You save an extra ₹00 with this coupon.', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
 
-                    5.height,
+                    10.height,
                     Row(
                       children: [
-                        Expanded(child: TextField(
-                          style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                          decoration: InputDecoration(
-                            labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                            label: Text('Type Coupon Here...')
-                          ),
-                        )),
-                        50.width,
-                        CustomContainer(
-                         border: true,
-                          margin: EdgeInsets.zero,
-                          padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                          child: Text('Apply Coupon', style: textStyle12(context, color: CustomColor.greenColor),),),
+                        Expanded(flex: 3,
+                            child: CustomContainer(
+                              border: true,
+                              height: 40,
+                              margin: EdgeInsets.zero,
+                              child: TextField(
+                                style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                                decoration: InputDecoration(
+                              border: InputBorder.none,
+                              suffixIcon: Icon(CupertinoIcons.check_mark_circled, color: CustomColor.appColor,size: 18,),
+                              labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                              hintText: 'Type Coupon Here...',
+                                ),
+                              ),
+                            )),
+
+                        10.width,
+                        Expanded(
+                          child: CustomContainer(
+                           border: true,
+                            height: 40,
+                            margin: EdgeInsets.zero,
+                            child: Center(child: Text('Apply', style: textStyle12(context, color: CustomColor.appColor),)),),
+                        ),
                       ],
                     )
                   ],

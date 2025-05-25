@@ -69,26 +69,7 @@ class _CustomHighlightServiceState extends State<CustomHighlightService> {
                           assetsImg: data['image'],
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.zero,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomFavoriteButton(),
-                                Container(
-                                    padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                      color: CustomColor.blackColor.withOpacity(0.3),
-                                    ),
-                                    child: Text('⭐ 4.8 (120 Reviews)', style: textStyle12(context, color: CustomColor.whiteColor, fontWeight: FontWeight.w400))),
-                              ],
-                            ),
-                          ),
+                          child: Center(child: Icon(CupertinoIcons.play_circle_fill,color: CustomColor.whiteColor,size: 50,),),
                         ),
                       ),
 

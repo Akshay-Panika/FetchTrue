@@ -5,15 +5,17 @@ import 'package:flutter/cupertino.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 
-class PaymentDoneScreen extends StatelessWidget {
-  const PaymentDoneScreen({super.key});
+class CheckoutPaymentDoneWidget extends StatelessWidget {
+  const CheckoutPaymentDoneWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return  CustomContainer(
+      width: double.infinity,
       height: dimensions.screenHeight*0.7,
        backgroundColor: CustomColor.whiteColor,
-      child: Center(child: Text('Payment Done !', style: textStyle22(context, color: CustomColor.appColor),)),);
+       child: Icon(CupertinoIcons.checkmark_seal_fill, size: dimensions.screenHeight*0.06,color: CustomColor.appColor,),
+    );
   }
 }

@@ -1,7 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
-
-import 'feature/dashboard/screen/dashboard_screen.dart';
 import 'feature/splash_screen/screen/splash_screen.dart';
 
 
@@ -17,9 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // scaffoldBackgroundColor: Color(0xfff9fafb),
         // scaffoldBackgroundColor: Color.fromARGB(255, 242, 242, 247),
         scaffoldBackgroundColor: CustomColor.canvasColor,
-        // scaffoldBackgroundColor: Color(0xfff9fafb),
+
 
         appBarTheme: AppBarTheme(
           color: Colors.white,

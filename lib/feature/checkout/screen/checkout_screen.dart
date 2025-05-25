@@ -3,8 +3,8 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/feature/checkout/screen/payment_done_screen.dart';
-import 'package:bizbooster2x/feature/checkout/screen/payment_screen.dart';
+import 'package:bizbooster2x/feature/checkout/widget/checkout_payment_done_widget.dart';
+import 'package:bizbooster2x/feature/checkout/widget/check_payment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +26,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      // backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Checkout', showBackButton: true,),
+
       body: SafeArea(
           child: SingleChildScrollView(
         child: Column(
@@ -43,17 +43,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _PaymentStep(context, icon: CupertinoIcons.pen, onTap: () {
+                      _PaymentStep(context,
+                        color:  _paymentStep == 0 ? CustomColor.appColor:null,
+                        icon: CupertinoIcons.pen, onTap: () {
                         setState(() {
                           _paymentStep = 0;
                         });
                       },),
-                      _PaymentStep(context, icon: Icons.payment, onTap: () {
+                      _PaymentStep(context,
+                        color:  _paymentStep == 1 ? CustomColor.appColor:null,
+                        icon: Icons.payment, onTap: () {
                         setState(() {
                           _paymentStep = 1;
                         });
                       },),
-                      _PaymentStep(context,divider: false, icon: CupertinoIcons.check_mark_circled, onTap: () {
+                      _PaymentStep(context,
+                        color:  _paymentStep == 2 ? CustomColor.appColor:null,
+                        divider: false, icon: CupertinoIcons.check_mark_circled, onTap: () {
                       setState(() {
                         _paymentStep = 2;
                       });
@@ -82,12 +88,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             _paymentStep ==0?
             CheckoutDetailsWidget(serviceBanner: widget.serviceBanner,):
             _paymentStep ==1?
-            PaymentScreen():
-            PaymentDoneScreen(),
+            CheckPaymentWidget():
+            CheckoutPaymentDoneWidget(),
             50.height,
           ],
         ),
-      )),
+      )
+      ),
     );
   }
 }
@@ -97,6 +104,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 Widget _PaymentStep(BuildContext context,{
   bool? divider = true,
   required IconData icon,
+  Color? color,
   VoidCallback? onTap,
 }){
 
@@ -109,7 +117,7 @@ Widget _PaymentStep(BuildContext context,{
         onTap: onTap,
         child: CircleAvatar(
           backgroundColor: CustomColor.canvasColor,
-          child: Icon(icon, color: CustomColor.appColor,),
+          child: Icon(icon, color: color ?? CustomColor.greyColor,),
         ),
       ),
 
@@ -118,7 +126,7 @@ Widget _PaymentStep(BuildContext context,{
         height:3,
         width: dimensions.screenHeight*0.12,
         padding: EdgeInsets.zero,
-        backgroundColor: CustomColor.appColor,)
+        backgroundColor: color ?? CustomColor.greyColor,)
     ],
   );
 }

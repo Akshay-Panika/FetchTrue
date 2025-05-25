@@ -1,3 +1,6 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +120,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
               child: Center(
                 child: Text(
                   filters[index],
-                  style: TextStyle(
+                  style: textStyle12(context,
                     color: isSelected ? Colors.blueAccent : Colors.black87,
                     fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
                   ),
@@ -143,19 +146,15 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
             children: [
               Text(
                 'Service Name',
-                style: const TextStyle(fontWeight: FontWeight.w500),
+                style:  textStyle14(context),
               ),
-              //const Icon(Icons.more_vert, color: Colors.black54),
-              _buildStatusBadge(booking['status']),
+             _buildStatusBadge(booking['status']),
             ],
           ),
-          Text(
-            'Booking# ${booking['id']}',
-            style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 5),
-          Text('Booking Date : ${booking['bookingDate']}', style: const TextStyle(fontSize: 12)),
-          Text('Service Date : ${booking['serviceDate']}', style: const TextStyle(fontSize: 12)),
+          Text('Booking# ${booking['id']}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+
+          Text('Booking Date : ${booking['bookingDate']}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          Text('Service Date : ${booking['serviceDate']}', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
           const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,11 +163,11 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
               Row(
                 spacing: 5,
                 children: [
-                  Text("Amount :",style: TextStyle(fontSize: 12,),),
+                  Text("Amount :",style: textStyle12(context, fontWeight: FontWeight.w400),),
                   CustomAmountText(amount:  booking['amount']),
                 ],
               ),
-              Text("Cashback : 00.0",style: TextStyle(fontSize: 12,),),
+              Text("Cashback : 00.0",style: textStyle12(context, fontWeight: FontWeight.w400),),
             ],
           ),
         ],
@@ -194,9 +193,9 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.circle, size: 10, color: color),
-          const SizedBox(width: 6),
+          5.width,
           Text(
-            status, style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w500),),
+            status, style: textStyle12(context, color: color,),),
         ],
       ),
     );
