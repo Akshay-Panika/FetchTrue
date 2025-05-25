@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class CustomHeadline extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(headline??'Headline', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500),),
+          Text(headline??'Headline', style: textStyle14(context),),
           if (viewSeeAll!)InkWell(
               onTap: onTap,
               child: Row(

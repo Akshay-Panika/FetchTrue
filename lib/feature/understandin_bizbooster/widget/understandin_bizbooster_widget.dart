@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,12 +24,22 @@ class UnderstandingBizBoosterWidget extends StatelessWidget {
           SizedBox(
             height: 210,
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: 3,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
               return CustomContainer(
                 width: 150, backgroundColor: Colors.white,
                 margin: EdgeInsets.only(left: 15, bottom: 10),
+                padding: EdgeInsets.zero,
+                assetsImg: CustomImage.nullImage,
+                child: Card.filled(
+                  margin: EdgeInsets.zero,
+                  shape: OutlineInputBorder(
+                      borderSide: BorderSide(color: CustomColor.appColor, width: 0.2),
+                      borderRadius: BorderRadius.circular(10,)),
+                  color: Colors.black.withOpacity(0.1),
+                  child: Icon(Icons.play_circle,color: CustomColor.whiteColor, size: 40,),
+                ),
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => UnderstandingBizBoosterScreen(),)),
               );
             },),

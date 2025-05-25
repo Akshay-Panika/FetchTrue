@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class PartnerReviewWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 return CustomContainer(
                   border: true,
+                  assetsImg: CustomImage.thumbnailImage,
                   width: 300, backgroundColor: Colors.white,
                   margin: EdgeInsets.only(left: 15, bottom: 10),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PartnerReviewScreen(),)),

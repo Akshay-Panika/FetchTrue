@@ -44,7 +44,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       _PaymentStep(context,
                         color:  _paymentStep == 0 ? CustomColor.appColor:null,
-                        icon: CupertinoIcons.pen, onTap: () {
+                        icon: CupertinoIcons.doc_fill, onTap: () {
                         setState(() {
                           _paymentStep = 0;
                         });
@@ -58,7 +58,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       },),
                       _PaymentStep(context,
                         color:  _paymentStep == 2 ? CustomColor.appColor:null,
-                        divider: false, icon: CupertinoIcons.check_mark_circled, onTap: () {
+                        divider: false, icon: CupertinoIcons.checkmark_seal_fill, onTap: () {
                       setState(() {
                         _paymentStep = 2;
                       });
@@ -116,7 +116,7 @@ Widget _PaymentStep(BuildContext context,{
         onTap: onTap,
         child: CircleAvatar(
           backgroundColor: CustomColor.canvasColor,
-          child: Icon(icon, color: color ?? CustomColor.greyColor,),
+          child: Icon(icon, color: color ?? CustomColor.greyColor,size: 20,),
         ),
       ),
 
