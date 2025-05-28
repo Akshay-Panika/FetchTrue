@@ -82,18 +82,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 labelText: "Full Name",
               ),
               SizedBox(height: 12),
-          
-              CustomTextField(
-                controller: _emailController,
-                labelText: "Email",
-                keyboardType: TextInputType.emailAddress,
-              ),
-              SizedBox(height: 12),
+
           
               CustomTextField(
                 controller: _phoneController,
                 labelText: "Phone Number",
                 keyboardType: TextInputType.phone,
+              ),
+              SizedBox(height: 12),
+
+              CustomTextField(
+                controller: _emailController,
+                labelText: "Email",
+                keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 12),
           

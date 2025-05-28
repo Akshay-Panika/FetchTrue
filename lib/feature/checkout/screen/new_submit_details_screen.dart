@@ -38,6 +38,9 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
             _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...'),
             15.height,
 
+            _formField(context,"Email", isRequired: true,hint: 'Enter Email Id...'),
+            15.height,
+
             CustomContainer(
               border: true,
               margin: EdgeInsets.zero,
@@ -178,6 +181,7 @@ Widget _buildLocationCard(BuildContext context,{
       border: true,
       onTap: onTap ,
       margin: EdgeInsets.zero,
+      backgroundColor: CustomColor.whiteColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
