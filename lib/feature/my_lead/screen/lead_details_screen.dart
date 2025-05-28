@@ -5,10 +5,14 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/costants/custom_icon.dart';
+import '../../../helper/Contact_helper.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
   const LeadDetailsScreen({super.key});
@@ -21,25 +25,39 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Scaffold(
       appBar: CustomAppBar(title: 'Lead Details', showBackButton: true,),
 
-      body: SafeArea(child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            _buildBookingCard(context),
-            SizedBox(height: 10,),
+      body: SafeArea(child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  _buildBookingCard(context),
+                  SizedBox(height: dimensions.screenHeight*0.015,),
+            
+                  _customerDetails(context),
+                  SizedBox(height: dimensions.screenHeight*0.015,),
+            
+                  _buildPaymentStatus(context),
+                  SizedBox(height: dimensions.screenHeight*0.015,),
+            
+                  _buildBookingSummary(context),
 
-            _customerDetails(context),
-            SizedBox(height: 10,),
+                ],
+              ),
+            ),
+          ),
 
-            _buildPaymentStatus(context),
-            SizedBox(height: 10,),
-
-            _buildBookingSummary(context)
-          ],
-        ),
+          Padding(
+            padding:  EdgeInsets.all(dimensions.screenHeight*0.015),
+            child: CustomButton(text: 'Pay Now',),
+          )
+        ],
       )),
     );
   }
@@ -111,6 +129,9 @@ Widget _buildStatusBadge(BuildContext context,String status) {
 
 
 Widget _customerDetails(BuildContext context){
+  final phoneNumber = '918989207770';
+  final message = 'Hello, I am contacting you from BizBooster 2X.';
+
   return CustomContainer(
     border: true,
     backgroundColor: Colors.white,
@@ -138,15 +159,21 @@ Widget _customerDetails(BuildContext context){
             Text('Address: Waidhan Singrauli MP',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
           ],
         ),
-        
+
         Positioned(
-            top: 0,right: 0,
+            top: 20,right: 20,
             child:  Row(
-          children: [
-            IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.phone_fill, size: 22, color: CustomColor.appColor,)),
-            IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.phone_circle_fill, size: 22, color: CustomColor.appColor,)),
-          ],
-        ))
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(onTap: () => ContactHelper.whatsapp(phoneNumber.toString(), message),
+                    child: Image.asset(CustomIcon.whatsappIcon, height: 25, )),
+                40.width,
+                InkWell(onTap: () => ContactHelper.call(phoneNumber.toString()),
+                    child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
+
+              ],
+            ))
       ],
     ),
   );

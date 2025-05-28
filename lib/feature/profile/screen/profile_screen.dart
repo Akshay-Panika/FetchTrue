@@ -1,10 +1,13 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../../../helper/Image_picker_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -45,6 +48,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print("Address: ${_addressController.text}");
   }
 
+  File? _selectedProfile;
+
+  Future<void> pickLogo() async {
+    final image = await ImagePickerHelper.pickImage();
+    if (image != null) {
+      setState(() {
+        _selectedProfile = image;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,25 +71,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Profile Picture and Name Section
+
+              /// Profile Picture and Name Section
               Stack(
                 children: [
                   CustomContainer(
                     width: 100,
                     height: 100,
-                  border: true,
-                  assetsImg: 'assets/image/Null_Profile.jpg',
+                    border: true,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: CustomColor.whiteColor,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: _selectedProfile != null
+                          ? Image.file(_selectedProfile!, fit: BoxFit.cover,)
+                          : Image.asset('assets/image/Null_Profile.jpg', fit: BoxFit.cover,),
+                    ),
                   ),
-                  
+
+
                   Positioned(
                       bottom: 0, right: 0,
-                      child: CircleAvatar(
-                          backgroundColor: Colors.grey.shade50,
-                          child: Icon(Icons.edit, color: CustomColor.appColor,)))
+                      child: InkWell(
+                        onTap: () => pickLogo(),
+                        child: CircleAvatar(
+                            backgroundColor: Colors.grey.shade50,
+                            child: Icon(Icons.edit, color: CustomColor.appColor,)),
+                      ))
                 ],
               ),
               SizedBox(height: 10),
-          
+
               // Profile Form Fields with CustomTextField
               CustomTextField(
                 controller: _nameController,
@@ -83,7 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               SizedBox(height: 12),
 
-          
               CustomTextField(
                 controller: _phoneController,
                 labelText: "Phone Number",
@@ -97,13 +122,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 12),
-          
+
               CustomTextField(
                 controller: _addressController,
                 labelText: "Address",
               ),
               SizedBox(height: 50),
-          
+
               // Update Profile Button
               CustomButton(text: "Update Profile",),
             ],

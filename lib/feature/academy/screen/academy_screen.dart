@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
+import '../widget/academy_banner_widget.dart';
 
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
@@ -20,15 +22,15 @@ class AcademyScreen extends StatelessWidget {
       {'title': 'Recorded Webinars', 'icon': Icons.video_library},
       {'title': 'Documents', 'icon': Icons.insert_drive_file},
     ];
+    Dimensions dimensions = Dimensions(context);
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Academy', showNotificationIcon: true,),
       body: Column(
         children: [
 
-          // CustomBanner(),
-          SizedBox(height: 20,),
-
+          /// Banner
+          AcademyBannerWidget(),
 
           /// Services
           Column(

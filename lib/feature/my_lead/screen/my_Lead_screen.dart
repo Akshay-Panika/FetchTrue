@@ -71,6 +71,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Scaffold(
       appBar: CustomAppBar(title: 'My Leads',
         showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
@@ -78,14 +79,18 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: dimensions.screenHeight*0.015),
+
+            /// filter
             _buildFilterChips(),
-            const SizedBox(height: 10),
+            SizedBox(height: dimensions.screenHeight*0.015),
+
             Expanded(
               child: ListView.builder(
                 itemCount: filteredBookings.length,
+                padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03,),
                 itemBuilder: (context, index) {
-                  return _buildBookingCard(filteredBookings[index]);
+                  return _buildBookingCard(dimensions: dimensions, booking: filteredBookings[index]);
                 },
               ),
             ),
@@ -133,10 +138,12 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
     );
   }
 
-  Widget _buildBookingCard(Map<String, dynamic> booking) {
+  Widget _buildBookingCard({required Dimensions dimensions, required Map<String, dynamic> booking}) {
+
     return CustomContainer(
+      border: false,
       backgroundColor: Colors.white,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.015),
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(),)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,15 +162,15 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
           Text('Booking Date : ${booking['bookingDate']}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
           Text('Service Date : ${booking['serviceDate']}', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          const SizedBox(height: 5),
+           SizedBox(height: dimensions.screenHeight*0.005),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
 
               Row(
-                spacing: 5,
                 children: [
                   Text("Amount :",style: textStyle12(context, fontWeight: FontWeight.w400),),
+                  SizedBox(width: dimensions.screenWidth*0.01),
                   CustomAmountText(amount:  booking['amount']),
                 ],
               ),
