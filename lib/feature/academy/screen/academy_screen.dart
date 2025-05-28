@@ -1,6 +1,7 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
+import 'package:bizbooster2x/feature/academy/screen/two_min_gyan_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,7 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../widget/academy_banner_widget.dart';
+import 'certificate_screen.dart';
 
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
@@ -73,6 +75,19 @@ class AcademyScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      index ==0?
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CertificateScreen(),)):
+                      index ==1?
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
+                      index ==2?
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
+                      index ==3?
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
+                      index ==4?
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),));
+                    },
                   );
                 },
               ),
