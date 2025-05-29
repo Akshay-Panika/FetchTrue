@@ -37,11 +37,11 @@ class _ModuleCategoryWidgetState extends State<ModuleCategoryWidget> {
             // final modules = state.moduleCategoryModel;
             final modules = state.moduleCategoryModel.where((moduleCategory) =>
             moduleCategory.module.id == widget.moduleIndexId
-                && moduleCategory.subcategoryCount !=0
+                //&& moduleCategory.subcategoryCount !=0
             ).toList();
 
             if (modules.isEmpty) {
-              return const Center(child: Text('No modules found.'));
+              return const Center(child: Text('No Category found.'));
             }
 
             int serviceCount = modules.length;

@@ -49,7 +49,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
                         ),
                       ),
                       CustomAmountText(
-                        amount: '00.00',
+                        amount: services.first.franchiseDetails.commission,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
@@ -82,7 +82,6 @@ Widget _buildFranchiseCard({
   final index = services.first.franchiseDetails;
   final sections = [
     _Section('Overview', index.overview),
-    _Section('Commission', index.commission),
     _Section('How It Works', index.howItWorks),
     _Section('T&C', index.termsAndConditions),
   ];
@@ -112,7 +111,6 @@ Widget _buildFranchiseCard({
                   ),
                 },
               ),
-
             ],
           ),
         );

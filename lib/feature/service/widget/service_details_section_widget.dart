@@ -63,26 +63,21 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           child: CustomRattingAndReviews()),
                     ],
                   ),
+
                   10.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                  if (data.keyValues != null && data.keyValues!.isNotEmpty)
+                    ...data.keyValues!.entries.map((entry) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('Keys :', style: textStyle12(context),),
+                          Text('${entry.key} :', style: textStyle12(context)),
                           5.width,
-                          Text('value',style: textStyle12(context),),
+                          Text(entry.value, style: textStyle12(context)),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Text('Keys :', style: textStyle12(context),),
-                          5.width,
-                          Text('value',style: textStyle12(context),),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ))
+
                 ],
               ),
             ),
@@ -104,7 +99,8 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
   final sections = [
     _Section('Benefits', index.benefits),
     _Section('Overview', index.overview),
-    _Section('Highlight', index.highlight),
+    // _Section('Highlight', index.highlight as String?),
+    _Section('Highlight', null, highlightImages: index.highlight),
     _Section('Document', index.document),
     _Section('Why Choose BizBooster', null, whyChoose: index.whyChoose),
     _Section('How it work', index.howItWorks),
@@ -121,7 +117,7 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
 
       if (section.whyChoose != null) return _buildWhyChoose(context, section.whyChoose!);
       if (section.faqs != null)      return _buildFAQs(context, section.faqs!);
-
+      if (section.highlightImages != null )  return _buildHighlight(context,images: section.highlightImages!);
       return CustomContainer(
         border: true,
         borderColor: CustomColor.greyColor,
@@ -151,9 +147,36 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
 class _Section {
   final String title;
   final String? html;
+  final List<String>? highlightImages;
   final List<WhyChoose>? whyChoose;
   final List<Faq>? faqs;
-  _Section(this.title, this.html, {this.whyChoose, this.faqs});
+  _Section(this.title, this.html, {this.highlightImages, this.whyChoose, this.faqs});
+}
+
+
+Widget _buildHighlight(BuildContext context,{required List<String> images,}){
+  return CustomContainer(
+      border: true,
+      borderColor: CustomColor.greyColor,
+      backgroundColor: Colors.white,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Highlight', style: textStyle14(context)),
+          15.height,
+          ListView.builder(
+              itemCount: images.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+              return Image.network(images[index].toString());
+              },
+          ),
+        ],
+      ),
+  );
 }
 
 Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {

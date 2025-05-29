@@ -2,11 +2,9 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/widgets/custom_appbar.dart';
 import '../../auth/screen/auth_screen.dart';
 import '../../favorite/screen/favorite_screen.dart';
-import '../../my_lead/screen/my_Lead_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/screen/profile_screen.dart';
 import '../../team_lead/screen/team_lead_screen.dart';

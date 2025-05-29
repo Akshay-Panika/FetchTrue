@@ -179,7 +179,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
 
                             final data = services[index];
                             return CustomContainer(
-                              height: 200,
+                              height: 250,
                               border: false,
                               backgroundColor: Colors.white,
                               padding: EdgeInsets.zero,
@@ -247,26 +247,19 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                             ),
                                           ],
                                         ),
-                                        // 5.height,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
+                                         5.height,
+                                        if (data.keyValues != null && data.keyValues!.isNotEmpty)
+                                          ...data.keyValues!.entries.map((entry) => Padding(
+                                            padding: const EdgeInsets.only(bottom: 6.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text('Keys :', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                Text('${entry.key} :', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
                                                 5.width,
-                                                Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
                                               ],
                                             ),
-                                            Row(
-                                              children: [
-                                                Text('Keys :', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                                5.width,
-                                                Text('value',style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                          )),
                                         10.height,
                                       ],
                                     ),

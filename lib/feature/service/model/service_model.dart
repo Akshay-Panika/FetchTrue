@@ -8,6 +8,8 @@ class ServiceModel {
   final Subcategory subcategory;
   final ServiceDetails serviceDetails;
   final FranchiseDetails franchiseDetails;
+  final Map<String, String>? keyValues;
+
 
   ServiceModel({
     required this.id,
@@ -18,9 +20,20 @@ class ServiceModel {
     required this.subcategory,
     required this.serviceDetails,
     required this.franchiseDetails,
+    this.keyValues,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+
+    Map<String, String>? keyValuesMap;
+    if (json['keyValues'] != null) {
+      keyValuesMap = Map.fromEntries(
+        (json['keyValues'] as List).map(
+              (kv) => MapEntry(kv['key'] as String, kv['value'] as String),
+        ),
+      );
+    }
+
     return ServiceModel(
       id: json['_id'],
       serviceName: json['serviceName'],
@@ -30,13 +43,14 @@ class ServiceModel {
       subcategory: Subcategory.fromJson(json['subcategory']),
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
       franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
+      keyValues: keyValuesMap
     );
   }
 }
 
 class ServiceDetails {
   final String overview;
-  final String highlight;
+  final List<String> highlight;
   final String benefits;
   final String howItWorks;
   final String termsAndConditions;
@@ -60,7 +74,8 @@ class ServiceDetails {
   factory ServiceDetails.fromJson(Map<String, dynamic> json) {
     return ServiceDetails(
       overview: json['overview'],
-      highlight: json['highlight'],
+      // highlight: json['highlight'],
+      highlight: List<String>.from(json['highlight'] ?? []),
       benefits: json['benefits'],
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
