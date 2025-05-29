@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
@@ -7,10 +5,8 @@ import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_icon.dart';
 import '../../../helper/Contact_helper.dart';
 
@@ -80,22 +76,23 @@ Widget _buildBookingCard(BuildContext context){
             _buildStatusBadge(context,'Pending'),
           ],
         ),
-        _iconText(context,icon: Icons.calendar_month, text: 'Timing Details : 6 May 2025 08:50 PM'),
-        _iconText(context,icon: Icons.calendar_month, text: 'Services Schedule Date : 6 May 2025 08:50 PM'),
-        _iconText(context,icon: Icons.location_on_outlined, text: 'Address : Office ve jkw 3br#429, Amanora Chambers Pune'),
+        _iconText(icon: Icons.calendar_month, text: 'Timing Details : 6 May 2025 08:50 PM'),
+        _iconText(icon: Icons.calendar_month, text: 'Services Schedule Date : 6 May 2025 08:50 PM'),
+        _iconText(icon: Icons.location_on_outlined, text: 'Address : Office ve jkw 3br#429, Amanora Chambers Pune'),
       ],
     ),
   );
 }
 
-Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? iconColor, String? text, Color? textColor,FontWeight? fontWeight}){
+Widget _iconText({double? fontSize, IconData? icon, double? iconSize,Color? iconColor, String? text, Color? textColor,FontWeight? fontWeight}){
   return Row(
     spacing: 10,
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
       Icon(icon!, size: iconSize ?? 14,color: iconColor ?? Colors.grey,),
-      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
+      Expanded(child: Text(text!, style: TextStyle(fontSize: fontSize  ?? 12, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
+                                         // textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
     ],
   );
 }
@@ -141,10 +138,12 @@ Widget _customerDetails(BuildContext context){
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _iconText(context,
+            _iconText(
                 icon: Icons.person,
-                iconSize: 16,iconColor: CustomColor.appColor,
+                iconSize: 16,
+                iconColor: CustomColor.appColor,
                 text: 'Customer Details',
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 textColor: Colors.black,),
             
@@ -190,7 +189,7 @@ Widget _buildPaymentStatus(BuildContext context){
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _iconText(context,
+              _iconText(
                   fontWeight: FontWeight.w500,
                   icon: Icons.currency_rupee, iconColor: CustomColor.appColor,
                   text: 'Payment Status',textColor: Colors.black

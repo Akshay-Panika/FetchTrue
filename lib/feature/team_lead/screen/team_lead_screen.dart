@@ -251,7 +251,7 @@ class MyTeamSection extends StatelessWidget {
                   Expanded(child: CustomContainer(
                     border: true,
                     backgroundColor: CustomColor.whiteColor,
-                    child: Center(child: Text('Conform', style: textStyle16(context, color: CustomColor.appColor),)),)),
+                    child: Center(child: Text('Confirm', style: textStyle16(context, color: CustomColor.appColor),)),)),
                 ],
               ),
             ),

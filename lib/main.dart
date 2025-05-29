@@ -1,7 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
 import 'feature/splash_screen/screen/splash_screen.dart';
-import 'helper/api_helper.dart';
 
 
 void main() {

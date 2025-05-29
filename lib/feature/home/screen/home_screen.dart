@@ -142,12 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                  crossAxisAlignment: CrossAxisAlignment.center,
                                  children: [
-                                   Expanded(child: CustomContainer(
-                                     backgroundColor: Colors.transparent,
-                                     networkImg: module.image,
-                                     padding: EdgeInsets.zero,
-                                     margin: EdgeInsets.zero,
-                                   )),
+                                  Expanded(
+                                     child: CustomContainer(
+                                         networkImg: module.image,
+                                       margin: EdgeInsets.zero,
+                                       backgroundColor: Colors.transparent,
+                                     ),
+                                   ),
                                    Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
                                  ],
                                ),

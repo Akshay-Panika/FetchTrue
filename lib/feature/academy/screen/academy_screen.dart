@@ -1,8 +1,8 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
+import 'package:bizbooster2x/feature/academy/screen/recorded_webinar_screen.dart';
 import 'package:bizbooster2x/feature/academy/screen/two_min_gyan_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_appbar.dart';
@@ -10,43 +10,76 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../widget/academy_banner_widget.dart';
 import 'certificate_screen.dart';
+import 'document_screen.dart';
+import 'live_webinar_screen.dart';
 
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Dimensions helper (optional, if you use it for responsive spacing)
+    final Dimensions dimensions = Dimensions(context);
 
     final List<Map<String, dynamic>> _services = [
-      {'title': 'Certificate', 'icon': Icons.verified},
-      {'title': '2 Min. Gyan', 'icon': Icons.lightbulb_outline},
-      {'title': 'Live Webinars', 'icon': Icons.wifi},
-      {'title': 'Recorded Webinars', 'icon': Icons.video_library},
-      {'title': 'Documents', 'icon': Icons.insert_drive_file},
+      {
+        'title': 'Certificate',
+        'icon': Icons.verified,
+        'screenBuilder': () => CertificateScreen(),
+      },
+      {
+        'title': '2 Min. Gyan',
+        'icon': Icons.lightbulb_outline,
+        'screenBuilder': () => TwoMinGyanScreen(),
+      },
+      {
+        'title': 'Live Webinar',
+        'icon': Icons.wifi,
+        'screenBuilder': () => LiveWebinarScreen(),
+      },
+      {
+        'title': 'Recorded Webinar',
+        'icon': Icons.video_library,
+        'screenBuilder': () => RecordedWebinarScreen(),
+      },
+      {
+        'title': 'Documents',
+        'icon': Icons.insert_drive_file,
+        'screenBuilder': () => DocumentScreen(),
+      },
     ];
-    Dimensions dimensions = Dimensions(context);
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Academy', showNotificationIcon: true,),
+      appBar: CustomAppBar(
+        title: 'Academy',
+        showNotificationIcon: true,
+      ),
       body: Column(
         children: [
+          /// Banner Section
+          const AcademyBannerWidget(),
 
-          /// Banner
-          AcademyBannerWidget(),
-
-          /// Services
+          /// Tutorials Headline and Grid
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomHeadline(headline: 'Tutorials',viewSeeAll: false,),
+              const CustomHeadline(
+                headline: 'Tutorials',
+                viewSeeAll: false,
+              ),
 
+
+              /// Grid of services
               GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: _services.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 1.11 / 1,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
                 ),
                 itemBuilder: (context, index) {
                   final item = _services[index];
@@ -54,7 +87,17 @@ class AcademyScreen extends StatelessWidget {
                   return CustomContainer(
                     border: true,
                     backgroundColor: Colors.white,
-                    padding: EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    onTap: () {
+                      final screenBuilder = item['screenBuilder'] as Widget Function();
+                      if (screenBuilder != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => screenBuilder()),
+                        );
+                      }
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,45 +105,40 @@ class AcademyScreen extends StatelessWidget {
                         Expanded(
                           child: CustomContainer(
                             backgroundColor: Colors.transparent,
-                            child: Icon(item['icon'], size: 30,color: CustomColor.appColor,),
+                            child: Icon(
+                              item['icon'] as IconData,
+                              size: 30,
+                              color: CustomColor.appColor,
+                            ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                           child: Text(
-                            item['title'],
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            item['title'] as String,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
                       ],
                     ),
-                    onTap: () {
-                      index ==0?
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CertificateScreen(),)):
-                      index ==1?
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
-                      index ==2?
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
-                      index ==3?
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
-                      index ==4?
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),)):
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TwoMinGyanScreen(),));
-                    },
                   );
                 },
               ),
             ],
           ),
-          SizedBox(height: 20,),
 
+          const SizedBox(height: 20),
 
-          Expanded(
+          /// Flexible empty container (can be used for footer or other content)
+          const Expanded(
             child: CustomContainer(
-             backgroundColor: Colors.white,
+              backgroundColor: Colors.white,
             ),
-          )
+          ),
         ],
       ),
     );
