@@ -169,6 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// Services for you
                 CustomServiceList(headline: 'Services for you',),
+                SizedBox(height: dimensions.screenHeight*0.01,),
 
                 /// Highlight service
                 CustomHighlightService(),
@@ -204,9 +205,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                 ),
+                SizedBox(height: dimensions.screenHeight*0.01,),
+
+                CustomServiceList(headline: 'Recommended Services For You'),
 
                 ///  Service Provider
                 ServiceProviderWidget(),
+
+                CustomContainer(
+                  height: 200,
+                  backgroundColor: Colors.green.shade50,
+                  borderRadius: false,
+                  margin: EdgeInsets.zero,
+                  width: double.infinity,
+                  networkImg: 'https://as1.ftcdn.net/v2/jpg/13/73/00/70/1000_F_1373007001_pNwHzYSQGbkMZFMsGXElwi4gelfZiLgJ.jpg',
+                  child: Container(
+                    color: Colors.black.withOpacity(0.1),
+                    child: Text('Recommended\nExperts For You',
+                      style: textStyle22(context, color: CustomColor.whiteColor, fontWeight: FontWeight.bold),),),
+                ),
+
+                CustomContainer(
+                  height: 200,
+                  backgroundColor: Colors.teal.shade50,
+                  networkImg: 'https://as2.ftcdn.net/v2/jpg/03/29/21/77/1000_F_329217727_YOIkxbIXlUuAJ5Oxw12exTAogqfO2IxQ.jpg',
+                  child: Container(
+                    color: Colors.black.withOpacity(0.1),
+                    child: Center(
+                      child: Text('Explore Near By provider',
+                        style: textStyle22(context, color: CustomColor.appColor, fontWeight: FontWeight.bold),),
+                    ),),
+                ),
 
                 /// Understanding bizBooster
                 UnderstandingBizBoosterWidget(),

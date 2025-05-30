@@ -1,5 +1,6 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/feature/checkout/screen/coupon_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_appbar.dart';
@@ -42,7 +43,7 @@ class MoreScreen extends StatelessWidget {
                   _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),),
                   _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
-                  _buildTile(context, Icons.local_offer_outlined, "Coupon",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
+                  _buildTile(context, Icons.local_offer_outlined, "Coupon",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),),
 
                 ]),
                 const SizedBox(height: 5),

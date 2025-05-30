@@ -60,7 +60,7 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
               _selectedId = modulesSubCategory.first.id;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 widget.onChanged?.call(_selectedId);
-                setState(() {}); // force rebuild with selected ID
+                setState(() {});
               });
             }
             return  Container(

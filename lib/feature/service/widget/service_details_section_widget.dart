@@ -196,24 +196,32 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
           physics: NeverScrollableScrollPhysics(),
           itemCount: list.length,
           itemBuilder: (context, index) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top:2.0, right: 5),
-                  child: Icon(Icons.circle_outlined, size: 14, color: CustomColor.greyColor),
-                ),
-                5.width,
-                Expanded(child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(list.first.title, style: textStyle12(context)),
-                    5.height,
-                    Text(list.first.description, style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-                  ],
-                )),
-              ],
+            return
+              list.first.title == null ?
+              Image.network(list.first.image.toString()):
+              Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(list.first.title.toString(), style: textStyle12(context)),
+                      5.height,
+                      Text(list.first.description.toString(), style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                    ],
+                  )),
+                  Expanded(
+                    child: CustomContainer(
+                      height: 100,
+                      networkImg: list.first.image,
+                      margin: EdgeInsets.zero,
+                    ),
+                  )
+                ],
+              )
             );
           },)
       ],
@@ -237,16 +245,26 @@ Widget _buildFAQs(BuildContext context, List<Faq> list) {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            return ExpansionTile(
-              shape: InputBorder.none,
-              tilePadding: EdgeInsets.zero,
-              childrenPadding: EdgeInsets.zero,
-              title: Text(list.first.question, style: textStyle14(context)),
-              children: [
-                Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(list.first.answer)),
-              ],
+            return Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,    // disables ripple
+                highlightColor: Colors.transparent, // disables highlight
+              ),
+              child: ExpansionTile(
+                // initiallyExpanded: true,
+                backgroundColor: CustomColor.whiteColor,
+                iconColor: CustomColor.appColor,
+                shape: InputBorder.none,
+                childrenPadding: EdgeInsets.zero,
+                collapsedShape: InputBorder.none,
+                tilePadding: EdgeInsets.zero,
+                title: Text(list.first.question, style: textStyle14(context)),
+                children: [
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(list.first.answer)),
+                ],
+              ),
             );
           },
         ),

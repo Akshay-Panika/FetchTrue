@@ -140,14 +140,14 @@ class ExtraSection {
 }
 
 class WhyChoose {
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
   final String? image;
   final String id;
 
   WhyChoose({
-    required this.title,
-    required this.description,
+    this.title,
+    this.description,
     this.image,
     required this.id,
   });

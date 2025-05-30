@@ -23,6 +23,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       appBar: const CustomAppBar(
         title: 'Favorite',
         showBackButton: true,
+        showSearchIcon: true,
       ),
       body: SafeArea(
         child: Column(
