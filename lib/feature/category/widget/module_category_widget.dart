@@ -45,67 +45,64 @@ class _ModuleCategoryWidgetState extends State<ModuleCategoryWidget> {
             }
 
             int serviceCount = modules.length;
-            return Container(
-              color: CustomColor.appColor.withOpacity(0.05),
-              child: Column(
-                children: [
-                  /// Headline
-                  CustomHeadline(headline: "Services"),
+            return Column(
+              children: [
+                /// Headline
+                CustomHeadline(headline: "Services"),
 
-                  /// Category
-                  Container(
-                    height: serviceCount > 3 ? 150 : 70,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: GridView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: serviceCount,
-                      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: serviceCount > 3 ? 2 :1,
-                        childAspectRatio: 1 / 2.5,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        final category = modules[index];
-                        serviceCount = modules.length;
-                        return CustomContainer(
-                          padding: EdgeInsets.zero,
-                          margin: EdgeInsets.zero,
-                          backgroundColor: Colors.white,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ModuleSubcategoryScreen(
-                                  // headline: category.name,
-                                  categoryId: category.id,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              CustomContainer(
-                                width: 80,
-                                networkImg: category.image ?? '',margin: EdgeInsets.zero,),
-
-                              Expanded(
-                                child: Text(
-                                  category.name ?? '',
-                                  style: textStyle12(context),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                              10.width,
-                            ],
-                          ),
-                        );
-                      },
+                /// Category
+                Container(
+                  height: serviceCount > 3 ? 150 : 70,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: serviceCount,
+                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: serviceCount > 3 ? 2 :1,
+                      childAspectRatio: 1 / 2.5,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
                     ),
+                    itemBuilder: (context, index) {
+                      final category = modules[index];
+                      serviceCount = modules.length;
+                      return CustomContainer(
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
+                        backgroundColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ModuleSubcategoryScreen(
+                                // headline: category.name,
+                                categoryId: category.id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CustomContainer(
+                              width: 80,
+                              networkImg: category.image ?? '',margin: EdgeInsets.zero,),
+
+                            Expanded(
+                              child: Text(
+                                category.name ?? '',
+                                style: textStyle12(context),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            10.width,
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                  SizedBox(height: dimensions.screenHeight*0.02,),
-                ],
-              ),
+                ),
+                SizedBox(height: dimensions.screenHeight*0.02,),
+              ],
             );
 
           }

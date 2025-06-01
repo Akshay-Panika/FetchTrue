@@ -12,6 +12,7 @@ import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
+import '../../business_idea/screen/business_idea_screen.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SliverAppBar(
             toolbarHeight: 60,
             floating: true,
-            backgroundColor: Colors.grey.shade100,
+            backgroundColor: CustomColor.canvasColor,
             flexibleSpace: CustomSearchBar(
               onTap: () => Navigator.push(
                 context,
@@ -177,6 +178,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 /// Popular Services
                 CustomServiceList(headline: 'Popular Services',),
 
+                CustomContainer(
+                  height: 200,
+                  border: true,
+                  backgroundColor: Colors.green.shade50,
+                  width: double.infinity,
+                  networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessIdeaScreen(),)),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0, bottom: 15),
+                      child: Container(
+                          color: CustomColor.whiteColor,
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text('Contact Us', style: textStyle16(context, color: CustomColor.appColor),)),
+                    ),
+                  ),
+                ),
 
                 /// Refer and earn
                 CustomContainer(
@@ -212,23 +231,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ///  Service Provider
                 ServiceProviderWidget(),
 
-                CustomContainer(
-                  height: 200,
-                  backgroundColor: Colors.green.shade50,
-                  borderRadius: false,
-                  margin: EdgeInsets.zero,
-                  width: double.infinity,
-                  networkImg: 'https://as1.ftcdn.net/v2/jpg/13/73/00/70/1000_F_1373007001_pNwHzYSQGbkMZFMsGXElwi4gelfZiLgJ.jpg',
-                  child: Container(
-                    color: Colors.black.withOpacity(0.1),
-                    child: Text('Recommended\nExperts For You',
-                      style: textStyle22(context, color: CustomColor.whiteColor, fontWeight: FontWeight.bold),),),
-                ),
+
 
                 CustomContainer(
                   height: 200,
+                  borderRadius: false,
+                  margin: EdgeInsets.zero,
                   backgroundColor: Colors.teal.shade50,
-                  networkImg: 'https://as2.ftcdn.net/v2/jpg/03/29/21/77/1000_F_329217727_YOIkxbIXlUuAJ5Oxw12exTAogqfO2IxQ.jpg',
                   child: Container(
                     color: Colors.black.withOpacity(0.1),
                     child: Center(

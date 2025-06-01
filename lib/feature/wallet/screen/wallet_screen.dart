@@ -1,13 +1,13 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
@@ -15,31 +15,49 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
        appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
       body:  SafeArea(
         child: DefaultTabController(
           length: 3,
           child: Column(
             children: [
-              20.height,
-              _buildStatsCard(),
-              20.height,
-              TabBar(
-                labelColor: CustomColor.appColor,
-                unselectedLabelColor: CustomColor.descriptionColor,
-                tabs: const [
-                  Tab(text: "Self"),
-                  Tab(text: "Referral"),
-                  Tab(text: "Reward"),
-                ],
+              // 10.height,
+              _buildStatsCard(context),
+
+              Container(
+                color: CustomColor.whiteColor,
+                child: Row(
+                  children: [
+                    15.width,
+                    Expanded(
+                      child: TabBar(
+                        labelColor: CustomColor.appColor,
+                        unselectedLabelColor: CustomColor.descriptionColor,
+                        indicatorColor: CustomColor.appColor,
+                        padding: EdgeInsets.zero,
+                        tabs: const [
+                          Tab(text: "Self"),
+                          Tab(text: "Team Build"),
+                          Tab(text: "Revenue"),
+                        ],
+                      ),
+                    ),
+
+                    CustomContainer(
+                      backgroundColor: CustomColor.whiteColor,
+                      child: Icon(Icons.filter_list, color: CustomColor.iconColor,),
+                    )
+                  ],
+                ),
               ),
 
               Expanded(
                 child: TabBarView(
                   children: [
-                    _noDataFound(),
-                    _noDataFound(),
-                    _noDataFound(),
+                    _noDataFound(context),
+                    _noDataFound(context),
+                    _noDataFound(context),
                   ],
                 ),
               ),
@@ -51,26 +69,31 @@ class WalletScreen extends StatelessWidget {
   }
 
 
-  Widget _buildStatsCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 6)],
-        borderRadius: BorderRadius.circular(12),
-      ),
+  Widget _buildStatsCard(BuildContext context) {
+    return CustomContainer(
+      border: true,
+      backgroundColor: CustomColor.whiteColor,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Earnings Statistics", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 12),
-          const Text("Total Earnings", style: TextStyle(color: Colors.grey)),
-          const Text("₹0.00", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-          const Divider(height: 24, thickness: 1.2),
-          _earningRow("Self Earnings", "₹0.00"),
-          _earningRow("Referral Earnings", "₹0.00"),
-          _earningRow("Reward Earnings", "₹0.00"),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Earnings Statistics", style: textStyle14(context, fontWeight: FontWeight.w400)),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  CustomAmountText(amount: '00.00', fontWeight: FontWeight.w500,fontSize: 16),
+                  Text("Total Earnings", style: textStyle12(context, color: CustomColor.appColor)),
+                ],
+              )
+            ],
+          ),
+          const Divider(height: 24, thickness: 0.5),
+          _earningRow("Self Earnings", "₹ 0.00"),
+          _earningRow("Referral Earnings", "₹ 0.00"),
+          _earningRow("Reward Earnings", "₹ 0.00"),
         ],
       ),
     );
@@ -83,21 +106,50 @@ class WalletScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(value, style: const TextStyle()),
         ],
       ),
     );
   }
 
-  Widget _noDataFound() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-         Icon(Icons.folder_off, size: 64, color: CustomColor.appColor),
-        const SizedBox(height: 8),
-        Text("No data found", style: TextStyle(color: Colors.grey.shade600)),
-      ],
-    );
+  Widget _noDataFound(BuildContext context) {
+    return ListView.builder(
+      itemCount: 10,
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      itemBuilder: (context, index) {
+      return ListTile(
+        minLeadingWidth: 0,
+        contentPadding: EdgeInsets.only(top: 10),
+        shape: UnderlineInputBorder(borderSide: BorderSide(color: CustomColor.greyColor, width: 0.3)),
+        leading: CircleAvatar(
+          backgroundColor: CustomColor.whiteColor,
+          child: Icon(
+            index == 2 || index == 5
+                ? CupertinoIcons.arrow_turn_left_down
+                : CupertinoIcons.arrow_turn_left_up,
+            color: index == 2 || index == 5 ? CustomColor.appColor : CustomColor.redColor,
+          ),
+        ),
+        title: Text('Id #0001', style: textStyle12(context),),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+            Text('Other', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          ],
+        ),
+        trailing: Padding(
+          padding: const EdgeInsets.only(right: 15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text('₹ 00.00', style: textStyle12(context, fontWeight: FontWeight.w400),),
+              Text('Amount', style: textStyle12(context, fontWeight: FontWeight.w400),),
+            ],
+          ),
+        ),
+      );
+    },);
   }
 }
 

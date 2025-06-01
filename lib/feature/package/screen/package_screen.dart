@@ -264,10 +264,25 @@ class _PackageScreenState extends State<PackageScreen> {
                       textAlign: TextAlign.right,
                     ),
                     10.height,
-                    Row(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                         CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('85 %', style: textStyle16(context, color: CustomColor.greenColor),),10.width,
+                            CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CustomAmountText(amount: '99,999', fontSize: 16,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+                          ],
+                        ),
                         10.width,
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
@@ -286,7 +301,7 @@ class _PackageScreenState extends State<PackageScreen> {
               ),
             ],
           ),
-          20.height,
+          // 10.height,
 
           CustomContainer(
             border: true,

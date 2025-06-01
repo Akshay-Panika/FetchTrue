@@ -2,12 +2,13 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_banner.dart';
 import 'package:bizbooster2x/feature/academy/screen/recorded_webinar_screen.dart';
-import 'package:bizbooster2x/feature/academy/screen/two_min_gyan_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:url_launcher/url_launcher.dart';
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
+import '../../business_idea/screen/business_idea_screen.dart';
 import '../widget/academy_banner_widget.dart';
 import 'certificate_screen.dart';
 import 'document_screen.dart';
@@ -16,9 +17,24 @@ import 'live_webinar_screen.dart';
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
 
+  final String channelId = 'UCKpwgpO9-c_ISAJzNxgHkUw';
+
+  Future<void> _openShorts() async {
+    final Uri youtubeAppUrl = Uri.parse('youtube://www.youtube.com/channel/$channelId/shorts');
+    final Uri youtubeWebUrl = Uri.parse('https://www.youtube.com/channel/$channelId/shorts');
+
+    if (await canLaunchUrl(youtubeAppUrl)) {
+      await launchUrl(youtubeAppUrl);
+    } else if (await canLaunchUrl(youtubeWebUrl)) {
+      await launchUrl(youtubeWebUrl);
+    } else {
+      throw 'Could not launch YouTube Shorts';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    // Dimensions helper (optional, if you use it for responsive spacing)
     final Dimensions dimensions = Dimensions(context);
 
     final List<Map<String, dynamic>> _services = [
@@ -30,7 +46,7 @@ class AcademyScreen extends StatelessWidget {
       {
         'title': '2 Min. Gyan',
         'icon': Icons.lightbulb_outline,
-        'screenBuilder': () => TwoMinGyanScreen(),
+        'screenBuilder': _openShorts,
       },
       {
         'title': 'Live Webinar',
@@ -89,13 +105,18 @@ class AcademyScreen extends StatelessWidget {
                     backgroundColor: Colors.white,
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.zero,
-                    onTap: () {
-                      final screenBuilder = item['screenBuilder'] as Widget Function();
-                      if (screenBuilder != null) {
+                    onTap: () async {
+                      final screenBuilder = item['screenBuilder'];
+
+                      if (screenBuilder is Widget Function()) {
+                        // Navigate normally
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => screenBuilder()),
                         );
+                      } else if (screenBuilder is Function) {
+                        // Call function (like _openShorts)
+                        await screenBuilder();
                       }
                     },
                     child: Column(
@@ -131,12 +152,25 @@ class AcademyScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 20),
+           SizedBox(height: dimensions.screenHeight*0.02),
 
           /// Flexible empty container (can be used for footer or other content)
-          const Expanded(
-            child: CustomContainer(
-              backgroundColor: Colors.white,
+          CustomContainer(
+            height: 200,
+            border: true,
+            backgroundColor: Colors.green.shade50,
+            width: double.infinity,
+            networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessIdeaScreen(),)),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20.0, bottom: 15),
+                child: Container(
+                    color: CustomColor.whiteColor,
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text('Contact Us', style: textStyle16(context, color: CustomColor.appColor),)),
+              ),
             ),
           ),
         ],

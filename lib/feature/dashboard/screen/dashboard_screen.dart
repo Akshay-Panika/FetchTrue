@@ -43,23 +43,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ];
   List<int> _history = [0];
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.symmetric(horizontal: 10,),
-          child: OfferDialogWidget(),
-        ),
-      );
-    });
-
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (!mounted) return;
+  //     showDialog(
+  //       context: context,
+  //       barrierDismissible: true,
+  //       builder: (context) => Dialog(
+  //         backgroundColor: Colors.transparent,
+  //         insetPadding: EdgeInsets.symmetric(horizontal: 10,),
+  //         child: OfferDialogWidget(),
+  //       ),
+  //     );
+  //   });
+  //
+  // }
 
 
   @override

@@ -1,3 +1,4 @@
+import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +51,7 @@ class CustomContainer extends StatelessWidget {
          color:  (gradient == null)  ? backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
           borderRadius: borderRadius ? BorderRadius.circular(dimensions.screenHeight*0.01) :null,
 
-          border: border ? Border.all(color: borderColor ?? Colors.grey,width: 0.02):null,
+          border: border ? Border.all(color: borderColor ?? CustomColor.strokeColor, width: 0.2):null,
           gradient: gradient,
           image: (networkImg != null)
               ? DecorationImage(image: NetworkImage(networkImg!), fit: BoxFit.cover)
