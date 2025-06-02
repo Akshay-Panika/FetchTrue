@@ -32,10 +32,10 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
 
           else if(state is ModuleBannerLoaded){
 
-            // final banner = state.moduleBannerModel;
-            final banner = state.moduleBannerModel.where((moduleBanner) =>
-            moduleBanner.page == 'category'
-            ).toList();
+            final banner = state.moduleBannerModel;
+            // final banner = state.moduleBannerModel.where((moduleBanner) =>
+            // moduleBanner.page == 'category'
+            // ).toList();
 
             if (banner.isEmpty) {
               return const Center(child: Text('No banner found.'));
@@ -47,7 +47,7 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
               onTap: (banner) {
                 if(banner.selectionType == 'subcategory'){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-                    categoryId:banner.subcategory!.categoryId ?? '',
+                    // categoryId:banner.subcategory!.categoryId ?? '',
                   ),
                   ));
                 }

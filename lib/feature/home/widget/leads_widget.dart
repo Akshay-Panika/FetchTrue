@@ -21,6 +21,7 @@ class LeadsWidget extends StatelessWidget {
         children: [
           Expanded(
             child: CustomContainer(
+              assetsImg: 'assets/image/totalEarningBackImg.jpg',
               height: double.infinity,
               margin: EdgeInsets.only(left: 10),
               border: false,
@@ -53,6 +54,7 @@ class LeadsWidget extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(child:  CustomContainer(
+                  assetsImg: 'assets/image/myLeadBackImg.jpg',
                   width: double.infinity,
                   margin: EdgeInsets.only(right: 10),
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -78,6 +80,7 @@ class LeadsWidget extends StatelessWidget {
                 ),),
                 SizedBox(height:10,),
                 Expanded(child:  CustomContainer(
+                  assetsImg: 'assets/image/teamLeadBackImg.jpg',
                   width: double.infinity,
                   margin: EdgeInsets.only(right: 10),
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),

@@ -20,8 +20,8 @@ import '../repository/module_subcategory_service.dart';
 import '../widget/module_subcategory_widget.dart';
 
 class ModuleSubcategoryScreen extends StatefulWidget {
-  final String categoryId;
-  ModuleSubcategoryScreen({super.key, required this.categoryId});
+  final String? categoryId;
+  ModuleSubcategoryScreen({super.key, this.categoryId});
 
   @override
   State<ModuleSubcategoryScreen> createState() => _ModuleSubcategoryScreenState();
@@ -107,7 +107,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
 
             SizedBox(height: dimensions.screenHeight*0.02,),
             ModuleSubcategoryWidget(
-              categoryId: widget.categoryId,
+              categoryId: widget.categoryId.toString(),
               subcategoryId: selectedSubcategoryId,
               onChanged: (id) {
                 setState(() {

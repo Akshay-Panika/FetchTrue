@@ -22,8 +22,9 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Welcome To',
-        showBackButton: true,bColor: CustomColor.canvasColor,),
+        showBackButton: true,bColor: CustomColor.whiteColor,),
       body: isSignUp
           ? SignUpScreen(onToggle: toggleScreen)
           : SignInScreen(onToggle: toggleScreen),

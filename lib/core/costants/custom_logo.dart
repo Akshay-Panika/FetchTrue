@@ -1,5 +1,6 @@
 class CustomLogo{
   static String image = 'assets/logo/';
 
-  static String bizBooster = '${image}bizboosterLogo.png';
+  static String fetchTrue = '${image}fetchTrue.png';
+  static String fetchTrueLogo = '${image}fetchTrueLogo.png';
 }

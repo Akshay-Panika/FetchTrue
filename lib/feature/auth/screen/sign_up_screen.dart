@@ -92,10 +92,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 spacing: 10,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-              20.height,
 
-                  Center(child: Image.asset(CustomLogo.bizBooster, height: 80,)),
-                  50.height,
+
+                  Center(child: Image.asset(CustomLogo.fetchTrue,height: 150,)),
                   
 
                   CustomTextField(

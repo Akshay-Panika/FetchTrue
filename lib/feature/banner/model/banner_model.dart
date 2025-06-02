@@ -5,7 +5,7 @@ class ModuleBannerModel {
   final String selectionType;
   final String file;
   final ModuleModel? module;
-  final SubcategoryModel? subcategory;
+  // final SubcategoryModel? subcategory;
 
   ModuleBannerModel({
     required this.id,
@@ -13,7 +13,7 @@ class ModuleBannerModel {
     required this.selectionType,
     required this.file,
     this.module,
-    this.subcategory,
+    // this.subcategory,
   });
 
   factory ModuleBannerModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class ModuleBannerModel {
       selectionType: json['selectionType'],
       file: json['file'],
       module: ModuleModel.fromJson(json['module']),
-      subcategory: SubcategoryModel.fromJson(json['subcategory'])
+      // subcategory: SubcategoryModel.fromJson(json['subcategory'])
     );
   }
   Map<String, dynamic> toJson() {
@@ -33,7 +33,7 @@ class ModuleBannerModel {
       'selectionType': selectionType,
       'file': file,
       'module':module,
-      'subcategory':subcategory,
+      // 'subcategory':subcategory,
     };
   }
 }
@@ -41,10 +41,10 @@ class ModuleBannerModel {
 
 /// ModuleModel
 class ModuleModel {
-  final String id;
+  final String? id;
 
   ModuleModel({
-    required this.id,
+    this.id,
   });
 
   factory ModuleModel.fromJson(Map<String, dynamic> json) {

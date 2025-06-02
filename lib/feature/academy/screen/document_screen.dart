@@ -1,6 +1,7 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/feature/academy/screen/id_card_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
     {
       'title': 'ID Card',
       'icon': Icons.verified,
-      'screenBuilder': () => Scaffold(),
+      'screenBuilder': () => IDCardScreen(),
     },
     {
       'title': 'Certificate',

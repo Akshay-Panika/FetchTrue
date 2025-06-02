@@ -47,17 +47,17 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
               bannerData: banner,
               height: 200,
               onTap: (banner) {
-                if(banner.selectionType == 'subcategory'){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-                    categoryId:banner.subcategory!.categoryId ?? '',
-                  ),
-                  ));
-                }
-                if(banner.selectionType == 'service'){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
-                   serviceId: banner.id,
-                    ),));
-                }
+                // if(banner.selectionType == 'subcategory'){
+                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
+                //     // categoryId:banner.subcategory!.categoryId ?? '',
+                //   ),
+                //   ));
+                // }
+                // if(banner.selectionType == 'service'){
+                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
+                //    serviceId: banner.id,
+                //     ),));
+                // }
               },
             );
 

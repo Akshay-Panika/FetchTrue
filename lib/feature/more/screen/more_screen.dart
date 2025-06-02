@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
+import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
@@ -93,7 +94,7 @@ class MoreScreen extends StatelessWidget {
            CircleAvatar(
             radius: 30,
             backgroundColor: Theme.of(context).cardColor,
-             backgroundImage: AssetImage('assets/image/Null_Profile.jpg'),
+             backgroundImage: AssetImage(CustomImage.nullImage),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -106,7 +107,19 @@ class MoreScreen extends StatelessWidget {
               ],
             ),
           ),
-          //Icon(Icons.edit, size: 16, color: Colors.grey.shade600),
+          
+          CustomContainer(
+            border: true,
+            backgroundColor: CustomColor.appColor.withOpacity(0.1),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Row(
+            children: [
+              Icon(Icons.leaderboard_outlined, size: 16, color: CustomColor.appColor,),
+              10.width,
+              Text('GP', style: textStyle14(context),)
+            ],
+          ))
+
         ],
       ),
     );
