@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../checkout/screen/checkout_screen.dart';
 import '../bloc/module_service/module_service_bloc.dart';
 import '../bloc/module_service/module_service_event.dart';
@@ -151,53 +152,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    showCustomBottomSheet(context,Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircleAvatar(radius: 40,
-                                backgroundImage: AssetImage(CustomImage.nullImage),),
-                              10.height,
-                              Text('Available Providers', style: textStyle14(context),),
-                              Text('0 Provider available ', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-                            ],
-                          ),
-                          10.height,
-
-                          CustomContainer(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage),),
-                                    20.width,
-                                    Text('Let Bizbooster choose for you', style: textStyle14(context, color: CustomColor.appColor),),
-                                  ],
-                                ),
-
-                                Icon(CupertinoIcons.check_mark_circled, color: CustomColor.greenColor,)
-                              ],
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomButton(text: 'Proceed To Checkout',
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutScreen(),));
-                            },),
-                          ),
-
-                        ],
-                      ),
-                    ));
+                    showCustomBottomSheet(context);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -222,7 +177,8 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                   height: double.infinity,
                   child: InkWell(
                     onTap: () {
-                      print('Shared to customer');
+                      String url = 'https://zeropls.com';
+                      Share.share('Check out this awesome content! $url');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

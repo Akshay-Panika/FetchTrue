@@ -88,12 +88,13 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
                               backgroundColor: CustomColor.whiteColor,
                               networkImg: sub.image,
                               margin: EdgeInsets.zero,
+                              borderColor: isSelected ? CustomColor.appColor : null,
                             )),
 
                             5.height,
                             SizedBox(
                                 width: 100,
-                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: FontWeight.w400),textAlign: TextAlign.center,)),
+                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: FontWeight.w400),textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,)),
                           ],
                         ),
                       ),

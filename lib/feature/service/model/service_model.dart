@@ -2,7 +2,8 @@
 class ServiceModel {
   final String id;
   final String serviceName;
-  final int price;
+  final int? price;
+  final int? discountedPrice;
   final String thumbnailImage;
   final List<String> bannerImages;
   final Subcategory subcategory;
@@ -14,7 +15,8 @@ class ServiceModel {
   ServiceModel({
     required this.id,
     required this.serviceName,
-    required this.price,
+    this.price,
+    this.discountedPrice,
     required this.thumbnailImage,
     required this.bannerImages,
     required this.subcategory,
@@ -38,6 +40,7 @@ class ServiceModel {
       id: json['_id'],
       serviceName: json['serviceName'],
       price: json['price'],
+        discountedPrice: json['discountedPrice'],
       thumbnailImage: json['thumbnailImage'],
       bannerImages: List<String>.from(json['bannerImages']),
       subcategory: Subcategory.fromJson(json['subcategory']),

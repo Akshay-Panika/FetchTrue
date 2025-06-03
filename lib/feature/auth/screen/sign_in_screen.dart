@@ -46,7 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
          30.height,
 
-          Center(child: Image.asset(CustomLogo.fetchTrue,height: 200,)),
+          Center(child: Image.asset(CustomLogo.fetchTrueLogo,height: 200,)),
           30.height,
 
 

@@ -48,12 +48,8 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      CustomAmountText(
-                        amount: services.first.franchiseDetails.commission,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
+                      10.width,
+                      Text('${services.first.franchiseDetails.commission} %', style: textStyle22(context, color: CustomColor.greenColor),)
                     ],
                   ),
                 ],

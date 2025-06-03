@@ -33,15 +33,24 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
+                  
+                  /// Booking card
                   _buildBookingCard(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
-            
+
+                  /// Custom details card
                   _customerDetails(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
+
+                  /// Customer OTP
+                  _buildOtp(context),
+                  SizedBox(height: dimensions.screenHeight*0.015,),
             
+                  /// Payment status card
                   _buildPaymentStatus(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
             
+                  /// Booking summary card
                   _buildBookingSummary(context),
 
                 ],
@@ -176,6 +185,15 @@ Widget _customerDetails(BuildContext context){
       ],
     ),
   );
+}
+
+Widget _buildOtp(BuildContext context){
+   return CustomContainer(
+       border: true,
+       backgroundColor: Colors.white,
+       margin: EdgeInsets.zero,
+   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+   child: Text('OTP\nFT00001',textAlign: TextAlign.center,style: textStyle16(context),));
 }
 
 Widget _buildPaymentStatus(BuildContext context){

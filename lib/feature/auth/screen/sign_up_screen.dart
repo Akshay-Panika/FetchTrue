@@ -94,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
 
 
-                  Center(child: Image.asset(CustomLogo.fetchTrue,height: 150,)),
+                  Center(child: Image.asset(CustomLogo.fetchTrueLogo,height: 150,)),
                   
 
                   CustomTextField(

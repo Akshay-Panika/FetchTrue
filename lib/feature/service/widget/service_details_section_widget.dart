@@ -41,6 +41,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+
                           CustomAmountText(
                               amount: data.price.toString(),
                               fontSize: 12,
@@ -50,7 +51,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 10),
                           CustomAmountText(
-                            amount: data.price.toString(),
+                            amount: data.discountedPrice.toString(),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
