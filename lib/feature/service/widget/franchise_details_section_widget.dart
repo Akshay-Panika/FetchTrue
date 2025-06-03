@@ -49,7 +49,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
                         ),
                       ),
                       10.width,
-                      Text('${services.first.franchiseDetails.commission} %', style: textStyle22(context, color: CustomColor.greenColor),)
+                      Text('${services.first.franchiseDetails.commission}', style: textStyle22(context, color: CustomColor.greenColor),)
                     ],
                   ),
                 ],
