@@ -101,7 +101,7 @@ class _ModuleCategoryWidgetState extends State<ModuleCategoryWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: dimensions.screenHeight*0.02,),
+
               ],
             );
 

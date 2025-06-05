@@ -65,6 +65,26 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
           ),
         ),
         _buildFranchiseCard(services:services),
+
+        if(services.first.franchiseDetails.extraSections.isNotEmpty)
+        ListView.builder(
+          itemCount: services.first.franchiseDetails.extraSections.length,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            var data = services.first.franchiseDetails.extraSections;
+          return CustomContainer(
+            border: true,
+            backgroundColor: CustomColor.whiteColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(data.first.title, style: textStyle14(context),),
+                Text(data.first.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              ],
+            ),
+          );
+        },)
       ],
     );
   }

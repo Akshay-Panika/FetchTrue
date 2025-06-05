@@ -105,7 +105,6 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
         child: Column(
           children: [
 
-            SizedBox(height: dimensions.screenHeight*0.02,),
             ModuleSubcategoryWidget(
               categoryId: widget.categoryId.toString(),
               subcategoryId: selectedSubcategoryId,
@@ -116,7 +115,6 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                 print('Selected Subcategory ID: $id');
               },
             ),
-            SizedBox(height: dimensions.screenHeight*0.02,),
 
             /// Filter
             Row(
@@ -235,14 +233,15 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                           children: [
                                             Row(
                                               children: [
-                                                Text('Start from ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                                CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,),
+                                                CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,isLineThrough: true,fontSize: 14),
+                                                10.width,
+                                                CustomAmountText(amount: data.discountedPrice.toString(), color: CustomColor.descriptionColor, fontSize: 14),
                                               ],
                                             ),
                                             Row(
                                               children: [
-                                                Text('Earn up to ', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                                CustomAmountText(amount: '00.0', color: CustomColor.descriptionColor),
+                                                Text('Earn up to ', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                                                CustomAmountText(amount: '${data.franchiseDetails.commission}', color: CustomColor.greenColor,fontSize: 14),
                                               ],
                                             ),
                                           ],

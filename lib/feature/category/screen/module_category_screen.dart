@@ -1,14 +1,23 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/feature/category/widget/home_service_category_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
+import '../../education/widget/education_category_widget.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/category_banner_widget.dart';
+import '../widget/business_category_widget.dart';
+import '../widget/finance_category_widget.dart';
+import '../widget/franchise_category_widget.dart';
+import '../widget/itservice_category_widget.dart';
+import '../widget/legal_service_category_widget.dart';
+import '../widget/marketing_category_widget.dart';
 import '../widget/module_category_widget.dart';
 
 class ModuleCategoryScreen extends StatefulWidget {
@@ -25,6 +34,19 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+
+    final Map<String, Widget> categoryWidgets = {
+      'Onboarding': ModuleCategoryWidget(moduleIndexId: widget.moduleId),
+      'Business': BusinessCategoryWidget(moduleIndexId: widget.moduleId,),
+      'Marketing': MarketingCategoryWidget(moduleIndexId:  widget.moduleId,),
+      'Legal Services': LegalServiceWidget(moduleIndexId:  widget.moduleId,),
+      'Home Services': HomeServiceCategoryWidget(moduleIndexId:  widget.moduleId,),
+      'It Services': ItserviceCategoryWidget(moduleIndexId:  widget.moduleId,),
+      'Education': EducationCategoryWidget(moduleIndexId:  widget.moduleId),
+      'Finance': FinanceCategoryWidget(moduleIndexId:  widget.moduleId),
+      'Franchise': FranchiseCategoryWidget(moduleIndexId:  widget.moduleId),
+    };
+
     return  Scaffold(
       appBar: CustomAppBar(
         showNotificationIcon: true,
@@ -66,11 +88,10 @@ class _ModuleCategoryScreenState extends State<ModuleCategoryScreen> {
 
                 /// banner
                 CategoryBannerWidget(),
-                // SizedBox(height: dimensions.screenHeight*0.02,),
 
-                /// Module Category
-                ModuleCategoryWidget(moduleIndexId: widget.moduleId,),
+                /// Onboarding Category
 
+                categoryWidgets[widget.moduleName] ?? SizedBox.shrink(),
 
                 /// Services for you
                 CustomServiceList(headline: 'Services for you',),

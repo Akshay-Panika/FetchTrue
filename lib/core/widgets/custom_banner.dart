@@ -43,6 +43,7 @@ class _CustomBannerState extends State<CustomBanner> {
             enlargeCenterPage: true,
             viewportFraction: 1,
             autoPlayInterval: const Duration(seconds: 4),
+            autoPlayCurve: Curves.easeOut,
             onPageChanged: (index, reason) {
               setState(() {
                 _current = index;

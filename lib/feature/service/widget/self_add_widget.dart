@@ -95,6 +95,7 @@ void showCustomBottomSheet(BuildContext context) {
                                         style: textStyle14(context,
                                             color: CustomColor.appColor),
                                       ),
+                                      index == 0 ? SizedBox.shrink():
                                       CustomAmountText(amount: '00.00', fontSize: 14),
                                     ],
                                   ),

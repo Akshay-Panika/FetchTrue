@@ -2,6 +2,7 @@ import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/custom_logo.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:bizbooster2x/feature/education/screen/education_screen.dart';
 import 'package:bizbooster2x/feature/home/bloc/module/module_state.dart';
 import 'package:bizbooster2x/feature/home/model/module_model.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
 import '../../business_idea/screen/business_idea_screen.dart';
+import '../../category/screen/module_category_screen.dart';
+import '../../module/onboarding/screen/onboarding_screen.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../service_provider/widget/service_provider_widget.dart';
@@ -133,9 +136,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                final module = modules[index];
                                return CustomContainer(
                                  onTap: () {
-                                   setState(() {
-                                     widget.onToggle(false, module.name, module.id);
-                                   });
+                                   if( module.name == 'Education'){
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) => EducationScreen(
+                                       moduleId: module.id,
+                                       moduleName: module.name,
+                                     ),));
+                                   }
+                                   else{
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) => OnboardingScreen(
+                                       moduleId: module.id,
+                                       moduleName: module.name,
+                                     ),));
+                                   }
+
+                                   // setState(() {
+                                   //   widget.onToggle(false, module.name, module.id);
+                                   // });
                                  },
                                  // padding: EdgeInsets.zero,
                                  margin: EdgeInsets.zero,

@@ -4,8 +4,10 @@ class ServiceModel {
   final String serviceName;
   final int? price;
   final int? discountedPrice;
+  final int? discount;
   final String thumbnailImage;
   final List<String> bannerImages;
+  final List<String> tags;
   final Subcategory subcategory;
   final ServiceDetails serviceDetails;
   final FranchiseDetails franchiseDetails;
@@ -17,7 +19,9 @@ class ServiceModel {
     required this.serviceName,
     this.price,
     this.discountedPrice,
+    this.discount,
     required this.thumbnailImage,
+    required this.tags,
     required this.bannerImages,
     required this.subcategory,
     required this.serviceDetails,
@@ -40,9 +44,11 @@ class ServiceModel {
       id: json['_id'],
       serviceName: json['serviceName'],
       price: json['price'],
-        discountedPrice: json['discountedPrice'],
+      discountedPrice: json['discountedPrice'],
+      discount: json['discount'],
       thumbnailImage: json['thumbnailImage'],
       bannerImages: List<String>.from(json['bannerImages']),
+      tags: List<String>.from(json['tags']),
       subcategory: Subcategory.fromJson(json['subcategory']),
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
       franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
@@ -83,13 +89,11 @@ class ServiceDetails {
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
       document: json['document'],
-      extraSections: List<ExtraSection>.from(
-        json['extraSections'].map((x) => ExtraSection.fromJson(x)),
-      ),
       whyChoose: List<WhyChoose>.from(
         json['whyChoose'].map((x) => WhyChoose.fromJson(x)),
       ),
       faq: List<Faq>.from(json['faq'].map((x) => Faq.fromJson(x))),
+      extraSections: List<ExtraSection>.from(json['extraSections'].map((x) => ExtraSection.fromJson(x))),
     );
   }
 }
@@ -115,8 +119,7 @@ class FranchiseDetails {
       commission: json['commission'].toString(),
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
-      extraSections: List<ExtraSection>.from(
-        json['extraSections'].map((x) => ExtraSection.fromJson(x)),
+      extraSections: List<ExtraSection>.from(json['extraSections'].map((x) => ExtraSection.fromJson(x)),
       ),
     );
   }

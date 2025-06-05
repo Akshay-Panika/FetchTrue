@@ -49,12 +49,17 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                               color: Colors.grey,
                               isLineThrough: true
                           ),
-                          SizedBox(width: 10),
+                          10.width,
+                          
                           CustomAmountText(
                             amount: data.discountedPrice.toString(),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
+                          10.width,
+
+                          if(data.discount != null)
+                          Text('${data.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),
                         ],
                       ),
                       InkWell(
@@ -64,6 +69,8 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           child: CustomRattingAndReviews()),
                     ],
                   ),
+
+
 
                   10.height,
                   if (data.keyValues != null && data.keyValues!.isNotEmpty)
@@ -88,6 +95,26 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
           ],
         ),
         _buildServiceCard(services: services),
+
+          if(services.first.serviceDetails.extraSections.isNotEmpty)
+          ListView.builder(
+            itemCount: services.first.serviceDetails.extraSections.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              var data = services.first.serviceDetails.extraSections;
+              return CustomContainer(
+                border: true,
+                backgroundColor: CustomColor.whiteColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(data.first.title, style: textStyle14(context),),
+                    Text(data.first.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                  ],
+                ),
+              );
+            },)
       ],
     );
   }

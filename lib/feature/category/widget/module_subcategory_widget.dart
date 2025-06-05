@@ -64,10 +64,11 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
               });
             }
             return  Container(
-                height: 110,
+                height: 160,
                 child: ListView.builder(
                   itemCount: modulesSubCategory.length,
                   scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                   itemBuilder: (context, index) {
                     final sub = modulesSubCategory[index];
                     final isSelected = sub.id == _selectedId;
@@ -78,25 +79,20 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
                         setState(() => _selectedId = sub.id);
                         widget.onChanged?.call(_selectedId);
                       },
-                      child: Container(
-                        width: 100,
-                        padding: EdgeInsets.only(left: 10),
-                        child: Column(
-                          children: [
-                            Expanded(child: CustomContainer(
-                              border: true,
-                              backgroundColor: CustomColor.whiteColor,
-                              networkImg: sub.image,
-                              margin: EdgeInsets.zero,
-                              borderColor: isSelected ? CustomColor.appColor : null,
-                            )),
+                      child: Column(
+                        children: [
+                          CustomContainer(
+                            border: true,
+                            height: 80,width: 80,
+                            backgroundColor: CustomColor.whiteColor,
+                            networkImg: sub.image,
+                            margin: EdgeInsets.all(5),
+                            borderColor: isSelected ? CustomColor.appColor : null,
+                          ),
 
-                            5.height,
-                            SizedBox(
-                                width: 100,
-                                child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: FontWeight.w400),textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,)),
-                          ],
-                        ),
+                          SizedBox(width: 80,
+                              child: Text(sub.name, style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: FontWeight.w400),textAlign: TextAlign.center, maxLines: 3, overflow: TextOverflow.ellipsis,)),
+                        ],
                       ),
                     );
                   },));
@@ -122,44 +118,42 @@ class SubcategoryShimmerList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 110,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: 130,
+      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 6,
         itemBuilder: (_, __) => Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
-          child: Container(
-            width: 100,
-            child: Column(
-              children: [
-                Expanded(child: CustomContainer(
-                  backgroundColor: CustomColor.whiteColor,
-                )),
+          child: Column(
+            children: [
+              CustomContainer(
+                height: 80,width: 80,
+                backgroundColor: CustomColor.whiteColor,
+              ),
 
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomContainer(
-                      height: 6,
-                      width: 50,
-                      margin: EdgeInsets.zero,
-                      padding: EdgeInsets.zero,
-                      backgroundColor: CustomColor.whiteColor,
-                    ),
-                    5.height,
-                    CustomContainer(
-                      height: 6,
-                      width: 80,
-                      margin: EdgeInsets.zero,
-                      padding: EdgeInsets.zero,
-                      backgroundColor: CustomColor.whiteColor,
-                    ),
-                  ],
-                )
-              ],
-            ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomContainer(
+                    height: 6,
+                    width: 50,
+                    margin: EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: CustomColor.whiteColor,
+                  ),
+                  5.height,
+                  CustomContainer(
+                    height: 6,
+                    width: 80,
+                    margin: EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
+                    backgroundColor: CustomColor.whiteColor,
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       ),
