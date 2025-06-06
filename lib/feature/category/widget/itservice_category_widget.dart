@@ -143,13 +143,31 @@ class _ShimmerGrid extends StatelessWidget {
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
                       child: CircleAvatar(radius: 35,backgroundColor: CustomColor.whiteColor,)),
+                  10.height,
 
                   Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
-                      child: CustomContainer(
-                        padding: EdgeInsets.zero,
-                        height: 5,backgroundColor: CustomColor.whiteColor,))
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CustomContainer(
+                            height: 6,
+                            width: 50,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: CustomColor.whiteColor,
+                          ),
+                          5.height,
+                          CustomContainer(
+                            height: 6,
+                            width: 80,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: CustomColor.whiteColor,
+                          ),
+                        ],
+                      ))
                 ],
               );
             },),

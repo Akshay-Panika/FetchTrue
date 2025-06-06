@@ -26,7 +26,7 @@ class HomeServiceCategoryWidget extends StatelessWidget {
       child:  BlocBuilder<ModuleCategoryBloc, ModuleCategoryState>(
         builder: (context, state) {
           if (state is ModuleCategoryLoading) {
-            return _ShimmerGrid();
+            return SubcategoryShimmerList();
           }
 
           else if(state is ModuleCategoryLoaded){
@@ -47,44 +47,44 @@ class HomeServiceCategoryWidget extends StatelessWidget {
               children: [
                 CustomHeadline(headline: 'Service',),
                 SizedBox(
-                  height: serviceCount > 10 ? 230 : 115,
+                  height: serviceCount > 10 ? 230 : 120,
                   child: GridView.builder(
                     itemCount: serviceCount,
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: serviceCount > 10 ?2 :1,
-                        childAspectRatio: 1 / 0.8,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10
+                        childAspectRatio: 1 / 0.7,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10
                     ),
                     itemBuilder: (context, index) {
                       final category = modules[index];
                       serviceCount = modules.length;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: CustomContainer(
-                               networkImg: category.image,
-                              margin: EdgeInsets.zero,
-                              backgroundColor: CustomColor.whiteColor,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ModuleSubcategoryScreen(
-                                      // headline: category.name,
-                                      categoryId: category.id,
-                                    ),
+                          CustomContainer(
+                            height: 80,
+                            // width:80,
+                             networkImg: category.image,
+                             margin: EdgeInsets.zero,
+                             backgroundColor: CustomColor.whiteColor,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ModuleSubcategoryScreen(
+                                    // headline: category.name,
+                                    categoryId: category.id,
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           ),
                           5.height,
-                          Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                          Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,textAlign: TextAlign.center,),
                         ],
                       );
                     },),
@@ -105,8 +105,10 @@ class HomeServiceCategoryWidget extends StatelessWidget {
 }
 
 
-class _ShimmerGrid extends StatelessWidget {
-  const _ShimmerGrid({super.key});
+
+
+class SubcategoryShimmerList extends StatelessWidget {
+  const SubcategoryShimmerList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -123,40 +125,48 @@ class _ShimmerGrid extends StatelessWidget {
             ],
           ),
         ),
-
-        SizedBox(
-          height: 230,
-          child: GridView.builder(
-            itemCount: 12,
+        Container(
+          height: 130,
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1 / 0.8,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10
-            ),
-            itemBuilder: (context, index) {
-              return Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: CustomContainer(
+            itemCount: 6,
+            itemBuilder: (_, __) => Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Column(
+                children: [
+                  CustomContainer(
+                    height: 80,width: 80,
+                    backgroundColor: CustomColor.whiteColor,
+                    margin: EdgeInsets.all(5),
+                  ),
+                  5.height,
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomContainer(
+                        height: 6,
+                        width: 50,
                         margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
                         backgroundColor: CustomColor.whiteColor,
                       ),
-                    ),
-                   CustomContainer(
-                     padding: EdgeInsets.zero,
-                     height: 5,width: 100,backgroundColor: CustomColor.whiteColor,)
-                  ],
-                ),
-              );
-            },),
+                      5.height,
+                      CustomContainer(
+                        height: 6,
+                        width: 80,
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
+                        backgroundColor: CustomColor.whiteColor,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );
