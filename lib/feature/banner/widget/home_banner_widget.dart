@@ -5,9 +5,11 @@ import 'package:bizbooster2x/feature/service/screen/service_details_screen.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_url_launch.dart';
 import '../../category/screen/module_subcategory_screen.dart';
 import '../repository/banner_service.dart';
 class HomeBannerWidget extends StatefulWidget {
@@ -46,19 +48,25 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
             return CustomBanner(
               bannerData: banner,
               height: 200,
-              onTap: (banner) {
-                // if(banner.selectionType == 'subcategory'){
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-                //     // categoryId:banner.subcategory!.categoryId ?? '',
-                //   ),
-                //   ));
-                // }
-                // if(banner.selectionType == 'service'){
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
-                //    serviceId: banner.id,
-                //     ),));
-                // }
-              },
+                onTap: (banner) {
+                  if (banner.selectionType == 'subcategory') {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                        ModuleSubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',),),
+                    );
+                  }
+                  else if (banner.selectionType == 'service') {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                        ServiceDetailsScreen(serviceId: banner.service ?? '',),
+                      ),
+                    );
+                  }
+                  else if (banner.selectionType == 'url') {
+                    // CustomUrlLaunch(banner.url ?? '');
+                  }
+                  else {
+                    print('No valid action');
+                  }
+                }
             );
 
           }
@@ -125,3 +133,4 @@ class HomeBannerShimmerWidget extends StatelessWidget {
     );
   }
 }
+

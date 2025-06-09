@@ -32,10 +32,14 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
 
           else if(state is ModuleBannerLoaded){
 
-            final banner = state.moduleBannerModel;
+            // final banner = state.moduleBannerModel;
             // final banner = state.moduleBannerModel.where((moduleBanner) =>
             // moduleBanner.page == 'category'
             // ).toList();
+
+            final banner = state.moduleBannerModel.where((moduleBanner) =>
+            moduleBanner.page == 'category'
+            ).toList();
 
             if (banner.isEmpty) {
               return const Center(child: Text('No banner found.'));
@@ -44,19 +48,25 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
             return CustomBanner(
               bannerData: banner,
               height: 200,
-              onTap: (banner) {
-                if(banner.selectionType == 'subcategory'){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleSubcategoryScreen(
-                    // categoryId:banner.subcategory!.categoryId ?? '',
-                  ),
-                  ));
+                onTap: (banner) {
+                  if (banner.selectionType == 'subcategory') {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                        ModuleSubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',),),
+                    );
+                  }
+                  else if (banner.selectionType == 'service') {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                        ServiceDetailsScreen(serviceId: banner.service ?? '',),
+                    ),
+                    );
+                  }
+                  else if (banner.selectionType == 'url') {
+                    // CustomUrlLaunch(banner.url ?? '');
+                  }
+                  else {
+                    print('No valid action');
+                  }
                 }
-                if(banner.selectionType == 'service'){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
-                    serviceId: banner.id,
-                  ),));
-                }
-              },
             );
 
           }

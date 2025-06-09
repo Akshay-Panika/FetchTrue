@@ -17,6 +17,7 @@ import '../../help_support/screen/help_support_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../privacy_policy/screen/pryvacy_policy_screen.dart';
 import '../../profile/screen/profile_screen.dart';
+import '../../provider/screen/provider_screen.dart';
 import '../../refund_policy/screen/refund_policy_screen.dart';
 import '../../settings/screen/setting_screen.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
@@ -57,6 +58,7 @@ class MoreScreen extends StatelessWidget {
                   _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
                   _buildTile(context, Icons.local_offer_outlined, "Coupon",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),),
+                  _buildTile(context, Icons.person_4_outlined, "Provider",() => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderScreen(),)),),
                 ]),
 
                 // 5.height,

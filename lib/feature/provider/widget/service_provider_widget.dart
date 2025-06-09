@@ -8,7 +8,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
-import '../screen/service_provider_screen.dart';
+import '../screen/provider__details_screen.dart';
 
 class ServiceProviderWidget extends StatefulWidget {
   const ServiceProviderWidget({super.key});
@@ -38,7 +38,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                   backgroundColor: Colors.white,
                   margin: EdgeInsets.zero,
                   padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceProviderScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
                   child: Stack(
                     children: [
                       Column(

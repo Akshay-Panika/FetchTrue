@@ -3,7 +3,6 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
-import 'package:bizbooster2x/feature/service_provider/widget/provider_services_list_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/costants/custom_color.dart';
@@ -15,8 +14,8 @@ import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../banner/widget/category_banner_widget.dart';
 import '../../category/widget/module_category_widget.dart';
+import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
-import '../../service_provider/widget/service_provider_widget.dart';
 import '../widget/education_category_widget.dart';
 import 'education_playlist_screen.dart';
 

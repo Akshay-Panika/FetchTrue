@@ -18,8 +18,8 @@ import '../../../category/widget/legal_service_category_widget.dart';
 import '../../../category/widget/marketing_category_widget.dart';
 import '../../../category/widget/module_category_widget.dart';
 import '../../../education/widget/education_category_widget.dart';
+import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
-import '../../../service_provider/widget/service_provider_widget.dart';
 
 class OnboardingScreen extends StatelessWidget {
   final String? moduleName;

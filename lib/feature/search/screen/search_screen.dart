@@ -3,9 +3,7 @@ import 'package:bizbooster2x/core/costants/custom_icon.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/widgets/custom_search_icon.dart';
-import '../../service_provider/widget/service_provider_widget.dart';
 import '../../../core/widgets/custom_service_list.dart';
 
 class SearchScreen extends StatelessWidget {

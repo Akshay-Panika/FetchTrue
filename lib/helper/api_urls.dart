@@ -15,4 +15,5 @@ class ApiUrls{
   static const String modulesSubcategory = '${baseUrl}subcategory';
   static const String modulesService = '${baseUrl}service';
   static const String banner = '${baseUrl}banner';
+  static const String provider = '${baseUrl}provider';
 }

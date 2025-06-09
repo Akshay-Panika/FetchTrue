@@ -241,7 +241,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                             Row(
                                               children: [
                                                 Text('Earn up to ', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                                CustomAmountText(amount: '${data.franchiseDetails.commission}', color: CustomColor.greenColor,fontSize: 14),
+                                                Text('${data.franchiseDetails.commission}', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),),
                                               ],
                                             ),
                                           ],

@@ -96,21 +96,23 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
         ),
         _buildServiceCard(services: services),
 
-          if(services.first.serviceDetails.extraSections.isNotEmpty)
+         if(services.first.serviceDetails.extraSections.isNotEmpty)
           ListView.builder(
             itemCount: services.first.serviceDetails.extraSections.length,
             shrinkWrap: true,
+            padding: EdgeInsetsDirectional.symmetric(horizontal: 10),
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              var data = services.first.serviceDetails.extraSections;
+              var data = services.first.serviceDetails.extraSections[index];
               return CustomContainer(
                 border: true,
                 backgroundColor: CustomColor.whiteColor,
+                margin: EdgeInsets.only(top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(data.first.title, style: textStyle14(context),),
-                    Text(data.first.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                    Text(data.title, style: textStyle14(context),),
+                    Text(data.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                   ],
                 ),
               );
@@ -224,30 +226,41 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
           physics: NeverScrollableScrollPhysics(),
           itemCount: list.length,
           itemBuilder: (context, index) {
-            return
-              list.first.title == null ?
-              Image.network(list.first.image.toString()):
-              Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            final data = list[index];
+            return Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Column(
                 children: [
-                  Expanded(child: Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(list.first.title.toString(), style: textStyle12(context)),
-                      5.height,
-                      Text(list.first.description.toString(), style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data.title.toString(), style: textStyle12(context)),
+                          // Text(list.first.title.toString(), style: textStyle12(context)),
+                          5.height,
+                          Text(data.description.toString(), style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                        ],
+                      )),
+
+                      if(data.title!.isNotEmpty)
+                      Expanded(
+                        child: CustomContainer(
+                          height: 100,
+                          networkImg: data.image.toString(),
+                          margin: EdgeInsets.zero,
+                        ),
+                      )
                     ],
-                  )),
-                  Expanded(
-                    child: CustomContainer(
-                      height: 100,
-                      networkImg: list.first.image,
-                      margin: EdgeInsets.zero,
-                    ),
-                  )
+                  ),
+                  if(data.title!.isEmpty && data.image!.isNotEmpty)
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(data.image.toString()))
+
                 ],
               )
             );
@@ -273,6 +286,9 @@ Widget _buildFAQs(BuildContext context, List<Faq> list) {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
+
+            final data = list[index];
+
             return Theme(
               data: Theme.of(context).copyWith(
                 splashColor: Colors.transparent,    // disables ripple
@@ -286,11 +302,11 @@ Widget _buildFAQs(BuildContext context, List<Faq> list) {
                 childrenPadding: EdgeInsets.zero,
                 collapsedShape: InputBorder.none,
                 tilePadding: EdgeInsets.zero,
-                title: Text(list.first.question, style: textStyle14(context)),
+                title: Text(data.question, style: textStyle14(context)),
                 children: [
                   Align(
                       alignment: Alignment.topLeft,
-                      child: Text(list.first.answer)),
+                      child: Text(data.answer)),
                 ],
               ),
             );

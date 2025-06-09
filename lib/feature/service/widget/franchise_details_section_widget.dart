@@ -70,17 +70,19 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
         ListView.builder(
           itemCount: services.first.franchiseDetails.extraSections.length,
           shrinkWrap: true,
+          padding: EdgeInsetsDirectional.symmetric(horizontal: 10),
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            var data = services.first.franchiseDetails.extraSections;
+            var data = services.first.franchiseDetails.extraSections[index];
           return CustomContainer(
             border: true,
             backgroundColor: CustomColor.whiteColor,
+            margin: EdgeInsets.only(top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(data.first.title, style: textStyle14(context),),
-                Text(data.first.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text(data.title, style: textStyle14(context),),
+                Text(data.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
               ],
             ),
           );
