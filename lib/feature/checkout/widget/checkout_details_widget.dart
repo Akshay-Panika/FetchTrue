@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../customer/screen/customer_screen.dart';
-import '../screen/coupon_screen.dart';
+import '../../coupon/screen/coupon_screen.dart';
 import '../screen/new_submit_details_screen.dart';
 import '../screen/submit_details_screen.dart';
 

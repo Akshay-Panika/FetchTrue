@@ -4,7 +4,7 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/feature/about/screen/about_screen.dart';
-import 'package:bizbooster2x/feature/checkout/screen/coupon_screen.dart';
+import 'package:bizbooster2x/feature/coupon/screen/coupon_screen.dart';
 import 'package:bizbooster2x/feature/notification/screen/notification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

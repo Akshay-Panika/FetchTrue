@@ -22,25 +22,36 @@ class _ServiceBannerWidgetState extends State<ServiceBannerWidget> {
   int _current = 0;
   @override
   Widget build(BuildContext context) {
+
+    final service = widget.services.first;
+
+    /// Merge thumbnailImage with bannerImages
+    final List<String> mergedImages = [
+      if (service.thumbnailImage != null && service.thumbnailImage!.isNotEmpty)
+        service.thumbnailImage!,
+      ...service.bannerImages
+    ];
+
     return Container(
       color: CustomColor.whiteColor,
       child: Column(
         children: [
           CarouselSlider.builder(
-            itemCount: widget.services.first.bannerImages.length,
+            itemCount: mergedImages.length,
             itemBuilder:(context, index, realIndex) {
-              final bannerCount = widget.services.first.bannerImages[index];
               return CustomContainer(
                 width: double.infinity,
-                networkImg: widget.services.first.bannerImages[index],
+                networkImg: mergedImages[index],
                 borderRadius: false,
                 margin: EdgeInsets.zero,
               );
             } ,
             options: CarouselOptions(
               height: 200,
-              scrollPhysics:widget.services.first.bannerImages.length > 1? AlwaysScrollableScrollPhysics() :NeverScrollableScrollPhysics(),
-              autoPlay: widget.services.first.bannerImages.length > 1? true :false,
+              scrollPhysics: mergedImages.length > 1
+                  ? const AlwaysScrollableScrollPhysics()
+                  : const NeverScrollableScrollPhysics(),
+              autoPlay: mergedImages.length > 1,
               enlargeCenterPage: true,
               viewportFraction: 1,
               autoPlayInterval: const Duration(seconds: 4),
@@ -52,20 +63,21 @@ class _ServiceBannerWidgetState extends State<ServiceBannerWidget> {
             ),
           ),
 
-          if(widget.services.first.bannerImages.length >1)
+          if (mergedImages.length > 1)
             Column(
               children: [
                 10.height,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(widget.services.first.bannerImages.length, (index) {
+                  children: List.generate(mergedImages.length, (index) {
+                    final isActive = _current == index;
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       margin: const EdgeInsets.symmetric(horizontal: 3),
                       height: 5,
                       width: _current == index ? 24 : 10,
                       decoration: BoxDecoration(
-                        color: _current == index ? Colors.blueAccent : Colors.grey,
+                        color: isActive ? Colors.blueAccent : Colors.grey,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     );

@@ -43,6 +43,7 @@ dependencies:
   http: ^1.4.0
   shimmer: ^3.0.0
   flutter_html: ^3.0.0
+  flutter_html_table: ^3.0.0
   file_picker: ^10.1.9
   path: ^1.9.0
   syncfusion_flutter_charts:

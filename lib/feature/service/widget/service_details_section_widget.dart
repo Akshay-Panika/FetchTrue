@@ -4,7 +4,8 @@ import 'package:bizbooster2x/feature/service/widget/service_review_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-
+import 'package:flutter_html_table/flutter_html_table.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
@@ -22,6 +23,8 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
     final data = services.first;
     return Column(
       children: [
+
+        /// Image price section
         Stack(
           children: [
             CustomContainer(
@@ -78,10 +81,11 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 6.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${entry.key} :', style: textStyle12(context)),
+                          Text('${entry.key} :', style: textStyle12(context,color: CustomColor.descriptionColor)),
                           5.width,
-                          Text(entry.value, style: textStyle12(context)),
+                          Expanded(child: Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor),overflow: TextOverflow.clip,)),
                         ],
                       ),
                     ))
@@ -94,6 +98,8 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                 child: CustomFavoriteButton())
           ],
         ),
+
+        /// List
         _buildServiceCard(services: services),
 
          if(services.first.serviceDetails.extraSections.isNotEmpty)
@@ -157,6 +163,7 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(section.title, style: textStyle14(context)),
+            const SizedBox(height: 8),
 
             Html(
               data: section.html ?? '',
@@ -165,11 +172,31 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
                   fontSize: FontSize(14),
                   color: CustomColor.descriptionColor,
                 ),
+                "table": Style(
+                  width: Width.auto(),
+                  border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                ),
+                "td": Style(
+                  padding: HtmlPaddings.all(5),
+                  border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                ),
+                "th": Style(
+                  backgroundColor: Colors.grey.shade200,
+                  padding: HtmlPaddings.all(5),
+                  border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                ),
+              },
+              extensions: [TableHtmlExtension()],
+              onLinkTap: (url, attributes, element) async{
+                if (url != null){
+                  await launchUrl(Uri.parse(url));
+                }
               },
             ),
           ],
         ),
       );
+
     },
   );
 }
@@ -220,51 +247,71 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Why Choose BizBooster', style: textStyle14(context)),
-        10.height,
+        15.height,
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: list.length,
-          itemBuilder: (context, index) {
-            final data = list[index];
-            return Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+            itemBuilder: (context, index) {
+              final data = list[index];
 
-                      Expanded(child: Column(
+              if ((data.title == null || data.title!.isEmpty) &&
+                  (data.image == null || data.image!.isEmpty)) {
+                return SizedBox.shrink();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (data.title != null && data.title!.isNotEmpty)
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data.title.toString(), style: textStyle12(context)),
-                          // Text(list.first.title.toString(), style: textStyle12(context)),
-                          5.height,
-                          Text(data.description.toString(), style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                          /// Left: Title + Description
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(data.title.toString(), style: textStyle12(context)),
+                                SizedBox(height: 5),
+                                Text(
+                                  data.description.toString(),
+                                  style: textStyle12(
+                                    context,
+                                    color: CustomColor.descriptionColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          /// Right: Small Image
+                          if (data.image != null && data.image!.isNotEmpty)
+                            Expanded(
+                              child: CustomContainer(
+                                height: 100,
+                                networkImg: data.image.toString(),
+                                margin: EdgeInsets.zero,
+                              ),
+                            ),
                         ],
-                      )),
+                      ),
 
-                      if(data.title!.isNotEmpty)
-                      Expanded(
-                        child: CustomContainer(
-                          height: 100,
-                          networkImg: data.image.toString(),
-                          margin: EdgeInsets.zero,
-                        ),
-                      )
-                    ],
-                  ),
-                  if(data.title!.isEmpty && data.image!.isNotEmpty)
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(data.image.toString()))
 
-                ],
-              )
-            );
-          },)
+                    if ((data.title == null || data.title!.isEmpty) &&
+                        data.image != null && data.image!.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(data.image.toString()),
+                      ),
+                  ],
+                ),
+              );
+            }
+
+        )
       ],
     ),
   );
@@ -295,18 +342,22 @@ Widget _buildFAQs(BuildContext context, List<Faq> list) {
                 highlightColor: Colors.transparent, // disables highlight
               ),
               child: ExpansionTile(
-                // initiallyExpanded: true,
                 backgroundColor: CustomColor.whiteColor,
                 iconColor: CustomColor.appColor,
                 shape: InputBorder.none,
                 childrenPadding: EdgeInsets.zero,
                 collapsedShape: InputBorder.none,
                 tilePadding: EdgeInsets.zero,
+                minTileHeight: 0,
                 title: Text(data.question, style: textStyle14(context)),
                 children: [
-                  Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(data.answer)),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Expanded(child: Text(data.answer))
+                   ],
+                 )
                 ],
               ),
             );

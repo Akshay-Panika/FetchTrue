@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_banner.dart';
-import '../../../helper/api_helper.dart';
 import '../bloc/module_banner/module_banner_bloc.dart';
 import '../bloc/module_banner/module_banner_event.dart';
 import '../bloc/module_banner/module_banner_state.dart';
@@ -49,20 +48,24 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
               bannerData: banner,
               height: 200,
                 onTap: (banner) {
+
                   if (banner.selectionType == 'subcategory') {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
                         ModuleSubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',),),
                     );
                   }
+
                   else if (banner.selectionType == 'service') {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
                         ServiceDetailsScreen(serviceId: banner.service ?? '',),
                     ),
                     );
                   }
+
                   else if (banner.selectionType == 'url') {
                     // CustomUrlLaunch(banner.url ?? '');
                   }
+
                   else {
                     print('No valid action');
                   }

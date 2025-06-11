@@ -4,6 +4,13 @@ import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../category/repository/module_category_service.dart';
+import '../bloc/customer/customer_bloc.dart';
+import '../bloc/customer/customer_event.dart';
+import '../bloc/customer/customer_state.dart';
+import '../repository/customer_service.dart';
 
 class CustomerScreen extends StatefulWidget {
   const CustomerScreen({super.key});
@@ -13,77 +20,99 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  final List<Map<String, String>> customers = const [
-    {"name": "Akshay Kumar", "email": "akshay@example.com", "phone": "9876543210"},
-    {"name": "Rahul Verma", "email": "rahul@example.com", "phone": "9123456780"},
-    {"name": "Sneha Sharma", "email": "sneha@example.com", "phone": "9988776655"},
-    {"name": "Anjali Mehta", "email": "anjali@example.com", "phone": "9090909090"},
-  ];
   final Map<int, bool> _checkedCustomers = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Customer List', showBackButton: true, showSearchIcon: true,),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: ListView.builder(
-          itemCount: customers.length,
-          itemBuilder: (context, index) {
-            final customer = customers[index];
-            final isChecked = _checkedCustomers[index] ?? false;
-            return CustomContainer(
-              backgroundColor: CustomColor.whiteColor,
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child:Theme(
-                data: Theme.of(context).copyWith(
-                  splashColor: Colors.transparent,    // disables ripple
-                  highlightColor: Colors.transparent, // disables highlight
-                ),
-                child: ExpansionTile(
-                  // initiallyExpanded: true,
-                  backgroundColor: CustomColor.whiteColor,
-                  iconColor: CustomColor.appColor,
-                  shape: InputBorder.none,
-                  childrenPadding: EdgeInsets.zero,
-                  collapsedShape: InputBorder.none,
-                  leading: CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage),),
-                  title: Text('${customer['name']}', style: textStyle14(context),),
-                  subtitle: Text('BizBooster Id : $index', style: textStyle12(context, color: CustomColor.descriptionColor),),
-                  children: [
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+
+      body:BlocProvider(
+        create: (_) => CustomerBloc(CustomerService())..add(GetCustomer()),
+        child:  BlocBuilder<CustomerBloc, CustomerState>(
+          builder: (context, state) {
+            if (state is CustomerLoading) {
+              return LinearProgressIndicator();
+            }
+
+            else if(state is CustomerLoaded){
+
+              final customer = state.customerModel;
+
+              if (customer.isEmpty) {
+                return const Center(child: Text('No Category found.'));
+              }
+
+
+              return  Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: ListView.builder(
+                  itemCount: customer.length,
+                  itemBuilder: (context, index) {
+                      final data = customer[index];
+                    return CustomContainer(
+                      backgroundColor: CustomColor.whiteColor,
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      child:Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: Colors.transparent,    // disables ripple
+                          highlightColor: Colors.transparent, // disables highlight
+                        ),
+                        child: ExpansionTile(
+                          // initiallyExpanded: true,
+                          backgroundColor: CustomColor.whiteColor,
+                          iconColor: CustomColor.appColor,
+                          shape: InputBorder.none,
+                          childrenPadding: EdgeInsets.zero,
+                          collapsedShape: InputBorder.none,
+                          leading: CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage),),
+                          title: Text(data.fullName, style: textStyle14(context),),
+                          subtitle: Text('FT ID: ${data.userId}', style: textStyle12(context, color: CustomColor.descriptionColor),),
                           children: [
-                            Text('Phone: ${customer['phone']}'),
-                            Text('Email: ${customer['email']}'),
-                            Text('Address: Address $index'),
+                            Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text('Phone: ${data.phone}'),
+                                    Text('Email: ${data.email}'),
+                                    Text('Address: Address ${data.address}'),
+                                  ],
+                                ),
+
+                                Checkbox(
+                                  activeColor: CustomColor.appColor,
+                                  value: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _checkedCustomers[index] = value!;
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
                           ],
                         ),
-
-                        Checkbox(
-                          activeColor: CustomColor.appColor,
-                          value: isChecked,
-                          onChanged: (value) {
-                            setState(() {
-                              _checkedCustomers[index] = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    )
-                  ],
+                      ),
+                    );
+                  },
                 ),
-              ),
-            );
+              );
+
+            }
+
+            else if (state is CustomerError) {
+              return Center(child: Text(state.errorMessage));
+            }
+            return const SizedBox.shrink();
           },
         ),
       ),
+
     );
   }
 }

@@ -177,7 +177,6 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
 
                             final data = services[index];
                             return CustomContainer(
-                              height: 250,
                               border: false,
                               backgroundColor: Colors.white,
                               padding: EdgeInsets.zero,
@@ -190,32 +189,31 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: CustomContainer(
-                                      margin: EdgeInsets.zero,
-                                      padding: EdgeInsets.zero,
-                                      networkImg: data.thumbnailImage,
-                                      backgroundColor: CustomColor.whiteColor,
-                                      child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            CustomFavoriteButton(),
-                                            Container(
-                                                padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(10),
-                                                    bottomRight: Radius.circular(10),
-                                                  ),
-                                                  color: CustomColor.blackColor.withOpacity(0.3),
+                                  CustomContainer(
+                                    height: 180,
+                                    margin: EdgeInsets.zero,
+                                    padding: EdgeInsets.zero,
+                                    networkImg: data.thumbnailImage,
+                                    backgroundColor: CustomColor.whiteColor,
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomFavoriteButton(),
+                                          Container(
+                                              padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(10),
+                                                  bottomRight: Radius.circular(10),
                                                 ),
-                                              child: CustomRattingAndReviews(color: CustomColor.whiteColor,),
-                                            ),
-                                          ],
-                                        ),
+                                                color: CustomColor.blackColor.withOpacity(0.3),
+                                              ),
+                                            child: CustomRattingAndReviews(color: CustomColor.whiteColor,),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -252,10 +250,11 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
                                             padding: const EdgeInsets.only(bottom: 6.0),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text('${entry.key} :', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+                                                Text('${entry.key} :', style: textStyle12(context,color: CustomColor.descriptionColor)),
                                                 5.width,
-                                                Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+                                                Expanded(child: Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor),overflow: TextOverflow.clip,)),
                                               ],
                                             ),
                                           )),

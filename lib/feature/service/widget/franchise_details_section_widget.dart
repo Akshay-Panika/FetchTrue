@@ -2,6 +2,8 @@ import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html_table/flutter_html_table.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
@@ -120,6 +122,15 @@ Widget _buildFranchiseCard({
 
               Text(section.title,style: textStyle14(context),),
 
+              // Html(
+              //   data: section.html ?? '',
+              //   style: {
+              //     "body": Style(
+              //       fontSize: FontSize(14),
+              //       color: CustomColor.descriptionColor,
+              //     ),
+              //   },
+              // ),
               Html(
                 data: section.html ?? '',
                 style: {
@@ -127,6 +138,25 @@ Widget _buildFranchiseCard({
                     fontSize: FontSize(14),
                     color: CustomColor.descriptionColor,
                   ),
+                  "table": Style(
+                    width: Width.auto(),
+                    border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                  ),
+                  "td": Style(
+                    padding: HtmlPaddings.all(5),
+                    border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                  ),
+                  "th": Style(
+                    backgroundColor: Colors.grey.shade200,
+                    padding: HtmlPaddings.all(5),
+                    border: Border.all(color: CustomColor.strokeColor, width: 0.3),
+                  ),
+                },
+                extensions: [TableHtmlExtension()],
+                onLinkTap: (url, attributes, element) async{
+                  if (url != null){
+                    await launchUrl(Uri.parse(url));
+                  }
                 },
               ),
             ],
