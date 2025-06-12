@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       isAgree: true,
     );
 
-    await registerUser(context,user);
+    // await registerUser(context,user);
 
     setState(() {
       _isLoading = false;

@@ -12,18 +12,17 @@ class ProviderService {
     try {
       final response = await _dio.get(ApiUrls.provider);
 
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'];
+      if (response.statusCode == 200) {
+        // response.data is already a List<dynamic>
+        final List<dynamic> data = response.data;
         return data.map((json) => ProviderModel.fromJson(json)).toList();
       } else {
-        throw Exception('Invalid response format or status: ${response.statusCode}');
+        throw Exception('Invalid response status: ${response.statusCode}');
       }
-    }
-    on DioException catch (e) {
+    } on DioException catch (e) {
       final errorMsg = e.response?.data ?? e.message;
       throw Exception('Dio error: $errorMsg');
-    }
-    catch (e) {
+    } catch (e) {
       throw Exception('Unexpected error in fetching provider: $e');
     }
   }

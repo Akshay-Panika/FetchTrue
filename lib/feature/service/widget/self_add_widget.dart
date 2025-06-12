@@ -9,8 +9,9 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../checkout/screen/checkout_screen.dart';
+import '../model/service_model.dart';
 
-void showCustomBottomSheet(BuildContext context) {
+void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> services}) {
   int selectedProviderIndex = 0;
 
   showModalBottomSheet(
@@ -90,13 +91,14 @@ void showCustomBottomSheet(BuildContext context) {
                                     children: [
                                       Text(
                                         index == 0
-                                            ? 'Let Bizbooster choose for you'
+                                            ? 'Fetch True Choose For You'
                                             : 'Provider Name',
                                         style: textStyle14(context,
                                             color: CustomColor.appColor),
                                       ),
-                                      index == 0 ? SizedBox.shrink():
-                                      CustomAmountText(amount: '00.00', fontSize: 14),
+                                      index == 0 ?
+                                      CustomAmountText(amount: '${services.first.discountedPrice}'??'00', fontSize: 14):
+                                      CustomAmountText(amount: '00', fontSize: 14),
                                     ],
                                   ),
                                   trailing:  Checkbox(
@@ -121,7 +123,7 @@ void showCustomBottomSheet(BuildContext context) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => CheckoutScreen(),
+                                    builder: (context) => CheckoutScreen(services: services,),
                                   ),
                                 );
                               },

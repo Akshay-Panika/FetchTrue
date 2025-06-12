@@ -75,8 +75,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                           CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.white,
-                            backgroundImage:
-                            _getProfileImage(data.storeInfo.logo),
+                            backgroundImage: AssetImage(CustomImage.nullImage),
                           ),
                           10.width,
 
@@ -85,9 +84,9 @@ class _ProviderScreenState extends State<ProviderScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children:  [
                                 Text("${data.fullName ?? 'Provider Name'}", style: textStyle16(context),),
-                                Text( "Service: ${data.storeInfo.module.name ?? 'Store Name'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text( "Store: ${data.storeInfo.storeName ?? 'Store Name'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text("Address: ${data.storeInfo.address ?? ''},", style: textStyle14(context, fontWeight: FontWeight.w400),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                                Text( "Phone: ${data.phoneNo ?? 'Phone'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                Text( "Email: ${data.email ?? 'Email'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                // Text("Address: ${data.storeInfo.address ?? ''},", style: textStyle14(context, fontWeight: FontWeight.w400),maxLines: 2,overflow: TextOverflow.ellipsis,),
                               ],
                             ),
                           ),

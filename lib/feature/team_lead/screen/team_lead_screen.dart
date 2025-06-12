@@ -35,7 +35,7 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
             children: [
               /// Tabs
               Padding(
-                padding: EdgeInsets.all(dimensions.screenHeight*0.02),
+                padding: EdgeInsets.symmetric(horizontal:dimensions.screenHeight*0.02),
                 child: CustomToggleTabs(
                   labels: ['Team Build', 'My Team'],
                   selectedIndex: _tapIndex,
@@ -46,7 +46,7 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
                   },
                 ),
               ),
-              30.height,
+              // 10.height,
 
               /// Tab Content
               Expanded(
@@ -149,8 +149,17 @@ class TeamBuildSection extends StatelessWidget {
   }
 }
 
-class MyTeamSection extends StatelessWidget {
+class MyTeamSection extends StatefulWidget {
   const MyTeamSection({super.key});
+
+  @override
+  State<MyTeamSection> createState() => _MyTeamSectionState();
+}
+
+class _MyTeamSectionState extends State<MyTeamSection> {
+
+  bool _isUpade = false;
+  bool _confirm = false;
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +168,7 @@ class MyTeamSection extends StatelessWidget {
 
     return Column(
       children: [
+        30.height,
         DottedBorder(
           color: Colors.grey,
           dashPattern: [10, 5], // 6px line, 3px gap
@@ -183,6 +193,11 @@ class MyTeamSection extends StatelessWidget {
               Expanded(
                 child: CustomContainer(
                   backgroundColor: CustomColor.appColor.withOpacity(0.8),
+                  onTap: () {
+                    setState(() {
+                      _isUpade = true;
+                    });
+                  },
                   child: Center(child: const Text('Update', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.white),)),
                 ),
               ),
@@ -190,6 +205,8 @@ class MyTeamSection extends StatelessWidget {
           ),
         ),
 
+       if(!_confirm)
+       if(_isUpade)
         Column(
           children: [
             CustomContainer(
@@ -246,15 +263,31 @@ class MyTeamSection extends StatelessWidget {
                   Expanded(child: CustomContainer(
                     border: true,
                     backgroundColor: CustomColor.whiteColor,
+                    onTap: () {
+                      setState(() {
+                        _confirm = true;
+                      });
+                    },
                     child: Center(child: Text('Cancel', style: textStyle16(context, color: CustomColor.redColor),)),)),
                   20.width,
                   Expanded(child: CustomContainer(
                     border: true,
                     backgroundColor: CustomColor.whiteColor,
+                    onTap: () {
+                      setState(() {
+                        _confirm = true;
+                      });
+                    },
                     child: Center(child: Text('Confirm', style: textStyle16(context, color: CustomColor.appColor),)),)),
                 ],
               ),
             ),
+
+          ],
+        ),
+
+        Column(
+          children: [
             20.height,
 
             TabBar(
@@ -262,19 +295,19 @@ class MyTeamSection extends StatelessWidget {
                 unselectedLabelColor: CustomColor.descriptionColor,
                 indicatorColor: CustomColor.appColor,
                 tabs: [
-              Tab(text: 'User',),
-              Tab(text: 'Franchise',),
-              Tab(text: 'Earning',),
-            ]),
-            
+                  Tab(text: 'User',),
+                  Tab(text: 'Franchise',),
+                  Tab(text: 'Earning',),
+                ]),
+
             SizedBox(
               height: MediaQuery.of(context).size.height*0.3,
               child: TabBarView(
                   children: [
-                Center(child: Text('No Data'),),
-                Center(child: Text('No Data'),),
-                Center(child: Text('No Data'),),
-              ]),
+                    Center(child: Text('No Data'),),
+                    Center(child: Text('No Data'),),
+                    Center(child: Text('No Data'),),
+                  ]),
             )
           ],
         )

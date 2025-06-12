@@ -8,10 +8,12 @@ import 'package:bizbooster2x/feature/checkout/widget/check_payment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../service/model/service_model.dart';
 import '../widget/checkout_details_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key,});
+  final List<ServiceModel> services;
+  const CheckoutScreen({super.key, required this.services,});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -85,7 +87,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             /// Service
             _paymentStep ==0?
-            CheckoutDetailsWidget():
+            CheckoutDetailsWidget(services: widget.services,):
             _paymentStep ==1?
             CheckPaymentWidget():
             CheckoutPaymentDoneWidget(),

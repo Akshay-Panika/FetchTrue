@@ -7,19 +7,35 @@ import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
+import '../../service/model/service_model.dart';
 import '../screen/new_submit_details_screen.dart';
 import '../screen/submit_details_screen.dart';
 
-class CheckoutDetailsWidget extends StatelessWidget {
-  const CheckoutDetailsWidget({super.key,});
+class CheckoutDetailsWidget extends StatefulWidget {
+  final List<ServiceModel> services;
+  const CheckoutDetailsWidget({super.key, required this.services,});
+
+  @override
+  State<CheckoutDetailsWidget> createState() => _CheckoutDetailsWidgetState();
+}
+
+class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
+
+
+  String? customerName;
+  String? customerPhone;
 
   @override
   Widget build(BuildContext context) {
+    var data = widget.services.first;
+
+
     Dimensions dimensions = Dimensions(context);
     return Column(
       children: [
@@ -35,7 +51,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
             children: [
               CustomContainer(
                 height: 150,
-                assetsImg: CustomImage.thumbnailImage,
+                networkImg: '${data.thumbnailImage}',
                 margin: EdgeInsets.zero,
               ),
 
@@ -44,19 +60,19 @@ class CheckoutDetailsWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Service Name', style: textStyle14(context),),
+                    Text('${data.serviceName}'?? 'Service Name', style: textStyle14(context),),
                     CustomRattingAndReviews(),
                     5.height,
 
 
                     Row(
                       children: [
-                        CustomAmountText(amount: '00.00', isLineThrough: true, color: CustomColor.descriptionColor),
+                        CustomAmountText(amount: '${data.price}'??'00.00', isLineThrough: true, color: CustomColor.descriptionColor,fontSize: 14),
                         10.width,
-                        CustomAmountText(amount: '00.00', isLineThrough: false, fontSize: 14, fontWeight: FontWeight.w500, color: CustomColor.appColor),
+                        CustomAmountText(amount: '${data.discountedPrice}'??'00.00', isLineThrough: false, fontSize: 14, color: CustomColor.appColor),
                         10.width,
 
-                        Text('00 % Discount', style: textStyle14(context, color: CustomColor.descriptionColor),)
+                        Text('${data.discount} % Discount'??'00 Discount', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),)
                       ],
                     )
                   ],
@@ -80,9 +96,14 @@ class CheckoutDetailsWidget extends StatelessWidget {
                minTileHeight: 0,
                minVerticalPadding: 0,
                contentPadding: EdgeInsets.zero,
-               title: Text('Name: Akshay Panika', style: textStyle12(context, color: CustomColor.descriptionColor),),
-               subtitle: Text('Phone: +91 8989207770', style: textStyle12(context, color: CustomColor.descriptionColor),),
-             ),
+                title: Text(
+                  'Name: ${customerName ?? '_____'}',
+                  style: textStyle12(context, color: CustomColor.descriptionColor),
+                ),
+                subtitle: Text(
+                  'Phone: ${customerPhone ?? '_____'}',
+                  style: textStyle12(context, color: CustomColor.descriptionColor),
+                ), ),
 
               10.height,
               Row(
@@ -91,6 +112,22 @@ class CheckoutDetailsWidget extends StatelessWidget {
                   Expanded(
                     child: CustomContainer(
                       border: true,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      onTap: () async {
+                        final selectedCustomer = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CustomerScreen()),
+                        );
+
+                        if (selectedCustomer != null) {
+                          setState(() {
+                            customerName = selectedCustomer['fullName'];
+                            customerPhone = selectedCustomer['phone'];
+                          });
+                        }
+                      },
+
+                      // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(),)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -100,8 +137,6 @@ class CheckoutDetailsWidget extends StatelessWidget {
                           Text('My Customer', style: textStyle12(context, color: CustomColor.appColor),),
                         ],
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(),)),
                     ),
                   ),
                   Expanded(
@@ -142,7 +177,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Center(child: _buildHeadline(context, icon: Icons.card_giftcard, headline: 'Best Coupon For You')),
-                  
+
                   InkWell(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),
                     child: Row(
@@ -216,7 +251,7 @@ class CheckoutDetailsWidget extends StatelessWidget {
             spacing: 10,
             children: [
               _buildRow(context,
-              keys: 'Sub Total', amount: '00.00'),
+              keys: 'Sub Total', amount: '${data.discountedPrice}'),
               Divider(),
               _buildRow(context,
                   keys: 'Discount', amount: '00.00'),

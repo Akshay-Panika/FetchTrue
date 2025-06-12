@@ -107,10 +107,11 @@ class ServiceWidget extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 6.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('${entry.key} :', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+                                  Text('${entry.key} :', style: textStyle12(context,color: CustomColor.descriptionColor)),
                                   5.width,
-                                  Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+                                  Expanded(child: Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor),overflow: TextOverflow.ellipsis,)),
                                 ],
                               ),
                             )),

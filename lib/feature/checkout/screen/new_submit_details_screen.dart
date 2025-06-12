@@ -8,6 +8,11 @@ import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/custom_dropdown_field.dart';
+import '../../service/repository/api_service.dart';
+import '../model/add_customer_model.dart';
+import '../repository/add_customer_service.dart';
+
 class NewSubmitDetailsScreen extends StatefulWidget {
   const NewSubmitDetailsScreen({super.key});
 
@@ -17,7 +22,73 @@ class NewSubmitDetailsScreen extends StatefulWidget {
 
 class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
 
-  int _selectLocation = 0;
+  final _formKey = GlobalKey<FormState>();
+  final fullName = TextEditingController();
+  final phone = TextEditingController();
+  final email = TextEditingController();
+  final desc = TextEditingController();
+  final address = TextEditingController();
+  final country = TextEditingController();
+
+  final ValueNotifier<String> selectedState = ValueNotifier('');
+  final ValueNotifier<String> selectedCity = ValueNotifier('');
+  final ValueNotifier<List<String>> cityList = ValueNotifier([]);
+
+  final Map<String, List<String>> stateCityMap = {
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+    'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior'],
+    'Gujarat': ['Ahmedabad', 'Surat', 'Rajkot'],
+  };
+
+
+  @override
+  void initState() {
+    super.initState();
+    country.text = 'India';
+    selectedState.addListener(() {
+      cityList.value = stateCityMap[selectedState.value] ?? [];
+      selectedCity.value = '';
+    });
+  }
+
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final newCustomer = AddCustomerModel(
+        fullName: fullName.text.trim(),
+        phone: phone.text.trim(),
+        email: email.text.trim(),
+        address: address.text.trim(),
+        city: selectedCity.value,
+        state: selectedState.value,
+        country: country.text.trim(),
+        user: '6669f4e8aee9bfaac8e10c78',
+      );
+
+      final result = await AddCustomerService.createCustomer(newCustomer);
+      print('----------------$result');
+
+      final snackBar = SnackBar(
+        content: Text(result != null
+            ? "✅ Customer Created: ${result.fullName}"
+            : "❌ Failed to create customer"),
+        backgroundColor: result != null ? Colors.green : Colors.red,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+
+
+  @override
+  void dispose() {
+    fullName.dispose();
+    phone.dispose();
+    email.dispose();
+    address.dispose();
+    country.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,92 +99,90 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
 
       body: SafeArea(child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            15.height,
-            _formField(context,"Name", isRequired: true, hint: 'Enter Name...',),
-            10.height,
-
-            _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...'),
-            15.height,
-
-            _formField(context,"Email", isRequired: true,hint: 'Enter Email Id...'),
-            15.height,
-
-            CustomContainer(
-              border: true,
-              margin: EdgeInsets.zero,
-              height: dimensions.screenHeight*0.17,
-              backgroundColor: CustomColor.greenColor.withOpacity(0.1),
-            ),
-            15.height,
-
-            RichText(
-              text: TextSpan(
-                text: 'Location',
-                style: const TextStyle(color: Colors.black, fontSize: 14),
-                children: [
-                  TextSpan(text: ' *', style: TextStyle(color: Colors.red))
-                ]
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              15.height,
+              _formField(context,"Name", isRequired: true, hint: 'Enter Name...', controller: fullName),
+              10.height,
+          
+              _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...', controller: phone),
+              15.height,
+          
+              _formField(context,"Email", isRequired: true,hint: 'Enter Email Id...', controller: email,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Email is required';
+                  }
+                  if (!value.contains('@')) {
+                    return 'Enter valid email';
+                  }
+                  return null;
+                },
               ),
-            ),
-            5.height,
+              15.height,
+          
+              Center(
+                child: _descriptionField(context,
+                  "Description (Optional)",
+                  controller: desc,
+                  isRequired: false,
+                  hint: "Enter full details here...",
+                  onChanged: (val) {
+                    // handle changes
+                  },
+                ),
+              ),
+              15.height,
+          
+              _formField(context,"Address", isRequired: true,hint: 'Enter Service Address...', controller: address),
+              10.height,
+          
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomDropdownField(
+                      headline: "State",
+                      label: "Select State",
+                      items: stateCityMap.keys.toList(),
+                      selectedValue: selectedState,
+                    ),
+                  ),
+                  10.width,
 
-            Row(
-              children: [
-                _buildLocationCard(
-                    onTap: () {
-                      setState(() {
-                        _selectLocation = 0;
-                      });
-                    },
-                    context, label: 'Home', icon: Icons.home, color: _selectLocation == 0 ? CustomColor.appColor : null),
-                10.width,
-                _buildLocationCard(
-                    onTap: () {
-                      setState(() {
-                        _selectLocation = 1;
-                      });
-                    },
-                    context, label: 'Office', icon: Icons.shopping_bag, color: _selectLocation == 1 ? CustomColor.appColor : null),
-                10.width,
-
-                _buildLocationCard(
-                    onTap: () {
-                      setState(() {
-                        _selectLocation = 2;
-                      });
-                    },
-                    context, label: 'Other', icon: Icons.location_on, color: _selectLocation == 2 ? CustomColor.appColor : null),
-
-              ],
-            ),
-            15.height,
-
-            _formField(context,"Address", isRequired: true,hint: 'Enter Service Address...'),
-            10.height,
-
-            Row(
-              children: [
-                Expanded(child: _formField(context,"House", isRequired: true,hint: 'House No...')),
-                10.width,
-                Expanded(child: _formField(context,"City", isRequired: true, hint: 'Enter City...')),
-              ],
-            ),
-            10.height,
-
-            Row(
-              children: [
-                Expanded(child: _formField(context,"Status", isRequired: true, hint: 'Enter Status...')),
-                10.width,
-                Expanded(child: _formField(context,"Country", isRequired: true, hint: 'India', enabled: false)),
-              ],
-            ),
-            SizedBox(height: dimensions.screenHeight*0.04,),
-
-            CustomButton(text: 'Save Data',)
-          ],
+                  Expanded(
+                    child: ValueListenableBuilder<List<String>>(
+                      valueListenable: cityList,
+                      builder: (context, cities, _) {
+                        return CustomDropdownField(
+                          headline: "City",
+                          label: "Select City",
+                          items: cities,
+                          selectedValue: selectedCity,
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+              10.height,
+          
+              Row(
+                children: [
+                  // 10.width,
+                  Expanded(child: _formField(context,"Country", isRequired: true, hint: 'India', enabled: false, controller: country)),
+                ],
+              ),
+              SizedBox(height: dimensions.screenHeight*0.04,),
+          
+              CustomButton(
+                text: 'Save Data',
+                onTap: _submitForm,
+              )
+            ],
+          ),
         ),
       )),
     );
@@ -123,11 +192,12 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
       BuildContext context,
       String label,
       {
+        required TextEditingController  controller,
         bool isRequired = false,
-        String? initialValue,
         bool enabled = true,
         int maxLines = 1,
         String? hint,
+        String? Function(String?)? validator
       }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,13 +214,13 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
         ),
         5.height,
         TextFormField(
-          initialValue: initialValue,
+          controller: controller,
           enabled: enabled,
           maxLines: maxLines,
-          style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+          style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+            hintStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
             border: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey.shade300)
             ),
@@ -167,30 +237,87 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
             fillColor: enabled ? Colors.white : Colors.grey.shade200,
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
+          validator: validator,
         ),
       ],
     );
   }
 }
 
-Widget _buildLocationCard(BuildContext context,{
-  VoidCallback? onTap,
-  IconData? icon, String? label, Color? color}){
-  return Expanded(
-    child: CustomContainer(
-      border: true,
-      onTap: onTap ,
-      margin: EdgeInsets.zero,
-      backgroundColor: CustomColor.whiteColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, color: color ?? CustomColor.descriptionColor, size: 16,),
-          5.width,
-          Text(label!, style: textStyle12(context, color: color ?? CustomColor.descriptionColor),)
-        ],
+Widget _descriptionField(
+    BuildContext context,
+    String label, {
+      required TextEditingController  controller,
+      bool isRequired = false,
+      bool enabled = true,
+      int maxLines = 5,
+      String? hint,
+      Function(String)? onChanged,
+      String? Function(String?)? validator,
+    }) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      RichText(
+        text: TextSpan(
+          text: label,
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          children: isRequired
+              ? const [TextSpan(text: ' *', style: TextStyle(color: Colors.red))]
+              : [],
+        ),
       ),
-    ),
+      const SizedBox(height: 5),
+      TextFormField(
+        controller: controller,
+        enabled: enabled,
+        maxLines: maxLines,
+        style: textStyle14(
+          context,
+          color: CustomColor.descriptionColor,
+          fontWeight: FontWeight.w400,
+        ),
+        decoration: InputDecoration(
+          hintText: hint ?? 'Write a detailed description...',
+          hintStyle: textStyle14(
+            context,
+            color: CustomColor.descriptionColor,
+            fontWeight: FontWeight.w400,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: enabled ? Colors.white : Colors.grey.shade200,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
+        ),
+        onChanged: onChanged,
+        validator: validator ??
+            (isRequired
+                ? (val) {
+              if (val == null || val.trim().isEmpty) {
+                return 'Description is required';
+              }
+              return null;
+            }
+                : null),
+      ),
+    ],
   );
 }

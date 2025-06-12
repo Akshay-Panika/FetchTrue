@@ -20,7 +20,8 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  final Map<int, bool> _checkedCustomers = {};
+
+   int? _selectedCustomer;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
         child:  BlocBuilder<CustomerBloc, CustomerState>(
           builder: (context, state) {
             if (state is CustomerLoading) {
-              return LinearProgressIndicator();
+              return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
             }
 
             else if(state is CustomerLoaded){
@@ -86,10 +87,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
                                 Checkbox(
                                   activeColor: CustomColor.appColor,
-                                  value: true,
+                                  value: _selectedCustomer == index,
                                   onChanged: (value) {
                                     setState(() {
-                                      _checkedCustomers[index] = value!;
+                                      _selectedCustomer = value! ? index : null;
+
+                                      if (value) {
+                                        final selectedCustomerData = {
+                                          'userId': data.userId,
+                                          'fullName': data.fullName,
+                                          'phone': data.phone,
+                                        };
+                                        Navigator.pop(context, selectedCustomerData);
+                                      }
                                     });
                                   },
                                 ),

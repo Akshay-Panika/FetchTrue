@@ -163,7 +163,6 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(section.title, style: textStyle14(context)),
-            const SizedBox(height: 8),
 
             Html(
               data: section.html ?? '',

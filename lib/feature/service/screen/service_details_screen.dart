@@ -34,18 +34,11 @@ class ServiceDetailsScreen extends StatefulWidget {
   State<ServiceDetailsScreen> createState() => _ServiceDetailsScreenState();
 }
 
-class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
-    with SingleTickerProviderStateMixin {
+class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with SingleTickerProviderStateMixin {
 
-
-  final  List<String>  franchiseTabs =  [
-    'Overview','How it work','T&C',];
 
   int _indexTap = 0;
-  int _current = 0;
-  late TabController _tabController;
-
-  final ApiService apiService = ApiService();
+  List<ServiceModel> services = [];
 
 
   @override
@@ -70,7 +63,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
             else if(state is ModuleServiceLoaded){
 
               // final services = state.serviceModel;
-              final services = state.serviceModel.where((moduleService) =>
+              services = state.serviceModel.where((moduleService) =>
               moduleService.id == widget.serviceId
               ).toList();
 
@@ -152,7 +145,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    showCustomBottomSheet(context);
+                    showCustomBottomSheet(context, services: services );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
