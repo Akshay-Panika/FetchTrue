@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
+import '../widget/team_user_widget.dart';
 
 class TeamLeadScreen extends StatefulWidget {
   const TeamLeadScreen({super.key});
@@ -65,8 +66,16 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
   }
 }
 
-class TeamBuildSection extends StatelessWidget {
+class TeamBuildSection extends StatefulWidget {
   const TeamBuildSection({super.key});
+
+  @override
+  State<TeamBuildSection> createState() => _TeamBuildSectionState();
+}
+
+class _TeamBuildSectionState extends State<TeamBuildSection> {
+
+  bool _isUpgrate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +113,7 @@ class TeamBuildSection extends StatelessWidget {
 
 
         /// Referral Code Box
+      _isUpgrate?
         DottedBorder(
           color: Colors.grey,
           dashPattern: [10, 5],
@@ -133,14 +143,39 @@ class TeamBuildSection extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ):
+          CustomContainer(
+            border: true,
+            height: 100,
+            backgroundColor: CustomColor.whiteColor,
+            // backgroundColor: CustomColor.appColor.withOpacity(0.1),
+            margin: EdgeInsetsDirectional.symmetric(horizontal: 15),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.lock, color: CustomColor.appColor,),
+                10.width,
+                Text('Upgrade now to start earning', style: textStyle16(context, color: CustomColor.appColor),)
+              ],
+            ),
+          ),
+
         SizedBox(height: dimensions.screenHeight*0.03),
 
         /// Upgrade Button
+        _isUpgrate ?
+        CircleAvatar(
+            backgroundColor: Colors.blue.shade50,
+            child: IconButton(onPressed: (){}, icon: Icon(Icons.share, color: CustomColor.appColor,))):
         CustomContainer(
-          width: double.infinity,
+          width: 200,
           backgroundColor: CustomColor.appColor,
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              _isUpgrate= true;
+            });
+          },
           child: Center(child:  Text('Upgrade Now', style: textStyle16(context, color: CustomColor.whiteColor))),
         ),
          SizedBox(height: dimensions.screenHeight*0.05),
@@ -205,7 +240,6 @@ class _MyTeamSectionState extends State<MyTeamSection> {
           ),
         ),
 
-       if(!_confirm)
        if(_isUpade)
         Column(
           children: [
@@ -256,6 +290,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
               ),
             ),
 
+            if(!_confirm)
             Padding(
               padding:  EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.02),
               child: Row(
@@ -288,8 +323,6 @@ class _MyTeamSectionState extends State<MyTeamSection> {
 
         Column(
           children: [
-            20.height,
-
             TabBar(
                 labelColor: CustomColor.appColor,
                 unselectedLabelColor: CustomColor.descriptionColor,
@@ -301,12 +334,12 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                 ]),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.3,
+              height: MediaQuery.of(context).size.height*0.35,
               child: TabBarView(
                   children: [
-                    Center(child: Text('No Data'),),
-                    Center(child: Text('No Data'),),
-                    Center(child: Text('No Data'),),
+                    TeamUserWidget(),
+                    TeamUserWidget(),
+                    TeamUserWidget(),
                   ]),
             )
           ],

@@ -1,4 +1,5 @@
 import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -15,7 +16,25 @@ class CheckoutPaymentDoneWidget extends StatelessWidget {
       width: double.infinity,
       height: dimensions.screenHeight*0.7,
        backgroundColor: CustomColor.whiteColor,
-       child: Icon(CupertinoIcons.checkmark_seal_fill, size: dimensions.screenHeight*0.06,color: CustomColor.appColor,),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(CupertinoIcons.checkmark_seal_fill, color: CustomColor.greenColor, size: 100,),
+          SizedBox(height: dimensions.screenHeight*0.05,),
+
+          Text('Your place the booking successfully', style: textStyle16(context, color: CustomColor.appColor),),
+          Text('Booking Id, FTFL01', style: textStyle14(context),),
+          SizedBox(height: dimensions.screenHeight*0.05,),
+
+          CustomContainer(
+            width: 200,
+            backgroundColor: CustomColor.appColor,
+            child: Center(child: Text("Back", style: textStyle16(context, color: CustomColor.whiteColor),)),
+              onTap: () => Navigator.pop(context)
+          )
+        ],
+      ),
     );
   }
 }
