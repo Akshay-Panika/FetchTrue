@@ -169,17 +169,12 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
               ),
               10.height,
           
-              Row(
-                children: [
-                  // 10.width,
-                  Expanded(child: _formField(context,"Country", isRequired: true, hint: 'India', enabled: false, controller: country)),
-                ],
-              ),
+              _formField(context,"Country", isRequired: true, hint: 'India', enabled: false, controller: country),
               SizedBox(height: dimensions.screenHeight*0.04,),
           
               CustomButton(
-                text: 'Save Data',
-                onTap: _submitForm,
+                label: 'Save Data',
+                onPressed: _submitForm,
               )
             ],
           ),

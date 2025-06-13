@@ -8,6 +8,7 @@ class CustomerModel {
   final String state;
   final String country;
   final String userId;
+  final String customerId;
   final bool isDeleted;
   final bool isOtpVerified;
   final DateTime createdAt;
@@ -23,6 +24,7 @@ class CustomerModel {
     required this.state,
     required this.country,
     required this.userId,
+    required this.customerId,
     required this.isDeleted,
     required this.isOtpVerified,
     required this.createdAt,
@@ -40,6 +42,7 @@ class CustomerModel {
       state: json['state'],
       country: json['country'],
       userId: json['user'],
+      customerId: json['customerId'],
       isDeleted: json['isDeleted'],
       isOtpVerified: json['otp']?['verified'] ?? false,
       createdAt: DateTime.parse(json['createdAt']),
@@ -58,6 +61,7 @@ class CustomerModel {
       'state': state,
       'country': country,
       'user': userId,
+      'customerId': customerId,
       'isDeleted': isDeleted,
       'otp': {'verified': isOtpVerified},
       'createdAt': createdAt.toIso8601String(),

@@ -1,55 +1,66 @@
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 
-class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final String? hintText;
-  final IconData? icon;
-  final bool obscureText;
-  final TextInputType? keyboardType;
+import '../costants/text_style.dart';
 
-  const CustomTextField({
-    super.key,
-    required this.controller,
-    required this.labelText,
-    this.hintText,
-    this.icon,
-    this.obscureText = false,
-    this.keyboardType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: TextStyle(fontSize: 14),
-      decoration: InputDecoration(
-        // filled: true,
-        // fillColor: Colors.white, // subtle background
-        labelText: labelText,
-        hintText: hintText ?? 'Enter $labelText',
-        hintStyle: TextStyle(fontSize: 14),
-        labelStyle: TextStyle(fontSize: 14),
-        prefixIcon: icon != null ? Icon(icon, color: CustomColor.appColor) : null,
-        // contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: CustomColor.appColor,
-            width: 0.5,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: CustomColor.appColor,
-            width: 0.5,
-          ),
-        ),
-        border: UnderlineInputBorder(
+Widget CustomFormField(
+    BuildContext context,
+    String label,
+    {
+      bool isRequired = false,
+      bool enabled = true,
+      int maxLines = 1,
+      int? maxLength,
+      String? hint,
+      bool obscureText = false,
+      required TextInputType  keyboardType,
+      final TextEditingController? controller,
+      String? Function(String?)? validator,
+      VoidCallback? onTap
+    }) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      RichText(
+        text: TextSpan(
+          text: label,
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          children: isRequired
+              ? const [
+            TextSpan(text: ' *', style: TextStyle(color: Colors.red))]
+              : [],
         ),
       ),
-    );
-  }
+      5.height,
+      TextFormField(
+        onTap: onTap,
+        controller: controller,
+        enabled: enabled,
+        maxLines: maxLines,
+        obscureText: obscureText,
+        style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+          border: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade300)
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color:Colors.grey.shade300)
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade300)
+          ),
+          disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade300)
+          ),
+          filled: true,
+          fillColor: enabled ? Colors.white : Colors.grey.shade200,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        ),
+        validator: validator,
+      ),
+    ],
+  );
 }

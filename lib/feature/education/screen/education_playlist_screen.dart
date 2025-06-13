@@ -97,7 +97,7 @@ class EducationSubcategoryScreen extends StatelessWidget {
 
               Padding(
                 padding: const EdgeInsets.all(15),
-                child: CustomButton(text: 'Enroll Now',),
+                child: CustomButton(label: 'Enroll Now',onPressed: () => null,),
               )
             ],
           ),

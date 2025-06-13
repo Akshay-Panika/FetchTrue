@@ -72,7 +72,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   ],
                 ),
                 const Spacer(),
-                CustomButton(text: 'Delete My Account',onTap: _handleDelete,)
+                CustomButton(label: 'Delete My Account',onPressed: _handleDelete,)
               ],
             ),
           ),

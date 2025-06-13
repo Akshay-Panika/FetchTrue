@@ -278,10 +278,10 @@ void _showFilterSheet(BuildContext context) {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomButton(
-                  onTap: () {
+                  onPressed: () {
                     Navigator.pop(context);
                   },
-                 text: 'Apply',
+                 label: 'Apply',
                 ),
               ),
               20.height

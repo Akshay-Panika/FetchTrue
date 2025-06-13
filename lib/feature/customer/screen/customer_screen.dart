@@ -68,7 +68,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           collapsedShape: InputBorder.none,
                           leading: CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage),),
                           title: Text(data.fullName, style: textStyle14(context),),
-                          subtitle: Text('FT ID: ${data.userId}', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                          subtitle: Text('FT ID: ${data.customerId}', style: textStyle12(context, color: CustomColor.descriptionColor),),
                           children: [
                             Divider(),
                             Row(

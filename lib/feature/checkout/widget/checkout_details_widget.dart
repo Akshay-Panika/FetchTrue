@@ -253,13 +253,11 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               _buildRow(context,
               keys: 'Sub Total', amount: '${data.discountedPrice}'),
               Divider(),
-              _buildRow(context,
-                  keys: 'Discount', amount: '00.00'),
-              _buildRow(context,
-                  keys: 'Campaign Discount', amount: '00.00'),
-
-              _buildRow(context,
-                  keys: 'Grand Total', amount: '00.00'),
+              _buildRow(context, keys: 'Service Discount', amount: '00.00'),
+              _buildRow(context, keys: 'Coupon Discount', amount: '00.00'),
+              _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),
+              _buildRow(context, keys: 'Service Vat', amount: '00.00'),
+              _buildRow(context, keys: 'Grand Total', amount: '00.00'),
               10.height,
             ],
           ),
@@ -268,7 +266,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: CustomButton(
-            text: 'Proceed',),
+            onPressed: () => null,
+            label: 'Proceed',),
         ),
         20.height,
       ],

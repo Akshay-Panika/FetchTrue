@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../../../helper/Image_picker_helper.dart';
 
@@ -21,6 +23,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
+
+
+  final ValueNotifier<String> selectedState = ValueNotifier('');
+  final ValueNotifier<String> selectedCity = ValueNotifier('');
+  final ValueNotifier<List<String>> cityList = ValueNotifier([]);
+
+  final Map<String, List<String>> stateCityMap = {
+    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+    'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior'],
+    'Gujarat': ['Ahmedabad', 'Surat', 'Rajkot'],
+  };
+  
 
   @override
   void initState() {
@@ -29,6 +44,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.text = "akshay@example.com";
     _phoneController.text = "+91 8989207770";
     _addressController.text = "123, Waidhan singrauli mp";
+
+
+    _countryController.text = 'India';
+    selectedState.addListener(() {
+      cityList.value = stateCityMap[selectedState.value] ?? [];
+      selectedCity.value = '';
+    });
   }
 
   @override
@@ -61,13 +83,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(
         title: 'Profile',
         showBackButton: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -89,7 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
 
-
                   Positioned(
                       bottom: 0, right: 0,
                       child: InkWell(
@@ -100,37 +123,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ))
                 ],
               ),
-              SizedBox(height: 10),
+              10.height,
 
-              // Profile Form Fields with CustomTextField
-              CustomTextField(
-                controller: _nameController,
-                labelText: "Full Name",
-              ),
-              SizedBox(height: 12),
+              CustomFormField(context, 'Name', hint: 'Enter name',keyboardType: TextInputType.text, controller: _nameController, isRequired: true),
+              10.height,
 
-              CustomTextField(
-                controller: _phoneController,
-                labelText: "Phone Number",
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(height: 12),
+              CustomFormField(context, 'Phone', hint: 'Enter phone no',keyboardType: TextInputType.text, controller: _phoneController, isRequired: true),
+              10.height,
 
-              CustomTextField(
-                controller: _emailController,
-                labelText: "Email",
-                keyboardType: TextInputType.emailAddress,
+              CustomFormField(context, 'Email', hint: 'Enter email id',keyboardType: TextInputType.text, controller: _emailController, isRequired: true),
+              10.height,
+              
+              
+              CustomContainer(
+                height: 100,
+                backgroundColor: Colors.green.shade50,
+                margin: EdgeInsetsDirectional.symmetric(vertical: 10),
+                child: Center(child: Text('Map')),
               ),
-              SizedBox(height: 12),
+              10.height,
 
-              CustomTextField(
-                controller: _addressController,
-                labelText: "Address",
+              CustomFormField(context, 'Address', hint: 'Enter address',keyboardType: TextInputType.text, controller: _addressController, isRequired: true),
+              10.height,
+
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomDropdownField(
+                      headline: "State",
+                      label: "Select State",
+                      items: stateCityMap.keys.toList(),
+                      selectedValue: selectedState,
+                    ),
+                  ),
+                  10.width,
+
+                  Expanded(
+                    child: ValueListenableBuilder<List<String>>(
+                      valueListenable: cityList,
+                      builder: (context, cities, _) {
+                        return CustomDropdownField(
+                          headline: "City",
+                          label: "Select City",
+                          items: cities,
+                          selectedValue: selectedCity,
+                        );
+                      },
+                    ),
+                  )
+                ],
               ),
-              SizedBox(height: 50),
+              10.height,
+
+              CustomFormField(context,"Country", isRequired: true, hint: 'India', enabled: false, controller: _countryController, keyboardType: TextInputType.text),
+              SizedBox(height: dimensions.screenHeight*0.04,),
 
               // Update Profile Button
-              CustomButton(text: "Update Profile",),
+              CustomButton(label: "Update Profile",onPressed: () => null,),
+              SizedBox(height: dimensions.screenHeight*0.1,),
             ],
           ),
         ),

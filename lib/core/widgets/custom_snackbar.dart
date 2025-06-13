@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 void showCustomSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message, style: textStyle12(context, color: CustomColor.appColor),),
+      content: Text(message , style: textStyle12(context, color: CustomColor.whiteColor),),
       elevation: 0.0,
-      backgroundColor: CustomColor.whiteColor,
+      // backgroundColor: CustomColor.whiteColor,
       duration: Duration(seconds: 3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),

@@ -8,6 +8,7 @@ import 'package:bizbooster2x/feature/coupon/screen/coupon_screen.dart';
 import 'package:bizbooster2x/feature/notification/screen/notification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../auth/screen/auth_screen.dart';
 import '../../cancellation_policy/screen/cancellation_policy_screen.dart';
@@ -24,16 +25,43 @@ import '../../team_lead/screen/team_lead_screen.dart';
 import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
 
-class MoreScreen extends StatelessWidget {
+class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
 
   @override
+  State<MoreScreen> createState() => _MoreScreenState();
+}
+
+class _MoreScreenState extends State<MoreScreen> {
+
+  String? token;
+  String? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loadedToken = prefs.getString('auth_token');
+    final loadedUser = prefs.getString('user');
+    print('✅ Token fetched: $loadedToken, User: $loadedUser');
+
+    setState(() {
+      token = loadedToken;
+      user = loadedUser;
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
-    print('___________________________________ Build More screen');
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showNotificationIcon: true,),
-      
+
       body:  CustomScrollView(
         slivers: [
 
@@ -42,7 +70,7 @@ class MoreScreen extends StatelessWidget {
             toolbarHeight: 120,
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildProfileHeader(context),
+              background: _buildProfileHeader(context, user),
             ),
           ),
 
@@ -76,7 +104,28 @@ class MoreScreen extends StatelessWidget {
                 // 5.height,
                 _buildSection(context,"Others", [
                   _buildTile(context, Icons.delete_outline, "Delete Account",() => Navigator.push(context, MaterialPageRoute(builder: (context) => DeleteAccountScreen(),)),),
-                  _buildTile(context, Icons.logout, "Sign In",() => Navigator.push(context, MaterialPageRoute(builder: (context) => AuthScreen(),)),),
+
+                  _buildTile(
+                    context,
+                    Icons.logout,
+                    token != null ? 'Sign Out' : 'Sign In',
+                        () async {
+                      if (token == null) {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => AuthScreen()));
+                      } else {
+                        showLogoutDialog(context, () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          setState(() {
+                            token = null;
+                            user = null;
+                          });
+                          Navigator.pop(context);
+                        });
+                      }
+                    },
+                  ),
+
                 ]),
               ],
             ),
@@ -86,7 +135,7 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, String? user) {
     return CustomContainer(
       border: true,
      backgroundColor: Colors.white,
@@ -102,14 +151,14 @@ class MoreScreen extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("User Name", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              children:  [
+                Text(user != null && user.isNotEmpty ? user : "User Name", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 SizedBox(height: 4),
                 Text("xyz@bizbooster.com", style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
           ),
-          
+
           CustomContainer(
             border: true,
             backgroundColor: CustomColor.appColor.withOpacity(0.1),
@@ -156,5 +205,30 @@ class MoreScreen extends StatelessWidget {
       onTap: onTap,
     );
   }
+}
 
+
+void showLogoutDialog(BuildContext context, VoidCallback onConfirmLogout) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      title:  Text("Log Out", style: textStyle20(context, color: CustomColor.appColor )),
+      content: const Text("Are you sure you want to log out?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context), // Cancel
+          child:  Text("Cancel", style: textStyle14(context, color: Colors.red),),
+        ),
+
+        TextButton(
+           onPressed: () {
+             onConfirmLogout();
+           },
+          child:  Text("Log Out", style: textStyle14(context, color:CustomColor.appColor),),
+        ),
+
+      ],
+    ),
+  );
 }

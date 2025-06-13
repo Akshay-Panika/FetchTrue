@@ -60,7 +60,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
           Padding(
             padding:  EdgeInsets.all(dimensions.screenHeight*0.015),
-            child: CustomButton(text: 'Pay Now',),
+            child: CustomButton(label: 'Pay Now',onPressed: () => null,),
           )
         ],
       )),

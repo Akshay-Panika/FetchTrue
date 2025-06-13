@@ -17,6 +17,7 @@ import '../../service/screen/service_details_screen.dart';
 import '../model/module_category_model.dart';
 import '../repository/module_category_service.dart';
 import '../repository/module_subcategory_service.dart';
+import '../widget/filter_widget.dart';
 import '../widget/module_subcategory_widget.dart';
 
 class ModuleSubcategoryScreen extends StatefulWidget {
@@ -117,36 +118,7 @@ class _ModuleSubcategoryScreenState extends State<ModuleSubcategoryScreen> {
             ),
 
             /// Filter
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 40,
-                    color: CustomColor.whiteColor,
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
-                    child: ListView.builder(
-                      itemCount: 10,
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.02),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03),
-                          child: Center(child: Text("Filter $index")),
-                        );
-                      },),
-                  ),
-                ),
-                CustomContainer(
-                    height: 40,
-                    border: true,
-                    borderRadius: false,
-                    backgroundColor: Colors.white,
-                    margin: EdgeInsets.zero,
-                    // padding: EdgeInsets.zero,
-                    child: Center(child: Icon(Icons.menu))),
-              ],
-            ),
+            FilterWidget(dimensions: dimensions,),
             SizedBox(height: dimensions.screenHeight*0.01,),
 
             /// Services

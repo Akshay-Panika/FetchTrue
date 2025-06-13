@@ -57,8 +57,8 @@ class SubmitDetailsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: CustomButton(
-                onTap: () => Navigator.pop(context),
-                text: 'Proceed To Checkout',),
+                onPressed: () => Navigator.pop(context),
+                label: 'Proceed To Checkout',),
             )
             ],
         ),

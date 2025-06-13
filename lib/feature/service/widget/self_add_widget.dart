@@ -97,7 +97,27 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                                             color: CustomColor.appColor),
                                       ),
                                       index == 0 ?
-                                      CustomAmountText(amount: '${services.first.discountedPrice}'??'00', fontSize: 14):
+                                      Row(
+                                        children: [
+
+                                          CustomAmountText(
+                                              amount: services.first.price.toString(),
+                                              fontSize: 14,
+                                              color: Colors.grey,
+                                              isLineThrough: true
+                                          ),
+                                          10.width,
+
+                                          CustomAmountText(
+                                            amount: services.first.discountedPrice.toString(),
+                                            fontSize: 14,
+                                          ),
+                                          10.width,
+
+                                          if(services.first.discount != null)
+                                            Text('${services.first.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),
+                                        ],
+                                      ):
                                       CustomAmountText(amount: '00', fontSize: 14),
                                     ],
                                   ),
@@ -117,8 +137,8 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CustomButton(
-                              text: 'Proceed To Checkout',
-                              onTap: () {
+                              label: 'Proceed To Checkout',
+                              onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.push(
                                   context,

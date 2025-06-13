@@ -173,7 +173,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                 ),
                 15.height,
 
-                CustomButton(text: 'Send OTP',),
+                CustomButton(label: 'Send OTP',onPressed: () => null,),
                 20.height,
               ],
             ),

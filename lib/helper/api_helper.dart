@@ -1,15 +1,7 @@
 import 'package:bizbooster2x/helper/api_urls.dart';
-import 'package:bizbooster2x/feature/banner/model/banner_model.dart';
-import 'package:bizbooster2x/feature/category/model/module_subcategory_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import '../core/widgets/custom_snackbar.dart';
-import '../feature/home/model/module_model.dart';
-import '../model/sign_up_model.dart';
-
 
 /// Base Api Helper
-
 class ApiClient {
   static final Dio dio = Dio(BaseOptions(
     baseUrl: ApiUrls.baseUrl, // use common baseUrl
@@ -17,12 +9,18 @@ class ApiClient {
     receiveTimeout: const Duration(seconds: 10),
     headers: {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
     },
   ));
-    // ..interceptors.add(LogInterceptor(
-    //   responseBody: true,
-    //   requestBody: true,
-    // ));
+  // ..interceptors.add(LogInterceptor(
+  // request: true,
+  // requestHeader: true,
+  // requestBody: true,
+  // responseHeader: false,
+  // responseBody: true,
+  // error: true,
+  // compact: true,
+  // ));
 }
 
 

@@ -94,8 +94,8 @@ class _IDCardScreenState extends State<IDCardScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CustomButton(
-              text: 'Download ID Card',
-              onTap: () {
+              label: 'Download ID Card',
+              onPressed: () {
                 _captureAndSaveCard();
               },
             ),
