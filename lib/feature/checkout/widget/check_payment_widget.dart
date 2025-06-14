@@ -4,10 +4,20 @@ import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import '../../service/model/service_model.dart';
 
 class CheckPaymentWidget extends StatefulWidget {
+  final List<ServiceModel> services;
+  final VoidCallback onPaymentDone;
+
+  const CheckPaymentWidget({
+    super.key,
+    required this.services,
+    required this.onPaymentDone,
+  });
+
   @override
-  _CheckPaymentWidgetState createState() => _CheckPaymentWidgetState();
+  State<CheckPaymentWidget> createState() => _CheckPaymentWidgetState();
 }
 
 class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
@@ -22,12 +32,10 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Padding(
-          padding:  EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           child: Text("Select Payment Method", style: textStyle14(context)),
         ),
-
         buildDebitAndCreditOption('Debit / Credit Card'),
         buildExpandableOption("Net Banking"),
         buildExpandableOption("UPI"),
@@ -36,16 +44,15 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
     );
   }
 
-
   Widget buildDebitAndCreditOption(String title) {
     return CustomContainer(
-      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       backgroundColor: CustomColor.whiteColor,
       padding: EdgeInsets.zero,
       child: Theme(
         data: Theme.of(context).copyWith(
-          splashColor: Colors.transparent,    // disables ripple
-          highlightColor: Colors.transparent, // disables highlight
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
         ),
         child: ExpansionTile(
           backgroundColor: CustomColor.whiteColor,
@@ -53,145 +60,108 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
           shape: InputBorder.none,
           childrenPadding: EdgeInsets.zero,
           collapsedShape: InputBorder.none,
-          leading: Icon(_getIcon(title), size: 20,),
-          title: Text(title,style: textStyle14(context, fontWeight: FontWeight.w400),),
+          leading: Icon(_getIcon(title), size: 20),
+          title: Text(title,
+              style: textStyle14(context, fontWeight: FontWeight.w400)),
           children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              children: [
-
-                TextField(
-                  controller: _cardNumberController,
-                  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                  decoration: InputDecoration(
-                      labelText: 'Card Number',
-                    labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color:Colors.grey.shade400)
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
-                    disabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  buildTextField(
+                      controller: _cardNumberController,
+                      label: 'Card Number',
+                      keyboardType: TextInputType.number),
+                  15.height,
+                  Row(
+                    children: [
+                      Expanded(
+                          child: buildTextField(
+                              controller: _cvvController,
+                              label: 'CVV/CVC No.',
+                              keyboardType: TextInputType.number,
+                              obscure: true)),
+                      15.width,
+                      Expanded(
+                          child: buildTextField(
+                              controller: _expiryController,
+                              label: 'Valid Thru',
+                              keyboardType: TextInputType.datetime)),
+                    ],
                   ),
-                  keyboardType: TextInputType.number,
-                ),
-                15.height,
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _cvvController,
-                        style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                        decoration: InputDecoration(labelText: 'CVV/CVC No.',
-                          labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                          border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color:Colors.grey.shade400)
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                          disabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        obscureText: true,
+                  15.height,
+                  buildTextField(
+                      controller: _nameController,
+                      label: 'Full Name',
+                      keyboardType: TextInputType.name),
+                  10.height,
+                  Row(
+                    children: [
+                      Checkbox(
+                        activeColor: CustomColor.appColor,
+                        value: _saveDetails,
+                        onChanged: (value) {
+                          setState(() {
+                            _saveDetails = value!;
+                          });
+                        },
                       ),
-                    ),
-                    15.width,
-                    Expanded(
-                      child: TextField(
-                        controller: _expiryController,
-                        style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                        decoration: InputDecoration(labelText: 'Valid Thru',
-                          labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                          border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color:Colors.grey.shade400)
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                          disabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade400)
-                          ),
-                        ),
-                        keyboardType: TextInputType.datetime,
-                      ),
-                    ),
-                  ],
-                ),
-                15.height,
-
-                TextField(
-                  controller: _nameController,
-                  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                  decoration: InputDecoration(labelText: 'Full Name',
-                    labelStyle: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color:Colors.grey.shade400)
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
-                    disabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade400)
-                    ),
+                      Text("Save details for future"),
+                    ],
                   ),
-                ),
-                10.height,
+                  15.height,
+                  CustomButton(
+                    label: 'Send OTP',
+                    onPressed: () {
 
-                Row(
-                  children: [
-                    Checkbox(
-                      activeColor: CustomColor.appColor,
-                      value: _saveDetails,
-                      onChanged: (value) {
-                        setState(() {
-                          _saveDetails = value!;
-                        });
-                      },
-                    ),
-                    Text("Save details for future"),
-                  ],
-                ),
-                15.height,
-
-                CustomButton(label: 'Send OTP',onPressed: () => null,),
-                20.height,
-              ],
-            ),
-          )],
+                      widget.onPaymentDone();
+                    },
+                  ),
+                  20.height,
+                ],
+              ),
+            )
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscure = false,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscure,
+      style: textStyle12(context,
+          color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: textStyle12(context,
+            color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400)),
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400)),
       ),
     );
   }
 
   Widget buildExpandableOption(String title) {
     return CustomContainer(
-      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       backgroundColor: CustomColor.whiteColor,
       padding: EdgeInsets.zero,
       child: Theme(
         data: Theme.of(context).copyWith(
-          splashColor: Colors.transparent,    // disables ripple
-          highlightColor: Colors.transparent, // disables highlight
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
         ),
         child: ExpansionTile(
           backgroundColor: CustomColor.whiteColor,
@@ -199,8 +169,9 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
           shape: InputBorder.none,
           childrenPadding: EdgeInsets.zero,
           collapsedShape: InputBorder.none,
-          leading: Icon(_getIcon(title), size: 20,),
-          title: Text(title,style: textStyle14(context, fontWeight: FontWeight.w400),),
+          leading: Icon(_getIcon(title), size: 20),
+          title: Text(title,
+              style: textStyle14(context, fontWeight: FontWeight.w400)),
           children: [ListTile(title: Text('Coming Soon...'))],
         ),
       ),
@@ -218,48 +189,5 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
       default:
         return Icons.payment;
     }
-  }
-}
-
-class StepperHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        StepCircle(label: "Details", isActive: false),
-        StepCircle(label: "Payment", isActive: true),
-        StepCircle(label: "Complete", isActive: false),
-      ],
-    );
-  }
-}
-
-class StepCircle extends StatelessWidget {
-  final String label;
-  final bool isActive;
-
-  const StepCircle({required this.label, required this.isActive});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 24,
-          backgroundColor: isActive ? Colors.blue : Colors.grey.shade300,
-          child: Icon(
-            label == "Details"
-                ? Icons.list
-                : label == "Payment"
-                ? Icons.account_balance_wallet
-                : Icons.check,
-            color: isActive ? Colors.white : Colors.black54,
-          ),
-        ),
-        SizedBox(height: 6),
-        Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
-      ],
-    );
   }
 }

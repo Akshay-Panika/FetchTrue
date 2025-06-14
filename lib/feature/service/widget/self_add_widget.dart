@@ -77,60 +77,86 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return CustomContainer(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child:   ListTile(
-                                  minLeadingWidth: 0,
-                                  contentPadding: EdgeInsets.all(0),
-                                  leading: CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        CustomImage.nullImage),
-                                  ),
-                                  title: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        index == 0
-                                            ? 'Fetch True Choose For You'
-                                            : 'Provider Name',
-                                        style: textStyle14(context,
-                                            color: CustomColor.appColor),
-                                      ),
-                                      index == 0 ?
-                                      Row(
-                                        children: [
+                              return Stack(
+                                children: [
+                                  CustomContainer(
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    child:   Column(
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  CustomImage.nullImage),
+                                            ),
+                                             10.width,
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    index == 0
+                                                        ? 'Fetch True Choose For You'
+                                                        : 'Provider Name',
+                                                    style: textStyle14(context,
+                                                        color: CustomColor.appColor),
+                                                  ),
+                                                  10.height,
+                                              
+                                                  index == 0 ?
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                              
+                                                      CustomAmountText(
+                                                          amount: services.first.price.toString(),
+                                                          fontSize: 14,
+                                                          color: Colors.grey,
+                                                          isLineThrough: true
+                                                      ),
+                                              
+                                              
+                                                      CustomAmountText(
+                                                        amount: services.first.discountedPrice.toString(),
+                                                        fontSize: 14,
+                                                      ),
+                                              
+                                              
+                                                      if(services.first.discount != null)
+                                                        Text('${services.first.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),
+                                              
+                                              
+                                                      if(services.first.discount != null)
+                                                        Text('Commission: ${services.first.franchiseDetails.commission}', style: textStyle14(context, color: CustomColor.greenColor),),
 
-                                          CustomAmountText(
-                                              amount: services.first.price.toString(),
-                                              fontSize: 14,
-                                              color: Colors.grey,
-                                              isLineThrough: true
-                                          ),
-                                          10.width,
+                                                      10.width,
+                                                    ],
+                                                  ):
+                                                  CustomAmountText(amount: '00', fontSize: 14),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
 
-                                          CustomAmountText(
-                                            amount: services.first.discountedPrice.toString(),
-                                            fontSize: 14,
-                                          ),
-                                          10.width,
+                                      ],
+                                    ),
+                                  ),
 
-                                          if(services.first.discount != null)
-                                            Text('${services.first.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),
-                                        ],
-                                      ):
-                                      CustomAmountText(amount: '00', fontSize: 14),
-                                    ],
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Checkbox(
+                                      activeColor: CustomColor.greenColor,
+                                      value: selectedProviderIndex == index,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          selectedProviderIndex = index;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  trailing:  Checkbox(
-                                    activeColor: CustomColor.greenColor,
-                                    value: selectedProviderIndex == index,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        selectedProviderIndex = index;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                ],
                               );
                             },
                           ),

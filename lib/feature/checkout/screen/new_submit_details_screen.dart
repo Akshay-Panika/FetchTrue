@@ -5,6 +5,7 @@ import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/core/widgets/custom_headline.dart';
+import 'package:bizbooster2x/core/widgets/custom_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ import '../model/add_customer_model.dart';
 import '../repository/add_customer_service.dart';
 
 class NewSubmitDetailsScreen extends StatefulWidget {
-  const NewSubmitDetailsScreen({super.key});
+  final String userId;
+  const NewSubmitDetailsScreen({super.key, required this.userId});
 
   @override
   State<NewSubmitDetailsScreen> createState() => _NewSubmitDetailsScreenState();
@@ -26,7 +28,7 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
   final fullName = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final desc = TextEditingController();
+  final description = TextEditingController();
   final address = TextEditingController();
   final country = TextEditingController();
 
@@ -41,6 +43,9 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
   };
 
 
+  bool _isLoading = false;
+
+
   @override
   void initState() {
     super.initState();
@@ -53,31 +58,35 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true); // ✅ Loader on
+
       final newCustomer = AddCustomerModel(
         fullName: fullName.text.trim(),
         phone: phone.text.trim(),
         email: email.text.trim(),
+        description: description.text.trim(),
         address: address.text.trim(),
         city: selectedCity.value,
         state: selectedState.value,
         country: country.text.trim(),
-        user: '6669f4e8aee9bfaac8e10c78',
+        user: widget.userId,
       );
 
-      final result = await AddCustomerService.createCustomer(newCustomer);
-      print('----------------$result');
+      try {
+        final result = await AddCustomerService.createCustomer(newCustomer);
 
-      final snackBar = SnackBar(
-        content: Text(result != null
+        showCustomSnackBar(context, result != null
             ? "✅ Customer Created: ${result.fullName}"
-            : "❌ Failed to create customer"),
-        backgroundColor: result != null ? Colors.green : Colors.red,
-      );
+            : "❌ Failed to create customer");
 
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } catch (e) {
+
+        showCustomSnackBar(context,"❌ Error: ${e.toString()}");
+      } finally {
+        setState(() => _isLoading = false); // ✅ Loader off
+      }
     }
   }
-
 
 
   @override
@@ -127,7 +136,7 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
               Center(
                 child: _descriptionField(context,
                   "Description (Optional)",
-                  controller: desc,
+                  controller: description,
                   isRequired: false,
                   hint: "Enter full details here...",
                   onChanged: (val) {
@@ -174,6 +183,7 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
           
               CustomButton(
                 label: 'Save Data',
+                isLoading: _isLoading,
                 onPressed: _submitForm,
               )
             ],

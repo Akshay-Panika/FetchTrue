@@ -1,139 +1,136 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:bizbooster2x/feature/checkout/widget/checkout_payment_done_widget.dart';
 import 'package:bizbooster2x/feature/checkout/widget/check_payment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../service/model/service_model.dart';
 import '../widget/checkout_details_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<ServiceModel> services;
-  const CheckoutScreen({super.key, required this.services,});
+
+  const CheckoutScreen({super.key, required this.services});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-  var _paymentStep = 0;
-
 class _CheckoutScreenState extends State<CheckoutScreen> {
+  int _paymentStep = 0;
+  final steps = [
+    {'icon': CupertinoIcons.doc_fill, 'label': 'Details'},
+    {'icon': Icons.payment, 'label': 'Payment'},
+    {'icon': CupertinoIcons.checkmark_seal_fill, 'label': 'Complete'},
+  ];
+
   @override
   Widget build(BuildContext context) {
-
-    Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Checkout', showBackButton: true,),
-
+      appBar: CustomAppBar(title: 'Checkout', showBackButton: true),
       body: SafeArea(
-          child: SingleChildScrollView(
         child: Column(
           children: [
-            // 15.height,
 
-            /// Tap section
-            Container(
-              color: CustomColor.whiteColor,
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _PaymentStep(context,
-                        color:  _paymentStep == 0 ? CustomColor.appColor:null,
-                        icon: CupertinoIcons.doc_fill, onTap: () {
-                        setState(() {
-                          _paymentStep = 0;
-                        });
-                      },),
-                      _PaymentStep(context,
-                        color:  _paymentStep == 1 ? CustomColor.appColor:null,
-                        icon: Icons.payment, onTap: () {
-                        setState(() {
-                          _paymentStep = 1;
-                        });
-                      },),
-                      _PaymentStep(context,
-                        color:  _paymentStep == 2 ? CustomColor.appColor:null,
-                        divider: false, icon: CupertinoIcons.checkmark_seal_fill, onTap: () {
+            /// Section
+            CustomContainer(
+              backgroundColor: CustomColor.whiteColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(steps.length, (index) {
+                  return _PaymentStep(
+                    icon: steps[index]['icon'] as IconData,
+                    label: steps[index]['label'] as String,
+                    isCompleted: _paymentStep > index,
+                    isCurrent: _paymentStep == index,
+                    isLast: index == steps.length - 1,
+                    onTap: () {
                       setState(() {
-                        _paymentStep = 2;
+                        _paymentStep = index;
                       });
-                      },),
-                    ],
-                  ),
-                  5.height,
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _PaymentStepText(context,'Details'),
-                        _PaymentStepText(context,'    Payment'),
-                        _PaymentStepText(context,'Complete'),
-                      ],
-                    ),
-                  )
-                ],
+                    },
+                  );
+                }),
               ),
             ),
-            SizedBox(height: dimensions.screenHeight*0.01,),
+            
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (_paymentStep == 0)
+                      CheckoutDetailsWidget(
+                        services: widget.services,
+                        onContinue: () {
+                          setState(() => _paymentStep = 1);
+                        },
+                      )
 
-            /// Service
-            _paymentStep ==0?
-            CheckoutDetailsWidget(services: widget.services,):
-            _paymentStep ==1?
-            CheckPaymentWidget():
-            CheckoutPaymentDoneWidget(),
-            50.height,
+                    else if (_paymentStep == 1)
+                      CheckPaymentWidget(
+                        services: widget.services,
+                        onPaymentDone: () {
+                          setState(() => _paymentStep = 2);
+                        },
+                      )
+                    else
+                      const CheckoutPaymentDoneWidget(),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
-      )
       ),
+    );
+  }
+
+  Widget _PaymentStep({
+    required IconData icon,
+    required String label,
+    required bool isCompleted,
+    required bool isCurrent,
+    required bool isLast,
+    required VoidCallback onTap,
+  }) {
+    final bool isActive = isCurrent || isCompleted;
+    return Row(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Column(
+            children: [
+              CircleAvatar(
+                backgroundColor: isActive ? CustomColor.appColor : Colors.grey.shade300,
+                radius: 20,
+                child: Icon(
+                  icon,
+                  color: isActive ? Colors.white : Colors.black54,
+                ),
+              ),
+              4.height,
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isActive ? CustomColor.appColor : Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isLast)
+          Container(
+            width: 100,
+            height: 2,
+            color: isActive ? CustomColor.appColor : Colors.grey.shade400,
+            margin: const EdgeInsets.symmetric(horizontal: 6),
+          ),
+      ],
     );
   }
 }
 
-
-/// Tap Section
-Widget _PaymentStep(BuildContext context,{
-  bool? divider = true,
-  required IconData icon,
-  Color? color,
-  VoidCallback? onTap,
-}){
-
-  Dimensions dimensions = Dimensions(context);
-  return Row(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      InkWell(
-        onTap: onTap,
-        child: CircleAvatar(
-          backgroundColor: CustomColor.canvasColor,
-          child: Icon(icon, color: color ?? CustomColor.greyColor,size: 20,),
-        ),
-      ),
-
-      if( divider == true)
-      CustomContainer(
-        height:3,
-        width: dimensions.screenHeight*0.12,
-        padding: EdgeInsets.zero,
-        backgroundColor: color ?? CustomColor.greyColor,)
-    ],
-  );
-}
-
-/// Tap Section
-Widget _PaymentStepText(BuildContext context,String paymentStep){
-  Dimensions dimensions = Dimensions(context);
-  return Center(child: Text(paymentStep, style: textStyle12(context),));
-}

@@ -1,25 +1,26 @@
+import 'dart:async';
 import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_headline.dart';
+import 'package:bizbooster2x/core/widgets/custom_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../service/model/service_model.dart';
+import '../model/check_out_model.dart';
+import '../repository/check_out_service.dart';
 import '../screen/new_submit_details_screen.dart';
-import '../screen/submit_details_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final List<ServiceModel> services;
-  const CheckoutDetailsWidget({super.key, required this.services,});
+  final VoidCallback onContinue;
+  const CheckoutDetailsWidget({super.key, required this.services, required this.onContinue,});
 
   @override
   State<CheckoutDetailsWidget> createState() => _CheckoutDetailsWidgetState();
@@ -28,13 +29,27 @@ class CheckoutDetailsWidget extends StatefulWidget {
 class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
+  String? customerId;
   String? customerName;
   String? customerPhone;
+
+  String? userId;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loadedUserId = prefs.getString('user_id');
+    setState(() {userId = loadedUserId;});}
 
   @override
   Widget build(BuildContext context) {
     var data = widget.services.first;
-
 
     Dimensions dimensions = Dimensions(context);
     return Column(
@@ -42,7 +57,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
         /// Service
         CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: CustomColor.whiteColor,
           padding: EdgeInsets.zero,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
@@ -84,7 +99,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
         /// Add customer
         CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
@@ -121,13 +136,12 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
                         if (selectedCustomer != null) {
                           setState(() {
+                            customerId = selectedCustomer['userId'];
                             customerName = selectedCustomer['fullName'];
                             customerPhone = selectedCustomer['phone'];
                           });
                         }
                       },
-
-                      // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(),)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -153,8 +167,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                           ],
                         ),
                         onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewSubmitDetailsScreen(),));
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitDetailsScreen(),));
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewSubmitDetailsScreen(userId: userId!,),));
                       },
                     ),
                   ),
@@ -167,7 +181,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
         /// Best Coupon For You
         CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
@@ -244,7 +258,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
         /// Summery
         CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
@@ -257,18 +271,70 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               _buildRow(context, keys: 'Coupon Discount', amount: '00.00'),
               _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),
               _buildRow(context, keys: 'Service Vat', amount: '00.00'),
+              _buildRow(context, keys: 'Platform Fee', amount: '00.00'),
+              _buildRow(context, keys: 'Fetch True Assurity Charges', amount: '00.00'),
               _buildRow(context, keys: 'Grand Total', amount: '00.00'),
               10.height,
             ],
           ),
         ),
 
+        
+        CustomContainer(
+          backgroundColor: CustomColor.whiteColor,
+          child: Center(child: Text('You Will Earn ₹ 00 Commission From This Service', style: textStyle14(context, color: CustomColor.appColor),)),
+        ),
+       
+        Row(
+          children: [
+            Checkbox(value: true, onChanged: (value) => null, activeColor: Colors.green,),
+            Text('I agree with the term & condition')
+          ],
+        ),
+        15.height,
+
         Padding(
           padding: const EdgeInsets.all(10),
           child: CustomButton(
-            onPressed: () => null,
-            label: 'Proceed',),
+            isLoading: _isLoading,
+            onPressed: () async {
+              final checkoutData = CheckoutModel(
+                user: userId.toString(),
+                service: data.id,
+                serviceCustomer: customerId.toString(),
+                provider: customerId.toString(),
+                coupon: customerId.toString(),
+                subtotal: 1000,
+                serviceDiscount: 100,
+                couponDiscount: 50,
+                champaignDiscount: 25,
+                vat: 18,
+                platformFee: 30,
+                garrantyFee: 10,
+                tax: 20,
+                totalAmount: 903,
+                paymentMethod: "upi",
+                paymentStatus: "pending",
+                orderStatus: "processing",
+                notes: "Akshay Urgent delivery, call before arriving.",
+              );
+
+              setState(() => _isLoading = true);
+
+              final result = await CheckOutService.checkOutService(checkoutData);
+
+              setState(() => _isLoading = false);
+
+              if (result != null) {
+                widget.onContinue();
+              } else {
+                showCustomSnackBar(context, 'Checkout failed! Please try again.');
+              }
+            },
+            label: 'Proceed',
+          ),
         ),
+
         20.height,
       ],
     );

@@ -21,6 +21,7 @@ class AddCustomerModel {
   final String fullName;
   final String phone;
   final String email;
+  final String? description;
   final String address;
   final String city;
   final String state;
@@ -33,6 +34,7 @@ class AddCustomerModel {
     required this.fullName,
     required this.phone,
     required this.email,
+    this.description,
     required this.address,
     required this.city,
     required this.state,
@@ -47,6 +49,7 @@ class AddCustomerModel {
       fullName: json['fullName'] ?? '',
       phone: json['phone'] ?? '',
       email: json['email'] ?? '',
+      description: json['description'] ?? '',
       address: json['address'] ?? '',
       city: json['city'] ?? '',
       state: json['state'] ?? '',
@@ -60,6 +63,7 @@ class AddCustomerModel {
       'fullName': fullName,
       'phone': phone,
       'email': email,
+      'description': description,
       'address': address,
       'city': city,
       'state': state,

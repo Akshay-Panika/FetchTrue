@@ -18,4 +18,5 @@ class ApiUrls{
   static const String provider = '${baseUrl}provider';
   static const String serviceCustomer = '${baseUrl}service-customer';
   static const String coupon = '${baseUrl}coupon';
+  static const String checkout = '${baseUrl}checkout';
 }

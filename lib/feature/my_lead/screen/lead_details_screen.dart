@@ -5,6 +5,7 @@ import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
+import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_icon.dart';
@@ -19,6 +20,8 @@ class LeadDetailsScreen extends StatefulWidget {
 
 class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
+  int _tapIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
@@ -28,12 +31,30 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
       body: SafeArea(child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          15.height,
+
+          /// Tabs
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal:dimensions.screenHeight*0.02),
+            child: CustomToggleTabs(
+              labels: ['Lead', 'Status'],
+              selectedIndex: _tapIndex,
+              onTap: (index) {
+                setState(() {
+                  _tapIndex = index;
+                });
+              },
+            ),
+          ),
+
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
+              padding:  EdgeInsets.all(15.0),
+              child:
+              _tapIndex ==0 ?
+              Column(
                 children: [
-                  
+
                   /// Booking card
                   _buildBookingCard(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
@@ -42,16 +63,25 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   _customerDetails(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
 
-                  /// Customer OTP
-                  _buildOtp(context),
-                  SizedBox(height: dimensions.screenHeight*0.015,),
-            
+
                   /// Payment status card
                   _buildPaymentStatus(context),
                   SizedBox(height: dimensions.screenHeight*0.015,),
             
                   /// Booking summary card
                   _buildBookingSummary(context),
+                  SizedBox(height: dimensions.screenHeight*0.015,),
+                  
+                  CustomContainer(
+                    width: double.infinity,
+                    backgroundColor: CustomColor.greenColor.withOpacity(0.1),
+                    margin: EdgeInsets.zero,
+                    child: Text('You Will Earn ₹000\nCommission From This Product', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.center,),)
+
+                ],
+              ):
+              Column(
+                children: [
 
                 ],
               ),
@@ -88,6 +118,17 @@ Widget _buildBookingCard(BuildContext context){
         _iconText(icon: Icons.calendar_month, text: 'Timing Details : 6 May 2025 08:50 PM'),
         _iconText(icon: Icons.calendar_month, text: 'Services Schedule Date : 6 May 2025 08:50 PM'),
         _iconText(icon: Icons.location_on_outlined, text: 'Address : Office ve jkw 3br#429, Amanora Chambers Pune'),
+      
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('OTP: FT00001',textAlign: TextAlign.center,style: textStyle14(context,fontWeight: FontWeight.w400),),
+            CustomContainer(
+              backgroundColor: Colors.blue.shade50,
+              padding: EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 10),
+              child: Text('Download', style: textStyle12(context, color: CustomColor.appColor),),),
+          ],
+        )
       ],
     ),
   );
@@ -101,7 +142,7 @@ Widget _iconText({double? fontSize, IconData? icon, double? iconSize,Color? icon
     children: [
       Icon(icon!, size: iconSize ?? 14,color: iconColor ?? Colors.grey,),
       Expanded(child: Text(text!, style: TextStyle(fontSize: fontSize  ?? 12, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
-                                         // textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+      // textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
     ],
   );
 }
@@ -187,14 +228,6 @@ Widget _customerDetails(BuildContext context){
   );
 }
 
-Widget _buildOtp(BuildContext context){
-   return CustomContainer(
-       border: true,
-       backgroundColor: Colors.white,
-       margin: EdgeInsets.zero,
-   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-   child: Text('OTP\nFT00001',textAlign: TextAlign.center,style: textStyle16(context),));
-}
 
 Widget _buildPaymentStatus(BuildContext context){
   return CustomContainer(
