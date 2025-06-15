@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
-import '../../home/screen/initial_home_screen.dart';
+import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
 import '../../offer/screen/offer_screen.dart';
-import '../widget/offer_dialog_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -35,7 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     'Menu',
   ];
   final List<Widget> _screens = const [
-    InitialHomeScreen(),
+    HomeScreen(),
     MyLeadScreen(),
     OfferScreen(),
     AcademyScreen(),

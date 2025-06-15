@@ -1,8 +1,5 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/helper/api_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../feature/service/screen/service_details_screen.dart';
 import '../../feature/banner/model/banner_model.dart';
 import 'custom_container.dart';
 

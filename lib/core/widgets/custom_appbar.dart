@@ -44,7 +44,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         icon:  Icon(CupertinoIcons.back),
         onPressed: () => Navigator.of(context).pop(),
       ) : leading,
-      leadingWidth: leadingWidth,
+      leadingWidth:  showBackButton == false ? null:50,
+      titleSpacing: showBackButton == false ? 20:0,
       title:  title != null ?Text(title!):titleWidget,
       actions:  [
         if(showNotificationIcon)

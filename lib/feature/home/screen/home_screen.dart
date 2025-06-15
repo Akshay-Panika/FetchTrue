@@ -1,200 +1,74 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_logo.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/feature/education/screen/education_screen.dart';
-import 'package:bizbooster2x/feature/home/bloc/module/module_state.dart';
-import 'package:bizbooster2x/feature/home/model/module_model.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:bizbooster2x/core/widgets/custom_search_bar.dart';
-import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
+import '../../../core/widgets/custom_service_list.dart';
 import '../../business_idea/screen/business_idea_screen.dart';
-import '../../category/screen/module_category_screen.dart';
-import '../../module/onboarding/screen/onboarding_screen.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
+import '../../banner/widget/home_banner_widget.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
-import '../bloc/module/module_bloc.dart';
-import '../bloc/module/module_event.dart';
-import '../repository/module_service.dart';
-import '../../banner/widget/home_banner_widget.dart';
 import '../widget/leads_widget.dart';
-import '../widget/module_shimmer_grid_widget.dart';
+import '../widget/module_widget.dart';
 import '../widget/profile_card_widget.dart';
 
-class HomeScreen extends StatefulWidget {
-  final String moduleName;
-  final String moduleId;
-  final Function(bool, String,String ) onToggle;
-  const HomeScreen({super.key, required this.onToggle, required this.moduleName, required this.moduleId});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key,});
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      // appBar: CustomAppBar(
-      //   showNotificationIcon: true,
-      //   titleWidget: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       Text('BizBooster2x', style: textStyle16(context, color: CustomColor.appColor),),
-      //       Text("Waidhan Singrauli Madhya Pradesh Pin- 486886",
-      //         style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-      //     ],
-      //   ),
-      // ),
       appBar: AppBar(toolbarHeight: 0,),
-
       body: SafeArea(
         child: CustomScrollView(
             slivers: [
-        
+
             /// Profile card
             SliverToBoxAdapter(child: ProfileCardWidget(),),
-        
+
             /// Search bar
             SliverAppBar(
               toolbarHeight: 60,
               floating: true,
+              pinned: true,
               backgroundColor: CustomColor.canvasColor,
               flexibleSpace: CustomSearchBar(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SearchScreen()),
-                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen()),),
               ),
             ),
-        
-            /// Data
+
+            /// Banner
+            SliverToBoxAdapter(child: HomeBannerWidget(),),
+            SliverToBoxAdapter(child: 10.height,),
+
+            /// Futures
+            SliverToBoxAdapter(child: LeadsWidget(),),
+            SliverToBoxAdapter(child: 15.height,),
+
+            /// Modules
+            SliverToBoxAdapter(child: ModuleWidget(dimensions: dimensions,),),
+            SliverToBoxAdapter(child: 15.height,),
+
             SliverToBoxAdapter(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-        
-                  /// Banner
-                  HomeBannerWidget(),
-                  SizedBox(height: dimensions.screenHeight*0.01,),
-        
-                  /// Leads
-                  LeadsWidget(),
-                  SizedBox(height: dimensions.screenHeight*0.02,),
-        
-                  /// module list
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      15.width,
-                      Text('🔷 Modules', style: textStyle14(context),),
-                      Expanded(child: CustomContainer(padding: EdgeInsets.zero,height: 1,backgroundColor: CustomColor.appColor.withOpacity(0.8),))
-                    ],
-                  ),
-                  SizedBox(height: dimensions.screenHeight*0.01,),
-        
-                  BlocProvider(
-                    create: (_) => ModuleBloc(ModuleService())..add(GetModule()),
-                   child:  BlocBuilder<ModuleBloc, ModuleState>(
-                     builder: (context, state) {
-                       if (state is ModuleLoading) {
-                         return ModuleShimmerGrid();
-                       }
-                       else if(state is ModuleLoaded){
-                         // final modules = state.moduleModel;
-                         final modules = state.moduleModel .where((module) => module.categoryCount != 0)
-                             .toList();
-        
-                         if (modules.isEmpty) {
-                           return const Center(child: Text('No modules found.'));
-                         }
-        
-                         return  Padding(
-                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                           child: GridView.builder(
-                             itemCount: modules.length,
-                             shrinkWrap: true,
-                             physics: const NeverScrollableScrollPhysics(),
-                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                 crossAxisCount: 3,
-                                 childAspectRatio: 1.11 / 1,
-                                 crossAxisSpacing: 10,
-                                 mainAxisSpacing: 10
-                             ),
-                             itemBuilder: (context, index) {
-                               final module = modules[index];
-                               return CustomContainer(
-                                 onTap: () {
-                                   if( module.name == 'Education'){
-                                     Navigator.push(context, MaterialPageRoute(builder: (context) => EducationScreen(
-                                       moduleId: module.id,
-                                       moduleName: module.name,
-                                     ),));
-                                   }
-                                   else{
-                                     Navigator.push(context, MaterialPageRoute(builder: (context) => OnboardingScreen(
-                                       moduleId: module.id,
-                                       moduleName: module.name,
-                                     ),));
-                                   }
 
-                                   // setState(() {
-                                   //   widget.onToggle(false, module.name, module.id);
-                                   // });
-                                 },
-                                 // padding: EdgeInsets.zero,
-                                 margin: EdgeInsets.zero,
-                                 backgroundColor: Colors.white,
-                                 child: Column(
-                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                   children: [
-                                    Expanded(
-                                       child: CustomContainer(
-                                           networkImg: module.image,
-                                         margin: EdgeInsets.zero,
-                                         backgroundColor: Colors.transparent,
-                                       ),
-                                     ),
-                                     Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
-                                   ],
-                                 ),
-                               );
-                             },
-                           ),
-                         );
-                       }
-        
-                       else if (state is ModuleError) {
-                         return Center(child: Text(state.errorMessage));
-                       }
-                       return const SizedBox.shrink();
-                     },
-                   ),
-                  ),
-                  SizedBox(height: dimensions.screenHeight*0.01,),
-        
                   /// Services for you
                   CustomServiceList(headline: 'Services for you',),
                   SizedBox(height: dimensions.screenHeight*0.01,),
-        
+
                   /// Highlight service
                   CustomHighlightService(),
-        
+
                   /// Popular Services
                   CustomServiceList(headline: 'Popular Services',),
-        
+
                   CustomContainer(
                     height: 200,
                     border: true,
@@ -213,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-        
+
                   /// Refer and earn
                   CustomContainer(
                     width: double.infinity,
@@ -235,21 +109,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text('Refer And Win up to ____', style: TextStyle(fontSize: 16, color: CustomColor.iconColor, fontWeight: FontWeight.w600),),
                           ],
                         ),
-        
+
                         Image.asset('assets/image/inviteFrnd.png',height: 200,width: double.infinity,)
                       ],
                     ),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                   ),
                   SizedBox(height: dimensions.screenHeight*0.01,),
-        
+
                   CustomServiceList(headline: 'Recommended Services For You'),
-        
+
                   ///  Service Provider
                   ServiceProviderWidget(),
-        
-        
-        
+
+
+
                   CustomContainer(
                     height: 200,
                     borderRadius: false,
@@ -262,15 +136,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: textStyle22(context, color: CustomColor.appColor, fontWeight: FontWeight.bold),),
                       ),),
                   ),
-        
+
                   /// Understanding bizBooster
                   UnderstandingBizBoosterWidget(),
-        
+
                   /// Partner review
                   PartnerReviewWidget(),
                 ],
               ),
-            ),
+            )
+
           ],
         ),
       ),

@@ -10,7 +10,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_url_launch.dart';
-import '../../category/screen/module_subcategory_screen.dart';
+import '../../subcategory/screen/subcategory_screen.dart';
 import '../repository/banner_service.dart';
 class HomeBannerWidget extends StatefulWidget {
   const HomeBannerWidget({super.key});
@@ -51,7 +51,7 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
                 onTap: (banner) {
                   if (banner.selectionType == 'subcategory') {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                        ModuleSubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',),),
+                        SubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',categoryName: banner.subcategory!.name,),),
                     );
                   }
                   else if (banner.selectionType == 'service') {

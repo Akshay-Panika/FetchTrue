@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
-import '../widget/team_user_widget.dart';
+import '../widget/gp_team_widget.dart';
+import '../widget/non_gp_widget.dart';
 
 class TeamLeadScreen extends StatefulWidget {
   const TeamLeadScreen({super.key});
@@ -31,7 +32,7 @@ class _TeamLeadScreenState extends State<TeamLeadScreen> {
       appBar: CustomAppBar(title: 'Team Lead', showBackButton: true),
       body: SafeArea(
         child: DefaultTabController(
-          length: 3,
+          length: 2,
           child: Column(
             children: [
               /// Tabs
@@ -204,6 +205,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
     return Column(
       children: [
         30.height,
+        if(!_confirm)
         DottedBorder(
           color: Colors.grey,
           dashPattern: [10, 5], // 6px line, 3px gap
@@ -274,7 +276,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       Text('Leads :', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+                       Text('Leads : 203', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
                         Row(
                           children: [
                             Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,),
@@ -328,18 +330,16 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                 unselectedLabelColor: CustomColor.descriptionColor,
                 indicatorColor: CustomColor.appColor,
                 tabs: [
-                  Tab(text: 'User',),
-                  Tab(text: 'Franchise',),
-                  Tab(text: 'Earning',),
+                  Tab(text: 'Non-GP',),
+                  Tab(text: 'GP Team',),
                 ]),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.35,
+              height: MediaQuery.of(context).size.height*0.5,
               child: TabBarView(
                   children: [
-                    TeamUserWidget(),
-                    TeamUserWidget(),
-                    TeamUserWidget(),
+                    NonGpWidget(),
+                    GpTeamWidget(),
                   ]),
             )
           ],

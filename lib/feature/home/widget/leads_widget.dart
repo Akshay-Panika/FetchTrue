@@ -59,20 +59,22 @@ class LeadsWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 10),
                   border: false,
                   backgroundColor: CustomColor.whiteColor,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyLeadScreen(isBack: 'isBack',),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Scaffold(),)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Image.asset('assets/lead/my_lead_icon.jpg',),
 
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(text:'My Leads : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                            TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                          ],
-                        ),
-                      ),
+                      Text('Extra Earning\nTask 50',style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),)
+
+                      // RichText(
+                      //   text: TextSpan(
+                      //     children: [
+                      //       TextSpan(text:'Extra Earning ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                      //       TextSpan(text:' Lead 50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                      //     ],
+                      //   ),
+                      // ),
 
                     ],
                   ),

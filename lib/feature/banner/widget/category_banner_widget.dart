@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_banner.dart';
+import '../../subcategory/screen/subcategory_screen.dart';
 import '../bloc/module_banner/module_banner_bloc.dart';
 import '../bloc/module_banner/module_banner_event.dart';
 import '../bloc/module_banner/module_banner_state.dart';
 import '../repository/banner_service.dart';
 import 'home_banner_widget.dart';
 import '../../service/screen/service_details_screen.dart';
-import '../../category/screen/module_subcategory_screen.dart';
 
 class CategoryBannerWidget extends StatefulWidget {
-  const CategoryBannerWidget({super.key});
+  final double? height;
+  const CategoryBannerWidget({super.key, this.height});
 
   @override
   State<CategoryBannerWidget> createState() => _CategoryBannerWidgetState();
@@ -46,12 +47,12 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
 
             return CustomBanner(
               bannerData: banner,
-              height: 200,
+              height: widget.height ?? 200,
                 onTap: (banner) {
 
                   if (banner.selectionType == 'subcategory') {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                        ModuleSubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '',),),
+                        SubcategoryScreen(categoryId: banner.subcategory?.categoryId ?? '', categoryName: banner.subcategory!.name,),),
                     );
                   }
 
