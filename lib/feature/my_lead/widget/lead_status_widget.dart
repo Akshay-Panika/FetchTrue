@@ -63,7 +63,13 @@ Widget _header(BuildContext context, {String? header, String? desc, bool isMeet 
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(header!, style: textStyle14(context),),
+              Row(
+                children: [
+                  Text('$header,', style: textStyle14(context),),
+                  10.width,
+                  Text('(Time, Date)', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                ],
+              ),
               Text(desc!, style: textStyle14(context,fontWeight: FontWeight.w400),),
 
               if (isMeet)

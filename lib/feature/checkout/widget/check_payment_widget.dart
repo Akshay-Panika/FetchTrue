@@ -1,19 +1,26 @@
 import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
 import 'package:bizbooster2x/core/widgets/custom_button.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import '../../service/model/service_model.dart';
+import '../model/check_out_model.dart';
+import '../repository/check_out_service.dart';
+
+enum PaymentMethod { payAfterService, cashfree }
+enum CashfreeSubOption { full, partial }
 
 class CheckPaymentWidget extends StatefulWidget {
   final List<ServiceModel> services;
   final VoidCallback onPaymentDone;
+  final CheckoutModel checkoutData;
 
   const CheckPaymentWidget({
     super.key,
     required this.services,
-    required this.onPaymentDone,
+    required this.onPaymentDone, required this.checkoutData,
   });
 
   @override
@@ -21,173 +28,247 @@ class CheckPaymentWidget extends StatefulWidget {
 }
 
 class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
-  final _cardNumberController = TextEditingController();
-  final _cvvController = TextEditingController();
-  final _expiryController = TextEditingController();
-  final _nameController = TextEditingController();
-  bool _saveDetails = false;
+  bool isWalletApplied = false;
+  PaymentMethod? selectedMethod;
+  CashfreeSubOption selectedCashfreeOption = CashfreeSubOption.full;
+
+  bool _isLoading = false;
+  double get totalAmount {
+    if (selectedMethod == PaymentMethod.cashfree) {
+      if (selectedCashfreeOption == CashfreeSubOption.partial) {
+        return 250.00;
+      } else {
+        return 500.00;
+      }
+    }
+    return 500.00;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: Text("Select Payment Method", style: textStyle14(context)),
-        ),
-        buildDebitAndCreditOption('Debit / Credit Card'),
-        buildExpandableOption("Net Banking"),
-        buildExpandableOption("UPI"),
-        buildExpandableOption("Payment After Consultation"),
-      ],
-    );
-  }
 
-  Widget buildDebitAndCreditOption(String title) {
-    return CustomContainer(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      backgroundColor: CustomColor.whiteColor,
-      padding: EdgeInsets.zero,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          backgroundColor: CustomColor.whiteColor,
-          iconColor: CustomColor.appColor,
-          shape: InputBorder.none,
-          childrenPadding: EdgeInsets.zero,
-          collapsedShape: InputBorder.none,
-          leading: Icon(_getIcon(title), size: 20),
-          title: Text(title,
-              style: textStyle14(context, fontWeight: FontWeight.w400)),
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  buildTextField(
-                      controller: _cardNumberController,
-                      label: 'Card Number',
-                      keyboardType: TextInputType.number),
-                  15.height,
-                  Row(
-                    children: [
-                      Expanded(
-                          child: buildTextField(
-                              controller: _cvvController,
-                              label: 'CVV/CVC No.',
-                              keyboardType: TextInputType.number,
-                              obscure: true)),
-                      15.width,
-                      Expanded(
-                          child: buildTextField(
-                              controller: _expiryController,
-                              label: 'Valid Thru',
-                              keyboardType: TextInputType.datetime)),
-                    ],
-                  ),
-                  15.height,
-                  buildTextField(
-                      controller: _nameController,
-                      label: 'Full Name',
-                      keyboardType: TextInputType.name),
-                  10.height,
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: CustomColor.appColor,
-                        value: _saveDetails,
-                        onChanged: (value) {
-                          setState(() {
-                            _saveDetails = value!;
-                          });
-                        },
+    Dimensions dimensions = Dimensions(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        children: [
+          /// Payment Selection
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Choose Payment Method',
+                style: textStyle14(context, color: CustomColor.descriptionColor),
+              ),
+              10.height,
+
+              /// Wallet
+              CustomContainer(
+                backgroundColor: CustomColor.whiteColor,
+                margin: EdgeInsets.zero,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        CustomAmountText(
+                          amount: '00.00',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: CustomColor.appColor,
+                        ),
+                        Text(
+                          'Wallet Balance',
+                          style: textStyle14(
+                            context,
+                            color: CustomColor.descriptionColor,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          isWalletApplied = !isWalletApplied;
+                        });
+                      },
+                      child: Text(
+                        isWalletApplied ? 'Remove' : 'Apply',
+                        style: textStyle16(
+                          context,
+                          color: isWalletApplied
+                              ? CustomColor.redColor
+                              : CustomColor.greenColor,
+                        ),
                       ),
-                      Text("Save details for future"),
+                    ),
+                  ],
+                ),
+              ),
+              15.height,
+
+              Text(
+                'Pay Via Online',
+                style: textStyle14(context, color: CustomColor.descriptionColor),
+              ),
+              10.height,
+              /// CashFree Option
+              CustomContainer(
+                backgroundColor: CustomColor.whiteColor,
+                margin: EdgeInsets.zero,
+                child: Row(
+                  children: [
+                    Radio<PaymentMethod>(
+                      value: PaymentMethod.cashfree,
+                      groupValue: selectedMethod,
+                      activeColor: CustomColor.appColor,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedMethod = value;
+                        });
+                      },
+                    ),
+                    Text('CashFree Pay', style: textStyle14(context)),
+                  ],
+                ),
+              ),
+              15.height,
+
+              /// Show only if CashFree selected
+              if (selectedMethod == PaymentMethod.cashfree)
+                CustomContainer(
+                  backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.only(bottom: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          Radio<CashfreeSubOption>(
+                            value: CashfreeSubOption.full,
+                            groupValue: selectedCashfreeOption,
+                            activeColor: CustomColor.appColor,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCashfreeOption = value!;
+                              });
+                            },
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Full Payment', style: textStyle12(context)),
+                              CustomAmountText(amount: '500.00'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio<CashfreeSubOption>(
+                            value: CashfreeSubOption.partial,
+                            groupValue: selectedCashfreeOption,
+                            activeColor: CustomColor.appColor,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCashfreeOption = value!;
+                              });
+                            },
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Partial Payment', style: textStyle12(context)),
+                              CustomAmountText(amount: '250.00'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  15.height,
-                  CustomButton(
-                    label: 'Send OTP',
-                    onPressed: () {
+                ),
 
-                      widget.onPaymentDone();
-                    },
+
+              /// Pay After Service
+              CustomContainer(
+                backgroundColor: CustomColor.whiteColor,
+                margin: EdgeInsets.zero,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.currency_rupee, size: 16),
+                        10.width,
+                        Text('Payment after consultation', style: textStyle14(context)),
+                      ],
+                    ),
+                    Radio<PaymentMethod>(
+                      value: PaymentMethod.payAfterService,
+                      groupValue: selectedMethod,
+                      activeColor: CustomColor.appColor,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedMethod = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: dimensions.screenHeight*0.2,),
+
+          /// Total + Pay Now Button
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Total Price', style: textStyle16(context)),
+                  10.width,
+                  CustomAmountText(
+                    amount: totalAmount.toStringAsFixed(2),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: CustomColor.greenColor,
                   ),
-                  20.height,
                 ],
               ),
-            )
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: CustomButton(
+                  isLoading: _isLoading,
+                  label: 'Pay Now',
+                  onPressed: () async{
+                    if (selectedMethod == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please select a payment method')),
+                      );
+                      return;
+                    }
+
+                    setState(() => _isLoading = true);
+
+                    final result = await CheckOutService.checkOutService(widget.checkoutData);
+
+                    setState(() => _isLoading = false);
+
+                    widget.onPaymentDone();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
-  }
-
-  Widget buildTextField({
-    required TextEditingController controller,
-    required String label,
-    TextInputType keyboardType = TextInputType.text,
-    bool obscure = false,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscure,
-      style: textStyle12(context,
-          color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: textStyle12(context,
-            color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400)),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400)),
-        enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400)),
-      ),
-    );
-  }
-
-  Widget buildExpandableOption(String title) {
-    return CustomContainer(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      backgroundColor: CustomColor.whiteColor,
-      padding: EdgeInsets.zero,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          backgroundColor: CustomColor.whiteColor,
-          iconColor: CustomColor.appColor,
-          shape: InputBorder.none,
-          childrenPadding: EdgeInsets.zero,
-          collapsedShape: InputBorder.none,
-          leading: Icon(_getIcon(title), size: 20),
-          title: Text(title,
-              style: textStyle14(context, fontWeight: FontWeight.w400)),
-          children: [ListTile(title: Text('Coming Soon...'))],
-        ),
-      ),
-    );
-  }
-
-  IconData _getIcon(String title) {
-    switch (title) {
-      case "Net Banking":
-        return Icons.account_balance;
-      case "UPI":
-        return Icons.currency_rupee;
-      case "Payment After Consultation":
-        return Icons.people;
-      default:
-        return Icons.payment;
-    }
   }
 }

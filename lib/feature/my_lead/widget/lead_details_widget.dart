@@ -67,14 +67,25 @@ Widget _buildBookingCard(BuildContext context){
     margin: EdgeInsets.zero,
     child: Column(
       spacing: 5,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Booking #100307', style: textStyle14(context),),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Service Name',
+                  style:  textStyle14(context),
+                ),
+                Text('Lead Id: #0156nk', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+              ],
+            ),
             _buildStatusBadge(context,'Pending'),
           ],
         ),
+
         _iconText(icon: Icons.calendar_month, text: 'Timing Details : 6 May 2025 08:50 PM'),
         _iconText(icon: Icons.calendar_month, text: 'Services Schedule Date : 6 May 2025 08:50 PM'),
         _iconText(icon: Icons.location_on_outlined, text: 'Address : Office ve jkw 3br#429, Amanora Chambers Pune'),
@@ -86,7 +97,7 @@ Widget _buildBookingCard(BuildContext context){
             CustomContainer(
               backgroundColor: Colors.blue.shade50,
               padding: EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 10),
-              child: Text('Download', style: textStyle12(context, color: CustomColor.appColor),),),
+              child: Text('Download Invoice', style: textStyle12(context, color: CustomColor.appColor),),),
           ],
         )
       ],
@@ -206,9 +217,9 @@ Widget _buildPaymentStatus(BuildContext context){
                   text: 'Payment Status',textColor: Colors.black
               ),
 
-              SizedBox(height: 10,),
-              Text('Cash after service', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-              Text('Transaction Id :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              // SizedBox(height: 10,),
+              Text('Payment after consultation/Partial/Full Payment', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              Text('Transaction Id : #bfuicrw hu4g5g54hg5',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
             ],
           ),
         ),

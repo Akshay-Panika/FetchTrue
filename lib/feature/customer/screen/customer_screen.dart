@@ -5,8 +5,6 @@ import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../category/repository/module_category_service.dart';
 import '../bloc/customer/customer_bloc.dart';
 import '../bloc/customer/customer_event.dart';
 import '../bloc/customer/customer_state.dart';
@@ -94,6 +92,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
                                       if (value) {
                                         final selectedCustomerData = {
+                                          '_id': data.id,
                                           'userId': data.userId,
                                           'fullName': data.fullName,
                                           'phone': data.phone,

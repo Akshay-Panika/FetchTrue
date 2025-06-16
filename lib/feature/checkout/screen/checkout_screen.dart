@@ -7,6 +7,7 @@ import 'package:bizbooster2x/feature/checkout/widget/check_payment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../service/model/service_model.dart';
+import '../model/check_out_model.dart';
 import '../widget/checkout_details_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -20,6 +21,8 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   int _paymentStep = 0;
+  CheckoutModel? checkoutData;
+
   final steps = [
     {'icon': CupertinoIcons.doc_fill, 'label': 'Details'},
     {'icon': Icons.payment, 'label': 'Payment'},
@@ -63,14 +66,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     if (_paymentStep == 0)
                       CheckoutDetailsWidget(
                         services: widget.services,
-                        onContinue: () {
-                          setState(() => _paymentStep = 1);
+                        onPaymentDone: (CheckoutModel model) {
+                          setState(() {
+                            checkoutData = model;
+                            _paymentStep = 1;
+                          });
                         },
                       )
 
                     else if (_paymentStep == 1)
                       CheckPaymentWidget(
                         services: widget.services,
+                        checkoutData: checkoutData!,
                         onPaymentDone: () {
                           setState(() => _paymentStep = 2);
                         },

@@ -2,8 +2,8 @@ class CheckoutModel {
   final String user;
   final String service;
   final String serviceCustomer;
-  final String provider;
-  final String coupon;
+  final String? provider;
+  final String? coupon;
   final int subtotal;
   final int serviceDiscount;
   final int couponDiscount;
@@ -13,17 +13,18 @@ class CheckoutModel {
   final int garrantyFee;
   final int tax;
   final int totalAmount;
-  final String paymentMethod;
+  final List<String> paymentMethod;
   final String paymentStatus;
   final String orderStatus;
   final String notes;
+  final bool termsCondition;
 
   CheckoutModel({
     required this.user,
     required this.service,
     required this.serviceCustomer,
-    required this.provider,
-    required this.coupon,
+    this.provider,
+    this.coupon,
     required this.subtotal,
     required this.serviceDiscount,
     required this.couponDiscount,
@@ -37,6 +38,7 @@ class CheckoutModel {
     required this.paymentStatus,
     required this.orderStatus,
     required this.notes,
+    required this.termsCondition,
   });
 
   factory CheckoutModel.fromJson(Map<String, dynamic> json) {
@@ -55,10 +57,11 @@ class CheckoutModel {
       garrantyFee: json['garrantyFee'] ??0,
       tax: json['tax'],
       totalAmount: json['totalAmount'],
-      paymentMethod: json['paymentMethod'],
+      paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
       paymentStatus: json['paymentStatus'],
       orderStatus: json['orderStatus'],
       notes: json['notes'],
+      termsCondition: json['termsCondition'],
     );
   }
 
@@ -82,6 +85,7 @@ class CheckoutModel {
       "paymentStatus": paymentStatus,
       "orderStatus": orderStatus,
       "notes": notes,
+      "termsCondition": termsCondition,
     };
   }
 }

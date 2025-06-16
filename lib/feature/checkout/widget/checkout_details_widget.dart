@@ -14,13 +14,13 @@ import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
-import '../repository/check_out_service.dart';
 import '../screen/new_submit_details_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final List<ServiceModel> services;
-  final VoidCallback onContinue;
-  const CheckoutDetailsWidget({super.key, required this.services, required this.onContinue,});
+  // final VoidCallback onPaymentDone;
+  final Function(CheckoutModel) onPaymentDone;
+  const CheckoutDetailsWidget({super.key, required this.services, required this.onPaymentDone,});
 
   @override
   State<CheckoutDetailsWidget> createState() => _CheckoutDetailsWidgetState();
@@ -29,12 +29,13 @@ class CheckoutDetailsWidget extends StatefulWidget {
 class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
+  String? userId;
+  String? customer_Id;
   String? customerId;
   String? customerName;
   String? customerPhone;
 
-  String? userId;
-  bool _isLoading = false;
+  bool _isAgree = false;
 
   @override
   void initState() {
@@ -136,6 +137,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
                         if (selectedCustomer != null) {
                           setState(() {
+                            customer_Id = selectedCustomer['_id'];
                             customerId = selectedCustomer['userId'];
                             customerName = selectedCustomer['fullName'];
                             customerPhone = selectedCustomer['phone'];
@@ -287,7 +289,11 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
        
         Row(
           children: [
-            Checkbox(value: true, onChanged: (value) => null, activeColor: Colors.green,),
+            Checkbox(value: _isAgree, onChanged: (value) {
+              setState(() {
+                _isAgree = !_isAgree;
+              });
+            }, activeColor: Colors.green,),
             Text('I agree with the term & condition')
           ],
         ),
@@ -296,40 +302,42 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         Padding(
           padding: const EdgeInsets.all(10),
           child: CustomButton(
-            isLoading: _isLoading,
+            isLoading: false,
             onPressed: () async {
+              if (customerId == null) {
+                showCustomSnackBar(context, 'Please select customer.');
+                return;
+              }
+
+              if (!_isAgree) {
+                showCustomSnackBar(context, 'Please agree to the terms & conditions.');
+                return;
+              }
+
               final checkoutData = CheckoutModel(
                 user: userId.toString(),
                 service: data.id,
-                serviceCustomer: customerId.toString(),
-                provider: customerId.toString(),
-                coupon: customerId.toString(),
-                subtotal: 1000,
-                serviceDiscount: 100,
-                couponDiscount: 50,
-                champaignDiscount: 25,
-                vat: 18,
-                platformFee: 30,
-                garrantyFee: 10,
-                tax: 20,
-                totalAmount: 903,
-                paymentMethod: "upi",
+                serviceCustomer: customer_Id.toString(),
+                provider: null,
+                coupon: null,
+                subtotal: 00,
+                serviceDiscount: data.discountedPrice!,
+                couponDiscount: 00,
+                champaignDiscount: 00,
+                vat: 00,
+                platformFee: 00,
+                garrantyFee: 00,
+                tax: 00,
+                totalAmount: data.discountedPrice!,
+                paymentMethod: ['upi'],
                 paymentStatus: "pending",
                 orderStatus: "processing",
-                notes: "Akshay Urgent delivery, call before arriving.",
+                notes: "Note:--------------------------------------------",
+                termsCondition: _isAgree,
               );
 
-              setState(() => _isLoading = true);
-
-              final result = await CheckOutService.checkOutService(checkoutData);
-
-              setState(() => _isLoading = false);
-
-              if (result != null) {
-                widget.onContinue();
-              } else {
-                showCustomSnackBar(context, 'Checkout failed! Please try again.');
-              }
+              /// sara data back screen me dikhani hai
+              widget.onPaymentDone(checkoutData);
             },
             label: 'Proceed',
           ),

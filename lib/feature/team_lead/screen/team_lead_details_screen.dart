@@ -16,100 +16,108 @@ class TeamLeadDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Name',),
-      
-      body: SafeArea(child: DefaultTabController(
-        length: 2,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: CustomContainer(
+      appBar: CustomAppBar(title: 'Name', showBackButton: true,),
+
+      body: SafeArea(
+        child: DefaultTabController(
+          length: 2,
+          child: Column(
+            children: [
+              /// Custom App Bar Section
+              CustomContainer(
                 backgroundColor: CustomColor.whiteColor,
-                child: Column(
+                child: _buildProfileHeader(context),
+              ),
+
+              /// Tab Bar
+              TabBar(
+                tabs: const [
+                  Tab(text: 'Lead - 253'),
+                  Tab(text: 'Team - 457'),
+                ],
+                dividerColor: Colors.transparent,
+                indicatorColor: CustomColor.appColor,
+                labelColor: CustomColor.appColor,
+                unselectedLabelColor: CustomColor.descriptionColor,
+              ),
+
+              /// Tab View
+              Expanded(
+                child: TabBarView(
                   children: [
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 35,
-                              backgroundImage: AssetImage(CustomImage.nullImage),
-                            ),
-                            CustomContainer(
-                              backgroundColor: Colors.amber.withOpacity(0.3),
-                              padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                              child: Text('SGP', style: textStyle14(context),),)
-                          ],
-                        ),
-        
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Frenchise Code :- Devraj Kadam'),
-                            Text('Frenchise Code :- SK07357HP'),
-                            Text('Joining Date :- 14/03/2025'),
-                            10.height,
-        
-                            CustomContainer(
-                              margin: EdgeInsets.zero,
-                              backgroundColor: Colors.amber.withOpacity(0.3),
-                              padding: EdgeInsets.symmetric(horizontal: 30,vertical: 5),
-                              child: Text(' My Earning - 12253', style: textStyle14(context, fontWeight: FontWeight.w400),),)
-                          ],
-                        )
-                      ],
-                    ),
-        
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(' Self Follow Up', style: textStyle16(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
-                          Row(
-                            children: [
-                              Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,),
-                              50.width,
-                              Image.asset(CustomIcon.whatsappIcon, height: 25,),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.height,
+                    SingleChildScrollView(child: _buildLead(context)),
+                    _buildTeam(),
                   ],
                 ),
-              ),
-            ),
-        
-            SliverToBoxAdapter(
-              child:  Column(
-                children: [
-                  TabBar(
-                      labelColor: CustomColor.appColor,
-                      unselectedLabelColor: CustomColor.descriptionColor,
-                      indicatorColor: CustomColor.appColor,
-                      tabs: [
-                        Tab(text: 'Lead - 253',),
-                        Tab(text: 'Team - 457',),
-                      ]),
-        
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height*0.5,
-                    child: TabBarView(
-                        children: [
-                          _buildLead(context),
-                          _buildTeam(),
-                        ]),
-                  )
-                ],
               )
-            )
-          ],
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
+}
+
+
+Widget _buildProfileHeader(BuildContext context) {
+  return Column(
+    children: [
+      Row(
+        children: [
+          Column(
+            children: [
+              CircleAvatar(
+                radius: 35,
+                backgroundImage: AssetImage(CustomImage.nullImage),
+              ),
+              CustomContainer(
+                backgroundColor: Colors.amber.withOpacity(0.3),
+                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                child: Text('SGP', style: textStyle14(context)),
+              ),
+            ],
+          ),
+          10.width,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Frenchise Name :- Devraj Kadam'),
+              Text('Frenchise Code :- SK07357HP'),
+              Text('Joining Date :- 14/03/2025'),
+              10.height,
+              CustomContainer(
+                margin: EdgeInsets.zero,
+                backgroundColor: Colors.amber.withOpacity(0.3),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                child: Text('My Earning - 12253',
+                    style: textStyle14(context, fontWeight: FontWeight.w400)),
+              )
+            ],
+          )
+        ],
+      ),
+      10.height,
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Self Follow Up',
+                style: textStyle16(context,
+                    fontWeight: FontWeight.w400, color: CustomColor.appColor)),
+            Row(
+              children: [
+                Image.asset(CustomIcon.phoneIcon,
+                    height: 25, color: CustomColor.appColor),
+                50.width,
+                Image.asset(CustomIcon.whatsappIcon, height: 25),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 
@@ -253,8 +261,7 @@ Widget _buildTeam(){
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomContainer(
-            border: true,
-            backgroundColor: CupertinoColors.activeBlue.withOpacity(0.05),
+            backgroundColor: CustomColor.whiteColor,
             margin: EdgeInsets.only(top: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -287,26 +294,6 @@ Widget _buildTeam(){
                   ],
                 ),
                 Divider(),
-
-                //
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text(' Self Follow Up', style: textStyle16(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
-                //       Row(
-                //         children: [
-                //           Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,),
-                //           50.width,
-                //           Image.asset(CustomIcon.whatsappIcon, height: 25,),
-                //         ],
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // 5.height,
-
 
                 CustomContainer(
                   backgroundColor: CustomColor.whiteColor,
