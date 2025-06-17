@@ -1,5 +1,6 @@
 
-import 'package:bizbooster2x/feature/coupon/model/coupon_model.dart';
+
+import '../../model/coupon_model.dart';
 
 abstract class CouponState{}
 

@@ -1,10 +1,10 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
-import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
 import '../repository/check_out_service.dart';

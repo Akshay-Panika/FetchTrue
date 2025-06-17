@@ -1,11 +1,17 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../bloc/module/lead_bloc.dart';
+import '../bloc/module/lead_event.dart';
+import '../bloc/module/lead_state.dart';
+import '../model/lead_model.dart';
+import '../repository/lead_service.dart';
 import 'lead_details_screen.dart';
 
 class MyLeadScreen extends StatefulWidget {
@@ -77,24 +83,51 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
         showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
 
       body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: dimensions.screenHeight*0.015),
+        child: BlocProvider(
+          create: (_) => LeadBloc(LeadService())..add(GetLead()),
+          child:  BlocBuilder<LeadBloc, LeadState>(
+            builder: (context, state) {
+              if (state is LeadLoading) {
+                return LinearProgressIndicator();
+              }
+              else if(state is LeadLoaded){
+                final lead = state.leadModel;
+                // final lead = state.moduleModel .where((module) => module.categoryCount != 0)
+                //     .toList();
 
-            /// filter
-            _buildFilterChips(),
-            SizedBox(height: dimensions.screenHeight*0.015),
+                if (lead.isEmpty) {
+                  return const Center(child: Text('No modules found.'));
+                }
 
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredBookings.length,
-                padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03,),
-                itemBuilder: (context, index) {
-                  return _buildBookingCard(dimensions: dimensions, booking: filteredBookings[index]);
-                },
-              ),
-            ),
-          ],
+                return  Column(
+                  children: [
+                    SizedBox(height: dimensions.screenHeight*0.015),
+
+                    /// filter
+                    _buildFilterChips(),
+                    SizedBox(height: dimensions.screenHeight*0.015),
+
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: lead.length,
+                        // itemCount: filteredBookings.length,
+                        padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03,),
+                        itemBuilder: (context, index) {
+                          final data = lead[index];
+                          return _buildBookingCard(dimensions: dimensions, lead: data);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              else if (state is ModuleError) {
+                return Center(child: Text(state.errorMessage));
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
@@ -138,7 +171,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
     );
   }
 
-  Widget _buildBookingCard({required Dimensions dimensions, required Map<String, dynamic> booking}) {
+  Widget _buildBookingCard({required Dimensions dimensions, required LeadModel lead}) {
 
     return CustomContainer(
       border: false,
@@ -152,16 +185,17 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Service Name',
+                lead.service.serviceName,
                 style:  textStyle14(context),
               ),
-             _buildStatusBadge(booking['status']),
+
+              _buildStatusBadge('${lead.paymentStatus}'),
             ],
           ),
-          Text('Booking# ${booking['id']}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+          Text('Lead id: #${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
 
-          Text('Booking Date : ${booking['bookingDate']}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          Text('Service Date : ${booking['serviceDate']}', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          Text('Booking Date : ${lead.createdAt}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          Text('Service Date : ${lead.createdAt}', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
            SizedBox(height: dimensions.screenHeight*0.005),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,10 +205,10 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
                 children: [
                   Text("Amount :",style: textStyle12(context, fontWeight: FontWeight.w400),),
                   SizedBox(width: dimensions.screenWidth*0.01),
-                  CustomAmountText(amount:  booking['amount']),
+                  CustomAmountText(amount:  '${lead.service.discountedPrice}'),
                 ],
               ),
-              Text("Cashback : 00.0",style: textStyle12(context, fontWeight: FontWeight.w400),),
+              Text("Cashback : ${'00'}",style: textStyle12(context, fontWeight: FontWeight.w400),),
             ],
           ),
         ],
@@ -185,7 +219,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget _buildStatusBadge(String status) {
     Color color = Colors.grey;
     if (status == 'Completed') color = Colors.green;
-    if (status == 'Pending') color = Colors.orange;
+    if (status == 'pending') color = Colors.orange;
     if (status == 'Accepted') color = Colors.purple;
     if (status == 'Ongoing') color = Colors.blue;
 

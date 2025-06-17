@@ -1,8 +1,8 @@
 
-import 'package:bizbooster2x/feature/coupon/model/coupon_model.dart';
 import 'package:dio/dio.dart';
 import '../../../helper/api_helper.dart';
 import '../../../helper/api_urls.dart';
+import '../model/coupon_model.dart';
 
 
 class CouponService {

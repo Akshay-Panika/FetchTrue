@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_container.dart';
 
 class IDCardScreen extends StatefulWidget {
   const IDCardScreen({super.key});

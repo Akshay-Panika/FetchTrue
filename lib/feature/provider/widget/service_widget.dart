@@ -1,16 +1,14 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
-import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
-import 'package:bizbooster2x/feature/home/repository/module_service.dart';
-import 'package:bizbooster2x/feature/service/model/service_model.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
 import '../../../core/widgets/custom_headline.dart';
+import '../../../core/widgets/custom_ratting_and_reviews.dart';
+import '../../service/model/service_model.dart';
 import '../../service/screen/service_details_screen.dart';
 
 

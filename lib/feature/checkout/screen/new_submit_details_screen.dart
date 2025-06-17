@@ -1,15 +1,12 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_headline.dart';
-import 'package:bizbooster2x/core/widgets/custom_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../service/repository/api_service.dart';
 import '../model/add_customer_model.dart';
 import '../repository/add_customer_service.dart';

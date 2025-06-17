@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:bizbooster2x/helper/api_urls.dart';
-import 'package:bizbooster2x/feature/auth/model/sign_in_model.dart';
 import '../../../helper/api_helper.dart';
+import '../../../helper/api_urls.dart';
+import '../model/sign_in_model.dart';
 
 class SignInService {
   /// Login User

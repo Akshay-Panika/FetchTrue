@@ -1,7 +1,6 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import '../costants/custom_color.dart';
 import '../costants/dimension.dart';
 
 class CustomContainer extends StatelessWidget {

@@ -1,10 +1,9 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_headline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../screen/understanding_bizbooster_screen.dart';
 
 class UnderstandingBizBoosterWidget extends StatelessWidget {

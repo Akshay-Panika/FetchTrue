@@ -1,6 +1,6 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:scratcher/scratcher.dart';
+import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 

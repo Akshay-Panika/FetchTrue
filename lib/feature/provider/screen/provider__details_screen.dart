@@ -1,19 +1,16 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
-import 'package:bizbooster2x/core/widgets/custom_service_list.dart';
-import 'package:bizbooster2x/feature/provider/model/provider_model.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_favorite_button.dart';
+import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
+import '../model/provider_model.dart';
 import '../repository/provider_service.dart';
 import '../widget/provider_about_widget.dart';
 import '../widget/provider_gallery_widget.dart';

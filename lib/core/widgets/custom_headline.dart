@@ -1,6 +1,7 @@
-import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../costants/text_style.dart';
 
 class CustomHeadline extends StatelessWidget {
   final String? headline;

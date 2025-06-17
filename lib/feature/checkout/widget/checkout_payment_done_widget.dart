@@ -1,10 +1,8 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_container.dart';
 
 class CheckoutPaymentDoneWidget extends StatelessWidget {
   const CheckoutPaymentDoneWidget({super.key});

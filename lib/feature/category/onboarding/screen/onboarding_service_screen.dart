@@ -1,17 +1,15 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/feature/category/onboarding/wisget/onboarding_category_widget.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../core/costants/custom_color.dart';
+import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_highlight_service.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
 import '../../../banner/widget/category_banner_widget.dart';
 import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
-import '../../finance/widget/finance_category_widget.dart';
-import '../../franchise/wisget/franchise_category_widget.dart';
+import '../wisget/onboarding_category_widget.dart';
+
 
 class OnboardingServiceScreen extends StatelessWidget {
   final String moduleId;

@@ -1,5 +1,6 @@
-import 'package:bizbooster2x/helper/api_urls.dart';
 import 'package:dio/dio.dart';
+
+import 'api_urls.dart';
 
 /// Base Api Helper
 class ApiClient {

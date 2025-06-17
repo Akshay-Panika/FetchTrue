@@ -1,12 +1,12 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_snackbar.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/costants/custom_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../model/sign_in_model.dart';
 import '../repository/sign_in_service.dart';
@@ -42,7 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // 🛑 Basic validation
+    /// Basic validation
     if (email.isEmpty || password.isEmpty) {
       showCustomSnackBar(context, '❌ Please enter both email and password');
       return;

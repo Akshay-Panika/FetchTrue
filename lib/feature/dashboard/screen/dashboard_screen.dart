@@ -1,8 +1,8 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';

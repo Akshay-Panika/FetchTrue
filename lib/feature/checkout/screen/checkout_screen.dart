@@ -1,14 +1,14 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/feature/checkout/widget/checkout_payment_done_widget.dart';
-import 'package:bizbooster2x/feature/checkout/widget/check_payment_widget.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
+import '../widget/check_payment_widget.dart';
 import '../widget/checkout_details_widget.dart';
+import '../widget/checkout_payment_done_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<ServiceModel> services;

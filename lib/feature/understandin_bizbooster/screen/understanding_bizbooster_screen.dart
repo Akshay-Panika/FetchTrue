@@ -1,6 +1,6 @@
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/widgets/custom_appbar.dart';
 
 class UnderstandingBizBoosterScreen extends StatelessWidget {
   const UnderstandingBizBoosterScreen({super.key});

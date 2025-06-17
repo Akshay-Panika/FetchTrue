@@ -1,8 +1,8 @@
 
-import 'package:bizbooster2x/helper/api_urls.dart';
 import 'package:dio/dio.dart';
 
 import '../../../helper/api_helper.dart';
+import '../../../helper/api_urls.dart';
 import '../model/banner_model.dart';
 
 class BannerService {

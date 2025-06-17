@@ -1,5 +1,5 @@
+import 'package:fetchtrue/main.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,16 +1,14 @@
-import 'package:bizbooster2x/feature/banner/bloc/module_banner/module_banner_bloc.dart';
-import 'package:bizbooster2x/feature/banner/bloc/module_banner/module_banner_event.dart';
-import 'package:bizbooster2x/feature/banner/bloc/module_banner/module_banner_state.dart';
-import 'package:bizbooster2x/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_banner.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_url_launch.dart';
+import '../../service/screen/service_details_screen.dart';
 import '../../subcategory/screen/subcategory_screen.dart';
+import '../bloc/module_banner/module_banner_bloc.dart';
+import '../bloc/module_banner/module_banner_event.dart';
+import '../bloc/module_banner/module_banner_state.dart';
 import '../repository/banner_service.dart';
 class HomeBannerWidget extends StatefulWidget {
   const HomeBannerWidget({super.key});

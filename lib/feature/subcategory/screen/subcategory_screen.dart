@@ -1,11 +1,10 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';

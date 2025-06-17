@@ -1,6 +1,5 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_ratting_and_reviews.dart';
-import 'package:bizbooster2x/feature/service/widget/service_review_widget.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/service/widget/service_review_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -11,6 +10,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../model/service_model.dart';
 
 class ServiceDetailsSectionWidget extends StatelessWidget {

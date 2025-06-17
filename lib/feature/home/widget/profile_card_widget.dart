@@ -1,12 +1,12 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/feature/notification/screen/notification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../favorite/screen/favorite_screen.dart';
+import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 
 class ProfileCardWidget extends StatelessWidget {

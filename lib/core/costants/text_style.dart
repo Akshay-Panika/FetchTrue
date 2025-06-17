@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
+import 'dimension.dart';
 
 
 TextStyle textStyle12(BuildContext context,{Color? color, FontWeight? fontWeight}){

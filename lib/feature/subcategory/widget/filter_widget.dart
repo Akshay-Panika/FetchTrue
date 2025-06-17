@@ -1,9 +1,8 @@
-import 'package:bizbooster2x/core/widgets/custom_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
+import '../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../core/widgets/custom_container.dart';
 
 class FilterWidget extends StatelessWidget {

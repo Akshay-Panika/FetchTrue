@@ -1,10 +1,9 @@
-import 'package:bizbooster2x/core/costants/custom_logo.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/services.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_logo.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';

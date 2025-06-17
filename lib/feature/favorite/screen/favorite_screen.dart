@@ -1,10 +1,9 @@
-import 'package:bizbooster2x/core/widgets/custom_amount_text.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/core/widgets/custom_favorite_button.dart';
-import 'package:bizbooster2x/core/widgets/custom_toggle_taps.dart';
 import 'package:flutter/material.dart';
-
+import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_favorite_button.dart';
+import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../service/screen/service_details_screen.dart';
 
 class FavoriteScreen extends StatefulWidget {

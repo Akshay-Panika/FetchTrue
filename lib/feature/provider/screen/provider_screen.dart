@@ -1,18 +1,17 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/feature/provider/bloc/provider/provider_bloc.dart';
-import 'package:bizbooster2x/feature/provider/bloc/provider/provider_event.dart';
-import 'package:bizbooster2x/feature/provider/bloc/provider/provider_state.dart';
-import 'package:bizbooster2x/feature/provider/repository/provider_service.dart';
-import 'package:bizbooster2x/feature/provider/screen/provider__details_screen.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../bloc/provider/provider_bloc.dart';
+import '../bloc/provider/provider_event.dart';
+import '../bloc/provider/provider_state.dart';
+import '../repository/provider_service.dart';
 
 class ProviderScreen extends StatefulWidget {
   const ProviderScreen({super.key});

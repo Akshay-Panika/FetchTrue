@@ -1,6 +1,5 @@
 
-
-import 'package:bizbooster2x/feature/service/model/service_model.dart';
+import '../../model/service_model.dart';
 
 abstract class ModuleServiceState{}
 

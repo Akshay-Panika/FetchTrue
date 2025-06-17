@@ -1,6 +1,6 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
 import 'package:flutter/material.dart';
+import '../costants/custom_color.dart';
+import '../costants/text_style.dart';
 
 void showCustomSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(

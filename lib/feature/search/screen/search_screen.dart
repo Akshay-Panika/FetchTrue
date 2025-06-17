@@ -1,8 +1,6 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_icon.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_search_icon.dart';
 import '../../../core/widgets/custom_service_list.dart';
 

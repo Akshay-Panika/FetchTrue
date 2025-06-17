@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/feature/service/repository/api_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/api_service.dart';
 import 'module_service_event.dart';
 import 'module_service_state.dart';
 

@@ -1,12 +1,10 @@
-
-
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../bloc/module_subcategory/module_subcategory_bloc.dart';
 import '../bloc/module_subcategory/module_subcategory_event.dart';

@@ -1,5 +1,5 @@
 
-import 'package:bizbooster2x/feature/home/model/module_model.dart';
+import 'package:fetchtrue/feature/home/model/module_model.dart';
 
 abstract class ModuleState{}
 

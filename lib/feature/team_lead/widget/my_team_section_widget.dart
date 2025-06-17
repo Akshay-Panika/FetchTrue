@@ -1,17 +1,12 @@
-import 'package:bizbooster2x/feature/team_lead/widget/my_leader_card_widget.dart';
-import 'package:bizbooster2x/feature/team_lead/widget/team_gp_widget.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:fetchtrue/feature/team_lead/widget/team_gp_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_icon.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_toggle_taps.dart';
-import '../screen/team_lead_details_screen.dart';
+import 'my_leader_card_widget.dart';
 import 'non_gp_widget.dart';
 
 class MyTeamSectionWidget extends StatefulWidget {

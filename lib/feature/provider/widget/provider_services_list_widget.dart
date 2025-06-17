@@ -1,8 +1,7 @@
-import 'package:bizbooster2x/feature/provider/widget/service_widget.dart';
+import 'package:fetchtrue/feature/provider/widget/service_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';

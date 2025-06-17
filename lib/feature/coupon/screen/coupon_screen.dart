@@ -1,15 +1,15 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/core/widgets/custom_container.dart';
-import 'package:bizbooster2x/feature/coupon/bloc/coupon/coupon_bloc.dart';
-import 'package:bizbooster2x/feature/coupon/bloc/coupon/coupon_event.dart';
-import 'package:bizbooster2x/feature/coupon/repository/coupon_service.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../bloc/coupon/coupon_bloc.dart';
+import '../bloc/coupon/coupon_event.dart';
 import '../bloc/coupon/coupon_state.dart';
 import '../model/coupon_model.dart';
+import '../repository/coupon_service.dart';
 
 class CouponScreen extends StatelessWidget {
   const CouponScreen({super.key});

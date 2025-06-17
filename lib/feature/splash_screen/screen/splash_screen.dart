@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/custom_image.dart';
-import 'package:bizbooster2x/core/costants/custom_logo.dart';
-import 'package:bizbooster2x/feature/dashboard/screen/dashboard_screen.dart';
 import 'package:flutter/material.dart';
-
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_logo.dart';
 import '../../../core/costants/dimension.dart';
+import '../../dashboard/screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

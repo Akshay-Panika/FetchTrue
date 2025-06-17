@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/feature/banner/repository/banner_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/banner_service.dart';
 import 'module_banner_event.dart';
 import 'module_banner_state.dart';
 

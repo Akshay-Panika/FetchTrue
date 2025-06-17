@@ -1,5 +1,6 @@
 
-import 'package:bizbooster2x/feature/banner/model/banner_model.dart';
+
+import '../../model/banner_model.dart';
 
 abstract class ModuleBannerState{}
 

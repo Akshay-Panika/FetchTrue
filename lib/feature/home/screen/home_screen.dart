@@ -1,10 +1,10 @@
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/widgets/custom_search_bar.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
+import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../business_idea/screen/business_idea_screen.dart';
 import '../../partner_review/widget/partner_review_widget.dart';

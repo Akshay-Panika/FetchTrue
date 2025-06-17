@@ -1,7 +1,6 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/costants/custom_color.dart';
-
+import '../costants/custom_color.dart';
 import '../costants/text_style.dart';
 
 Widget CustomFormField(

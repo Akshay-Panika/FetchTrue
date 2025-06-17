@@ -1,7 +1,7 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import '../../../core/costants/dimension.dart';
+import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../widget/my_team_section_widget.dart';
 import '../widget/team_build_section_widget.dart';

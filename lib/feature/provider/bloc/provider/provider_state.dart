@@ -1,4 +1,5 @@
-import 'package:bizbooster2x/feature/provider/model/provider_model.dart';
+
+import '../../model/provider_model.dart';
 
 abstract class ProviderState{}
 

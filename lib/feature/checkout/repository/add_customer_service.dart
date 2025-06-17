@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/helper/api_urls.dart';
 import 'package:dio/dio.dart';
+import '../../../helper/api_urls.dart';
 import '../model/add_customer_model.dart';
 import '../../../helper/api_helper.dart';
 

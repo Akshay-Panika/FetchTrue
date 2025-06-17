@@ -1,7 +1,7 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/costants/custom_color.dart';
+import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_highlight_service.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';

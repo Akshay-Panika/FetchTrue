@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/feature/coupon/repository/coupon_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/coupon_service.dart';
 import 'coupon_event.dart';
 import 'coupon_state.dart';
 

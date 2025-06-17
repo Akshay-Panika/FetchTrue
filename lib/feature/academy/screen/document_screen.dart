@@ -1,12 +1,11 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/costants/text_style.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/feature/academy/screen/id_card_screen.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import 'id_card_screen.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({super.key});

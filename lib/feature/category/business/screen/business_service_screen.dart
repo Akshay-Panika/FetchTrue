@@ -1,11 +1,11 @@
-import 'package:bizbooster2x/core/costants/dimension.dart';
-import 'package:bizbooster2x/core/widgets/custom_appbar.dart';
-import 'package:bizbooster2x/feature/banner/widget/category_banner_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/costants/custom_color.dart';
+import '../../../../core/costants/dimension.dart';
+import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_highlight_service.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
+import '../../../banner/widget/category_banner_widget.dart';
 import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
 import '../wisget/business_category_widget.dart';

@@ -1,5 +1,5 @@
-import 'package:bizbooster2x/feature/provider/repository/provider_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/provider_service.dart';
 import 'provider_event.dart';
 import 'provider_state.dart';
 

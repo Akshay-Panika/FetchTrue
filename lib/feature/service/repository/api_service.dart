@@ -1,7 +1,7 @@
-import 'package:bizbooster2x/feature/service/model/service_model.dart';
-import 'package:bizbooster2x/helper/api_urls.dart';
 import 'package:dio/dio.dart';
 import '../../../helper/api_helper.dart';
+import '../../../helper/api_urls.dart';
+import '../model/service_model.dart';
 
 class ApiService {
   final Dio _dio = ApiClient.dio;
