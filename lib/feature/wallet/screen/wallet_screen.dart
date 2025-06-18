@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/wallet/screen/add_amount_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
+       backgroundColor: CustomColor.whiteColor,
        appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
       body:  SafeArea(
         child: DefaultTabController(
@@ -25,6 +26,7 @@ class WalletScreen extends StatelessWidget {
             children: [
               // 10.height,
               _buildStatsCard(context),
+              5.height,
 
               Container(
                 color: CustomColor.whiteColor,
@@ -32,34 +34,44 @@ class WalletScreen extends StatelessWidget {
                   children: [
                     15.width,
                     Expanded(
-                      child: TabBar(
-                        labelColor: CustomColor.appColor,
-                        unselectedLabelColor: CustomColor.descriptionColor,
-                        indicatorColor: CustomColor.appColor,
-                        padding: EdgeInsets.zero,
-                        tabs: const [
-                          Tab(text: "Self"),
-                          Tab(text: "Team Build"),
-                          Tab(text: "Revenue"),
-                        ],
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TabBar(
+                          isScrollable: true,
+                          labelColor: CustomColor.appColor,
+                          unselectedLabelColor: CustomColor.descriptionColor,
+                          indicatorColor: CustomColor.appColor,
+                          padding: EdgeInsets.zero,
+                          tabs: const [
+                            Tab(text: "Self"),
+                            Tab(text: "Team Build"),
+                            Tab(text: "Team Revenue"),
+                          ],
+                        ),
                       ),
                     ),
-
                     CustomContainer(
                       backgroundColor: CustomColor.whiteColor,
-                      child: Icon(Icons.filter_list, color: CustomColor.iconColor,),
+                      onTap: () {
+                        _showFilterSheet(context);
+                      },
+                      child: Icon(Icons.filter_list, color: CustomColor.iconColor),
                     )
+
                   ],
                 ),
               ),
 
               Expanded(
-                child: TabBarView(
-                  children: [
-                    _noDataFound(context),
-                    _noDataFound(context),
-                    _noDataFound(context),
-                  ],
+                child: Container(
+                  color: CustomColor.whiteColor,
+                  child: TabBarView(
+                    children: [
+                      _noDataFound(context),
+                      _noDataFound(context),
+                      _noDataFound(context),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -71,30 +83,73 @@ class WalletScreen extends StatelessWidget {
 
 
   Widget _buildStatsCard(BuildContext context) {
-    return CustomContainer(
-      border: true,
-      backgroundColor: CustomColor.whiteColor,
+    return Container(
+      color: CustomColor.canvasColor,
       child: Column(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Earnings Statistics", style: textStyle14(context, fontWeight: FontWeight.w400)),
+          CustomContainer(
+            border: true,
+            backgroundColor: CustomColor.whiteColor,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Earnings Statistics", style: textStyle16(context, fontWeight: FontWeight.w400, color: CustomColor.appColor)),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CustomAmountText(amount: '00.00', fontWeight: FontWeight.w500,fontSize: 16),
-                  Text("Total Earnings", style: textStyle12(context, color: CustomColor.appColor)),
-                ],
-              )
-            ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CustomAmountText(amount: '00.00', fontWeight: FontWeight.w500,fontSize: 16),
+                        Text("Total Earnings", style: textStyle12(context, color: CustomColor.appColor)),
+                      ],
+                    )
+                  ],
+                ),
+                const Divider(height: 24, thickness: 0.5),
+                _earningRow("Self Earnings", "₹ 0.00"),
+                _earningRow("Referral Earnings", "₹ 0.00"),
+                _earningRow("Reward Earnings", "₹ 0.00"),
+              ],
+            ),
           ),
-          const Divider(height: 24, thickness: 0.5),
-          _earningRow("Self Earnings", "₹ 0.00"),
-          _earningRow("Referral Earnings", "₹ 0.00"),
-          _earningRow("Reward Earnings", "₹ 0.00"),
+
+          Row(
+            children: [
+              Expanded(
+                child: CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.arrow_turn_left_down),
+                      10.width,
+                      Text('Add Amount', style: textStyle14(context),)
+                    ],
+                  ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAmountScreen(),)),
+                ),
+              ),
+              Expanded(
+                child: CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.arrow_turn_up_right),
+                      10.width,
+                      Text('Withdraw Amount ', style: textStyle14(context),)
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -118,37 +173,41 @@ class WalletScreen extends StatelessWidget {
       itemCount: 10,
       padding: EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (context, index) {
-      return ListTile(
-        minLeadingWidth: 0,
-        contentPadding: EdgeInsets.only(top: 10),
-        shape: UnderlineInputBorder(borderSide: BorderSide(color: CustomColor.greyColor, width: 0.3)),
-        leading: CircleAvatar(
-          backgroundColor: CustomColor.whiteColor,
-          child: Icon(
-            index == 2 || index == 5
-                ? CupertinoIcons.arrow_turn_left_down
-                : CupertinoIcons.arrow_turn_left_up,
-            color: index == 2 || index == 5 ? CustomColor.appColor : CustomColor.redColor,
+      return Column(
+        children: [
+          ListTile(
+            minLeadingWidth: 0,
+            contentPadding: EdgeInsets.only(top: 10),
+            leading: CircleAvatar(
+              backgroundColor: CustomColor.whiteColor,
+              child: Icon(
+                index == 2 || index == 5
+                    ? CupertinoIcons.arrow_turn_left_down
+                    : CupertinoIcons.arrow_turn_left_up,
+                color: index == 2 || index == 5 ? CustomColor.appColor : CustomColor.redColor,
+              ),
+            ),
+            title: Text('Id #0001', style: textStyle12(context),),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Name', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Other', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              ],
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('₹ 00.00', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                  Text('Amount', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                ],
+              ),
+            ),
           ),
-        ),
-        title: Text('Id #0001', style: textStyle12(context),),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Name', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-            Text('Other', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          ],
-        ),
-        trailing: Padding(
-          padding: const EdgeInsets.only(right: 15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('₹ 00.00', style: textStyle12(context, fontWeight: FontWeight.w400),),
-              Text('Amount', style: textStyle12(context, fontWeight: FontWeight.w400),),
-            ],
-          ),
-        ),
+          Divider(color: Colors.grey,thickness: 0.3,)
+        ],
       );
     },);
   }

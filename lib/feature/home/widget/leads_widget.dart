@@ -15,7 +15,7 @@ class LeadsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return SizedBox(
-      height: dimensions.screenHeight*0.13,
+      height: dimensions.screenHeight*0.15,
       child: Row(
         children: [
           Expanded(
@@ -23,7 +23,7 @@ class LeadsWidget extends StatelessWidget {
               assetsImg: 'assets/image/totalEarningBackImg.jpg',
               height: double.infinity,
               margin: EdgeInsets.only(left: 10),
-              border: false,
+              border: true,
               backgroundColor: CustomColor.whiteColor,
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),
               child: Column(
@@ -56,7 +56,7 @@ class LeadsWidget extends StatelessWidget {
                   assetsImg: 'assets/image/myLeadBackImg.jpg',
                   width: double.infinity,
                   margin: EdgeInsets.only(right: 10),
-                  border: false,
+                  border: true,
                   backgroundColor: CustomColor.whiteColor,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Scaffold(),)),
                   child: Row(
@@ -83,7 +83,7 @@ class LeadsWidget extends StatelessWidget {
                   assetsImg: 'assets/image/teamLeadBackImg.jpg',
                   width: double.infinity,
                   margin: EdgeInsets.only(right: 10),
-                  border: false,
+                  border: true,
                   backgroundColor: CustomColor.whiteColor,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                   child: Row(

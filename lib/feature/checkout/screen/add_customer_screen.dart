@@ -7,19 +7,18 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../service/repository/api_service.dart';
 import '../model/add_customer_model.dart';
 import '../repository/add_customer_service.dart';
 
-class NewSubmitDetailsScreen extends StatefulWidget {
+class AddCustomerScreen extends StatefulWidget {
   final String userId;
-  const NewSubmitDetailsScreen({super.key, required this.userId});
+  const AddCustomerScreen({super.key, required this.userId});
 
   @override
-  State<NewSubmitDetailsScreen> createState() => _NewSubmitDetailsScreenState();
+  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
 }
 
-class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
+class _AddCustomerScreenState extends State<AddCustomerScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final fullName = TextEditingController();
@@ -55,7 +54,7 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true); // ✅ Loader on
+      setState(() => _isLoading = true);
 
       final newCustomer = AddCustomerModel(
         fullName: fullName.text.trim(),
@@ -113,10 +112,10 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
               15.height,
               _formField(context,"Name", isRequired: true, hint: 'Enter Name...', controller: fullName),
               10.height,
-          
+
               _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...', controller: phone),
               15.height,
-          
+
               _formField(context,"Email", isRequired: true,hint: 'Enter Email Id...', controller: email,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -129,7 +128,7 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
                 },
               ),
               15.height,
-          
+
               Center(
                 child: _descriptionField(context,
                   "Description (Optional)",
@@ -142,10 +141,10 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
                 ),
               ),
               15.height,
-          
+
               _formField(context,"Address", isRequired: true,hint: 'Enter Service Address...', controller: address),
               10.height,
-          
+
               Row(
                 children: [
                   Expanded(
@@ -174,10 +173,10 @@ class _NewSubmitDetailsScreenState extends State<NewSubmitDetailsScreen> {
                 ],
               ),
               10.height,
-          
+
               _formField(context,"Country", isRequired: true, hint: 'India', enabled: false, controller: country),
               SizedBox(height: dimensions.screenHeight*0.04,),
-          
+
               CustomButton(
                 label: 'Save Data',
                 isLoading: _isLoading,

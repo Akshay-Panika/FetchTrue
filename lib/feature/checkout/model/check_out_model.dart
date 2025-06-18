@@ -88,4 +88,49 @@ class CheckoutModel {
       "termsCondition": termsCondition,
     };
   }
+
+  CheckoutModel copyWith({
+    String? user,
+    String? service,
+    String? serviceCustomer,
+    String? provider,
+    String? coupon,
+    int? subtotal,
+    int? serviceDiscount,
+    int? couponDiscount,
+    int? champaignDiscount,
+    int? vat,
+    int? platformFee,
+    int? garrantyFee,
+    int? tax,
+    int? totalAmount,
+    List<String>? paymentMethod,
+    String? paymentStatus,
+    String? orderStatus,
+    String? notes,
+    bool? termsCondition,
+  }) {
+    return CheckoutModel(
+      user: user ?? this.user,
+      service: service ?? this.service,
+      serviceCustomer: serviceCustomer ?? this.serviceCustomer,
+      provider: provider ?? this.provider,
+      coupon: coupon ?? this.coupon,
+      subtotal: subtotal ?? this.subtotal,
+      serviceDiscount: serviceDiscount ?? this.serviceDiscount,
+      couponDiscount: couponDiscount ?? this.couponDiscount,
+      champaignDiscount: champaignDiscount ?? this.champaignDiscount,
+      vat: vat ?? this.vat,
+      platformFee: platformFee ?? this.platformFee,
+      garrantyFee: garrantyFee ?? this.garrantyFee,
+      tax: tax ?? this.tax,
+      totalAmount: totalAmount ?? this.totalAmount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      orderStatus: orderStatus ?? this.orderStatus,
+      notes: notes ?? this.notes,
+      termsCondition: termsCondition ?? this.termsCondition,
+    );
+  }
+
 }

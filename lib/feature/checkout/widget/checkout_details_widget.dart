@@ -14,7 +14,7 @@ import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
-import '../screen/new_submit_details_screen.dart';
+import '../screen/add_customer_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final List<ServiceModel> services;
@@ -34,6 +34,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
   String? customerId;
   String? customerName;
   String? customerPhone;
+  String? message;
+
 
   bool _isAgree = false;
 
@@ -106,20 +108,36 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           child: Column(
             children: [
              Center(child: _buildHeadline(context, icon: CupertinoIcons.text_badge_checkmark, headline: 'Select Customer')),
-              10.height,
 
-              ListTile(
-               minTileHeight: 0,
-               minVerticalPadding: 0,
-               contentPadding: EdgeInsets.zero,
-                title: Text(
-                  'Name: ${customerName ?? '_____'}',
-                  style: textStyle12(context, color: CustomColor.descriptionColor),
-                ),
-                subtitle: Text(
-                  'Phone: ${customerPhone ?? '_____'}',
-                  style: textStyle12(context, color: CustomColor.descriptionColor),
-                ), ),
+              if(customerName!= null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  10.height,
+                  ListTile(
+                   minTileHeight: 0,
+                   minVerticalPadding: 0,
+                   contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      'Name: ${customerName ?? '_____'}',
+                      style: textStyle12(context, color: CustomColor.descriptionColor),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment:CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Phone: ${customerPhone ?? '_____'}',
+                          style: textStyle12(context, color: CustomColor.descriptionColor),
+                        ),
+
+                        if(message!.isNotEmpty)
+                        Text('Notes: ${message??'_____'}',
+                          style: textStyle12(context, color: CustomColor.descriptionColor),
+                        ),
+                      ],
+                    ), ),
+                ],
+              ),
 
               10.height,
               Row(
@@ -130,10 +148,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                       border: true,
                       padding: EdgeInsets.symmetric(vertical: 8),
                       onTap: () async {
-                        final selectedCustomer = await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const CustomerScreen()),
-                        );
+                        final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CustomerScreen()),);
 
                         if (selectedCustomer != null) {
                           setState(() {
@@ -141,6 +156,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                             customerId = selectedCustomer['userId'];
                             customerName = selectedCustomer['fullName'];
                             customerPhone = selectedCustomer['phone'];
+                            message = selectedCustomer['message'];
                           });
                         }
                       },
@@ -170,7 +186,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                         ),
                         onTap: (){
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NewSubmitDetailsScreen(userId: userId!,),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userId!,),));
                       },
                     ),
                   ),
@@ -268,15 +284,15 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             children: [
               _buildRow(context,
               keys: 'Sub Total', amount: '${data.discountedPrice}'),
-              Divider(),
-              _buildRow(context, keys: 'Service Discount', amount: '00.00'),
-              _buildRow(context, keys: 'Coupon Discount', amount: '00.00'),
+              _buildRow(context, keys: 'Service Discount', amount: '${data.discount}', isAmount: false),
+              _buildRow(context, keys: 'Coupon Discount', amount: '00.00',isAmount: false),
               _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),
               _buildRow(context, keys: 'Service Vat', amount: '00.00'),
               _buildRow(context, keys: 'Platform Fee', amount: '00.00'),
               _buildRow(context, keys: 'Fetch True Assurity Charges', amount: '00.00'),
-              _buildRow(context, keys: 'Grand Total', amount: '00.00'),
-              10.height,
+              Divider(),
+              _buildRow(context, keys: 'Grand Total', amount: '${data.discountedPrice}'),
+              5.height
             ],
           ),
         ),
@@ -315,10 +331,10 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               }
 
               final checkoutData = CheckoutModel(
-                user: userId.toString(),
+                user: customer_Id.toString(),
                 service: data.id,
                 serviceCustomer: customer_Id.toString(),
-                provider: null,
+                provider: customer_Id.toString(),
                 coupon: null,
                 subtotal: 00,
                 serviceDiscount: data.discountedPrice!,
@@ -332,7 +348,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 paymentMethod: ['upi'],
                 paymentStatus: "pending",
                 orderStatus: "processing",
-                notes: "Note:--------------------------------------------",
+                notes: message??'',
                 termsCondition: _isAgree,
               );
 
@@ -361,12 +377,18 @@ Widget _buildHeadline(BuildContext context, { required IconData icon, required S
 }
 
 
-Widget _buildRow(BuildContext context, {required String keys, required String amount}){
+Widget _buildRow(BuildContext context, {required String keys, required String amount, bool isAmount = true}){
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(keys, style: textStyle12(context),),
-      CustomAmountText(amount: amount, fontWeight: FontWeight.w500)
+      Row(
+        children: [
+          if(isAmount == true)
+          Icon(Icons.currency_rupee, size: 12,),
+          Text(amount, style: textStyle12(context),)
+        ],
+      ),
     ],
   );
 }

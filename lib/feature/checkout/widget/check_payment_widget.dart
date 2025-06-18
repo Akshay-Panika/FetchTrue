@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -247,22 +248,81 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                 child: CustomButton(
                   isLoading: _isLoading,
                   label: 'Pay Now',
-                  onPressed: () async{
-                    if (selectedMethod == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a payment method')),
+                  // onPressed: () async{
+                  //   if (selectedMethod == null) {
+                  //    showCustomSnackBar(context, 'Please select a payment method');
+                  //     return;
+                  //   }
+                  //
+                  //   setState(() => _isLoading = true);
+                  //
+                  //   final updatedCheckout = widget.checkoutData.copyWith(
+                  //     paymentStatus: 'paid',
+                  //     orderStatus: 'completed',
+                  //     notes: 'Customer paid in full',
+                  //     totalAmount: totalAmount.toInt(),
+                  //   );
+                  //
+                  //
+                  //   try {
+                  //
+                  //     await CheckOutService.checkOutService(updatedCheckout);
+                  //     showCustomSnackBar(context, 'Payment completed successfully!');
+                  //     widget.onPaymentDone();
+                  //   } catch (e) {
+                  //     showCustomSnackBar(context, 'Error: $e');
+                  //   }
+                  //   // final result = await CheckOutService.checkOutService(widget.checkoutData);
+                  // },
+                    onPressed: () async {
+                      if (selectedMethod == null) {
+                        showCustomSnackBar(context, 'Please select a payment method');
+                        return;
+                      }
+
+                      setState(() => _isLoading = true);
+
+                      /// Default values
+                      String paymentStatus = 'pending';
+                      String orderStatus = 'processing';
+                      String notes = 'Customer will pay after consultation';
+                      int finalAmount = totalAmount.toInt();
+
+                      if (selectedMethod == PaymentMethod.cashfree) {
+                        paymentStatus = 'paid';
+                        orderStatus = 'completed';
+
+                        if (selectedCashfreeOption == CashfreeSubOption.full) {
+                          notes = 'Customer paid in full';
+                        } else {
+                          notes = 'Customer paid partially';
+                        }
+                      }
+
+                      final updatedCheckout = widget.checkoutData.copyWith(
+                        paymentStatus: paymentStatus,
+                        orderStatus: orderStatus,
+                        notes: notes,
+                        totalAmount: finalAmount,
                       );
-                      return;
+
+                      try {
+                        final isSuccess = await CheckOutService.checkOutService(updatedCheckout);
+
+                        if (isSuccess != null) {
+                          showCustomSnackBar(context, 'Payment status updated successfully!');
+                          widget.onPaymentDone();
+                        } else {
+                          showCustomSnackBar(context, 'Failed to update payment data.');
+                        }
+                      } catch (e) {
+                        showCustomSnackBar(context, 'Error: $e');
+                      } finally {
+                        setState(() => _isLoading = false);
+                      }
                     }
 
-                    setState(() => _isLoading = true);
 
-                    final result = await CheckOutService.checkOutService(widget.checkoutData);
-
-                    setState(() => _isLoading = false);
-
-                    widget.onPaymentDone();
-                  },
                 ),
               ),
             ],

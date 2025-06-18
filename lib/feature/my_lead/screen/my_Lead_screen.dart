@@ -218,7 +218,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
   Widget _buildStatusBadge(String status) {
     Color color = Colors.grey;
-    if (status == 'Completed') color = Colors.green;
+    if (status == 'paid') color = Colors.green;
     if (status == 'pending') color = Colors.orange;
     if (status == 'Accepted') color = Colors.purple;
     if (status == 'Ongoing') color = Colors.blue;
