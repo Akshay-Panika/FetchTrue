@@ -212,6 +212,7 @@ void showLogoutDialog(BuildContext context, VoidCallback onConfirmLogout) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      backgroundColor: CustomColor.whiteColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title:  Text("Log Out", style: textStyle20(context, color: CustomColor.appColor )),
       content: const Text("Are you sure you want to log out?"),

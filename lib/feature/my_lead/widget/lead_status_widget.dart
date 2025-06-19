@@ -1,4 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/my_lead/model/lead_status_model.dart';
+import 'package:fetchtrue/feature/my_lead/repository/lead_status_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,11 +9,48 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_url_launch.dart';
 
-class LeadStatusWidget extends StatelessWidget {
-  const LeadStatusWidget({super.key});
+class LeadStatusWidget extends StatefulWidget {
+  final String bookingId;
+  const LeadStatusWidget({super.key, required this.bookingId});
+
+  @override
+  State<LeadStatusWidget> createState() => _LeadStatusWidgetState();
+}
+
+class _LeadStatusWidgetState extends State<LeadStatusWidget> {
+
+  List<LeadStatusModel> leadStatus = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getLeads();
+  }
+
+  void getLeads() async {
+    try {
+      final allStatuses = await LeadStatusService.fetchLeadStatus();
+      leadStatus = allStatuses.where((item) =>
+      item.checkout.bookingId.trim().toLowerCase() ==
+          widget.bookingId.trim().toLowerCase()).toList();
+    } catch (e) {
+      print('Error fetching leads: $e');
+    }
+    setState(() => isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return LinearProgressIndicator(
+      backgroundColor: CustomColor.appColor,
+      color: Colors.white,
+      minHeight: 2.5,
+    );
+
+    }
+
     return Column(
       children: [
         _header(context,header: 'Lead Requested', desc: 'You have submitted a request for a lead.\nAwaiting admin approval.'),
@@ -108,7 +147,7 @@ Widget _header(BuildContext context, {String? header, String? desc, bool isMeet 
                        ],
                      ),
                     10.height,
-    
+
                     Text(meetMSG ?? 'The scheduled meeting has been successfully conducted')
                   ],
                 ),
@@ -157,7 +196,7 @@ Widget _header(BuildContext context, {String? header, String? desc, bool isMeet 
                       ],
                     ),
                     10.height,
-    
+
                     Text(meetMSG ?? 'You have successfully made a payment Awaiting verification from the admin')
                   ],
                 ),
@@ -165,7 +204,7 @@ Widget _header(BuildContext context, {String? header, String? desc, bool isMeet 
             ],
           ),
         )
-    
+
       ],
     ),
   );

@@ -1,4 +1,7 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
+import 'package:fetchtrue/feature/provider/screen/provider_screen.dart';
+import 'package:fetchtrue/feature/service/widget/service_review_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -41,18 +44,30 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
         /// Booking summary card
-        _buildBookingSummary(context),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
+        _buildBookingSummary(context,widget.lead),
+        SizedBox(height: widget.dimensions.screenHeight*0.02,),
 
         CustomContainer(
           width: double.infinity,
-          backgroundColor: CustomColor.greenColor.withOpacity(0.1),
+          backgroundColor: Colors.transparent,
+          // backgroundColor: CustomColor.greenColor.withOpacity(0.1),
           margin: EdgeInsets.zero,
-          child: Text('You Will Earn ₹000\nCommission From This Product', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.center,),),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
+          child: RichText(
+            textAlign: TextAlign.center,
+              text: TextSpan(
+            children: [
+              TextSpan(text: 'You Will Earn', style: textStyle16(context, color: CustomColor.appColor)),
+              WidgetSpan(child: 5.width),
+              TextSpan(text: '₹ 0.00', style: textStyle16(context,color: CustomColor.greenColor)),
+              WidgetSpan(child: 5.width),
+              TextSpan(text: 'Commission From This Product', style: textStyle16(context, color: CustomColor.appColor)),
+            ]
+          )),),
+        SizedBox(height: widget.dimensions.screenHeight*0.02,),
 
 
-        _buildProviderCard(context),
+        /// Provider Card
+        _buildProviderCard(context, widget.lead),
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
 
@@ -154,7 +169,7 @@ Widget _buildStatusBadge(BuildContext context,String status) {
 /// Customer details
 Widget _customerDetails(BuildContext context, LeadModel lead){
   final phoneNumber = lead.serviceCustomer.phone;
-  final message = 'Hello, I am contacting you from BizBooster 2X.';
+  final message = 'Hello, I am contacting you from Fetch True.';
 
   return CustomContainer(
     border: false,
@@ -180,6 +195,11 @@ Widget _customerDetails(BuildContext context, LeadModel lead){
                 Text('Name : ${lead.serviceCustomer.fullName}', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                 Text('Phone : ${lead.serviceCustomer.phone}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                 Text('Address: ${lead.serviceCustomer.city}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+
+                if(lead.notes.isNotEmpty)
+                CustomContainer(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text('Note: ${lead.notes}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),)),
 
               ],
             ),
@@ -239,8 +259,8 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead){
           crossAxisAlignment: CrossAxisAlignment.end,
           spacing: 20,
           children: [
-            Text('Unpaid', style: TextStyle(color: CustomColor.appColor, fontWeight: FontWeight.w500),),
-            CustomAmountText(amount: '5,999.00', color: CustomColor.appColor,fontWeight: FontWeight.w500,fontSize: 14)
+            Text('${lead.orderStatus}', style: TextStyle(color: CustomColor.appColor, fontWeight: FontWeight.w500),),
+            CustomAmountText(amount: '${lead.serviceDiscount}', color: CustomColor.appColor,fontWeight: FontWeight.w500,fontSize: 14)
           ],
         ),
 
@@ -249,7 +269,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead){
   );
 }
 
-Widget _buildBookingSummary(BuildContext context){
+Widget _buildBookingSummary(BuildContext context, LeadModel lead){
   return CustomContainer(
     border: false,
     backgroundColor: Colors.white,
@@ -257,12 +277,13 @@ Widget _buildBookingSummary(BuildContext context){
     child: Column(
       spacing: 10,
       children: [
-        _buildRow(context,label: 'Sub Total', value: '5,999.00' ),
-        _buildRow(context,label: 'Service Discount', value: '00' ),
-        _buildRow(context, label: 'Coupon Discount', value: '00' ),
-        _buildRow(context ,label: 'Campaign Discount', value: '00' ),
+        _buildRow(context,label: 'Sub Total', value: '${lead.serviceDiscount}' ),
+        _buildRow(context,label: 'Coupon Discount', value: '${lead.couponDiscount}' ),
+        _buildRow(context ,label: 'Campaign Discount', value: '${lead.champaignDiscount}'),
+        _buildRow(context ,label: 'Platform Fee', value: '${lead.platformFee}'),
+        _buildRow(context ,label: 'Guarantee Fee', value: '${lead.garrentyFee}'),
         Divider(),
-        _buildRow(context,label: 'Grand Total', value: '00' , textColor: CustomColor.appColor),
+        _buildRow(context,label: 'Grand Total', value: '${lead.serviceDiscount}' , textColor: CustomColor.appColor),
       ],
     ),
   );
@@ -279,58 +300,61 @@ Widget _buildRow(BuildContext context,{String? label, Color? textColor, String? 
 }
 
 /// Provider Card
-Widget _buildProviderCard(BuildContext context){
+Widget _buildProviderCard(BuildContext context, LeadModel lead){
   return CustomContainer(
     backgroundColor: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Provider Ifo', style: textStyle14(context),),
-            10.height,
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(radius: 25,
-                      backgroundImage: AssetImage(CustomImage.nullImage),),
-                    10.width,
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Provider Name'),
-                        Text('Module Name')
-                      ],
-                    )
-                  ],
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+        InkWell(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Service Provider', style: textStyle14(context),),
+              10.height,
+          
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(onTap: () => ContactHelper.whatsapp('', ''),
-                          child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-                      40.width,
-                      InkWell(onTap: () => ContactHelper.call(''),
-                          child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-
+                      CircleAvatar(radius: 25,
+                        backgroundImage: AssetImage(CustomImage.nullImage),),
+                      10.width,
+          
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Provider Name'),
+                          Text('Module Name')
+                        ],
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-          ],
+          
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(onTap: () => ContactHelper.whatsapp('', ''),
+                            child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
+                        40.width,
+                        InkWell(onTap: () => ContactHelper.call(''),
+                            child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
+          
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
 
         15.height,

@@ -19,6 +19,7 @@ class ApiUrls{
   static const String serviceCustomer = '${baseUrl}service-customer';
   static const String coupon = '${baseUrl}coupon';
   static const String checkout = '${baseUrl}checkout';
+  static const String leadStatus = '${baseUrl}leads';
 
 
   static const CASHFREE_APP_ID= 'TEST10670800c5ec32bec81b65cc43c200807601';

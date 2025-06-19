@@ -36,9 +36,9 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
       body: SafeArea(
         child:  CustomScrollView(
           slivers: [
-
             SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.015,),),
 
+            /// Filter
             SliverAppBar(
               floating: true,
               toolbarHeight: 40,
@@ -59,7 +59,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
                     if (state is LeadLoading) {
                       return LinearProgressIndicator(
                         backgroundColor: CustomColor.appColor,
-                        color: Colors.transparent,
+                        color: Colors.white,
                         minHeight: 2.5,
                       );
                     }
@@ -166,7 +166,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
                   CustomAmountText(amount:  '${lead.service.discountedPrice}'),
                 ],
               ),
-              Text("Cashback : ${'00'}",style: textStyle14(context, fontWeight: FontWeight.w400),),
+              Text("Commission : ${00}",style: textStyle14(context, fontWeight: FontWeight.w400),),
             ],
           ),
         ],

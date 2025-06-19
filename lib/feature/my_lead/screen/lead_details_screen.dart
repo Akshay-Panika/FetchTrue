@@ -52,7 +52,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               child:
               _tapIndex ==0 ?
             LeadDetailsWidget(dimensions: dimensions, lead: widget.lead,):
-              LeadStatusWidget(),
+              LeadStatusWidget(bookingId :widget.lead.bookingId),
             ),
           ),
         ],
