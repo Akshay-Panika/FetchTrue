@@ -2,7 +2,6 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/wallet/screen/add_amount_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
@@ -130,7 +129,7 @@ class WalletScreen extends StatelessWidget {
                       Text('Add Amount', style: textStyle14(context),)
                     ],
                   ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAmountScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CashfreePaymentUIScreen(),)),
                 ),
               ),
               Expanded(

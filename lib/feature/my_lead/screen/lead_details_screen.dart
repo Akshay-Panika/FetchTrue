@@ -5,11 +5,13 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../../helper/Contact_helper.dart';
+import '../model/lead_model.dart';
 import '../widget/lead_details_widget.dart';
 import '../widget/lead_status_widget.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
-  const LeadDetailsScreen({super.key});
+ final LeadModel lead;
+  const LeadDetailsScreen({super.key, required this.lead});
 
   @override
   State<LeadDetailsScreen> createState() => _LeadDetailsScreenState();
@@ -49,7 +51,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               padding:  EdgeInsets.all(15.0),
               child:
               _tapIndex ==0 ?
-            LeadDetailsWidget(dimensions: dimensions,):
+            LeadDetailsWidget(dimensions: dimensions, lead: widget.lead,):
               LeadStatusWidget(),
             ),
           ),

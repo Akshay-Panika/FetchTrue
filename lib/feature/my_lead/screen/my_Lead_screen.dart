@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -23,57 +24,7 @@ class MyLeadScreen extends StatefulWidget {
 }
 
 class _MyLeadScreenState extends State<MyLeadScreen> {
-  final List<Map<String, dynamic>> allBookings = [
-    {
-      'id': '100300',
-      'bookingDate': '30 Apr,2025 06:16 PM',
-      'serviceDate': '30 Apr,2025 06:15 AM',
-      'status': 'Completed',
-      'amount': '24,999.00'
-    },
-    {
-      'id': '100299',
-      'bookingDate': '30 Apr,2025 04:42 PM',
-      'serviceDate': '30 Apr,2025 04:42 AM',
-      'status': 'Completed',
-      'amount': '49,999.00'
-    },
-    {
-      'id': '100298',
-      'bookingDate': '30 Apr,2025 02:08 PM',
-      'serviceDate': '30 Apr,2025 02:08 AM',
-      'status': 'Pending',
-      'amount': '5,999.00'
-    },
-    {
-      'id': '100297',
-      'bookingDate': '30 Apr,2025 12:26 PM',
-      'serviceDate': '30 Apr,2025 12:26 PM',
-      'status': 'Accepted',
-      'amount': '9,999.00'
-    },
-    {
-      'id': '100296',
-      'bookingDate': '30 Apr,2025 10:00 AM',
-      'serviceDate': '30 Apr,2025 11:00 AM',
-      'status': 'Ongoing',
-      'amount': '19,999.00'
-    },
-    {
-      'id': '100297',
-      'bookingDate': '30 Apr,2025 12:26 PM',
-      'serviceDate': '30 Apr,2025 12:26 PM',
-      'status': 'Accepted',
-      'amount': '9,999.00'
-    },
-  ];
 
-  String selectedFilter = 'All';
-
-  List<Map<String, dynamic>> get filteredBookings {
-    if (selectedFilter == 'All') return allBookings;
-    return allBookings.where((b) => b['status'] == selectedFilter).toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,91 +34,102 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
         showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
 
       body: SafeArea(
-        child: BlocProvider(
-          create: (_) => LeadBloc(LeadService())..add(GetLead()),
-          child:  BlocBuilder<LeadBloc, LeadState>(
-            builder: (context, state) {
-              if (state is LeadLoading) {
-                return LinearProgressIndicator();
-              }
-              else if(state is LeadLoaded){
-                final lead = state.leadModel;
-                // final lead = state.moduleModel .where((module) => module.categoryCount != 0)
-                //     .toList();
+        child:  CustomScrollView(
+          slivers: [
 
-                if (lead.isEmpty) {
-                  return const Center(child: Text('No modules found.'));
-                }
+            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.015,),),
 
-                return  Column(
-                  children: [
-                    SizedBox(height: dimensions.screenHeight*0.015),
+            SliverAppBar(
+              floating: true,
+              toolbarHeight: 40,
+              backgroundColor: CustomColor.canvasColor,
+              flexibleSpace: FlexibleSpaceBar(
+                background:  _buildFilterChips(),
+              ),
+            ),
 
-                    /// filter
-                    _buildFilterChips(),
-                    SizedBox(height: dimensions.screenHeight*0.015),
 
-                    Expanded(
-                      child: ListView.builder(
+            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.015,),),
+
+            SliverToBoxAdapter(
+              child:  BlocProvider(
+                create: (_) => LeadBloc(LeadService())..add(GetLead()),
+                child:  BlocBuilder<LeadBloc, LeadState>(
+                  builder: (context, state) {
+                    if (state is LeadLoading) {
+                      return LinearProgressIndicator(
+                        backgroundColor: CustomColor.appColor,
+                        color: Colors.transparent,
+                        minHeight: 2.5,
+                      );
+                    }
+                    else if(state is LeadLoaded){
+                      final lead = state.leadModel;
+
+
+                      if (lead.isEmpty) {
+                        return const Center(child: Text('No modules found.'));
+                      }
+
+                      return ListView.builder(
                         itemCount: lead.length,
-                        // itemCount: filteredBookings.length,
-                        padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03,),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final data = lead[index];
-                          return _buildBookingCard(dimensions: dimensions, lead: data);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }
+                        final data = lead[index];
+                        return _buildBookingCard(dimensions: dimensions, lead: data);
+                      },);
+                    }
 
-              else if (state is ModuleError) {
-                return Center(child: Text(state.errorMessage));
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+                    else if (state is LeadError) {
+                      return Center(child: Text(state.errorMessage));
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
+  String isSelected = 'All';
   Widget _buildFilterChips() {
     final filters = ['All', 'Pending', 'Accepted', 'Ongoing', 'Completed'];
 
-    return SizedBox(
-      height: 34,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemCount: filters.length,
-        itemBuilder: (context, index) {
-          final isSelected = selectedFilter == filters[index];
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedFilter = filters[index];
-              });
-            },
-            child: CustomContainer(
-              backgroundColor: Colors.white,
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-             // color: isSelected ? Colors.blueAccent : Colors.white,
-              child: Center(
-                child: Text(
-                  filters[index],
-                  style: textStyle12(context,
-                    color: isSelected ? Colors.blueAccent : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                  ),
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      itemCount: filters.length,
+      itemBuilder: (context, index) {
+        final filter = filters[index];
+        final bool selected = filter == isSelected;
+
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              isSelected = filter;
+            });
+          },
+          child: CustomContainer(
+            backgroundColor: selected ? Colors.blueAccent.withOpacity(0.2) : Colors.white,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Center(
+              child: Text(
+                filter,
+                style: textStyle14(
+                  context,
+                  color: selected ? Colors.blueAccent : Colors.black87,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -176,26 +138,22 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
     return CustomContainer(
       border: false,
       backgroundColor: Colors.white,
-      margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.015),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(),)),
+      margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.015, left: dimensions.screenHeight*0.015,right: dimensions.screenHeight*0.015,),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(lead: lead,),)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                lead.service.serviceName,
-                style:  textStyle14(context),
-              ),
-
-              _buildStatusBadge('${lead.paymentStatus}'),
+              Text(lead.service.serviceName, style:  textStyle14(context, fontWeight: FontWeight.w500),),
+              _buildStatusBadge('Pending'),
             ],
           ),
-          Text('Lead id: #${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+          Text('Lead id: #${lead.bookingId}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
 
-          Text('Booking Date : ${lead.createdAt}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          Text('Service Date : ${lead.createdAt}', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          Text('Booking Date : ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}',style:  textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+          Text('Service Date : ', style: textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
            SizedBox(height: dimensions.screenHeight*0.005),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,12 +161,12 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
               Row(
                 children: [
-                  Text("Amount :",style: textStyle12(context, fontWeight: FontWeight.w400),),
+                  Text("Amount :",style: textStyle14(context, fontWeight: FontWeight.w400),),
                   SizedBox(width: dimensions.screenWidth*0.01),
                   CustomAmountText(amount:  '${lead.service.discountedPrice}'),
                 ],
               ),
-              Text("Cashback : ${'00'}",style: textStyle12(context, fontWeight: FontWeight.w400),),
+              Text("Cashback : ${'00'}",style: textStyle14(context, fontWeight: FontWeight.w400),),
             ],
           ),
         ],
@@ -218,10 +176,10 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
 
   Widget _buildStatusBadge(String status) {
     Color color = Colors.grey;
-    if (status == 'paid') color = Colors.green;
-    if (status == 'pending') color = Colors.orange;
-    if (status == 'Accepted') color = Colors.purple;
+    if (status == 'Pending') color = Colors.orange;
+    if (status == 'Accepted') color = Colors.green;
     if (status == 'Ongoing') color = Colors.blue;
+    if (status == 'Cancel') color = Colors.red;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

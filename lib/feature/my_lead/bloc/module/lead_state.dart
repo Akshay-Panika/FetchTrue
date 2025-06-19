@@ -13,7 +13,7 @@ class LeadLoaded extends LeadState {
   LeadLoaded(this.leadModel);
 }
 
-class ModuleError extends LeadState {
+class LeadError extends LeadState {
   final String errorMessage;
-  ModuleError(this.errorMessage);
+  LeadError(this.errorMessage);
 }

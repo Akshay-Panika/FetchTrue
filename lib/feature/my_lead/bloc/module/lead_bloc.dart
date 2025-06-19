@@ -14,7 +14,7 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         final modules = await leadService.fetchLeads();
         emit(LeadLoaded(modules));
       } catch (e) {
-        emit(ModuleError(e.toString()));
+        emit(LeadError(e.toString()));
       }
     });
   }

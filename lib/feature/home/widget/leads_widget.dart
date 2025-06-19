@@ -4,6 +4,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
+import '../../extra_earning/screen/extra_earning_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
@@ -58,7 +59,7 @@ class LeadsWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 10),
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Scaffold(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ExtraEarningScreen(),)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

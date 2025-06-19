@@ -1,5 +1,7 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
@@ -8,10 +10,12 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
+import '../model/lead_model.dart';
 
 class LeadDetailsWidget extends StatefulWidget {
+  final LeadModel lead;
   final Dimensions dimensions;
-  const LeadDetailsWidget({super.key, required this.dimensions});
+  const LeadDetailsWidget({super.key, required this.dimensions, required this.lead});
 
   @override
   State<LeadDetailsWidget> createState() => _LeadDetailsWidgetState();
@@ -24,16 +28,16 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
       children: [
 
         /// Booking card
-        _buildBookingCard(context),
+        _buildBookingCard(context, widget.lead),
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
         /// Custom details card
-        _customerDetails(context),
+        _customerDetails(context, widget.lead),
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
 
         /// Payment status card
-        _buildPaymentStatus(context),
+        _buildPaymentStatus(context, widget.lead),
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
         /// Booking summary card
@@ -48,10 +52,15 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
 
+        _buildProviderCard(context),
+        SizedBox(height: widget.dimensions.screenHeight*0.015,),
+
+
         Padding(
           padding:  EdgeInsets.all(widget.dimensions.screenHeight*0.015),
           child: CustomButton(label: 'Pay Now',onPressed: () => null,),
         ),
+        SizedBox(height: widget.dimensions.screenHeight*0.015,),
 
       ],
     );
@@ -59,13 +68,12 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
 }
 
 /// Booking card
-Widget _buildBookingCard(BuildContext context){
+Widget _buildBookingCard(BuildContext context,  LeadModel lead){
   return CustomContainer(
     border: false,
     backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
     child: Column(
-      spacing: 5,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -74,20 +82,17 @@ Widget _buildBookingCard(BuildContext context){
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Service Name',
-                  style:  textStyle14(context),
-                ),
-                Text('Lead Id: #0156nk', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+                Text(lead.service.serviceName, style:  textStyle14(context,),),
+                Text('Lead Id: #${lead.bookingId}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
               ],
             ),
             _buildStatusBadge(context,'Pending'),
           ],
         ),
 
-        _iconText(icon: Icons.calendar_month, text: 'Timing Details : 6 May 2025 08:50 PM'),
-        _iconText(icon: Icons.calendar_month, text: 'Services Schedule Date : 6 May 2025 08:50 PM'),
-        _iconText(icon: Icons.location_on_outlined, text: 'Address : Office ve jkw 3br#429, Amanora Chambers Pune'),
+        Text('Booking Date : ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}',style:  textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+        Text('Service Date : ', style: textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+        1.height,
 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,6 +101,7 @@ Widget _buildBookingCard(BuildContext context){
             CustomContainer(
               backgroundColor: Colors.blue.shade50,
               padding: EdgeInsetsDirectional.symmetric(vertical: 4, horizontal: 10),
+              margin: EdgeInsets.zero,
               child: Text('Download Invoice', style: textStyle12(context, color: CustomColor.appColor),),),
           ],
         )
@@ -145,8 +151,9 @@ Widget _buildStatusBadge(BuildContext context,String status) {
 }
 
 
-Widget _customerDetails(BuildContext context){
-  final phoneNumber = '918989207770';
+/// Customer details
+Widget _customerDetails(BuildContext context, LeadModel lead){
+  final phoneNumber = lead.serviceCustomer.phone;
   final message = 'Hello, I am contacting you from BizBooster 2X.';
 
   return CustomContainer(
@@ -170,13 +177,13 @@ Widget _customerDetails(BuildContext context){
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Name :', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                Text('Phone :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Name : ${lead.serviceCustomer.fullName}', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Phone : ${lead.serviceCustomer.phone}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Address: ${lead.serviceCustomer.city}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+
               ],
             ),
-
-            Text('Address: Waidhan Singrauli MP',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          ],
+       ],
         ),
 
         Positioned(
@@ -198,8 +205,8 @@ Widget _customerDetails(BuildContext context){
   );
 }
 
-
-Widget _buildPaymentStatus(BuildContext context){
+/// Payment status
+Widget _buildPaymentStatus(BuildContext context, LeadModel lead){
   return CustomContainer(
     border: false,
     backgroundColor: Colors.white,
@@ -211,14 +218,18 @@ Widget _buildPaymentStatus(BuildContext context){
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _iconText(
-                  fontWeight: FontWeight.w500,
-                  icon: Icons.currency_rupee, iconColor: CustomColor.appColor,
-                  text: 'Payment Status',textColor: Colors.black
-              ),
+                icon: Icons.currency_rupee,
+                iconSize: 16,
+                iconColor: CustomColor.appColor,
+                text: 'Payment Status',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                textColor: Colors.black,),
+
 
               // SizedBox(height: 10,),
               Text('Payment after consultation/Partial/Full Payment', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-              Text('Transaction Id : #bfuicrw hu4g5g54hg5',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              Text('Transaction Id : #bfuicrw hu4g5g54hg5',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
             ],
           ),
         ),
@@ -261,9 +272,120 @@ Widget _buildRow(BuildContext context,{String? label, Color? textColor, String? 
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(label!, style: textStyle12(context,color: textColor ?? CustomColor.descriptionColor),),
+      Text(label!, style: textStyle14(context,color: textColor ?? CustomColor.descriptionColor),),
       CustomAmountText(amount: value!, color: textColor ?? CustomColor.descriptionColor, fontSize: 14),
     ],
+  );
+}
+
+/// Provider Card
+Widget _buildProviderCard(BuildContext context){
+  return CustomContainer(
+    backgroundColor: CustomColor.whiteColor,
+    margin: EdgeInsets.zero,
+    child: Column(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('Provider Ifo', style: textStyle14(context),),
+            10.height,
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(radius: 25,
+                      backgroundImage: AssetImage(CustomImage.nullImage),),
+                    10.width,
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Provider Name'),
+                        Text('Module Name')
+                      ],
+                    )
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(onTap: () => ContactHelper.whatsapp('', ''),
+                          child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
+                      40.width,
+                      InkWell(onTap: () => ContactHelper.call(''),
+                          child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
+
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+
+        15.height,
+        Divider(),
+        15.height,
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('Service Manager', style: textStyle14(context),),
+            10.height,
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(radius: 25,
+                      backgroundImage: AssetImage(CustomImage.nullImage),),
+                    10.width,
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Manager Id'),
+                        Text('Manager Name')
+                      ],
+                    )
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(onTap: () => ContactHelper.whatsapp('', ''),
+                          child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
+                      40.width,
+                      InkWell(onTap: () => ContactHelper.call(''),
+                          child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
+
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        )
+      ],
+    ),
   );
 }
 
