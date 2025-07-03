@@ -6,10 +6,8 @@ version: 1.0.0+1
 environment:
   sdk: ^3.6.1
 
-dependencies:
-  flutter_cashfree_pg_sdk: ^2.2.8+46
-  webview_flutter: ^4.5.0
 
+dependencies:
   flutter:
     sdk: flutter
 
@@ -30,7 +28,6 @@ dependencies:
   screenshot: ^3.0.0
   share_plus: ^11.0.0
   shared_preferences: ^2.5.3
-#  flutter_cashfree_pg_sdk: ^2.2.6
 
 
   # File & PDF Handling

@@ -113,7 +113,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               _formField(context,"Name", isRequired: true, hint: 'Enter Name...', controller: fullName),
               10.height,
 
-              _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...', controller: phone),
+              _formField(context,"Phone", isRequired: true,hint: 'Enter Phone No...', controller: phone,),
               15.height,
 
               _formField(context,"Email", isRequired: true,hint: 'Enter Email Id...', controller: email,

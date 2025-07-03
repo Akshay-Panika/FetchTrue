@@ -42,13 +42,16 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
   @override
   void initState() {
     super.initState();
-    _loadToken();
+    loadUserData();
   }
 
-  Future<void> _loadToken() async {
+  Future<void> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    final loadedUserId = prefs.getString('user_id');
-    setState(() {userId = loadedUserId;});}
+    setState(() {
+      userId = prefs.getString('userId');
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

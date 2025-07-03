@@ -1,6 +1,7 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
@@ -14,7 +15,8 @@ import '../bloc/customer/customer_state.dart';
 import '../repository/customer_service.dart';
 
 class CustomerScreen extends StatefulWidget {
-  const CustomerScreen({super.key});
+  final bool? isMenu;
+  const CustomerScreen({super.key, this.isMenu});
 
   @override
   State<CustomerScreen> createState() => _CustomerScreenState();
@@ -24,6 +26,24 @@ class _CustomerScreenState extends State<CustomerScreen> {
   List<TextEditingController> _messageControllers = [];
   int? _selectedCustomer;
 
+
+
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('userId');
+    });
+  }
+
+
   @override
   void dispose() {
     for (var controller in _messageControllers) {
@@ -32,8 +52,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Customer List',
@@ -53,18 +75,27 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   minHeight: 2.5,
                 );
               } else if (state is CustomerLoaded) {
-                final customer = state.customerModel;
+                // final customer = state.customerModel;
+                final customer = state.customerModel.where((customerId) =>
+                customerId.userId == userId).toList();
 
                 // Initialize _messageControllers safely
                 if (_messageControllers.length != customer.length) {
                   _messageControllers = List.generate(
-                    customer.length,
-                        (index) => TextEditingController(),
+                    customer.length, (index) => TextEditingController(),
                   );
                 }
 
                 if (customer.isEmpty) {
-                  return const Center(child: Text('No Customer found.'));
+                  return  Center(child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(radius: 35,backgroundImage: AssetImage(CustomImage.nullImage),),
+                      20.height,
+                      Text('No Customer found.', style: textStyle14(context, color: CustomColor.descriptionColor),),
+                    ],
+                  ));
                 }
 
                 return ListView.builder(
@@ -108,6 +139,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                     ),
                                   ],
                                 ),
+
+                                widget.isMenu == true ? SizedBox.shrink():
                                 Checkbox(
                                   activeColor: CustomColor.appColor,
                                   value: _selectedCustomer == index,
@@ -159,6 +192,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                             ),
                             15.height,
 
+                            widget.isMenu == true ? SizedBox.shrink():
                             chatInputField(
                               context,
                               controller: _messageControllers[index],

@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,9 +7,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
-import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
-import '../../../helper/api_helper.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -46,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
 
 
-                  Center(child: Image.asset(CustomLogo.fetchTrueLogo,height: 150,)),
+                  Center(child: Image.asset(CustomLogo.fetchTrueLogo,height: 100,)),
 
                   CustomFormField(context, 'Full name',
                       hint: 'Enter full name',
@@ -55,11 +54,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       isRequired: true),
                   15.height,
 
-                  CustomFormField(context, 'Phone',
-                      hint: 'Enter phone number',
-                      controller: _phoneController,
-                      keyboardType: TextInputType.text,
-                      isRequired: true),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: 'Phone',
+                          style: const TextStyle(color: Colors.black, fontSize: 14),
+                          children:  [
+                            TextSpan(text: ' *', style: TextStyle(color: Colors.red))]
+                        ),
+                      ),
+                      5.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                            Container(
+                            height: 48,width: 50,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.grey.shade300)
+                            ),
+                            child: Center(child: Text('+ 91', style: TextStyle(color: CustomColor.appColor,fontWeight: FontWeight.w500),)),
+                          ),
+                          10.width,
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                              decoration: InputDecoration(
+                                hintText: 'Enter phone number',
+                                hintStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey.shade300)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color:Colors.grey.shade300)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey.shade300)
+                                ),
+                                disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey.shade300)
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              ),
+                              validator: (value) => null,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                   15.height,
 
                   CustomFormField(context, 'Email',
@@ -122,12 +174,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Already have an account?'),
+                      Text('Already have an account ?'),
                       TextButton(
                         onPressed: () {
                           widget.onToggle(false); // Go back to SignInScreen
                         },
-                        child: Text('Sign In'),
+                        child: Text('Sign In', style: textStyle14(context, color: CustomColor.appColor)),
                       ),
                     ],
                   ),

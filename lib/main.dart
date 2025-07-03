@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/costants/custom_color.dart';
-import 'feature/splash_screen/screen/splash_screen.dart';
+import 'feature/auth/screen/splash_screen.dart';
 
 
 void main() {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
 
       ),
-      title: 'BizBooster2x',
+      title: 'Fetch True',
       home: SplashScreen(),
     );
   }

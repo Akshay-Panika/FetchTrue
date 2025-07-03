@@ -2,6 +2,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
@@ -21,6 +22,7 @@ class ProviderScreen extends StatefulWidget {
 }
 
 class _ProviderScreenState extends State<ProviderScreen> {
+
 
   @override
   Widget build(BuildContext context) {

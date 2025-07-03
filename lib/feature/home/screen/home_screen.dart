@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
             slivers: [
 
             /// Profile card
-            SliverToBoxAdapter(child: ProfileCardWidget(),),
+            SliverToBoxAdapter(child: ProfileAppWidget(),),
 
             /// Search bar
             SliverAppBar(

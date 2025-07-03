@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
@@ -9,9 +10,14 @@ import '../../favorite/screen/favorite_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 
-class ProfileCardWidget extends StatelessWidget {
-  const ProfileCardWidget({super.key});
+class ProfileAppWidget extends StatefulWidget {
+  const ProfileAppWidget({super.key});
 
+  @override
+  State<ProfileAppWidget> createState() => _ProfileAppWidgetState();
+}
+
+class _ProfileAppWidgetState extends State<ProfileAppWidget> {
   String getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) {
@@ -21,6 +27,23 @@ class ProfileCardWidget extends StatelessWidget {
     } else {
       return 'Good Evening';
     }
+  }
+
+  String? token;
+  String? user;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token');
+      user = prefs.getString('fullName');
+    });
   }
 
   @override
@@ -43,7 +66,7 @@ class ProfileCardWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Akshay !', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  Text(user ?? "User Name", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                   Text(getGreeting(), style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
                 ],
               ),

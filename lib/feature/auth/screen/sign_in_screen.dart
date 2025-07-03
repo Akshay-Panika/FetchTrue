@@ -1,4 +1,6 @@
+import 'package:fetchtrue/core/costants/custom_icon.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,8 +10,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
-import '../model/sign_in_model.dart';
-import '../repository/sign_in_service.dart';
+import '../repository/user_service.dart';
 
 class SignInScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -23,68 +24,69 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  // final TextEditingController _phoneController = TextEditingController();
+  // final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _mainController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
 
   bool _obscureText = true;
   bool _isLoading = false;
 
+  String? prefixText;
+  String inputLabel = 'Email/Phone';
 
   @override
-  void dispose() {
-    _phoneController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _mainController.addListener(() {
+      setState(() {
+        _updateInputLabel(_mainController.text);
+      });
+    });
+  }
+
+
+  void _updateInputLabel(String input) {
+    if (RegExp(r'^\d+$').hasMatch(input)) {
+      inputLabel = 'Phone';
+      prefixText = '+91 ';
+    } else if (input.contains('@') || RegExp(r'[a-zA-Z]').hasMatch(input)) {
+      inputLabel = 'Email';
+      prefixText = null;
+    } else {
+      inputLabel = 'Email/Phone';
+      prefixText = null;
+    }
   }
 
   void _signIn() async {
-    final email = _emailController.text.trim();
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    final input = _mainController.text.trim();
     final password = _passwordController.text.trim();
+    final email = RegExp(r'^\d+$').hasMatch(input) ? '+91$input' : input;
 
-    /// Basic validation
-    if (email.isEmpty || password.isEmpty) {
-      showCustomSnackBar(context, '❌ Please enter both email and password');
-      return;
-    }
+    final response = await UserService.signIn(email: email, password: password);
+    setState(() => _isLoading = false);
 
-    // 📧 Email format check (if needed)
-    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-    if (!emailRegex.hasMatch(email)) {
-      showCustomSnackBar(context, '❌ Please enter a valid email address');
-      return;
-    }
-
-    setState(() {_isLoading = true;});
-
-    final model = SignInModel(email: email, password: password);
-
-    final response = await SignInService().loginUser(model);
-
-    setState(() {_isLoading = false;});
-
-    /// ✅ On Success
-    if (response['success'] == true) {
-      final userData = response['data'];
-      final token = userData['token'];
-      final userId = userData['user']['_id'];
-      final user = userData['user']['fullName'];
-
-     // Optionally store token
+    if (response != null) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', token);
-      await prefs.setString('user_id', userId);
-      await prefs.setString('user', user);
+      await prefs.setString('token', response.token);
+      await prefs.setString('userId', response.user.id);
+      await prefs.setString('fullName', response.user.fullName);
+      await prefs.setString('email', response.user.email);
+      await prefs.setString('createdAt', response.user.createdAt);
+      await prefs.setBool('isLoggedIn', true);
 
-      showCustomSnackBar(context, '✅ ${response['message']}, $user');
-      Navigator.pop(context);
-    }
-    /// On Error
-    else {
-      showCustomSnackBar(context, '❌ ${response['message']}');
+      showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
+      Navigator.pop(context, true);
+    } else {
+      showCustomSnackBar(context, "Login Failed. Try again.");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -95,81 +97,99 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           children: [
             30.height,
-        
+
             Center(
                 child: Image.asset(
               CustomLogo.fetchTrueLogo,
-              height: 200,
+              height: 180,
             )),
             30.height,
 
-            CustomFormField(context, 'Email/Phone',
-                hint: 'Enter email or phone number',
-                controller: _emailController,
-                keyboardType: TextInputType.text,
-                isRequired: true),
+            CustomFormField(
+              context,
+              inputLabel,
+              hint: 'Enter email or phone number',
+              prefixText: prefixText,
+              controller: _mainController,
+              keyboardType: TextInputType.text,
+              isRequired: true,
+            ),
+
             15.height,
-        
+
             CustomFormField(context, 'Password',
                 hint: 'Enter Password',
                 controller: _passwordController,
                 keyboardType: TextInputType.text,
                 isRequired: true,
                 obscureText: _obscureText ? true : false),
-            10.height,
-        
+            0.height,
+
             /// Show/Hide Password Button
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
+                onPressed: () => setState(() => _obscureText = !_obscureText),
                 icon: Icon( _obscureText ? Icons.visibility_off:Icons.visibility, color: CustomColor.appColor,),
-                label: Text('Show Password', style: textStyle12(context, color: CustomColor.appColor),),
+                label: Text( _obscureText ? 'Show Password' : 'Hide Password', style: textStyle12(context, color: CustomColor.appColor),),
               ),
             ),
             20.height,
-        
+
             CustomButton(
               label: 'Sign In',
               onPressed: _signIn,
               isLoading: _isLoading,
             ),
-        
-            SizedBox(height: 20),
-        
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Forgot Password')),
-                    );
-                  },
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: CustomColor.appColor),
-                  ),
-                ),
-              ],
+            10.height,
+
+            /// Forgot Password
+            TextButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Forgot Password')),
+                );
+              },
+              child: Text(
+                'Forgot Password ?',
+                style: TextStyle(color: CustomColor.appColor),
+              ),
             ),
-        
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Don\'t have an account?'),
+                Text('Don\'t have an account ?'),
                 TextButton(
                   onPressed: () {
                     widget.onToggle(true); // Go to SignUpScreen
                   },
-                  child: Text('Sign Up'),
+                  child: Text('Sign Up', style: textStyle14(context, color: CustomColor.appColor),),
                 ),
               ],
             ),
+            20.height,
+            
+            
+            Row(
+              children: [
+                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), backgroundColor: CustomColor.appColor,)),
+                Text('Or Continue with'),
+                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), backgroundColor: CustomColor.appColor,)),
+              ],
+            ),
+            30.height,
+            Row(
+              spacing: 50,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(CustomIcon.googleIcon),
+                Image.asset(CustomIcon.facebookIcon),
+                Image.asset(CustomIcon.instagramIcon),
+              ],
+            )
+
           ],
         ),
       ),

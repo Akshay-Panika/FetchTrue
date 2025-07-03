@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,7 @@ import '../../settings/screen/setting_screen.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
+import '../widget/profile_card_widget.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -36,22 +38,32 @@ class _MoreScreenState extends State<MoreScreen> {
 
   String? token;
   String? user;
+  String? email;
+  String? date;
 
   @override
   void initState() {
     super.initState();
-    _loadToken();
+    loadUserData();
   }
 
-  Future<void> _loadToken() async {
+  Future<void> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    final loadedToken = prefs.getString('auth_token');
-    final loadedUser = prefs.getString('user');
-    print('✅ Token fetched: $loadedToken, User: $loadedUser');
-
     setState(() {
-      token = loadedToken;
-      user = loadedUser;
+      token = prefs.getString('token');
+      user = prefs.getString('fullName');
+      email = prefs.getString('email');
+      date = prefs.getString('createdAt');
+    });
+  }
+
+  Future<void> signOutUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    setState(() {
+      token = null;
+      user = null;
+      date = null;
     });
   }
 
@@ -67,10 +79,11 @@ class _MoreScreenState extends State<MoreScreen> {
 
           SliverAppBar(
             floating: true,
-            toolbarHeight: 120,
+            toolbarHeight: 200,
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildProfileHeader(context, user),
+              background: ProfileCardWidget(currentUser: user ?? "User Name", email: email ?? '___@gmail.com', date: '00/00/25',),
+              // title: Text(user ?? 'Guest User'),
             ),
           ),
 
@@ -87,6 +100,7 @@ class _MoreScreenState extends State<MoreScreen> {
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
                   _buildTile(context, Icons.local_offer_outlined, "Coupon",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),),
                   _buildTile(context, Icons.person_4_outlined, "Provider",() => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderScreen(),)),),
+                  _buildTile(context, Icons.person_4, "Customer",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(isMenu: true,),)),),
                 ]),
 
                 // 5.height,
@@ -105,25 +119,36 @@ class _MoreScreenState extends State<MoreScreen> {
                 _buildSection(context,"Others", [
                   _buildTile(context, Icons.delete_outline, "Delete Account",() => Navigator.push(context, MaterialPageRoute(builder: (context) => DeleteAccountScreen(),)),),
 
+
+                  /// sign in hai to ('Sign Out' ) nhi to (Sign In)
                   _buildTile(
                     context,
-                    Icons.logout,
+                    token != null ? Icons.logout : Icons.login,
                     token != null ? 'Sign Out' : 'Sign In',
-                        () async {
-                      if (token == null) {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => AuthScreen()));
-                      } else {
-                        showLogoutDialog(context, () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.clear();
-                          setState(() {
-                            token = null;
-                            user = null;
+                          () async {
+                        if (token == null) {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const AuthScreen()),
+                          );
+
+                          /// If login is successful
+                          if (result == true) {
+                            final prefs = await SharedPreferences.getInstance();
+                            setState(() {
+                              token = prefs.getString('token');
+                              user = prefs.getString('fullName');
+                              email = prefs.getString('email');
+                              date = prefs.getString('createdAt');
+                            });
+                          }
+                        } else {
+                          showLogoutDialog(context, () async {
+                            await signOutUser();
+                            Navigator.pop(context); /// Close dialog
                           });
-                          Navigator.pop(context);
-                        });
+                        }
                       }
-                    },
                   ),
 
                 ]),
@@ -135,46 +160,6 @@ class _MoreScreenState extends State<MoreScreen> {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, String? user) {
-    return CustomContainer(
-      border: true,
-     backgroundColor: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 20,horizontal: 15),
-      child: Row(
-        children: [
-           CircleAvatar(
-            radius: 30,
-            backgroundColor: Theme.of(context).cardColor,
-             backgroundImage: AssetImage(CustomImage.nullImage),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children:  [
-                Text(user != null && user.isNotEmpty ? user : "User Name", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                SizedBox(height: 4),
-                Text("xyz@bizbooster.com", style: TextStyle(color: Colors.grey, fontSize: 12)),
-              ],
-            ),
-          ),
-
-          CustomContainer(
-            border: true,
-            backgroundColor: CustomColor.appColor.withOpacity(0.1),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: Row(
-            children: [
-              Icon(Icons.leaderboard_outlined, size: 16, color: CustomColor.appColor,),
-              10.width,
-              Text('GP', style: textStyle14(context),)
-            ],
-          ))
-
-        ],
-      ),
-    );
-  }
 
   Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Column(
@@ -206,7 +191,6 @@ class _MoreScreenState extends State<MoreScreen> {
     );
   }
 }
-
 
 void showLogoutDialog(BuildContext context, VoidCallback onConfirmLogout) {
   showDialog(
