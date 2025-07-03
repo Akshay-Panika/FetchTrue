@@ -17,11 +17,12 @@ class CheckPaymentWidget extends StatefulWidget {
   final List<ServiceModel> services;
   final VoidCallback onPaymentDone;
   final CheckoutModel checkoutData;
+  final String providerId;
 
   const CheckPaymentWidget({
     super.key,
     required this.services,
-    required this.onPaymentDone, required this.checkoutData,
+    required this.onPaymentDone, required this.checkoutData, required this.providerId,
   });
 
   @override
@@ -60,7 +61,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'Choose Payment Method',
+                'Choose Payment Method ${widget.providerId}',
                 style: textStyle14(context, color: CustomColor.descriptionColor),
               ),
               10.height,
@@ -304,6 +305,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         orderStatus: orderStatus,
                         notes: notes,
                         totalAmount: finalAmount,
+                        provider:  widget.providerId
                       );
 
                       try {

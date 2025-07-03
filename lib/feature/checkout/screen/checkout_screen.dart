@@ -11,9 +11,9 @@ import '../widget/checkout_details_widget.dart';
 import '../widget/checkout_payment_done_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final String providerId;
   final List<ServiceModel> services;
-
-  const CheckoutScreen({super.key, required this.services});
+  const CheckoutScreen({super.key, required this.services, required this.providerId});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -32,7 +32,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Checkout', showBackButton: true),
+      appBar: CustomAppBar(title: 'Check Out', showBackButton: true),
       body: SafeArea(
         child: Column(
           children: [
@@ -78,6 +78,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       CheckPaymentWidget(
                         services: widget.services,
                         checkoutData: checkoutData!,
+                        providerId: widget.providerId,
                         onPaymentDone: () {
                           setState(() => _paymentStep = 2);
                         },

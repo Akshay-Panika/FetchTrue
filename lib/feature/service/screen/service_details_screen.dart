@@ -1,13 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
-import '../../checkout/screen/checkout_screen.dart';
 import '../bloc/module_service/module_service_bloc.dart';
 import '../bloc/module_service/module_service_event.dart';
 import '../bloc/module_service/module_service_state.dart';
@@ -17,7 +14,6 @@ import '../widget/franchise_details_section_widget.dart';
 import '../widget/self_add_widget.dart';
 import '../widget/service_banner_widget.dart';
 import '../widget/service_details_section_widget.dart';
-import '../widget/service_review_widget.dart';
 
 
 class ServiceDetailsScreen extends StatefulWidget {
@@ -138,9 +134,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () {
-                    showCustomBottomSheet(context, services: services );
-                  },
+                  onTap: () => showCustomBottomSheet(context, services: services ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
