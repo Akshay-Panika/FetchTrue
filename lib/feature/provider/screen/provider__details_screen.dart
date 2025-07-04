@@ -54,7 +54,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
     return Scaffold(
        backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(
-        title: '${widget.storeName??'Store Name'}',
+        title: widget.storeName ?? 'Store Name',
         showBackButton: true,
         showFavoriteIcon: true,
       ),
@@ -98,9 +98,9 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                       flexibleSpace: FlexibleSpaceBar(
                         background:Container(
                           decoration: BoxDecoration(
-                              // image: DecorationImage(
-                              //     image: _getProfileImage(data.storeInfo.cover)
-                              //     ,fit: BoxFit.cover)
+                              image: DecorationImage(
+                                  image: _getProfileImage(data.storeInfo!.cover)
+                                  ,fit: BoxFit.cover)
                           ),
                         ),
                       ),
@@ -135,7 +135,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                         child: TabBarView(
                           controller: _tabController,
                           children: [
-                            ProviderServicesListWidget(),
+                            ProviderServicesListWidget(data: data,),
                 
                             ProviderReviewsWidget(),
                 
@@ -186,17 +186,17 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.grey.shade200,
-                  // backgroundImage: _getProfileImage(data!.storeInfo.logo),
+                  backgroundImage: _getProfileImage(data!.storeInfo!.logo),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text('${data!.fullName ??'Provider Name'}',
+                       Text(data.fullName,
                         style: textStyle16(context),
                       ),
-                      // Text( "Service: ${data.storeInfo.module.name ?? 'Store Name'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
+                      Text( "Module Name", style: textStyle14(context, fontWeight: FontWeight.w400)),
 
                       CustomRattingAndReviews(),
                       5.height,
@@ -212,14 +212,14 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                             ),
                           ),
                          5.width,
-                          // Expanded(
-                          //   child: Text(
-                          //     // 'Address: ${data.storeInfo.address??''}',
-                          //     // style: TextStyle(color: Colors.grey.shade700),
-                          //     overflow: TextOverflow.ellipsis,
-                          //     maxLines: 2,
-                          //   ),
-                          // ),
+                          Expanded(
+                            child: Text(
+                              'Address: ${data.storeInfo!.address??''}',
+                              style: TextStyle(color: Colors.grey.shade700),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
                         ],
                       ),
                     ],

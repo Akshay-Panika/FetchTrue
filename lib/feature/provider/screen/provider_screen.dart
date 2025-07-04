@@ -9,6 +9,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
@@ -62,45 +63,66 @@ class _ProviderScreenState extends State<ProviderScreen> {
                   return NetworkImage(logoUrl);
                 }
 
-                return Stack(
-                  children: [
-                    CustomContainer(
-                      border: false,
-                      backgroundColor: Colors.white,
-                      margin: EdgeInsets.only(bottom: 10),
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                return CustomContainer(
+                  width: double.infinity,
+                  backgroundColor: Colors.white,
+                  margin: EdgeInsets.only(top: 10),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName,),)),
+                  child: Stack(
+                    children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Color(0xFFF2F2F2),
+                                backgroundImage: _getProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'),
+                              ),
+                              10.width,
 
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.white,
-                            backgroundImage: AssetImage(CustomImage.nullImage),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data.fullName,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text('Onboarding Service', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                  5.height,
+                                  CustomRattingAndReviews()
+                                ],
+                              )
+                            ],
                           ),
-                          10.width,
+                          15.height,
 
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children:  [
-                                Text("${data.fullName ?? 'Provider Name'}", style: textStyle16(context),),
-                                Text( "Phone: ${data.phoneNo ?? 'Phone'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text( "Email: ${data.email ?? 'Email'}", style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                // Text("Address: ${data.storeInfo.address ?? ''},", style: textStyle14(context, fontWeight: FontWeight.w400),maxLines: 2,overflow: TextOverflow.ellipsis,),
-                              ],
-                            ),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: List.generate(4, (index) {
+                              return CustomContainer(
+                                  margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                  child: Text('type of tag', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),));
+                            }),
                           ),
                         ],
                       ),
-                      
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id,storeName: data.fullName,),)),
-                    ),
-                    
-                    Positioned(
-                        right: 0,top: 10,
-                        child: CustomFavoriteButton())
-                  ],
+                      const Positioned(
+                        top: 0,
+                        right: 0,
+                        child: CustomFavoriteButton(),
+                      ),
+                    ],
+                  ),
                 );
               });
 

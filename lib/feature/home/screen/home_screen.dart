@@ -1,3 +1,4 @@
+import 'package:fetchtrue/feature/home/widget/all_service_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -60,8 +61,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
 
                   /// Services for you
-                  CustomServiceList(headline: 'Services for you',),
-                  SizedBox(height: dimensions.screenHeight*0.01,),
+                  AllServiceWidget(headline: 'Services for you',),
 
                   /// Highlight service
                   CustomHighlightService(),
