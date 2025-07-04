@@ -129,7 +129,7 @@ class WalletScreen extends StatelessWidget {
                       Text('Add Amount', style: textStyle14(context),)
                     ],
                   ),
-                  // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CashfreePaymentUIScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(),)),
                 ),
               ),
               Expanded(

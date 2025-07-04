@@ -14,6 +14,11 @@ class CheckoutModel {
   final int tax;
   final int totalAmount;
   final List<String> paymentMethod;
+  final int walletAmount;
+  final int paidByOtherMethodAmount;
+  final int partialPaymentNow;
+  final int partialPaymentLater;
+  final String remainingPaymentStatus;
   final String paymentStatus;
   final String orderStatus;
   final String notes;
@@ -35,6 +40,11 @@ class CheckoutModel {
     required this.tax,
     required this.totalAmount,
     required this.paymentMethod,
+    required this.walletAmount,
+    required this.paidByOtherMethodAmount,
+    required this.partialPaymentNow,
+    required this.partialPaymentLater,
+    required this.remainingPaymentStatus,
     required this.paymentStatus,
     required this.orderStatus,
     required this.notes,
@@ -53,11 +63,16 @@ class CheckoutModel {
       couponDiscount: json['couponDiscount'],
       champaignDiscount: json['champaignDiscount'],
       vat: json['vat'],
-      platformFee: json['platformFee']??0,
-      garrantyFee: json['garrantyFee'] ??0,
+      platformFee: json['platformFee'] ?? 0,
+      garrantyFee: json['garrantyFee'] ?? 0,
       tax: json['tax'],
       totalAmount: json['totalAmount'],
       paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
+      walletAmount: json['walletAmount'] ?? 0,
+      paidByOtherMethodAmount: json['paidByOtherMethodAmount'] ?? 0,
+      partialPaymentNow: json['partialPaymentNow'] ?? 0,
+      partialPaymentLater: json['partialPaymentLater'] ?? 0,
+      remainingPaymentStatus: json['remainingPaymentStatus'] ?? 'pending',
       paymentStatus: json['paymentStatus'],
       orderStatus: json['orderStatus'],
       notes: json['notes'],
@@ -82,6 +97,11 @@ class CheckoutModel {
       "tax": tax,
       "totalAmount": totalAmount,
       "paymentMethod": paymentMethod,
+      "walletAmount": walletAmount,
+      "paidByOtherMethodAmount": paidByOtherMethodAmount,
+      "partialPaymentNow": partialPaymentNow,
+      "partialPaymentLater": partialPaymentLater,
+      "remainingPaymentStatus": remainingPaymentStatus,
       "paymentStatus": paymentStatus,
       "orderStatus": orderStatus,
       "notes": notes,
@@ -105,6 +125,11 @@ class CheckoutModel {
     int? tax,
     int? totalAmount,
     List<String>? paymentMethod,
+    int? walletAmount,
+    int? paidByOtherMethodAmount,
+    int? partialPaymentNow,
+    int? partialPaymentLater,
+    String? remainingPaymentStatus,
     String? paymentStatus,
     String? orderStatus,
     String? notes,
@@ -126,11 +151,15 @@ class CheckoutModel {
       tax: tax ?? this.tax,
       totalAmount: totalAmount ?? this.totalAmount,
       paymentMethod: paymentMethod ?? this.paymentMethod,
+      walletAmount: walletAmount ?? this.walletAmount,
+      paidByOtherMethodAmount: paidByOtherMethodAmount ?? this.paidByOtherMethodAmount,
+      partialPaymentNow: partialPaymentNow ?? this.partialPaymentNow,
+      partialPaymentLater: partialPaymentLater ?? this.partialPaymentLater,
+      remainingPaymentStatus: remainingPaymentStatus ?? this.remainingPaymentStatus,
       paymentStatus: paymentStatus ?? this.paymentStatus,
       orderStatus: orderStatus ?? this.orderStatus,
       notes: notes ?? this.notes,
       termsCondition: termsCondition ?? this.termsCondition,
     );
   }
-
 }
