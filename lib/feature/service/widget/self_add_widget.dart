@@ -3,14 +3,13 @@ import 'package:fetchtrue/feature/service/widget/subscribed_provider_widget.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../checkout/screen/checkout_screen.dart';
 import '../model/service_model.dart';
 
 void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> services}) {
-  String selectedProviderName = 'Fetch True';
+  String provider = '';
 
   showModalBottomSheet(
     context: context,
@@ -66,9 +65,9 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                                   price: services.first.price.toString(),
                                   discountedPrice: services.first.discountedPrice.toString(),
                                   commission: services.first.franchiseDetails.commission,
-                                  onProviderSelected: (name) {
+                                  onProviderSelected: (id) {
                                     setState(() {
-                                      selectedProviderName = name;
+                                      provider = id;
                                     });
                                   },
                                 ),
@@ -89,7 +88,7 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                                   MaterialPageRoute(
                                     builder: (context) => CheckoutScreen(
                                       services: services,
-                                      providerId: selectedProviderName,
+                                      providerId: provider,
                                     ),
                                   ),
                                 );

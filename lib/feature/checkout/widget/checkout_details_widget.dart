@@ -17,10 +17,11 @@ import '../model/check_out_model.dart';
 import '../screen/add_customer_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
+  final String providerId;
   final List<ServiceModel> services;
   // final VoidCallback onPaymentDone;
   final Function(CheckoutModel) onPaymentDone;
-  const CheckoutDetailsWidget({super.key, required this.services, required this.onPaymentDone,});
+  const CheckoutDetailsWidget({super.key, required this.services, required this.onPaymentDone, required this.providerId,});
 
   @override
   State<CheckoutDetailsWidget> createState() => _CheckoutDetailsWidgetState();
@@ -333,11 +334,14 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 return;
               }
 
+              final fetchTure = 'fetchTure';
               final checkoutData = CheckoutModel(
                 user: userId.toString(),
                 service: data.id,
                 serviceCustomer: customer_Id.toString(),
-                provider: null,
+                // provider: widget.providerId,
+                provider: widget.providerId == fetchTure ? null : widget.providerId!.isNotEmpty == true ? widget.providerId : null,
+                // provider:  widget.providerId == fetchTure ? null : widget.providerId,
                 coupon: null,
                 subtotal: 0,
                 serviceDiscount: data.discountedPrice ?? 0,

@@ -76,19 +76,26 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
 
 
                   10.height,
-                  if (data.keyValues != null && data.keyValues!.isNotEmpty)
-                    ...data.keyValues!.entries.map((entry) => Padding(
+                  if (data.keyValues.isNotEmpty)
+                    ...data.keyValues.map((entry) => Padding(
                       padding: const EdgeInsets.only(bottom: 6.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${entry.key} :', style: textStyle12(context,color: CustomColor.descriptionColor)),
+                          Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
                           5.width,
-                          Expanded(child: Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor),overflow: TextOverflow.clip,)),
+                          Expanded(
+                            child: Text(
+                              entry.value,
+                              style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
-                    ))
+                    )),
+
 
                 ],
               ),
@@ -118,7 +125,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(data.title, style: textStyle14(context),),
-                    Text(data.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                    Text(data.description.toString(), style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                   ],
                 ),
               );

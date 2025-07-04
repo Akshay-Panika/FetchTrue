@@ -1,4 +1,3 @@
-// models/service_model.dart
 class ServiceModel {
   final String id;
   final String serviceName;
@@ -11,8 +10,7 @@ class ServiceModel {
   final Subcategory subcategory;
   final ServiceDetails serviceDetails;
   final FranchiseDetails franchiseDetails;
-  final Map<String, String>? keyValues;
-
+  final List<KeyValue> keyValues;
 
   ServiceModel({
     required this.id,
@@ -26,33 +24,25 @@ class ServiceModel {
     required this.subcategory,
     required this.serviceDetails,
     required this.franchiseDetails,
-    this.keyValues,
+    required this.keyValues,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
-
-    Map<String, String>? keyValuesMap;
-    if (json['keyValues'] != null) {
-      keyValuesMap = Map.fromEntries(
-        (json['keyValues'] as List).map(
-              (kv) => MapEntry(kv['key'] as String, kv['value'] as String),
-        ),
-      );
-    }
-
     return ServiceModel(
       id: json['_id'],
       serviceName: json['serviceName'],
-      price: json['price'],
-      discountedPrice: json['discountedPrice'],
-      discount: json['discount'],
+      price: json['price'] is int ? json['price'] : int.tryParse(json['price'].toString()),
+      discountedPrice: json['discountedPrice'] is int ? json['discountedPrice'] : int.tryParse(json['discountedPrice'].toString()),
+      discount: json['discount'] is int ? json['discount'] : int.tryParse(json['discount'].toString()),
       thumbnailImage: json['thumbnailImage'],
-      bannerImages: List<String>.from(json['bannerImages']),
-      tags: List<String>.from(json['tags']),
+      bannerImages: List<String>.from(json['bannerImages'] ?? []),
+      tags: List<String>.from(json['tags'] ?? []),
       subcategory: Subcategory.fromJson(json['subcategory']),
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
       franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
-      keyValues: keyValuesMap
+      keyValues: json['keyValues'] != null
+          ? List<KeyValue>.from(json['keyValues'].map((x) => KeyValue.fromJson(x)))
+          : [],
     );
   }
 }
@@ -83,17 +73,23 @@ class ServiceDetails {
   factory ServiceDetails.fromJson(Map<String, dynamic> json) {
     return ServiceDetails(
       overview: json['overview'],
-      // highlight: json['highlight'],
       highlight: List<String>.from(json['highlight'] ?? []),
       benefits: json['benefits'],
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
       document: json['document'],
-      whyChoose: List<WhyChoose>.from(
-        json['whyChoose'].map((x) => WhyChoose.fromJson(x)),
-      ),
-      faq: List<Faq>.from(json['faq'].map((x) => Faq.fromJson(x))),
-      extraSections: List<ExtraSection>.from(json['extraSections'].map((x) => ExtraSection.fromJson(x))),
+      whyChoose: (json['whyChoose'] as List?)
+          ?.map((x) => WhyChoose.fromJson(x))
+          .toList() ??
+          [],
+      faq: (json['faq'] as List?)
+          ?.map((x) => Faq.fromJson(x))
+          .toList() ??
+          [],
+      extraSections: (json['extraSections'] as List?)
+          ?.map((x) => ExtraSection.fromJson(x))
+          .toList() ??
+          [],
     );
   }
 }
@@ -119,26 +115,28 @@ class FranchiseDetails {
       commission: json['commission'].toString(),
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
-      extraSections: List<ExtraSection>.from(json['extraSections'].map((x) => ExtraSection.fromJson(x)),
-      ),
+      extraSections: (json['extraSections'] as List?)
+          ?.map((x) => ExtraSection.fromJson(x))
+          .toList() ??
+          [],
     );
   }
 }
 
 class ExtraSection {
   final String title;
-  final String description;
+  final String? description;
   final String id;
 
   ExtraSection({
     required this.title,
-    required this.description,
+    this.description,
     required this.id,
   });
 
   factory ExtraSection.fromJson(Map<String, dynamic> json) {
     return ExtraSection(
-      title: json['title'],
+      title: json['title'] ?? '',
       description: json['description'],
       id: json['_id'],
     );
@@ -149,12 +147,14 @@ class WhyChoose {
   final String? title;
   final String? description;
   final String? image;
+  final List<ExtraSection> extraSections;
   final String id;
 
   WhyChoose({
     this.title,
     this.description,
     this.image,
+    this.extraSections = const [],
     required this.id,
   });
 
@@ -164,6 +164,10 @@ class WhyChoose {
       description: json['description'],
       image: json['image'],
       id: json['_id'],
+      extraSections: (json['extraSections'] as List?)
+          ?.map((x) => ExtraSection.fromJson(x))
+          .toList() ??
+          [],
     );
   }
 }
@@ -188,34 +192,22 @@ class Faq {
   }
 }
 
-class Category {
+class KeyValue {
+  final String key;
+  final String value;
   final String id;
-  final String name;
-  final String module;
-  final String image;
-  final bool isDeleted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
-  Category({
+  KeyValue({
+    required this.key,
+    required this.value,
     required this.id,
-    required this.name,
-    required this.module,
-    required this.image,
-    required this.isDeleted,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
+  factory KeyValue.fromJson(Map<String, dynamic> json) {
+    return KeyValue(
+      key: json['key'],
+      value: json['value'],
       id: json['_id'],
-      name: json['name'],
-      module: json['module'],
-      image: json['image'],
-      isDeleted: json['isDeleted'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
 }

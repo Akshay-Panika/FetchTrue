@@ -84,7 +84,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(data.title, style: textStyle14(context),),
-                Text(data.description, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text(data.description.toString(), style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
               ],
             ),
           );

@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -254,7 +249,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         paymentStatus: 'pending',
                         orderStatus: 'processing',
                         totalAmount: serviceAmount,
-                        provider: widget.providerId,
                       );
 
                       final isSuccess = await CheckOutService.checkOutService(updatedCheckout);

@@ -78,7 +78,7 @@ class _SubscribedProviderWidgetState extends State<SubscribedProviderWidget> {
                         onChanged: (value) {
                           if (value == true) {
                             setState(() => selectedProviderIndex = -1);
-                            widget.onProviderSelected?.call("Fetch Ture");
+                            widget.onProviderSelected?.call("fetchTure");
                           }
                         },
                       ),

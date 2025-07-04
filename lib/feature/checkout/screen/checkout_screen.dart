@@ -65,6 +65,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   children: [
                     if (_paymentStep == 0)
                       CheckoutDetailsWidget(
+                        providerId: widget.providerId,
                         services: widget.services,
                         onPaymentDone: (CheckoutModel model) {
                           setState(() {

@@ -152,19 +152,26 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                       ],
                                     ),
                                     5.height,
-                                    if (data.keyValues != null && data.keyValues!.isNotEmpty)
-                                      ...data.keyValues!.entries.map((entry) => Padding(
+                                    if (data.keyValues.isNotEmpty)
+                                      ...data.keyValues.map((entry) => Padding(
                                         padding: const EdgeInsets.only(bottom: 6.0),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text('${entry.key} :', style: textStyle12(context,color: CustomColor.descriptionColor)),
+                                            Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
                                             5.width,
-                                            Expanded(child: Text(entry.value,style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.descriptionColor),overflow: TextOverflow.clip,)),
+                                            Expanded(
+                                              child: Text(
+                                                entry.value,
+                                                style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       )),
+
                                     10.height,
                                   ],
                                 ),
