@@ -48,7 +48,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
           Expanded(
             child: SingleChildScrollView(
-              padding:  EdgeInsets.all(15.0),
+              padding:  EdgeInsets.all(10.0),
               child:
               _tapIndex ==0 ?
             LeadDetailsWidget(dimensions: dimensions, lead: widget.lead,):

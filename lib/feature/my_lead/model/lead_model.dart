@@ -126,11 +126,13 @@ class Service {
   final String id;
   final String serviceName;
   final int price;
+  final int discount;
   final int discountedPrice;
 
   Service({
     required this.id,
     required this.serviceName,
+    required this.discount,
     required this.price,
     required this.discountedPrice,
   });
@@ -140,6 +142,7 @@ class Service {
       id: json['_id'] ?? '',
       serviceName: json['serviceName'] ?? '',
       price: json['price'] ?? 0,
+      discount: json['discount'] ?? 0,
       discountedPrice: json['discountedPrice'] ?? 0,
     );
   }
@@ -149,17 +152,16 @@ class ServiceCustomer {
   final String id;
   final String fullName;
   final String phone;
+  final String email;
   final String city;
-  final String state;
-  final String country;
+
 
   ServiceCustomer({
     required this.id,
     required this.fullName,
     required this.phone,
+    required this.email,
     required this.city,
-    required this.state,
-    required this.country,
   });
 
   factory ServiceCustomer.fromJson(Map<String, dynamic> json) {
@@ -167,9 +169,8 @@ class ServiceCustomer {
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
       phone: json['phone'] ?? '',
+      email: json['email'] ?? '',
       city: json['city'] ?? '',
-      state: json['state'] ?? '',
-      country: json['country'] ?? '',
     );
   }
 }

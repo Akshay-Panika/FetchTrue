@@ -263,7 +263,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             customerId: widget.checkoutData.user,
                             name: "Customer Name",
                             email: "customer@example.com",
-                            phone: "9999999999",
+                            phone: '8989207770',
                           );
                         }
 

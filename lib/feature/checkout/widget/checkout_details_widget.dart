@@ -341,7 +341,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 serviceCustomer: customer_Id.toString(),
                 // provider: widget.providerId,
                 provider: widget.providerId == fetchTure ? null : widget.providerId!.isNotEmpty == true ? widget.providerId : null,
-                // provider:  widget.providerId == fetchTure ? null : widget.providerId,
                 coupon: null,
                 subtotal: 0,
                 serviceDiscount: data.discountedPrice ?? 0,

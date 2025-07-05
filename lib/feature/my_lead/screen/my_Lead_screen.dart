@@ -36,7 +36,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
       body: SafeArea(
         child:  CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.015,),),
+            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.01,),),
 
             /// Filter
             SliverAppBar(
@@ -49,7 +49,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
             ),
 
 
-            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.015,),),
+            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.005,),),
 
             SliverToBoxAdapter(
               child:  BlocProvider(
@@ -107,27 +107,25 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
         final filter = filters[index];
         final bool selected = filter == isSelected;
 
-        return GestureDetector(
+        return CustomContainer(
+          backgroundColor: CustomColor.whiteColor,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Center(
+            child: Text(
+              filter,
+              style: textStyle14(
+                context,
+                color: selected ? Colors.blueAccent : Colors.black87,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ),
           onTap: () {
             setState(() {
               isSelected = filter;
             });
           },
-          child: CustomContainer(
-            backgroundColor: selected ? Colors.blueAccent.withOpacity(0.2) : Colors.white,
-            margin: const EdgeInsets.symmetric(horizontal: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Center(
-              child: Text(
-                filter,
-                style: textStyle14(
-                  context,
-                  color: selected ? Colors.blueAccent : Colors.black87,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
         );
       },
     );
@@ -136,9 +134,8 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   Widget _buildBookingCard({required Dimensions dimensions, required LeadModel lead}) {
 
     return CustomContainer(
-      border: false,
       backgroundColor: Colors.white,
-      margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.015, left: dimensions.screenHeight*0.015,right: dimensions.screenHeight*0.015,),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(lead: lead,),)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,27 +143,36 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(lead.service.serviceName, style:  textStyle14(context, fontWeight: FontWeight.w500),),
+              Text(lead.service.serviceName,
+                style:  textStyle14(context),
+              ),
+
+              widget.isBack =='isBack'?
+              _buildStatusBadge('Completed'):
               _buildStatusBadge('Pending'),
             ],
           ),
-          Text('Lead id: #${lead.bookingId}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
-
-          Text('Booking Date : ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}',style:  textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-          Text('Service Date : ', style: textStyle14(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-           SizedBox(height: dimensions.screenHeight*0.005),
+          Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+          Divider(),
+          const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Amount :",style: textStyle14(context, fontWeight: FontWeight.w400),),
-                  SizedBox(width: dimensions.screenWidth*0.01),
-                  CustomAmountText(amount:  '${lead.service.discountedPrice}'),
+                  Text('Booking Date: ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                  Text('Service Date : ', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                 ],
               ),
-              Text("Commission : ${00}",style: textStyle14(context, fontWeight: FontWeight.w400),),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text("Amount",style: textStyle12(context, fontWeight: FontWeight.w500),),
+                  CustomAmountText(amount:  lead.service.discountedPrice.toString()),
+                ],
+              ),
+
             ],
           ),
         ],
