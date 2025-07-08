@@ -29,6 +29,8 @@ class LeadModel {
   final String createdAt;
   final String updatedAt;
   final String bookingId;
+  final String? acceptedDate;
+
 
   LeadModel({
     required this.id,
@@ -61,6 +63,7 @@ class LeadModel {
     required this.createdAt,
     required this.updatedAt,
     required this.bookingId,
+    this.acceptedDate,
   });
 
   factory LeadModel.fromJson(Map<String, dynamic> json) {
@@ -95,6 +98,8 @@ class LeadModel {
       createdAt: json['createdAt'] ?? '',
       updatedAt: json['updatedAt'] ?? '',
       bookingId: json['bookingId'] ?? '',
+      acceptedDate: json['acceptedDate'] ?? '',
+
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
@@ -68,14 +69,6 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
         /// Provider Card
         ProviderCardWidget(lead:widget.lead),
         SizedBox(height: widget.dimensions.screenHeight*0.015,),
-
-
-        Padding(
-          padding:  EdgeInsets.all(widget.dimensions.screenHeight*0.015),
-          child: CustomButton(label: 'Pay Now',onPressed: () => null,),
-        ),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
-
       ],
     );
   }
@@ -83,6 +76,19 @@ class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
 
 /// Booking card
 Widget _buildBookingCard(BuildContext context, { required LeadModel lead}){
+
+  String bookingDate = 'Invalid date';
+  try {
+    bookingDate = DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt));
+  } catch (e) {}
+
+  String formattedServiceDate = 'N/A';
+  try {
+    if (lead.acceptedDate != null && lead.acceptedDate!.isNotEmpty) {
+      formattedServiceDate = DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.acceptedDate!));
+    }
+  } catch (e) {}
+
   return CustomContainer(
     backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
@@ -93,13 +99,13 @@ Widget _buildBookingCard(BuildContext context, { required LeadModel lead}){
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(lead.service.serviceName, style: textStyle14(context),),
-            _buildStatusBadge(context,'Pending'),
+            _buildStatusBadge(context,lead),
           ],
         ),
         Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
         Divider(),
-        _iconText(context,icon: Icons.calendar_month, text: 'Timing Details : ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}'),
-        _iconText(context,icon: Icons.calendar_month, text: 'Services Schedule Date : '),
+        _iconText(context,icon: Icons.calendar_month, text: 'Timing Details : $bookingDate'),
+        _iconText(context,icon: Icons.calendar_month, text: 'Services Schedule Date: $formattedServiceDate'),
         10.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,12 +132,23 @@ Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? i
 }
 
 /// Status
-Widget _buildStatusBadge(BuildContext context,String status) {
+Widget _buildStatusBadge(BuildContext context,LeadModel lead) {
+  String statusText = 'Unknown';
   Color color = Colors.grey;
-  if (status == 'Completed') color = Colors.green;
-  if (status == 'Pending') color = Colors.orange;
-  if (status == 'Accepted') color = Colors.purple;
-  if (status == 'Ongoing') color = Colors.blue;
+
+  // 🎯 Priority: isAccepted
+  if (lead.isAccepted == true) {
+    statusText = 'Accepted';
+    color = Colors.green;
+  } else {
+    final status = lead.paymentStatus.toLowerCase();
+    statusText = capitalize(status);
+
+    if (status == 'pending') color = Colors.orange;
+    if (status == 'ongoing') color = Colors.blue;
+    if (status == 'cancel') color = Colors.red;
+    if (status == 'completed') color = Colors.green;
+  }
 
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -144,12 +161,19 @@ Widget _buildStatusBadge(BuildContext context,String status) {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(Icons.circle, size: 10, color: color),
-        5.width,
+        const SizedBox(width: 5),
         Text(
-          status, style: textStyle12(context, color: color,),),
+          statusText,
+          style: textStyle12(context, color: color),
+        ),
       ],
     ),
   );
+}
+
+String capitalize(String value) {
+  if (value.isEmpty) return value;
+  return value[0].toUpperCase() + value.substring(1);
 }
 
 

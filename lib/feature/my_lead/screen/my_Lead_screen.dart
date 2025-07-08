@@ -24,37 +24,47 @@ class MyLeadScreen extends StatefulWidget {
 }
 
 class _MyLeadScreenState extends State<MyLeadScreen> {
+  late LeadBloc _leadBloc;
+  String isSelected = 'All';
 
+  @override
+  void initState() {
+    super.initState();
+    _leadBloc = LeadBloc(LeadService())..add(GetLead());
+  }
+
+  @override
+  void dispose() {
+    _leadBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      appBar: CustomAppBar(title: 'My Leads',
-        showBackButton: widget.isBack =='isBack'?true:false, showNotificationIcon: true,),
-
+      appBar: CustomAppBar(
+        title: 'My Leads',
+        showBackButton: widget.isBack == 'isBack',
+        showNotificationIcon: true,
+      ),
       body: SafeArea(
-        child:  CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.01,),),
-
-            /// Filter
-            SliverAppBar(
-              floating: true,
-              toolbarHeight: 40,
-              backgroundColor: CustomColor.canvasColor,
-              flexibleSpace: FlexibleSpaceBar(
-                background:  _buildFilterChips(),
+        child: BlocProvider.value(
+          value: _leadBloc,
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight * 0.01)),
+              SliverAppBar(
+                floating: true,
+                toolbarHeight: 40,
+                backgroundColor: CustomColor.canvasColor,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _buildFilterChips(),
+                ),
               ),
-            ),
-
-
-            SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.005,),),
-
-            SliverToBoxAdapter(
-              child:  BlocProvider(
-                create: (_) => LeadBloc(LeadService())..add(GetLead()),
-                child:  BlocBuilder<LeadBloc, LeadState>(
+              SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight * 0.005)),
+              SliverToBoxAdapter(
+                child: BlocBuilder<LeadBloc, LeadState>(
                   builder: (context, state) {
                     if (state is LeadLoading) {
                       return LinearProgressIndicator(
@@ -62,46 +72,64 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
                         color: Colors.white,
                         minHeight: 2.5,
                       );
-                    }
-                    else if(state is LeadLoaded){
-                      final lead = state.leadModel;
+                    } else if (state is LeadLoaded) {
+                      final allLeads = state.leadModel;
+                      List<LeadModel> filteredLeads = allLeads;
 
+                      if (isSelected != 'All') {
+                        filteredLeads = allLeads.where((lead) {
+                          final paymentStatus = (lead.paymentStatus ?? '').toLowerCase();
+                          final orderStatus = (lead.orderStatus ?? '').toLowerCase();
 
-                      if (lead.isEmpty) {
+                          switch (isSelected) {
+                            case 'Pending':
+                              return lead.isAccepted == false && paymentStatus == 'pending';
+                            case 'Accepted':
+                              return lead.isAccepted == true;
+                            case 'Ongoing':
+                              return orderStatus == 'ongoing';
+                            case 'Completed':
+                              return orderStatus == 'completed';
+                            case 'Cancel':
+                              return orderStatus == 'cancel';
+                            default:
+                              return true;
+                          }
+                        }).toList();
+                      }
+
+                      if (filteredLeads.isEmpty) {
                         return const Center(child: Text('No modules found.'));
                       }
 
                       return ListView.builder(
-                        itemCount: lead.length,
+                        itemCount: filteredLeads.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                        final data = lead[index];
-                        return _buildBookingCard(dimensions: dimensions, lead: data);
-                      },);
-                    }
-
-                    else if (state is LeadError) {
+                          final data = filteredLeads[index];
+                          return _buildBookingCard(dimensions: dimensions, lead: data);
+                        },
+                      );
+                    } else if (state is LeadError) {
                       return Center(child: Text(state.errorMessage));
                     }
                     return const SizedBox.shrink();
                   },
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  String isSelected = 'All';
   Widget _buildFilterChips() {
-    final filters = ['All', 'Pending', 'Accepted', 'Ongoing', 'Completed'];
-
+    final filters = ['All', 'Pending', 'Accepted', 'Ongoing', 'Completed', 'Cancel'];
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       itemCount: filters.length,
       itemBuilder: (context, index) {
         final filter = filters[index];
@@ -125,6 +153,7 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
             setState(() {
               isSelected = filter;
             });
+            _leadBloc.add(GetLead());
           },
         );
       },
@@ -132,28 +161,37 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   }
 
   Widget _buildBookingCard({required Dimensions dimensions, required LeadModel lead}) {
+    String bookingDate = 'Invalid date';
+    try {
+      bookingDate = DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt));
+    } catch (e) {}
+
+    String formattedServiceDate = 'N/A';
+    try {
+      if (lead.acceptedDate != null && lead.acceptedDate!.isNotEmpty) {
+        formattedServiceDate = DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.acceptedDate!));
+      }
+    } catch (e) {}
 
     return CustomContainer(
       backgroundColor: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadDetailsScreen(lead: lead,),)),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LeadDetailsScreen(lead: lead)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(lead.service.serviceName,
-                style:  textStyle14(context),
-              ),
-
-              widget.isBack =='isBack'?
-              _buildStatusBadge('Completed'):
-              _buildStatusBadge('Pending'),
+              Text(lead.service.serviceName, style: textStyle14(context)),
+              _buildStatusBadge(lead),
             ],
           ),
-          Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
-          Divider(),
+          Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+          const Divider(),
           const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,18 +199,17 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Booking Date: ${DateFormat('dd-MM-yyyy, hh:mm a').format(DateTime.parse(lead.createdAt))}',style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                  Text('Service Date : ', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                  Text('Booking Date: $bookingDate', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                  Text('Service Date: $formattedServiceDate', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text("Amount",style: textStyle12(context, fontWeight: FontWeight.w500),),
-                  CustomAmountText(amount:  lead.service.discountedPrice.toString()),
+                  Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
+                  CustomAmountText(amount: lead.service.discountedPrice.toString()),
                 ],
               ),
-
             ],
           ),
         ],
@@ -180,12 +217,21 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
     );
   }
 
-  Widget _buildStatusBadge(String status) {
+  Widget _buildStatusBadge(LeadModel lead) {
+    String statusText = 'Unknown';
     Color color = Colors.grey;
-    if (status == 'Pending') color = Colors.orange;
-    if (status == 'Accepted') color = Colors.green;
-    if (status == 'Ongoing') color = Colors.blue;
-    if (status == 'Cancel') color = Colors.red;
+
+    if (lead.isAccepted == true) {
+      statusText = 'Accepted';
+      color = Colors.green;
+    } else {
+      final status = lead.paymentStatus.toLowerCase();
+      statusText = capitalize(status);
+      if (status == 'pending') color = Colors.orange;
+      if (status == 'ongoing') color = Colors.blue;
+      if (status == 'cancel') color = Colors.red;
+      if (status == 'completed') color = Colors.green;
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -198,11 +244,15 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.circle, size: 10, color: color),
-          5.width,
-          Text(
-            status, style: textStyle12(context, color: color,),),
+          const SizedBox(width: 5),
+          Text(statusText, style: textStyle12(context, color: color)),
         ],
       ),
     );
+  }
+
+  String capitalize(String value) {
+    if (value.isEmpty) return value;
+    return value[0].toUpperCase() + value.substring(1);
   }
 }

@@ -38,6 +38,8 @@ dependencies:
   media_scanner: ^2.2.0
   pdf: ^3.11.3
   printing: ^5.14.2
+  chewie: ^1.7.0
+  video_player: ^2.8.2
 
 
   # Networking

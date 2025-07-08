@@ -1,14 +1,12 @@
-import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../about/screen/about_screen.dart';
 import '../../auth/screen/auth_screen.dart';
 import '../../cancellation_policy/screen/cancellation_policy_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
@@ -105,12 +103,12 @@ class _MoreScreenState extends State<MoreScreen> {
 
                 // 5.height,
                 _buildSection(context,"Preferences", [
-                  _buildTile(context, Icons.description_outlined, "About Us", () => Navigator.push(context, MaterialPageRoute(builder: (context) => AboutScreen(),)),),
+                  _buildTile(context, Icons.description_outlined, "About Us", () => Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUsScreen(),)),),
                   _buildTile(context, Icons.notifications_active_outlined, "Notifications", () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),),
                   _buildTile(context, Icons.settings_outlined, "Settings", () => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen(),)),),
                   _buildTile(context, Icons.support_agent, "Help & Support", () => Navigator.push(context, MaterialPageRoute(builder: (context) => HelpSupportScreen(),)),),
                   _buildTile(context, Icons.security, "Privacy & Policy",() => Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyScreen(),)),),
-                  _buildTile(context, Icons.rule, "Terms And Conditions", () => Navigator.push(context, MaterialPageRoute(builder: (context) => TermConditionScreen(),)),),
+                  _buildTile(context, Icons.rule, "Terms And Conditions", () => Navigator.push(context, MaterialPageRoute(builder: (context) => TermsConditionsScreen(),)),),
                   _buildTile(context, Icons.receipt_long, "Refund Policy", () => Navigator.push(context, MaterialPageRoute(builder: (context) => RefundPolicyScreen(),)),),
                   _buildTile(context, Icons.cancel_outlined, "Cancellation Policy",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CancellationPolicyScreen(),)),),
                 ]),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../../helper/Contact_helper.dart';
 import '../model/lead_model.dart';
@@ -52,8 +53,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               child:
               _tapIndex ==0 ?
             LeadDetailsWidget(dimensions: dimensions, lead: widget.lead,):
-              LeadStatusWidget(bookingId :widget.lead.bookingId),
+              LeadStatusWidget(bookingId :widget.lead.id),
             ),
+          ),
+
+          if(_tapIndex==0)
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.015),
+            child: CustomButton(label: 'Pay Now',onPressed: () => null,),
           ),
         ],
       )),

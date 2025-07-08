@@ -131,8 +131,8 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Provider Name', style: TextStyle(color: CustomColor.descriptionColor),),
-                                    Text('Contact:', style: TextStyle(color: CustomColor.descriptionColor),),
+                                    Text('Name: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
+                                    Text('Contact: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
                                   ],
                                 )
                               ],

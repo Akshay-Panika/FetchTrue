@@ -6,10 +6,8 @@ class LeadStatusService {
   static Future<List<LeadStatusModel>> fetchLeadStatus() async {
     try {
       final response = await ApiClient.dio.get(ApiUrls.leadStatus);
-
       if (response.statusCode == 200) {
         List<dynamic> data = response.data;
-
         return data.map((json) => LeadStatusModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load leads');

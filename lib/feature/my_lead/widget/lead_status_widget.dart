@@ -1,8 +1,8 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/my_lead/model/lead_status_model.dart';
 import 'package:fetchtrue/feature/my_lead/repository/lead_status_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
@@ -18,64 +18,93 @@ class LeadStatusWidget extends StatefulWidget {
 }
 
 class _LeadStatusWidgetState extends State<LeadStatusWidget> {
-
-  List<LeadStatusModel> leadStatus = [];
   bool isLoading = true;
+  List<LeadData> leadStatus = [];
 
   @override
   void initState() {
     super.initState();
-    getLeads();
+    getLeadStatusData();
   }
 
-  void getLeads() async {
+  Future<void> getLeadStatusData() async {
     try {
-      final allStatuses = await LeadStatusService.fetchLeadStatus();
-      leadStatus = allStatuses.where((item) =>
-      item.checkout.bookingId.trim().toLowerCase() ==
-          widget.bookingId.trim().toLowerCase()).toList();
+      final response = await LeadStatusService.fetchLeadStatus();
+
+      // ✅ Correct matching with bookingId
+      LeadStatusModel? filtered;
+      for (var element in response) {
+        if (element.checkout != null &&
+            element.checkout!.id == widget.bookingId) {
+          filtered = element;
+          break;
+        }
+      }
+
+      if (filtered != null) {
+        leadStatus = filtered.leads;
+      } else {
+        print("❌ No matching bookingId found: ${widget.bookingId}");
+      }
     } catch (e) {
-      print('Error fetching leads: $e');
+      print('❌ Error fetching lead status: $e');
     }
-    setState(() => isLoading = false);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return LinearProgressIndicator(
-      backgroundColor: CustomColor.appColor,
-      color: Colors.white,
-      minHeight: 2.5,
-    );
-
+        backgroundColor: CustomColor.appColor,
+        color: Colors.white,
+        minHeight: 2.5,
+      );
     }
 
-    return Column(
-      children: [
-        _header(context,header: 'Lead Requested', desc: 'You have submitted a request for a lead.\nAwaiting admin approval.'),
-        _header(context,header: 'Initial Contact', desc: 'The admin has initiated the first communication.',),
-        _header(context,header: 'Need Understand Rearmament', desc: 'The admin has initiated the first communication.', isMeet: true),
-        _header(context,header: 'Payment Requested (Partial/Full)', desc: 'Proceed with payment to continue.', isPayment: true),
-        _header(context,header: 'Payment Verified', desc: 'The admin has verified your payment'),
-        _header(context,header: 'Lead Accepted', desc: 'The admin has approved your lead request'),
-        _header(context,header: 'Lead Requested Documents', desc: 'The admin has approved your lead request'),
-        _header(context,header: 'Lead Started', desc: 'Your lead has officially begun'),
-        _header(context,header: 'Lead Ongoing', desc: 'Description....'),
-        _header(context,header: 'Lead Completed', desc: 'Description....'),
-        _header(context,header: 'Lead Cancel', desc: 'Description....'),
-        _header(context,header: 'Refund', desc: 'Description....', endData: true),
+    if (leadStatus.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 300.0),
+        child: Text("Not Update: ${widget.bookingId}"),
+      );
+    }
 
-      ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: leadStatus.length,
+      itemBuilder: (context, index) {
+        final data = leadStatus[index];
+        return _header(
+          context,
+          header: data.statusType,
+          desc: data.description ?? 'No description',
+          dateTime:
+          DateFormat('dd-MM-yyyy, hh:mm a').format(data.createdAt),
+          isMeet: data.zoomLink != null && data.zoomLink!.isNotEmpty,
+          isPayment: data.statusType.toLowerCase().contains("payment"),
+          endData: index == leadStatus.length - 1,
+        );
+      },
     );
   }
 }
 
-
-Widget _header(BuildContext context, {String? header, String? desc, bool isMeet = false, bool isPayment = false, String? meetMSG, bool endData = false}){
+Widget _header(
+    BuildContext context, {
+      String? header,
+      String? desc,
+      bool isMeet = false,
+      bool isPayment = false,
+      String? meetMSG,
+      bool endData = false,
+      String? dateTime,
+    }) {
   return IntrinsicHeight(
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
@@ -86,125 +115,153 @@ Widget _header(BuildContext context, {String? header, String? desc, bool isMeet 
                 shape: BoxShape.circle,
                 color: Colors.grey.shade300,
               ),
-              child: Icon(Icons.check_circle, color: Colors.green.shade300,),),
-
-            if(!endData)
-            Expanded(
-              child: CustomContainer(
-                width: 2,
-                backgroundColor:  Colors.grey.shade300,margin: EdgeInsets.zero, padding: EdgeInsets.zero,),
-            )
+              child: Icon(
+                Icons.check_circle,
+                color: Colors.green.shade300,
+              ),
+            ),
+            if (!endData)
+              Expanded(
+                child: CustomContainer(
+                  width: 2,
+                  backgroundColor: Colors.grey.shade300,
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                ),
+              )
           ],
         ),
-
         10.width,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Text('$header,', style: textStyle14(context),),
+                  Text('$header,', style: textStyle14(context)),
                   10.width,
-                  Text('(Time, Date)', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                  Text(
+                    '( $dateTime )',
+                    style: textStyle12(context, fontWeight: FontWeight.w400),
+                  ),
                 ],
               ),
-              Text(desc!, style: textStyle14(context,fontWeight: FontWeight.w400),),
-
+              Text(desc ?? '', style: textStyle14(context)),
               if (isMeet)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    10.height,
-                     Row(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisAlignment: MainAxisAlignment.start,
-                       children: [
-                         CircleAvatar(backgroundColor: CustomColor.whiteColor,child: Icon(Icons.g_mobiledata_outlined, color: CustomColor.appColor,)),
-                         10.width,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('Google Meed (Time, 12:30 PM, At, 02/08/25)', style: textStyle14(context, fontWeight: FontWeight.w400),),
-                              Text('https://meet.google.com', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                      onTap: () {
-                                        CustomUrlLaunch('https://meet.google.com/landing');
-                                      },
-                                      child: Text('Join Now', style: textStyle14(context, color: CustomColor.greenColor),)),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                       ],
-                     ),
-                    10.height,
-
-                    Text(meetMSG ?? 'The scheduled meeting has been successfully conducted')
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                              backgroundColor: CustomColor.whiteColor,
+                              child: Icon(Icons.g_mobiledata_outlined,
+                                  color: CustomColor.appColor)),
+                          10.width,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Google Meet (12:30 PM, 02/08/25)',
+                                  style: textStyle14(context),
+                                ),
+                                Text(
+                                  'https://meet.google.com',
+                                  style: textStyle14(context,
+                                      color: CustomColor.appColor),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: InkWell(
+                                    onTap: () {
+                                      CustomUrlLaunch(
+                                          'https://meet.google.com/landing');
+                                    },
+                                    child: Text('Join Now',
+                                        style: textStyle14(context,
+                                            color: CustomColor.greenColor)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      10.height,
+                      Text(meetMSG ??
+                          'The scheduled meeting has been successfully conducted')
+                    ],
+                  ),
                 ),
-
               if (isPayment)
-                Column(
-                  children: [
-                    10.height,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(backgroundColor: CustomColor.whiteColor,child: Icon(Icons.g_mobiledata_outlined, color: CustomColor.appColor,)),
-                        10.width,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('Payment Request', style: textStyle14(context, fontWeight: FontWeight.w400),),
-                              InkWell(
-                                  onTap: () {
-                                    CustomUrlLaunch('https://zeropls.com');
-                                  },
-                                  child: Text('paymentlink.com', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),)),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  InkWell(
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                              backgroundColor: CustomColor.whiteColor,
+                              child: Icon(Icons.currency_rupee,
+                                  color: CustomColor.appColor)),
+                          10.width,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Payment Request',
+                                    style: textStyle14(context)),
+                                InkWell(
+                                  onTap: () =>
+                                      CustomUrlLaunch('https://zeropls.com'),
+                                  child: Text('paymentlink.com',
+                                      style: textStyle14(context,
+                                          color: CustomColor.appColor)),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
                                       onTap: () {
-                                        CustomUrlLaunch('https://checkout.rocketpay.co.in/md/684e8cc5d9c45b89310b8e01');
+                                        CustomUrlLaunch(
+                                            'https://checkout.rocketpay.co.in/md/684e8cc5d9c45b89310b8e01');
                                       },
-                                      child: Text('Pay Now', style: textStyle14(context, color: CustomColor.greenColor),)),
-                                  30.width,
-                                  InkWell(
+                                      child: Text('Pay Now',
+                                          style: textStyle14(context,
+                                              color:
+                                              CustomColor.greenColor)),
+                                    ),
+                                    30.width,
+                                    InkWell(
                                       onTap: () {
-                                        CustomUrlLaunch('https://checkout.rocketpay.co.in/md/684e8cc5d9c45b89310b8e01');
+                                        CustomUrlLaunch(
+                                            'https://checkout.rocketpay.co.in/md/684e8cc5d9c45b89310b8e01');
                                       },
-                                      child: Text('Share To Pay', style: textStyle14(context, color: CustomColor.appColor),)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    10.height,
-
-                    Text(meetMSG ?? 'You have successfully made a payment Awaiting verification from the admin')
-                  ],
+                                      child: Text('Share To Pay',
+                                          style: textStyle14(context,
+                                              color:
+                                              CustomColor.appColor)),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      10.height,
+                      Text(meetMSG ??
+                          'You have successfully made a payment. Awaiting verification from admin')
+                    ],
+                  ),
                 ),
               20.height
             ],
           ),
-        )
-
+        ),
       ],
     ),
   );
