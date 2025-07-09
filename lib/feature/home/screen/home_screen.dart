@@ -122,8 +122,6 @@ class HomeScreen extends StatelessWidget {
                   ///  Service Provider
                   ServiceProviderWidget(),
 
-
-
                   CustomContainer(
                     height: 200,
                     borderRadius: false,

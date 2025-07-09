@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class FavoriteButton extends StatefulWidget {
+class FavoriteServiceButtonWidget extends StatefulWidget {
   final String userId;
   final String serviceId;
   final bool isInitiallyFavorite;
   final void Function(bool)? onChanged;
 
-  const FavoriteButton({
+  const FavoriteServiceButtonWidget({
     super.key,
     required this.userId,
     required this.serviceId,
@@ -16,10 +16,10 @@ class FavoriteButton extends StatefulWidget {
   });
 
   @override
-  State<FavoriteButton> createState() => _FavoriteButtonState();
+  State<FavoriteServiceButtonWidget> createState() => _FavoriteServiceButtonWidgetState();
 }
 
-class _FavoriteButtonState extends State<FavoriteButton> {
+class _FavoriteServiceButtonWidgetState extends State<FavoriteServiceButtonWidget> {
   late bool _isFavorite;
   bool _isLoading = false;
 

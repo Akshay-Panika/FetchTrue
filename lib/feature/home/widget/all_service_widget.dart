@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -8,7 +9,7 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../../../core/widgets/custom_ratting_and_reviews.dart';
-import '../../favorite/CustomFavoriteButton.dart'; // ✅ Check file name case-sensitive on Linux/macOS
+import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../favorite/model/favorite_services_model.dart';
 import '../../favorite/repository/favorite_service.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
@@ -27,27 +28,44 @@ class AllServiceWidget extends StatefulWidget {
 }
 
 class _AllServiceWidgetState extends State<AllServiceWidget> {
-  late Future<FavoriteServicesModel?> _favoriteServicesFuture;
   List<String> _favoriteServiceIds = [];
+  String? userId;
+  bool _isLoadingUserId = true;
+  late Future<FavoriteServicesModel?> _favoriteServicesFuture;
 
   @override
   void initState() {
     super.initState();
-    _favoriteServicesFuture = fetchFavoriteServices('684bf1fdea0d1a913e3cfa83');
-    _loadFavoriteIds();
+    _loadUserId();
   }
 
-  void _loadFavoriteIds() async {
-    final response = await _favoriteServicesFuture;
-    if (response != null) {
-      setState(() {
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId');
+
+    if (userId != null) {
+      _favoriteServicesFuture = fetchFavoriteServices(userId!);
+      final response = await _favoriteServicesFuture;
+      if (response != null) {
         _favoriteServiceIds = response.favoriteServices;
-      });
+      }
     }
+
+    setState(() {
+      _isLoadingUserId = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingUserId) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (userId == null) {
+      return const Center(child: Text('⚠️ User not found.'));
+    }
+
     return BlocProvider(
       create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
       child: BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
@@ -90,10 +108,9 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            /// Image + Favorite
                             Expanded(
                               child: CustomContainer(
-                                networkImg: data.thumbnailImage,
+                                networkImg: '${data.thumbnailImage}',
                                 padding: EdgeInsets.zero,
                                 margin: EdgeInsets.zero,
                                 child: Align(
@@ -102,8 +119,8 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      FavoriteButton(
-                                        userId: '684bf1fdea0d1a913e3cfa83',
+                                      FavoriteServiceButtonWidget(
+                                        userId: userId!,
                                         serviceId: data.id,
                                         isInitiallyFavorite: isFavorite,
                                         onChanged: (isNowFavorite) {
@@ -135,39 +152,41 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
 
                             10.height,
 
-                            /// Details
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data.serviceName, style: textStyle12(context)),
+                                  Text('${data.serviceName}', style: textStyle12(context)),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
                                           CustomAmountText(
-                                            amount: data.price.toString(),
+                                            amount: '${data.price}',
                                             color: CustomColor.descriptionColor,
                                             isLineThrough: true,
                                           ),
                                           10.width,
                                           CustomAmountText(
-                                            amount: data.discountedPrice.toString(),
+                                            amount: '${data.discountedPrice}',
                                             color: CustomColor.descriptionColor,
                                           ),
                                         ],
                                       ),
                                       Row(
                                         children: [
-                                          Text('Earn up to ', style: textStyle12(
-                                            context,
-                                            color: CustomColor.descriptionColor,
-                                            fontWeight: FontWeight.w400,
-                                          )),
+                                          Text(
+                                            'Earn up to ',
+                                            style: textStyle12(
+                                              context,
+                                              color: CustomColor.descriptionColor,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
                                           CustomAmountText(
-                                            amount: data.franchiseDetails.commission.toString(),
+                                            amount: '${data.franchiseDetails.commission}',
                                             color: CustomColor.descriptionColor,
                                           ),
                                         ],
@@ -175,25 +194,30 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
                                     ],
                                   ),
                                   5.height,
-
                                   if (data.keyValues.isNotEmpty)
-                                    ...data.keyValues.map((entry) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 6.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                                          5.width,
-                                          Expanded(
-                                            child: Text(
-                                              entry.value,
-                                              style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
-                                              overflow: TextOverflow.ellipsis,
+                                    ...data.keyValues.map(
+                                          (entry) => Padding(
+                                        padding: const EdgeInsets.only(bottom: 6.0),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                            5.width,
+                                            Expanded(
+                                              child: Text(
+                                                entry.value,
+                                                style: textStyle12(
+                                                  context,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: CustomColor.descriptionColor,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    )),
+                                    ),
                                 ],
                               ),
                             ),
@@ -208,6 +232,7 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
           } else if (state is ModuleServiceError) {
             return Center(child: Text(state.errorMessage));
           }
+
           return const SizedBox.shrink();
         },
       ),

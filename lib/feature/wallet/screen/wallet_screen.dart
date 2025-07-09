@@ -1,87 +1,155 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/wallet/screen/add_amount_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
-import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../model/wallet_model.dart';
+import '../repository/wallet_service.dart';
 
 
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
+
+  @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
+
+  Future<WalletModel>? _walletFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeWallet();
+  }
+
+  Future<void> _initializeWallet() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId != null) {
+      setState(() {
+        _walletFuture = WalletService.fetchWalletByUser(userId);
+      });
+    } else {
+      // Optional: Redirect to login or show error
+      debugPrint('userId not found in SharedPreferences');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
        backgroundColor: CustomColor.whiteColor,
-       appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
+       appBar: AppBar(
+         elevation: 0,
+         title: Text('Wallet'),
+         leading: InkWell(
+           onTap: () => Navigator.pop(context),
+           child: Icon(Icons.arrow_back_ios),
+         ),
+         leadingWidth: 50,
+         titleSpacing:0,
+         actions: [
+           CustomContainer(
+             backgroundColor: CustomColor.appColor,
+             child: Center(child: Row(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+                  CustomAmountText(amount: '99,999', color: CustomColor.whiteColor),
+                 10.width,
+                 Text('Deposit'),
+               ],
+             )),
+           ),
+         ],
+       ),
+       // appBar: CustomAppBar(title: 'Wallet', showBackButton: true, ),
       body:  SafeArea(
-        child: DefaultTabController(
-          length: 3,
-          child: Column(
-            children: [
-              // 10.height,
-              _buildStatsCard(context),
-              5.height,
+        child:
+        _walletFuture == null
+            ? const Center(child: CircularProgressIndicator())
+            :
+        FutureBuilder<WalletModel>(
+          future: _walletFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-              Container(
-                color: CustomColor.whiteColor,
-                child: Row(
-                  children: [
-                    15.width,
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: TabBar(
-                          isScrollable: true,
-                          labelColor: CustomColor.appColor,
-                          unselectedLabelColor: CustomColor.descriptionColor,
-                          indicatorColor: CustomColor.appColor,
-                          padding: EdgeInsets.zero,
-                          tabs: const [
-                            Tab(text: "Self"),
-                            Tab(text: "Team Build"),
-                            Tab(text: "Team Revenue"),
-                          ],
+            final wallet = snapshot.data!;
+
+            return DefaultTabController(
+              length: 3,
+              child: Column(
+                children: [
+                  // 10.height,
+                  _buildStatsCard(context, wallet),
+                  5.height,
+
+                  Container(
+                    color: CustomColor.whiteColor,
+                    child: Row(
+                      children: [
+                        15.width,
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TabBar(
+                              isScrollable: true,
+                              labelColor: CustomColor.appColor,
+                              unselectedLabelColor: CustomColor.descriptionColor,
+                              indicatorColor: CustomColor.appColor,
+                              padding: EdgeInsets.zero,
+                              tabs: const [
+                                Tab(text: "Self"),
+                                Tab(text: "Team Build"),
+                                Tab(text: "Team Revenue"),
+                              ],
+                            ),
+                          ),
                         ),
+                        CustomContainer(
+                          backgroundColor: CustomColor.whiteColor,
+                          onTap: () {
+                            _showFilterSheet(context);
+                          },
+                          child: Icon(Icons.filter_list, color: CustomColor.iconColor),
+                        )
+
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Container(
+                      color: CustomColor.whiteColor,
+                      child: TabBarView(
+                        children: [
+                          _buildTransactionList(wallet.transactions),
+                          _noDataFound(context), // Placeholder for "Team Build"
+                          _noDataFound(context), // Placeholder for "Team Revenue"
+                        ],
                       ),
                     ),
-                    CustomContainer(
-                      backgroundColor: CustomColor.whiteColor,
-                      onTap: () {
-                        _showFilterSheet(context);
-                      },
-                      child: Icon(Icons.filter_list, color: CustomColor.iconColor),
-                    )
-
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: Container(
-                  color: CustomColor.whiteColor,
-                  child: TabBarView(
-                    children: [
-                      _noDataFound(context),
-                      _noDataFound(context),
-                      _noDataFound(context),
-                    ],
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            );
+          },)
       ),
     );
   }
 
-
-  Widget _buildStatsCard(BuildContext context) {
+  Widget _buildStatsCard(BuildContext context,  WalletModel wallet) {
     return Container(
       color: CustomColor.canvasColor,
       child: Column(
@@ -100,15 +168,15 @@ class WalletScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        CustomAmountText(amount: '00.00', fontWeight: FontWeight.w500,fontSize: 16),
+                        CustomAmountText(amount: wallet.balance.toString(), fontWeight: FontWeight.w500,fontSize: 16),
                         Text("Total Earnings", style: textStyle12(context, color: CustomColor.appColor)),
                       ],
                     )
                   ],
                 ),
                 const Divider(height: 24, thickness: 0.5),
-                _earningRow("Self Earnings", "₹ 0.00"),
-                _earningRow("Referral Earnings", "₹ 0.00"),
+                _earningRow("Self Earnings", "₹ ${wallet.totalCredits}"),
+                _earningRow("Referral Earnings", "₹ 00"),
                 _earningRow("Reward Earnings", "₹ 0.00"),
               ],
             ),
@@ -129,7 +197,7 @@ class WalletScreen extends StatelessWidget {
                       Text('Add Amount', style: textStyle14(context),)
                     ],
                   ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(),)),
+                  // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(),)),
                 ),
               ),
               Expanded(
@@ -164,6 +232,72 @@ class WalletScreen extends StatelessWidget {
           Text(value, style: const TextStyle()),
         ],
       ),
+    );
+  }
+
+  Widget _buildTransactionList(List<TransactionModel> transactions) {
+    if (transactions.isEmpty) {
+      return Center(child: Text('No transactions found.'));
+    }
+
+    return ListView.builder(
+      itemCount: transactions.length,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      itemBuilder: (context, index) {
+        final tx = transactions[index];
+        final isCredit = tx.type == 'credit';
+
+        return Column(
+          children: [
+            ListTile(
+              minLeadingWidth: 0,
+              contentPadding: const EdgeInsets.only(top: 10),
+              leading: CircleAvatar(
+                backgroundColor: CustomColor.whiteColor,
+                child: Icon(
+                  isCredit
+                      ? CupertinoIcons.arrow_turn_left_down
+                      : CupertinoIcons.arrow_turn_left_up,
+                  color: isCredit ? CustomColor.appColor : CustomColor.redColor,
+                ),
+              ),
+              title: Text('Ref #${tx.referenceId.substring(0, 6)}', style: textStyle12(context)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(tx.description,
+                      style: textStyle12(
+                        context,
+                        color: CustomColor.descriptionColor,
+                        fontWeight: FontWeight.w400,
+                      )),
+                  Text(
+                    DateFormat('dd MMM yyyy, hh:mm a').format(tx.createdAt.toLocal()),
+                    style: textStyle12(
+                      context,
+                      color: CustomColor.descriptionColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('₹ ${tx.amount}',
+                        style: textStyle12(context, fontWeight: FontWeight.w500)),
+                    Text('Amount',
+                        style: textStyle12(context, fontWeight: FontWeight.w400)),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(color: Colors.grey, thickness: 0.3),
+          ],
+        );
+      },
     );
   }
 

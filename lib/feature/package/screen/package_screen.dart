@@ -72,6 +72,8 @@ class _PackageScreenState extends State<PackageScreen> {
               ),
 
               10.height,
+              _buildDeposite(),
+              10.height,
               _buildAssuranceSection(context),
             ],
           ),
@@ -229,6 +231,39 @@ class _PackageScreenState extends State<PackageScreen> {
     );
   }
 
+  Widget _buildDeposite(){
+    return CustomContainer(
+      border: true,
+      backgroundColor: CustomColor.whiteColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomAmountText(amount: '9,999', fontWeight: FontWeight.w500,fontSize: 16, color: CustomColor.appColor),
+              10.height,
+              CustomContainer(
+                margin: EdgeInsets.zero,
+                backgroundColor: CustomColor.appColor,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 5),
+                child: Text(
+                  'Deposit',
+                  style: textStyle14(context,
+                      color: CustomColor.whiteColor),
+                ),
+              ),
+            ],
+          ),
+          10.width,
+          Expanded(child: Text('Reloaded 1 of 2379 libraries in 1,666ms (compile: 38 ms, reload: 485 ms, reassemble: 1012 ms).'))
+        ],
+      ),
+    );
+  }
+
   Widget _buildAssuranceSection(BuildContext context) {
     return CustomContainer(
       border: true,
@@ -293,7 +328,7 @@ class _PackageScreenState extends State<PackageScreen> {
                             style: textStyle14(context,
                                 color: CustomColor.whiteColor),
                           ),
-                        )
+                        ),
                       ],
                     )
                   ],
