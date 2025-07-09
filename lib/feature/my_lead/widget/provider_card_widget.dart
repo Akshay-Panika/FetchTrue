@@ -107,57 +107,57 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
                       ],
                     ),
                   ),
-                  Divider(),
-                  InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('Service Manager', style: textStyle14(context),),
-                        10.height,
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(radius: 25,
-                                  backgroundImage: AssetImage(CustomImage.nullImage),),
-                                10.width,
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Name: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
-                                    Text('Contact: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
-                                  ],
-                                )
-                              ],
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  InkWell(onTap: () => ContactHelper.whatsapp('', ''),
-                                      child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-                                  40.width,
-                                  InkWell(onTap: () => ContactHelper.call(''),
-                                      child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Divider(),
+                  // InkWell(
+                  //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       Text('Service Manager', style: textStyle14(context),),
+                  //       10.height,
+                  //
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Row(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: [
+                  //               CircleAvatar(radius: 25,
+                  //                 backgroundImage: AssetImage(CustomImage.nullImage),),
+                  //               10.width,
+                  //
+                  //               Column(
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Text('Name: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
+                  //                   Text('Contact: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
+                  //                 ],
+                  //               )
+                  //             ],
+                  //           ),
+                  //
+                  //           Padding(
+                  //             padding: const EdgeInsets.only(right: 10.0),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.center,
+                  //               crossAxisAlignment: CrossAxisAlignment.center,
+                  //               children: [
+                  //                 InkWell(onTap: () => ContactHelper.whatsapp('', ''),
+                  //                     child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
+                  //                 40.width,
+                  //                 InkWell(onTap: () => ContactHelper.call(''),
+                  //                     child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
+                  //
+                  //               ],
+                  //             ),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             );

@@ -1,6 +1,7 @@
 import 'package:fetchtrue/feature/academy/screen/play_video_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -10,14 +11,14 @@ import '../../../core/widgets/custom_container.dart';
 import '../model/training_tutorial_model.dart';
 import '../repository/training_tutorial_service.dart';
 
-class CertificateScreen extends StatefulWidget {
-  const CertificateScreen({super.key});
+class TrainingTutorialScreen extends StatefulWidget {
+  const TrainingTutorialScreen({super.key});
 
   @override
-  State<CertificateScreen> createState() => _CertificateScreenState();
+  State<TrainingTutorialScreen> createState() => _TrainingTutorialScreenState();
 }
 
-class _CertificateScreenState extends State<CertificateScreen> {
+class _TrainingTutorialScreenState extends State<TrainingTutorialScreen> {
 
   late Future<List<TrainingTutorialModel>> _futureTutorial;
 
@@ -31,13 +32,13 @@ class _CertificateScreenState extends State<CertificateScreen> {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Certificate', showBackButton: true,),
+      appBar: CustomAppBar(title: 'Training Tutorial', showBackButton: true,),
 
       body:FutureBuilder(
           future: _futureTutorial,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return _buildSmearEffect(dimensions);
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -54,7 +55,6 @@ class _CertificateScreenState extends State<CertificateScreen> {
                   final tutorial = tutorialCard[index];
 
                   return CustomContainer(
-                    border: true,
                     backgroundColor: CustomColor.whiteColor,
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
@@ -117,4 +117,88 @@ class _CertificateScreenState extends State<CertificateScreen> {
       )
     );
   }
+}
+
+
+
+Widget _buildSmearEffect(Dimensions dimensions) {
+  return ListView(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    children: List.generate(4, (index) =>
+        CustomContainer(
+          backgroundColor: CustomColor.whiteColor,
+          padding: EdgeInsets.zero,
+          margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+          // Shimmer effect
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!, // Use null-safe bang
+            highlightColor: Colors.grey[100]!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image placeholder
+                CustomContainer(
+                  height: dimensions.screenHeight * 0.18,
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.grey[300]!, // Match baseColor
+                ),
+                const SizedBox(height: 8),
+                // Text rows
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Left Column
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomContainer(
+                            width: 100,
+                            height: 10,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.grey[300]!,
+                          ),
+                          const SizedBox(height: 10),
+                          CustomContainer(
+                            width: 150,
+                            height: 10,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.grey[300]!,
+                          ),
+                        ],
+                      ),
+                      // Right Column
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CustomContainer(
+                            width: 80,
+                            height: 10,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.grey[300]!,
+                          ),
+                          const SizedBox(height: 10),
+                          CustomContainer(
+                            width: 100,
+                            height: 10,
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.grey[300]!,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+    ),
+  );
 }

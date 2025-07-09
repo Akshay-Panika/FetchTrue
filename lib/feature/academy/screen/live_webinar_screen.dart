@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -40,7 +41,7 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
               future: webinarFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const LinearProgressIndicator();
+                  return _buildLiveWebinarShimmer(context);
                 }
 
                 if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
@@ -59,7 +60,6 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                       itemBuilder: (context, index) {
                         final webinar = webinars[index];
                         return CustomContainer(
-                          border: true,
                           backgroundColor: CustomColor.whiteColor,
                           padding: EdgeInsets.zero,
                           height: dimensions.screenHeight*0.25,
@@ -173,4 +173,71 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
       ),
     );
   }
+}
+
+
+Widget _buildLiveWebinarShimmer(BuildContext context){
+  Dimensions dimensions = Dimensions(context);
+  return ListView.builder(
+    itemCount: 3,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
+    itemBuilder: (context, index) {
+      return CustomContainer(
+        backgroundColor: CustomColor.whiteColor,
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Column(
+            children: [
+              // Top image shimmer
+              CustomContainer(
+                  height: dimensions.screenHeight * 0.15,
+                  width: double.infinity,
+                  margin: EdgeInsets.zero,
+                  backgroundColor: Colors.grey[300]
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    // Title + Date Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomContainer(height: 10, width: 100, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero,),
+                        CustomContainer(height: 10, width: 80, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                      ],
+                    ),
+                    10.height,
+
+                    CustomContainer(height: 10, width: double.infinity, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                    10.height,
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CustomContainer(height: 10, width: 60, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                            10.width,
+                            CustomContainer(height: 10, width: 60, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                          ],
+                        ),
+                        CustomContainer(height: 25, width: 90, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

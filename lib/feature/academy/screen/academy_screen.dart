@@ -9,7 +9,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../../business_idea/screen/business_idea_screen.dart';
 import '../widget/academy_banner_widget.dart';
-import 'certificate_screen.dart';
+import 'training_tutorial_screen.dart';
 import 'document_screen.dart';
 import 'live_webinar_screen.dart';
 
@@ -38,9 +38,9 @@ class AcademyScreen extends StatelessWidget {
 
     final List<Map<String, dynamic>> _services = [
       {
-        'title': 'Certificate',
+        'title': 'Training Tutorial',
         'icon': Icons.verified,
-        'screenBuilder': () => CertificateScreen(),
+        'screenBuilder': () => TrainingTutorialScreen(),
       },
       {
         'title': '2 Min. Gyan',

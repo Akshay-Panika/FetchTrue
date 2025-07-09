@@ -81,7 +81,7 @@ class _LeadStatusWidgetState extends State<LeadStatusWidget> {
         return _header(
           context,
           header: data.statusType,
-          desc: data.description ?? 'No description',
+          desc: data.description,
           dateTime:
           DateFormat('dd-MM-yyyy, hh:mm a').format(data.createdAt),
           isMeet: data.zoomLink != null && data.zoomLink!.isNotEmpty,
@@ -136,17 +136,27 @@ Widget _header(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('$header,', style: textStyle14(context)),
-                  10.width,
-                  Text(
-                    '( $dateTime )',
-                    style: textStyle12(context, fontWeight: FontWeight.w400),
+                  Text('$header ,', style: textStyle14(context)),
+
+                  Row(
+                    children: [
+                      Text(
+                        '$dateTime',
+                        style: textStyle12(context, fontWeight: FontWeight.w400),
+                      ),
+                      10.width,
+                      Text('( Provider )', style: textStyle12(context, color:CustomColor.descriptionColor)),
+
+                    ],
                   ),
                 ],
               ),
-              Text(desc ?? '', style: textStyle14(context)),
+
+              if(desc != null)
+              Text(desc, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
               if (isMeet)
                 Padding(
                   padding: const EdgeInsets.only(top: 10),

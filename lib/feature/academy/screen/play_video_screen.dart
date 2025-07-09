@@ -13,7 +13,6 @@ import '../model/training_tutorial_model.dart';
 class PlayVideoScreen extends StatefulWidget {
   final String name;
   final List<TutorialVideo> videoList;
-
   const PlayVideoScreen({
     super.key,
     required this.name,
