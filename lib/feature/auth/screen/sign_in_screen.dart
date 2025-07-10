@@ -69,18 +69,13 @@ class _SignInScreenState extends State<SignInScreen> {
     final password = _passwordController.text.trim();
     final email = RegExp(r'^\d+$').hasMatch(input) ? '+91$input' : input;
 
-    final response = await UserService.signIn(email: email, password: password);
+    final response = await UserSignInService.signIn(email: email, password: password);
     setState(() => _isLoading = false);
 
     if (response != null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.token);
       await prefs.setString('userId', response.user.id);
-      await prefs.setString('fullName', response.user.fullName);
-      await prefs.setString('email', response.user.email);
-      await prefs.setString('createdAt', response.user.createdAt);
-      await prefs.setBool('isLoggedIn', true);
-
       showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
       Navigator.pop(context, true);
     } else {

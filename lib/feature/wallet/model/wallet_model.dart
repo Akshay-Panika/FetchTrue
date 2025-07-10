@@ -1,4 +1,5 @@
 import '../../auth/model/sign_in_model.dart';
+import '../../more/model/user_model.dart';
 
 class WalletModel {
   final String id;

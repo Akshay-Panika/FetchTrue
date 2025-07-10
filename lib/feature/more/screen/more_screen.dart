@@ -1,5 +1,6 @@
 import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
+import 'package:fetchtrue/feature/more/widget/profile_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,8 @@ import '../../settings/screen/setting_screen.dart';
 import '../../team_lead/screen/team_lead_screen.dart';
 import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
-import '../widget/profile_card_widget.dart';
+import '../model/user_model.dart';
+import '../repository/user_service.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -34,10 +36,11 @@ class MoreScreen extends StatefulWidget {
 
 class _MoreScreenState extends State<MoreScreen> {
 
+  String? userId;
   String? token;
-  String? user;
-  String? email;
-  String? date;
+  UserModel? userData;
+
+  final UserService userService = UserService();
 
   @override
   void initState() {
@@ -47,21 +50,27 @@ class _MoreScreenState extends State<MoreScreen> {
 
   Future<void> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      token = prefs.getString('token');
-      user = prefs.getString('fullName');
-      email = prefs.getString('email');
-      date = prefs.getString('createdAt');
-    });
-  }
+    final id = prefs.getString('userId');
+    final tkn = prefs.getString('token');
 
+    setState(() {
+      userId = id;
+      token = tkn;
+    });
+
+    if (id != null) {
+      final user = await userService.fetchUserById(id);
+      setState(() {
+        userData = user;
+      });
+    }
+  }
   Future<void> signOutUser() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     setState(() {
       token = null;
-      user = null;
-      date = null;
+      userId = null;
     });
   }
 
@@ -80,8 +89,7 @@ class _MoreScreenState extends State<MoreScreen> {
             toolbarHeight: 200,
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
-              background: ProfileCardWidget(currentUser: user ?? "User Name", email: email ?? '___@gmail.com', date: '00/00/25',),
-              // title: Text(user ?? 'Guest User'),
+             background: ProfileCardWidget(userData: userData,),
             ),
           ),
 
@@ -92,7 +100,7 @@ class _MoreScreenState extends State<MoreScreen> {
                 // 5.height,
                 _buildSection(context,"Account", [
                   _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
-                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),),
+                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userId,),)),),
                   _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),),
                   _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
@@ -135,9 +143,7 @@ class _MoreScreenState extends State<MoreScreen> {
                             final prefs = await SharedPreferences.getInstance();
                             setState(() {
                               token = prefs.getString('token');
-                              user = prefs.getString('fullName');
-                              email = prefs.getString('email');
-                              date = prefs.getString('createdAt');
+                              userId = prefs.getString('_id');
                             });
                           }
                         } else {

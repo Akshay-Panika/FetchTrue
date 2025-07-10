@@ -1,5 +1,6 @@
 import 'package:fetchtrue/feature/home/widget/all_service_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -8,6 +9,8 @@ import '../../../core/widgets/custom_highlight_service.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../business_idea/screen/business_idea_screen.dart';
+import '../../more/model/user_model.dart';
+import '../../more/repository/user_service.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
@@ -18,8 +21,44 @@ import '../widget/leads_widget.dart';
 import '../widget/module_widget.dart';
 import '../widget/profile_card_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key,});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  String? userId;
+  String? token;
+  UserModel? userData;
+
+  final UserService userService = UserService();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getString('userId');
+    final tkn = prefs.getString('token');
+
+    setState(() {
+      userId = id;
+      token = tkn;
+    });
+
+    if (id != null) {
+      final user = await userService.fetchUserById(id);
+      setState(() {
+        userData = user;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +70,7 @@ class HomeScreen extends StatelessWidget {
             slivers: [
 
             /// Profile card
-            SliverToBoxAdapter(child: ProfileAppWidget(),),
+            SliverToBoxAdapter(child: ProfileAppWidget(userdata: userData,),),
 
             /// Search bar
             SliverAppBar(

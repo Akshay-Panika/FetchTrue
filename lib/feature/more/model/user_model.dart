@@ -1,62 +1,54 @@
-class LoginResponse {
-  final String message;
-  final String token;
-  final UserData user;
-
-  LoginResponse({
-    required this.message,
-    required this.token,
-    required this.user,
-  });
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      message: json['message'] ?? '',
-      token: json['token'] ?? '',
-      user: UserData.fromJson(json['user']),
-    );
-  }
-}
-
-class UserData {
+class UserModel {
   final String id;
   final String fullName;
   final String email;
   final String mobileNumber;
   final String referralCode;
-  final String? referredBy;
+  final String referredBy;
   final bool isAgree;
   final bool isEmailVerified;
   final bool isMobileVerified;
+  final bool packageActive;
+  final bool isCommissionDistribute;
   final List<String> serviceCustomers;
+  final List<String> favoriteServices;
+  final List<String> favoriteProviders;
   final String createdAt;
 
-  UserData({
+  UserModel({
     required this.id,
     required this.fullName,
     required this.email,
     required this.mobileNumber,
     required this.referralCode,
-    this.referredBy,
+    required this.referredBy,
     required this.isAgree,
     required this.isEmailVerified,
     required this.isMobileVerified,
+    required this.packageActive,
+    required this.isCommissionDistribute,
     required this.serviceCustomers,
+    required this.favoriteServices,
+    required this.favoriteProviders,
     required this.createdAt,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) {
-    return UserData(
-      id: json['_id'] ?? '',
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['_id'],
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
       mobileNumber: json['mobileNumber'] ?? '',
       referralCode: json['referralCode'] ?? '',
-      referredBy: json['referredBy'],
+      referredBy: json['referredBy'] ?? '',
       isAgree: json['isAgree'] ?? false,
       isEmailVerified: json['isEmailVerified'] ?? false,
       isMobileVerified: json['isMobileVerified'] ?? false,
+      packageActive: json['packageActive'] ?? false,
+      isCommissionDistribute: json['isCommissionDistribute'] ?? false,
       serviceCustomers: List<String>.from(json['serviceCustomers'] ?? []),
+      favoriteServices: List<String>.from(json['favoriteServices'] ?? []),
+      favoriteProviders: List<String>.from(json['favoriteProviders'] ?? []),
       createdAt: json['createdAt'] ?? '',
     );
   }
