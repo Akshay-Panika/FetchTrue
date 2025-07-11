@@ -7,62 +7,75 @@ import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../helper/Contact_helper.dart';
+import '../../my_admin/model/referral_user_model.dart';
 
 class MyLeaderCardWidget extends StatelessWidget {
-  const MyLeaderCardWidget({super.key});
+  final ReferralUserModel referralUser;
+
+  const MyLeaderCardWidget({super.key, required this.referralUser});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CustomContainer(
-          border: true,
-          backgroundColor: CustomColor.whiteColor,
-          child: Column(
+    return CustomContainer(
+      border: true,
+      borderColor: CustomColor.appColor,
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
+      width: double.infinity,
+      backgroundColor: CustomColor.whiteColor,
+      child: Column(
+        children: [
+          5.height,
+          Row(
             children: [
-
-              Row(
+              CircleAvatar(
+                radius: 40,
+                backgroundImage: AssetImage(CustomImage.nullImage),
+              ),
+              10.width,
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage(CustomImage.nullImage),
-                    radius: 35,backgroundColor: CustomColor.whiteColor,),
-                  10.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Franchise Head Name', style: textStyle14(context),),
-                      Text('rank :', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                      Text('other :', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                    ],
-                  ),
+                  Text('My Admin', style: textStyle16(context, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
+                  Text("Name: ${referralUser.fullName}"),
+                  Text("Email: ${referralUser.email}"),
+                  Text("Mobile: ${referralUser.mobileNumber}"),
                 ],
               ),
-
-              CustomContainer(
-                border: true,
-                backgroundColor: CustomColor.whiteColor,
-                borderColor: CustomColor.appColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Leads : 203', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
-                    Row(
-                      children: [
-                        Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,),
-                        50.width,
-                        Image.asset(CustomIcon.whatsappIcon, height: 25,),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
             ],
           ),
-        ),
+          10.height,
 
-      ],
+          CustomContainer(
+            border: true,
+            backgroundColor: CustomColor.whiteColor,
+            borderColor: CustomColor.appColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Leads : 203', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+                Row(
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          ContactHelper.call(referralUser.mobileNumber);
+                        },
+                        child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
+                    50.width,
+                    InkWell(
+                        onTap: () {
+                          ContactHelper.whatsapp(referralUser.mobileNumber, 'hello ${referralUser.fullName}');
+                        },
+                        child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
