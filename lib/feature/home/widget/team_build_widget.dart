@@ -6,7 +6,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../../extra_earning/screen/extra_earning_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
-import '../../team_lead/screen/team_lead_screen.dart';
+import '../../team_build/screen/team_build_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
 
 class LeadsWidget extends StatelessWidget {
@@ -93,7 +93,7 @@ class LeadsWidget extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           children: [
-                            TextSpan(text:'Team Lead : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
+                            TextSpan(text:'Team Build : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
                             TextSpan(text:'50', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
                           ],
                         ),

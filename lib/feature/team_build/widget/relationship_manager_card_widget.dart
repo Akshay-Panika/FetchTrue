@@ -1,19 +1,17 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
-import '../../my_admin/model/referral_user_model.dart';
+import '../model/relationship_manager_model.dart';
 
-class MyLeaderCardWidget extends StatelessWidget {
-  final ReferralUserModel referralUser;
-
-  const MyLeaderCardWidget({super.key, required this.referralUser});
+class RelationshipManagerCardWidget extends StatelessWidget {
+  final RelationshipManagerModel referralUser;
+  const RelationshipManagerCardWidget({super.key, required this.referralUser});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class MyLeaderCardWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('My Admin', style: textStyle16(context, fontWeight: FontWeight.bold)),
+                  Text('Relationship Manager', style: textStyle14(context, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 5),
                   Text("Name: ${referralUser.fullName}"),
                   Text("Email: ${referralUser.email}"),

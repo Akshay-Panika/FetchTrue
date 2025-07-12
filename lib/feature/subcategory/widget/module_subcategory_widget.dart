@@ -50,7 +50,8 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
             subcategory.category.id == widget.categoryId).toList();
 
             if (modulesSubCategory.isEmpty) {
-              return const Center(child: Text('No subcategory found.'));
+              return SizedBox.shrink();
+              // return const Center(child: Text('No subcategory found.'));
             }
 
             ///  Default subcategory selection (first one)

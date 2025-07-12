@@ -15,9 +15,9 @@ import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
-import '../../team_lead/screen/team_lead_screen.dart';
+import '../../team_build/screen/team_build_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
-import '../widget/leads_widget.dart';
+import '../widget/team_build_widget.dart';
 import '../widget/module_widget.dart';
 import '../widget/profile_card_widget.dart';
 

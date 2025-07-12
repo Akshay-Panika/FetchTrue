@@ -21,7 +21,7 @@ import '../../profile/screen/profile_screen.dart';
 import '../../provider/screen/provider_screen.dart';
 import '../../refund_policy/screen/refund_policy_screen.dart';
 import '../../settings/screen/setting_screen.dart';
-import '../../team_lead/screen/team_lead_screen.dart';
+import '../../team_build/screen/team_build_screen.dart';
 import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
 import '../model/user_model.dart';
@@ -65,6 +65,7 @@ class _MoreScreenState extends State<MoreScreen> {
       });
     }
   }
+
   Future<void> signOutUser() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

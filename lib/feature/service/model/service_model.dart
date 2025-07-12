@@ -7,10 +7,12 @@ class ServiceModel {
   final String thumbnailImage;
   final List<String> bannerImages;
   final List<String> tags;
-  final Subcategory subcategory;
+  final Category category;
+  final Subcategory? subcategory; // <-- made optional
   final ServiceDetails serviceDetails;
   final FranchiseDetails franchiseDetails;
   final List<KeyValue> keyValues;
+  final List<ProviderPrice> providerPrices;
 
   ServiceModel({
     required this.id,
@@ -21,10 +23,12 @@ class ServiceModel {
     required this.thumbnailImage,
     required this.tags,
     required this.bannerImages,
-    required this.subcategory,
+    required this.category,
+    this.subcategory,
     required this.serviceDetails,
     required this.franchiseDetails,
     required this.keyValues,
+    required this.providerPrices,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -37,12 +41,68 @@ class ServiceModel {
       thumbnailImage: json['thumbnailImage'],
       bannerImages: List<String>.from(json['bannerImages'] ?? []),
       tags: List<String>.from(json['tags'] ?? []),
-      subcategory: Subcategory.fromJson(json['subcategory']),
+      category: Category.fromJson(json['category']),
+      subcategory: json['subcategory'] != null ? Subcategory.fromJson(json['subcategory']) : null,
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
       franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
       keyValues: json['keyValues'] != null
           ? List<KeyValue>.from(json['keyValues'].map((x) => KeyValue.fromJson(x)))
           : [],
+      providerPrices: json['providerPrices'] != null
+          ? List<ProviderPrice>.from(json['providerPrices'].map((x) => ProviderPrice.fromJson(x)))
+          : [],
+    );
+  }
+}
+
+class Category {
+  final String id;
+  final String name;
+  final String module;
+  final String image;
+
+  Category({
+    required this.id,
+    required this.name,
+    required this.module,
+    required this.image,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['_id'],
+      name: json['name'],
+      module: json['module'],
+      image: json['image'],
+    );
+  }
+}
+class ProviderPrice {
+  final dynamic provider;
+  final int? providerPrice;
+  final int? providerCommission;
+  final String status;
+  final String id;
+
+  ProviderPrice({
+    this.provider,
+    this.providerPrice,
+    this.providerCommission,
+    required this.status,
+    required this.id,
+  });
+
+  factory ProviderPrice.fromJson(Map<String, dynamic> json) {
+    return ProviderPrice(
+      provider: json['provider'],
+      providerPrice: json['providerPrice'] is int
+          ? json['providerPrice']
+          : int.tryParse(json['providerPrice']?.toString() ?? ''),
+      providerCommission: json['providerCommission'] is int
+          ? json['providerCommission']
+          : int.tryParse(json['providerCommission']?.toString() ?? ''),
+      status: json['status'],
+      id: json['_id'],
     );
   }
 }

@@ -11,6 +11,7 @@ import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
+import '../../service/model/service_model.dart';
 import '../../service/repository/api_service.dart';
 import '../../service/screen/service_details_screen.dart';
 import '../widget/filter_widget.dart';
@@ -52,7 +53,9 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
             ),),
         
             /// Filter
-            SliverToBoxAdapter(child: FilterWidget(dimensions: dimensions),),
+            SliverPersistentHeader(
+              pinned: true,
+                delegate: _StickyHeaderDelegate(child:  FilterWidget(dimensions: dimensions))),
         
         
             /// Service
@@ -67,10 +70,19 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                   else if(state is ModuleServiceLoaded){
         
                     // final services = state.serviceModel;
-                    final services = state.serviceModel.where((moduleService) =>
-                    moduleService.subcategory.id == selectedSubcategoryId
-                    ).toList();
-        
+                    // final services = state.serviceModel.where((moduleService) =>
+                    // moduleService.subcategory!.id == selectedSubcategoryId
+                    // ).toList();
+                    List<ServiceModel> services = state.serviceModel.where((service) {
+                      if (selectedSubcategoryId.isNotEmpty) {
+                        // ✅ Subcategory selected — Match subcategory ID only if it's present
+                        return service.subcategory?.id == selectedSubcategoryId;
+                      } else {
+                        // ✅ No subcategory selected — Show services matching category ID
+                        return service.category.id == widget.categoryId;
+                      }
+                    }).toList();
+
                     if (services.isEmpty) {
                       return Column(
                         children: [
@@ -124,8 +136,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   ),
                                 ),
                               ),
-        
-        
+
                               10.height,
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -197,4 +208,31 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
       ),
     );
   }
+}
+
+/// _StickyHeaderDelegate
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _StickyHeaderDelegate({required this.child});
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox(
+      height: 40,
+      child: Material( // Optional: for background color
+        color: Colors.white,
+        child: child,
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 40.0;
+
+  @override
+  double get minExtent => 40.0;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
 }

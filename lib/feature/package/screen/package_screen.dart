@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:fetchtrue/feature/package/screen/scratch_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -9,6 +10,8 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../model/package_model.dart';
+import '../repository/package_service.dart';
 
 class PackageScreen extends StatefulWidget {
   const PackageScreen({super.key});
@@ -20,75 +23,110 @@ class PackageScreen extends StatefulWidget {
 class _PackageScreenState extends State<PackageScreen> {
   int _isSelectedTap = 0;
   final CarouselSliderController _carouselController = CarouselSliderController();
-
   final List<String> _packages = ['GP', 'SGP', 'PGP'];
+
+  late Future<List<PackageModel>> futurePackages;
+  List<PackageModel> _packageData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    futurePackages = PackageService.fetchPackages();
+  }
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
 
     return Scaffold(
-       backgroundColor: CustomColor.whiteColor,
+      backgroundColor: CustomColor.whiteColor,
       appBar: const CustomAppBar(title: 'Packages', showBackButton: true),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              20.height,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(_packages.length, (index) {
-                    return _buildFranchiseTap(
-                      context,
-                      label: _packages[index],
-                      isSelected: _isSelectedTap == index,
-                      onTap: () {
-                        setState(() => _isSelectedTap = index);
-                        _carouselController.animateToPage(index);
-                      },
-                    );
-                  }),
-                ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(_packages.length, (index) {
+                  return _buildFranchiseTap(
+                    context,
+                    label: _packages[index],
+                    isSelected: _isSelectedTap == index,
+                    onTap: () {
+                      setState(() => _isSelectedTap = index);
+                      _carouselController.animateToPage(index);
+                    },
+                  );
+                }),
               ),
-              20.height,
-              CarouselSlider.builder(
-                itemCount: 3,
-                carouselController: _carouselController,
-                itemBuilder: (context, index, realIndex) {
-                  return _buildPackageCard(context, dimensions);
-                },
-                options: CarouselOptions(
-                  height: dimensions.screenHeight * 0.5,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.80,
-                  autoPlayInterval: const Duration(seconds: 5),
-                  onPageChanged: (index, reason) {
-                    setState(() => _isSelectedTap = index);
-                  },
-                ),
-              ),
+            ),
+            5.height,
 
-              10.height,
-              _buildDeposite(),
-              10.height,
-              _buildAssuranceSection(context),
-            ],
-          ),
+            FutureBuilder<List<PackageModel>>(
+              future: futurePackages,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 250.0),
+                    child:  Center(child: CircularProgressIndicator(color: CustomColor.appColor,)),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: \${snapshot.error}"));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No packages found"));
+                }
+
+                _packageData = snapshot.data!;
+                final PackageModel pkg = _packageData[0];
+
+                return Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        CarouselSlider.builder(
+                          itemCount: _packages.length,
+                          carouselController: _carouselController,
+                          itemBuilder: (context, index, realIndex) {
+                            final descKey = _packages[index].toLowerCase();
+                            final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
+                            // return _buildDescriptionCard(context, htmlDesc);
+                            return _buildPackageCard(context, dimensions,pkg,htmlDesc);
+                          },
+                          options: CarouselOptions(
+                            enlargeCenterPage: true,
+                            viewportFraction: 0.80,
+                            autoPlay: true,
+                            initialPage: _isSelectedTap,
+                            height: dimensions.screenHeight * 0.5,
+                            onPageChanged: (index, reason) {
+                              setState(() => _isSelectedTap = index);
+                            },
+                          ),
+                        ),
+                        10.height,
+                        _buildAssuranceSection(context,pkg),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPackageCard(BuildContext context, Dimensions dimensions) {
-    return Container(
-      decoration: BoxDecoration(
-        color: CustomColor.whiteColor,
-        border: Border.all(color: Colors.grey, width: 0.2),
-        borderRadius: BorderRadius.circular(dimensions.screenHeight * 0.01),
-      ),
+
+  /// Package card
+  Widget _buildPackageCard(BuildContext context, Dimensions dimensions,PackageModel pkg, String htmlDesc) {
+    return CustomContainer(
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
+      backgroundColor: CustomColor.whiteColor,
+      border: true,
+      borderColor: CustomColor.appColor,
       child: Column(
         children: [
           Container(
@@ -102,7 +140,7 @@ class _PackageScreenState extends State<PackageScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 CircleAvatar(
+                CircleAvatar(
                   radius: 30,
                   backgroundImage: AssetImage(CustomImage.nullImage),
                   backgroundColor: CustomColor.whiteColor,
@@ -112,7 +150,7 @@ class _PackageScreenState extends State<PackageScreen> {
                   children: [
                     Text('BizBooster', style: textStyle16(context, color: CustomColor.appColor)),
                     Text('Growth Partner (GB)', style: textStyle12(context, color: CustomColor.appColor)),
-                     CustomAmountText(
+                    CustomAmountText(
                       amount: '7,00,000',
                       fontWeight: FontWeight.w500,
                     ),
@@ -156,7 +194,7 @@ class _PackageScreenState extends State<PackageScreen> {
                   border: true,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   backgroundColor: CustomColor.whiteColor,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(htmlDesc:htmlDesc,),)),
                   child: Text(
                     'Know Benefits',
                     style: textStyle14(context, color: CustomColor.appColor),
@@ -170,6 +208,7 @@ class _PackageScreenState extends State<PackageScreen> {
     );
   }
 
+  /// Tap index
   Widget _buildFranchiseTap(BuildContext context,
       {required String label,
         required bool isSelected,
@@ -201,6 +240,8 @@ class _PackageScreenState extends State<PackageScreen> {
     );
   }
 
+
+  /// DefineText
   Widget _buildDefineText(BuildContext context,
       {String? headline, String? define}) {
     return Padding(
@@ -212,7 +253,7 @@ class _PackageScreenState extends State<PackageScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 4.0, right: 5),
                 child: Icon(Icons.circle, size: 8, color: CustomColor.iconColor),
               ),
@@ -231,42 +272,12 @@ class _PackageScreenState extends State<PackageScreen> {
     );
   }
 
-  Widget _buildDeposite(){
+  /// Assurance Section
+  Widget _buildAssuranceSection(BuildContext context,PackageModel pkg) {
+    bool _isBuy = false;
     return CustomContainer(
       border: true,
-      backgroundColor: CustomColor.whiteColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomAmountText(amount: '9,999', fontWeight: FontWeight.w500,fontSize: 16, color: CustomColor.appColor),
-              10.height,
-              CustomContainer(
-                margin: EdgeInsets.zero,
-                backgroundColor: CustomColor.appColor,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 5),
-                child: Text(
-                  'Deposit',
-                  style: textStyle14(context,
-                      color: CustomColor.whiteColor),
-                ),
-              ),
-            ],
-          ),
-          10.width,
-          Expanded(child: Text('Reloaded 1 of 2379 libraries in 1,666ms (compile: 38 ms, reload: 485 ms, reassemble: 1012 ms).'))
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAssuranceSection(BuildContext context) {
-    return CustomContainer(
-      border: true,
+      borderColor: CustomColor.appColor,
       backgroundColor: CustomColor.whiteColor,
       child: Column(
         children: [
@@ -298,60 +309,160 @@ class _PackageScreenState extends State<PackageScreen> {
                           color: CustomColor.descriptionColor),
                       textAlign: TextAlign.right,
                     ),
-                    10.height,
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('85 %', style: textStyle16(context, color: CustomColor.greenColor),),10.width,
-                            CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            CustomAmountText(amount: '99,999', fontSize: 16,fontWeight: FontWeight.w500,color: CustomColor.appColor),
-                          ],
-                        ),
-                        10.width,
-                        CustomContainer(
-                          backgroundColor: CustomColor.appColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 5),
-                          child: Text(
-                            'Buy Now',
-                            style: textStyle14(context,
-                                color: CustomColor.whiteColor),
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
               ),
             ],
           ),
-          // 10.height,
 
-          CustomContainer(
-            border: true,
-            borderColor: CustomColor.appColor,
-            backgroundColor: CustomColor.whiteColor,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
-            child: Text(
-              'Check Your Discount Eligibility',
-              style: textStyle12(context),
-            ),
-
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ScratchScreen(),)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Franchise Fees'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                      CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                    ],
+                  ),
+                  CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+                ],
+              ),
+            ],
           ),
+          Divider(),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Franchise Deposit'),
+              CustomAmountText(amount: '${pkg.deposit}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+            ],
+          ),
+          Divider(),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Growth Total'),
+              CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+            ],
+          ),
+          Divider(),
+          10.height,
+
+          GestureDetector(
+            onTap: () {
+              double price = double.tryParse(pkg.discountedPrice.toString()) ?? 0;
+              _showPaymentDialog(context, price);
+            },
+            child: CustomContainer(
+              backgroundColor: CustomColor.appColor,
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+              child: Text(
+                'Buy Now',
+                style: textStyle14(context, color: CustomColor.whiteColor),
+              ),
+            ),
+          )
+
         ],
       ),
     );
   }
+}
+
+void _showPaymentDialog(BuildContext context, double discountedPrice) {
+  bool isFullPayment = true;
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Select Payment Option'),
+            titleTextStyle: textStyle16(context, color: CustomColor.appColor),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Radio<bool>(
+                          value: true,
+                          activeColor: CustomColor.appColor,
+                          groupValue: isFullPayment,
+                          onChanged: (value) {
+                            setState(() {
+                              isFullPayment = value!;
+                            });
+                          },
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Full payment'),
+                            CustomAmountText(
+                              amount: discountedPrice.toStringAsFixed(2),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio<bool>(
+                          value: false,
+                          activeColor: CustomColor.appColor,
+                          groupValue: isFullPayment,
+                          onChanged: (value) {
+                            setState(() {
+                              isFullPayment = value!;
+                            });
+                          },
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Half payment'),
+                            CustomAmountText(
+                              amount: (discountedPrice / 2).toStringAsFixed(2),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Cancel'),
+              ),
+              30.width,
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
+                },
+                child: Text('Continue', style: textStyle14(context, color: CustomColor.appColor),),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }
