@@ -1,11 +1,13 @@
-class GpModel {
+class NonGpModel {
+  final String id;
   final String fullName;
   final String email;
   final String mobileNumber;
   final String referralCode;
   final bool packageActive;
 
-  GpModel({
+  NonGpModel({
+    required this.id,
     required this.fullName,
     required this.email,
     required this.mobileNumber,
@@ -13,13 +15,14 @@ class GpModel {
     required this.packageActive,
   });
 
-  factory GpModel.fromJson(Map<String, dynamic> json) {
-    return GpModel(
+  factory NonGpModel.fromJson(Map<String, dynamic> json) {
+    return NonGpModel(
+      id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
       mobileNumber: json['mobileNumber'] ?? '',
       referralCode: json['referralCode'] ?? '',
-      packageActive: json['packageActive'] == true, // 👈 handles null as false
+      packageActive: json['packageActive'] ?? false,
     );
   }
 }

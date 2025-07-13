@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:fetchtrue/feature/team_build/widget/team_gp_widget.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +14,8 @@ import '../../../helper/Contact_helper.dart';
 import '../../more/model/user_model.dart';
 import '../../my_admin/model/referral_user_model.dart';
 import '../../my_admin/repository/referral_service.dart';
-import '../model/gp_model.dart';
-import '../repository/gp_service.dart';
+import '../model/non_gp_model.dart';
+import '../repository/non_gp_service.dart';
 import '../repository/relationship_manager_service.dart';
 import '../repository/referral_service_conferm.dart';
 import '../model/relationship_manager_model.dart';
@@ -48,6 +47,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
   void initState() {
     super.initState();
     fetchRelationshipManager();
+    fetchMyLeads();
   }
 
   Future<void> fetchRelationshipManager() async {
@@ -66,6 +66,23 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
   }
 
   int _tapIndex = 0;
+
+  List<NonGpModel> _nonGpList = [];
+  List<NonGpModel> _teamGpList = [];
+  bool isTeamLoading = true;
+
+  Future<void> fetchMyLeads() async {
+    setState(() => isTeamLoading = true); // 🔄 Start loading
+
+    final result = await NonGpService().fetchMyLeads('681c72d2062be714d7037844');
+
+    setState(() {
+      _nonGpList = result.where((e) => e.packageActive == false).toList(); // Non-GP
+      _teamGpList = result.where((e) => e.packageActive == true).toList(); // Team-GP
+      isTeamLoading = false; // ✅ Done loading
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,16 +119,29 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
             )),
 
         /// Non- gp, Team gp
+        SliverToBoxAdapter(
+          child: isTeamLoading
+              ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Center(child: CircularProgressIndicator(color: CustomColor.appColor)),
+          )
+              : (_tapIndex == 0 && _nonGpList.isEmpty) || (_tapIndex == 1 && _teamGpList.isEmpty)
+              ? _buildEmptyIconMessage(context)
+              : null,
+        ),
+
         SliverList(
           delegate: SliverChildBuilderDelegate(
                 (context, index) {
+              final list = _tapIndex == 0 ? _nonGpList : _teamGpList;
               return _tapIndex == 0
-                  ? const NonGpWidget()
-                  : const TeamGpWidget();
+                  ? NonGpWidget(data: list[index])
+                  : TeamGpWidget(data: list[index]);
             },
-            childCount: _tapIndex == 0 ? 6 : 5,
+            childCount: _tapIndex == 0 ? _nonGpList.length : _teamGpList.length,
           ),
         ),
+
 
         SliverToBoxAdapter(child:SizedBox(height: dimensions.screenHeight*0.02,)),
 
@@ -222,7 +252,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Teams : 203', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+                    Text('Teams : 00', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
                     Row(
                       children: [
                         InkWell(
@@ -342,4 +372,22 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+}
+
+
+Widget _buildEmptyIconMessage(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 50),
+    child: Column(
+      children: [
+        60.height,
+        Icon(Icons.group_off, size: 80, color: Colors.grey.shade400),
+        const SizedBox(height: 10),
+        Text(
+          'No team members found',
+          style: textStyle14(context, color: Colors.grey.shade600),
+        ),
+      ],
+    ),
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/helper/Contact_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
@@ -6,9 +7,11 @@ import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../model/non_gp_model.dart';
 
 class NonGpWidget extends StatelessWidget {
-  const NonGpWidget({super.key});
+  final NonGpModel data;
+  const NonGpWidget({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +42,8 @@ class NonGpWidget extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Name'),
-                            Text('Franchise code'),
+                            Text('${data.fullName}'),
+                            Text('${data.referralCode}'),
                           ],
                         ),
                       ],
@@ -71,9 +74,17 @@ class NonGpWidget extends StatelessWidget {
                       Text(' Self Follow Up', style: textStyle16(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
                       Row(
                         children: [
-                          Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,),
+                          InkWell(
+                              onTap: () {
+                                ContactHelper.call(data.mobileNumber);
+                              },
+                              child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
                           50.width,
-                          Image.asset(CustomIcon.whatsappIcon, height: 25,),
+                          InkWell(
+                              onTap: () {
+                                ContactHelper.whatsapp(data.mobileNumber, 'Hello, ${data.fullName}');
+                              },
+                              child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
                         ],
                       ),
                     ],

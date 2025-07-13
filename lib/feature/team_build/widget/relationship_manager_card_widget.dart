@@ -23,8 +23,10 @@ class RelationshipManagerCardWidget extends StatelessWidget {
       width: double.infinity,
       backgroundColor: CustomColor.whiteColor,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          5.height,
+          Text('Relationship Manager', style: textStyle14(context, fontWeight: FontWeight.w500)),
+          10.height,
           Row(
             children: [
               CircleAvatar(
@@ -35,7 +37,6 @@ class RelationshipManagerCardWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Relationship Manager', style: textStyle14(context, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 5),
                   Text("Name: ${referralUser.fullName}"),
                   Text("Email: ${referralUser.email}"),
@@ -53,7 +54,7 @@ class RelationshipManagerCardWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Leads : 203', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+                Text('Teams: 00', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
                 Row(
                   children: [
                     InkWell(
