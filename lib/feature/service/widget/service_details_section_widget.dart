@@ -10,7 +10,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../../core/widgets/custom_ratting_and_reviews.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../model/service_model.dart';
 
 class ServiceDetailsSectionWidget extends StatelessWidget {
@@ -67,9 +67,9 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                       ),
                       InkWell(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceReviewWidget(),));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceReviewWidget(serviceId: data.id,),));
                           },
-                          child: CustomRattingAndReviews()),
+                          child: RattingAndReviewsWidget(serviceId: data.id,)),
                     ],
                   ),
 

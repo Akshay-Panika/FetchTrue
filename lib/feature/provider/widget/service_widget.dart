@@ -7,7 +7,7 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
 import '../../../core/widgets/custom_headline.dart';
-import '../../../core/widgets/custom_ratting_and_reviews.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../service/model/service_model.dart';
 import '../../service/screen/service_details_screen.dart';
 
@@ -65,7 +65,7 @@ class ServiceWidget extends StatelessWidget {
                                   ),
                                   color: CustomColor.blackColor.withOpacity(0.3),
                                 ),
-                                child: CustomRattingAndReviews(color: CustomColor.whiteColor,),
+                                child: RattingAndReviewsWidget( serviceId: data.id,color: CustomColor.whiteColor,),
                               )
                             ],
                           ),

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
-import '../../../core/widgets/custom_ratting_and_reviews.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../favorite/model/favorite_services_model.dart';
 import '../../favorite/repository/favorite_service.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
@@ -142,7 +141,7 @@ class _AllServiceWidgetState extends State<AllServiceWidget> {
                                           ),
                                           color: CustomColor.blackColor.withOpacity(0.3),
                                         ),
-                                        child: CustomRattingAndReviews(color: CustomColor.whiteColor),
+                                        child: RattingAndReviewsWidget(serviceId: data.id,color: CustomColor.whiteColor),
                                       ),
                                     ],
                                   ),

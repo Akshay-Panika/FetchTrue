@@ -1,6 +1,5 @@
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_ratting_and_reviews.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
@@ -16,6 +15,7 @@ import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/repository/provider_service.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
@@ -194,7 +194,7 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                                   )
                                 ],
                               ),
-                              CustomRattingAndReviews(),
+                              RattingAndReviewsWidget(serviceId: data.id,),
                               const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment:

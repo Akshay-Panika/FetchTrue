@@ -6,14 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_favorite_button.dart';
 import '../../../core/widgets/custom_headline.dart';
-import '../../../core/widgets/custom_ratting_and_reviews.dart';
-import '../../favorite/repository/favorite_service.dart';
 import '../../favorite/widget/favorite_provider_button_widget.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
@@ -149,7 +146,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                             ),
                                           ),
                                           5.height,
-                                          CustomRattingAndReviews()
+                                          RattingAndReviewsWidget(serviceId: data.id,)
                                         ],
                                       ),
                                     ],

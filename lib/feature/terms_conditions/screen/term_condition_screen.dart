@@ -42,7 +42,9 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
               }
 
               final terms = snapshot.data!;
-              return  Html(data: terms.content);
+              return  SingleChildScrollView(
+
+                  child: Html(data: terms.content));
             },
           ),
         ),

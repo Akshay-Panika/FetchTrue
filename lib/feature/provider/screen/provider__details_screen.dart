@@ -6,7 +6,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../../core/widgets/custom_ratting_and_reviews.dart';
+import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
@@ -198,7 +198,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                       ),
                       Text( "Module Name", style: textStyle14(context, fontWeight: FontWeight.w400)),
 
-                      CustomRattingAndReviews(),
+                      RattingAndReviewsWidget(serviceId: data.id,),
                       5.height,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
