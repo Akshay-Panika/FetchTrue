@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Column(
           children: [
-            Center(child: Image.asset(CustomLogo.fetchTrueLogo, height: 100)),
+            Center(
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                height: _isOtpVerified ? 150 : 300,
+                child: Image.asset(CustomLogo.fetchTrueLogo),
+              ),
+            ),
+
+            // Center(child: Image.asset(CustomLogo.fetchTrueLogo, height: _isOtpVerified ?100 : 300)),
 
             CustomFormField(
               context,
@@ -44,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               controller: _fullNameController,
               keyboardType: TextInputType.text,
               isRequired: true,
+              enabled: _isOtpVerified ?false :true
             ),
             15.height,
 
@@ -87,13 +98,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: CustomColor.descriptionColor,
                               fontWeight: FontWeight.w400),
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)),
+                              borderSide: BorderSide(color: Colors.grey.shade300)
+                          ),
                           focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)),
+                              borderSide: BorderSide(color:Colors.grey.shade300)
+                          ),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)),
+                              borderSide: BorderSide(color: Colors.grey.shade300)
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.shade300)
+                          ),
                           filled: true,
-                          fillColor: Colors.white,
+                          // fillColor: Colors.white,
+                          fillColor: _isOtpVerified ? Colors.grey.shade200 : CustomColor.whiteColor,
+                          enabled: _isOtpVerified ? false :true,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         ),
                         validator: (value) => null,
@@ -222,61 +241,115 @@ class VerifyOtpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
-      appBar: const CustomAppBar(showBackButton: true),
+      appBar: const CustomAppBar(title: 'Verify OTP', showBackButton: true),
+
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            30.height,
-            Text('Verify OTP', style: textStyle18(context, color: CustomColor.appColor)),
-            12.height,
-            Text(
-              'A 6-digit verification code has been sent to your number/email.',
-              style: TextStyle(color: CustomColor.descriptionColor, fontSize: 16),
-            ),
-            100.height,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10),
+              Center(
+                child: Image.asset(
+                  'assets/image/otpImage.jpg',
+                  height: 300,
+                ),
+              ),
+              const SizedBox(height: 20),
 
-            SizedBox(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(6, (index) {
-                  return SizedBox(
-                    width: 48,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        filled: true,
-                        fillColor: Colors.grey.shade100,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+              /// ✅ OTP Description
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Enter the verification code sent to ',
+                      style: textStyle14(context, color: CustomColor.descriptionColor),
+                    ),
+                    TextSpan(
+                      text: '+91 XXXX XXXX XX ',
+                      style: textStyle14(context, color: CustomColor.greenColor),
+                    ),
+                    TextSpan(
+                      text: 'Wrong Number ?',
+                      style: textStyle14(context, color: CustomColor.blackColor),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              /// ✅ OTP TextFields
+              SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(6, (index) {
+                    return SizedBox(
+                      width: 48,
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        decoration: InputDecoration(
+                          counterText: '',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
-            ),
-            20.height,
-            Center(
-              child: Text("Didn't receive the code? Resend in 00:30",
-                  style: TextStyle(color: Colors.grey[700], fontSize: 12)),
-            ),
-            40.height,
-            CustomButton(
-              isLoading: false,
-              label: 'Verify OTP',
-              onPressed: () {
-                // ✅ return success result
-                Navigator.pop(context, true);
-              },
-            ),
-          ],
+              const SizedBox(height: 20),
+
+              /// ✅ Resend Info
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Didn't receive the code? ",
+                        style: textStyle14(context, color: CustomColor.descriptionColor),
+                      ),
+                      TextSpan(
+                        text: 'Resend in 00:30',
+                        style: textStyle14(context, color: CustomColor.blackColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 60),
+
+              /// ✅ Verify OTP Button
+              CustomButton(
+                isLoading: false,
+                label: 'Verify OTP',
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+
+
+            ],
+          ),
         ),
       ),
     );
