@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
 import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_alert_dialog.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
@@ -179,9 +180,9 @@ class _SignInScreenState extends State<SignInScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(CustomIcon.googleIcon),
-                Image.asset(CustomIcon.facebookIcon),
-                Image.asset(CustomIcon.instagramIcon),
+                InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.googleIcon)),
+                InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.facebookIcon)),
+                InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.instagramIcon)),
               ],
             )
 

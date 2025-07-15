@@ -8,7 +8,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
-import '../../business_idea/screen/business_idea_screen.dart';
+import '../../advisers/screen/adviser_screen.dart';
 import '../../more/model/user_model.dart';
 import '../../more/repository/user_service.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.green.shade50,
                     width: double.infinity,
                     networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessIdeaScreen(),)),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
                     child: Align(
                       alignment: Alignment.bottomLeft,
                       child: Padding(

@@ -360,7 +360,7 @@ class _PackageScreenState extends State<PackageScreen> {
           GestureDetector(
             onTap: () {
               double price = double.tryParse(pkg.discountedPrice.toString()) ?? 0;
-              _showPaymentDialog(context, price);
+              showPaymentBottomSheet(context, price);
             },
             child: CustomContainer(
               backgroundColor: CustomColor.appColor,
@@ -378,23 +378,36 @@ class _PackageScreenState extends State<PackageScreen> {
   }
 }
 
-void _showPaymentDialog(BuildContext context, double discountedPrice) {
+void showPaymentBottomSheet(BuildContext context, double discountedPrice) {
   bool isFullPayment = true;
 
-  showDialog(
+  showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
     builder: (BuildContext context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          return AlertDialog(
-            title: Text('Select Payment Option'),
-            titleTextStyle: textStyle16(context, color: CustomColor.appColor),
-            content: Column(
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.all(30)),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                20.height,
+                Text(
+                  'Select Payment Option',
+                  style: textStyle16(context, color: CustomColor.appColor),
+                ),
+                30.height,
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    /// Full Payment Option
                     Row(
                       children: [
                         Radio<bool>(
@@ -418,6 +431,8 @@ void _showPaymentDialog(BuildContext context, double discountedPrice) {
                         ),
                       ],
                     ),
+
+                    /// Half Payment Option
                     Row(
                       children: [
                         Radio<bool>(
@@ -443,23 +458,32 @@ void _showPaymentDialog(BuildContext context, double discountedPrice) {
                     ),
                   ],
                 ),
+
+               50.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Cancel', style: textStyle16(context,color: Colors.red),),
+                    ),
+                    const SizedBox(width: 30),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
+                      },
+                      child: Text(
+                        'Continue',
+                        style: textStyle16(context, color: CustomColor.appColor),
+                      ),
+                    ),
+                  ],
+                ),
+
+                150.height,
               ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel'),
-              ),
-              30.width,
-
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
-                },
-                child: Text('Continue', style: textStyle14(context, color: CustomColor.appColor),),
-              ),
-            ],
           );
         },
       );

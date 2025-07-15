@@ -234,15 +234,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-class VerifyOtpScreen extends StatelessWidget {
+class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
+
+  @override
+  State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();
+}
+
+class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
+  final List<TextEditingController> _controllers =
+  List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onOtpChanged(String value, int index) {
+    if (value.isNotEmpty && index < _focusNodes.length - 1) {
+      _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: const CustomAppBar(title: 'Verify OTP', showBackButton: true),
-
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -264,15 +291,18 @@ class VerifyOtpScreen extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'Enter the verification code sent to ',
-                      style: textStyle14(context, color: CustomColor.descriptionColor),
+                      style: textStyle14(context,
+                          color: CustomColor.descriptionColor),
                     ),
                     TextSpan(
                       text: '+91 XXXX XXXX XX ',
-                      style: textStyle14(context, color: CustomColor.greenColor),
+                      style:
+                      textStyle14(context, color: CustomColor.greenColor),
                     ),
                     TextSpan(
                       text: 'Wrong Number ?',
-                      style: textStyle14(context, color: CustomColor.blackColor),
+                      style:
+                      textStyle14(context, color: CustomColor.blackColor),
                     ),
                   ],
                 ),
@@ -288,6 +318,8 @@ class VerifyOtpScreen extends StatelessWidget {
                     return SizedBox(
                       width: 48,
                       child: TextField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
                         keyboardType: TextInputType.number,
                         maxLength: 1,
                         textAlign: TextAlign.center,
@@ -295,6 +327,7 @@ class VerifyOtpScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                         ),
+                        onChanged: (value) => _onOtpChanged(value, index),
                         decoration: InputDecoration(
                           counterText: '',
                           filled: true,
@@ -326,11 +359,13 @@ class VerifyOtpScreen extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: "Didn't receive the code? ",
-                        style: textStyle14(context, color: CustomColor.descriptionColor),
+                        style: textStyle14(context,
+                            color: CustomColor.descriptionColor),
                       ),
                       TextSpan(
                         text: 'Resend in 00:30',
-                        style: textStyle14(context, color: CustomColor.blackColor),
+                        style:
+                        textStyle14(context, color: CustomColor.blackColor),
                       ),
                     ],
                   ),
@@ -343,11 +378,11 @@ class VerifyOtpScreen extends StatelessWidget {
                 isLoading: false,
                 label: 'Verify OTP',
                 onPressed: () {
+                  String otp = _controllers.map((e) => e.text).join();
+                  print('Entered OTP: $otp');
                   Navigator.pop(context, true);
                 },
               ),
-
-
             ],
           ),
         ),

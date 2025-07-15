@@ -7,7 +7,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
-import '../../business_idea/screen/business_idea_screen.dart';
+import '../../advisers/screen/adviser_screen.dart';
 import '../widget/academy_banner_widget.dart';
 import 'training_tutorial_screen.dart';
 import 'document_screen.dart';
@@ -160,7 +160,7 @@ class AcademyScreen extends StatelessWidget {
             backgroundColor: Colors.green.shade50,
             width: double.infinity,
             networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessIdeaScreen(),)),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
