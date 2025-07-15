@@ -6,16 +6,16 @@ import '../model/user_model.dart';
 import '../../package/screen/package_screen.dart';
 
 class ProfileCardWidget extends StatelessWidget {
-  final UserModel? userData; // Nullable to handle shimmer
-
-  const ProfileCardWidget({super.key, required this.userData});
+  final UserModel? userData;
+  final bool isLoading;
+  const ProfileCardWidget({super.key, required this.userData, required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
       backgroundColor: CustomColor.whiteColor,
       padding: const EdgeInsets.all(15),
-      child: userData == null
+      child: isLoading
           ? _buildShimmerEffect()
           : Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,21 +28,19 @@ class ProfileCardWidget extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 30,
-                    backgroundImage:
-                    AssetImage('assets/image/Null_Profile.jpg'),
+                    backgroundImage: AssetImage('assets/image/Null_Profile.jpg'),
                   ),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userData!.fullName,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        userData?.fullName ?? 'User Name',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        userData!.email,
+                        userData?.email ?? 'Email',
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -52,23 +50,19 @@ class ProfileCardWidget extends StatelessWidget {
               InkWell(
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (_) => const PackageScreen()),
+                  MaterialPageRoute(builder: (_) => const PackageScreen()),
                 ),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 5, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                        color: CustomColor.appColor, width: 0.5),
+                    border: Border.all(color: CustomColor.appColor, width: 0.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Row(
                     children: [
                       Icon(Icons.leaderboard_outlined, size: 16),
                       SizedBox(width: 5),
-                      Text('GP',
-                          style: TextStyle(fontWeight: FontWeight.w600)),
+                      Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
                     ],
                   ),
                 ),
@@ -76,13 +70,15 @@ class ProfileCardWidget extends StatelessWidget {
             ],
           ),
           const Divider(),
+
           /// BOTTOM STATS
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildStatus(
-                  value: _formatDate(userData!.createdAt),
-                  valueType: 'Joining date'),
+                value: userData != null ? _formatDate(userData!.createdAt) : '00/00/25',
+                valueType: 'Joining date',
+              ),
               _buildStatus(value: '00', valueType: 'Lead Completed'),
               _buildStatus(value: '00', valueType: 'Total Earning'),
             ],
@@ -95,13 +91,18 @@ class ProfileCardWidget extends StatelessWidget {
   Widget _buildStatus({required String value, required String valueType}) {
     return Column(
       children: [
-        Text(value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-        Text(valueType,
-            style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: CustomColor.descriptionColor)),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        Text(
+          valueType,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: CustomColor.descriptionColor,
+          ),
+        ),
       ],
     );
   }

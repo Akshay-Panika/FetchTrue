@@ -145,7 +145,7 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
     // _Section('Highlight', index.highlight as String?),
     _Section('Highlight', null, highlightImages: index.highlight),
     _Section('Document', index.document),
-    _Section('Why Choose BizBooster', null, whyChoose: index.whyChoose),
+    _Section('Why Choose Fetch Ture', null, whyChoose: index.whyChoose),
     _Section('How it work', index.howItWorks),
     _Section('T&C', index.termsAndConditions),
     _Section('FAQs', null, faqs: index.faq),
@@ -252,7 +252,7 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Why Choose BizBooster', style: textStyle14(context)),
+        Text('Why Choose Fetch Ture', style: textStyle14(context)),
         15.height,
         ListView.builder(
           shrinkWrap: true,

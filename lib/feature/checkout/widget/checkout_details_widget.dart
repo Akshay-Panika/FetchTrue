@@ -291,7 +291,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               _buildRow(context, keys: 'Service Discount', amount: '${data.discount}', isAmount: false),
               _buildRow(context, keys: 'Coupon Discount', amount: '00.00',isAmount: false),
               _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),
-              _buildRow(context, keys: 'Service Vat', amount: '00.00'),
+              _buildRow(context, keys: 'Service GST', amount: '00.00'),
               _buildRow(context, keys: 'Platform Fee', amount: '00.00'),
               _buildRow(context, keys: 'Fetch True Assurity Charges', amount: '00.00'),
               Divider(),

@@ -13,6 +13,7 @@ Widget CustomFormField(
       int? maxLength,
       String? hint,
       String? prefixText,
+      Widget? suffixIcon,
       bool obscureText = false,
       required TextInputType  keyboardType,
       final TextEditingController? controller,
@@ -43,6 +44,7 @@ Widget CustomFormField(
         decoration: InputDecoration(
           hintText: hint,
           prefixText: prefixText,
+          suffixIcon: suffixIcon,
           hintStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
           border: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey.shade300)

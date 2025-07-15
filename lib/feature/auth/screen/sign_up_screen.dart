@@ -1,6 +1,8 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
+import 'package:fetchtrue/feature/auth/repository/sign_up_service.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
@@ -17,7 +19,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKey = GlobalKey<FormState>();
+
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -27,7 +29,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _raffController = TextEditingController();
 
   bool _obscureText = true;
-  bool _isOtpVerified = false; // ✅ Only controls verify button visibility
+  bool _isOtpVerified = false;
+  bool _isAgree = true;
+  bool _isLoading = false;
+
+  final _signUpService = SignUpService();
+  void _signUp() async {
+    if (!_isOtpVerified) {
+      showCustomSnackBar(context, 'Please verify your mobile number first');
+      return;
+    }
+
+    if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {
+      showCustomSnackBar(context, 'Passwords do not match');
+      return;
+    }
+
+    if (_emailController.text.trim().isEmpty || _fullNameController.text.trim().isEmpty) {
+      showCustomSnackBar(context, 'All required fields must be filled');
+      return;
+    }
+
+    if (!_isAgree) {
+      showCustomSnackBar(context, 'Please agree to the terms & conditions');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await _signUpService.registerUser(
+        fullName: _fullNameController.text.trim(),
+        mobileNumber: _phoneController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        referredBy: _raffController.text.trim(),
+        isAgree: _isAgree,
+      );
+      showCustomSnackBar(context, 'Registration successful');
+      widget.onToggle(false); // Move to login screen
+    } catch (e) {
+      showCustomSnackBar(context, e.toString());
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             15.height,
 
+            /// esme ek or logic ad kro jab full name or phone empty hai to Verify Number button work na kre
             /// ✅ Show verify button only if OTP not verified
             if (!_isOtpVerified)
               Padding(
@@ -132,18 +180,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   isLoading: false,
                   label: 'Verify Number',
                   onPressed: () async {
+                    // 🔐 Validation check
+                    if (_fullNameController.text.trim().isEmpty ||
+                        _phoneController.text.trim().isEmpty) {
+                      showCustomSnackBar(context, 'Please enter full name and phone number first');
+                      return;
+                    }
+
+                    // ✅ Proceed to OTP screen
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const VerifyOtpScreen()),
                     );
                     if (result == true) {
                       setState(() {
-                        _isOtpVerified = true; // ✅ Hide verify button only
+                        _isOtpVerified = true;
                       });
                     }
                   },
                 ),
               ),
+
 
             /// User Info Fields (Always shown)
             if (_isOtpVerified)
@@ -167,6 +224,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                    keyboardType: TextInputType.text,
                    isRequired: true,
                    obscureText: _obscureText,
+                   suffixIcon: InkWell(
+                     onTap: (){
+                       setState(() {
+                         _obscureText = !_obscureText;
+                       });
+                     },
+                     child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
                  ),
                  15.height,
 
@@ -178,6 +242,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                    keyboardType: TextInputType.text,
                    isRequired: true,
                    obscureText: _obscureText,
+                     suffixIcon: InkWell(
+                       onTap: (){
+                         setState(() {
+                           _obscureText = !_obscureText;
+                         });
+                       },
+                       child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
                  ),
                  15.height,
 
@@ -189,30 +260,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                    keyboardType: TextInputType.text,
                    isRequired: false,
                  ),
-                 10.height,
-
-                 Align(
-                   alignment: Alignment.centerRight,
-                   child: TextButton.icon(
-                     onPressed: () {
-                       setState(() {
-                         _obscureText = !_obscureText;
-                       });
-                     },
-                     icon: Icon(
-                         _obscureText ? Icons.visibility_off : Icons.visibility,
-                         color: CustomColor.appColor),
-                     label: Text('Show Password',
-                         style: textStyle12(context, color: CustomColor.appColor)),
-                   ),
-                 ),
-                 20.height,
+                 50.height,
 
                  CustomButton(
-                   isLoading: false,
+                   isLoading: _isLoading,
                    label: 'Sign Up',
-                   onPressed: () => null,
+                   onPressed: () {
+                     if (!_isLoading) _signUp();
+                   },
                  ),
+
                ],
              ) ,
             30.height,

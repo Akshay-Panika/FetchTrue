@@ -28,18 +28,32 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String? userId;
   String? token;
   UserModel? userData;
+  bool isLoading = true;
 
   final UserService userService = UserService();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     loadUserData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      loadUserData();
+    }
   }
 
   Future<void> loadUserData() async {
@@ -47,15 +61,24 @@ class _HomeScreenState extends State<HomeScreen> {
     final id = prefs.getString('userId');
     final tkn = prefs.getString('token');
 
+    if (!mounted) return;
+
     setState(() {
       userId = id;
       token = tkn;
+      isLoading = true;
     });
 
     if (id != null) {
       final user = await userService.fetchUserById(id);
+      if (!mounted) return;
       setState(() {
         userData = user;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -67,10 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(toolbarHeight: 0,),
       body: SafeArea(
         child: CustomScrollView(
-            slivers: [
+          slivers: [
 
-            /// Profile card
-            SliverToBoxAdapter(child: ProfileAppWidget(userdata: userData,),),
+            /// Profile App Widget
+            SliverToBoxAdapter(
+              child: ProfileAppWidget(userdata: userData, isLoading: isLoading,),
+            ),
 
             /// Search bar
             SliverAppBar(
@@ -79,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               pinned: true,
               backgroundColor: CustomColor.canvasColor,
               flexibleSpace: CustomSearchBar(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen()),),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen())),
               ),
             ),
 
@@ -114,15 +139,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.green.shade50,
                     width: double.infinity,
                     networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen())),
                     child: Align(
                       alignment: Alignment.bottomLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 20.0, bottom: 15),
                         child: Container(
-                            color: CustomColor.whiteColor,
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text('Contact Us', style: textStyle16(context, color: CustomColor.appColor),)),
+                          color: CustomColor.whiteColor,
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text('Contact Us', style: textStyle16(context, color: CustomColor.appColor),),
+                        ),
                       ),
                     ),
                   ),
@@ -137,11 +163,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: dimensions.screenHeight*0.02,),
+                        SizedBox(height: dimensions.screenHeight * 0.02,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Your BizBooster',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: CustomColor.appColor),),
+                            Text('Your BizBooster', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: CustomColor.appColor),),
                             5.height,
                             Text('Your friend are going to love us tool', style: TextStyle(fontSize: 14),),
                             5.height,
@@ -149,12 +175,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
 
-                        Image.asset('assets/image/inviteFrnd.png',height: 200,width: double.infinity,)
+                        Image.asset('assets/image/inviteFrnd.png', height: 200, width: double.infinity,)
                       ],
                     ),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
                   ),
-                  SizedBox(height: dimensions.screenHeight*0.01,),
+                  SizedBox(height: dimensions.screenHeight * 0.01,),
 
                   CustomServiceList(headline: 'Recommended Services For You'),
 
@@ -171,7 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text('Explore Near By provider',
                           style: textStyle22(context, color: CustomColor.appColor, fontWeight: FontWeight.bold),),
-                      ),),
+                      ),
+                    ),
                   ),
 
                   /// Understanding bizBooster

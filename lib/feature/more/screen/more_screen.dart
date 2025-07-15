@@ -1,7 +1,6 @@
 import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
 import 'package:fetchtrue/feature/more/widget/profile_card_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
@@ -34,18 +33,32 @@ class MoreScreen extends StatefulWidget {
   State<MoreScreen> createState() => _MoreScreenState();
 }
 
-class _MoreScreenState extends State<MoreScreen> {
-
+class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
   String? userId;
   String? token;
   UserModel? userData;
+  bool isLoading = true;
 
   final UserService userService = UserService();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     loadUserData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      loadUserData();
+    }
   }
 
   Future<void> loadUserData() async {
@@ -53,15 +66,25 @@ class _MoreScreenState extends State<MoreScreen> {
     final id = prefs.getString('userId');
     final tkn = prefs.getString('token');
 
+    if (!mounted) return;
+
     setState(() {
       userId = id;
       token = tkn;
+      isLoading = true;
     });
 
     if (id != null) {
       final user = await userService.fetchUserById(id);
+      if (!mounted) return;
       setState(() {
         userData = user;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        userData = null;
+        isLoading = false;
       });
     }
   }
@@ -69,94 +92,75 @@ class _MoreScreenState extends State<MoreScreen> {
   Future<void> signOutUser() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+    if (!mounted) return;
     setState(() {
       token = null;
       userId = null;
+      userData = null;
     });
   }
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile', showBackButton: false, showNotificationIcon: true,),
-
-      body:  CustomScrollView(
+      appBar: const CustomAppBar(
+        title: 'Profile',
+        showBackButton: false,
+        showNotificationIcon: true,
+      ),
+      body: CustomScrollView(
         slivers: [
-
           SliverAppBar(
             floating: true,
             toolbarHeight: 200,
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
-             background: ProfileCardWidget(userData: userData,),
+              background: ProfileCardWidget(userData: userData, isLoading: isLoading,),
             ),
           ),
-
           SliverToBoxAdapter(
-            child:Column(
+            child: Column(
               children: [
-
-                // 5.height,
-                _buildSection(context,"Account", [
-                  _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),)),),
-                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userId,),)),),
-                  _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(),)),),
-                  _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),))),
-                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn",() => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),),
-                  _buildTile(context, Icons.local_offer_outlined, "Coupon",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),),
-                  _buildTile(context, Icons.person_4_outlined, "Provider",() => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderScreen(),)),),
-                  _buildTile(context, Icons.person_4, "Customer",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerScreen(isMenu: true,),)),),
+                _buildSection(context, "Account", [
+                  _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen()))),
+                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (_) => FavoriteScreen(userId: userId)))),
+                  _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (_) => WalletScreen()))),
+                  _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (_) => PackageScreen()))),
+                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () => Navigator.push(context, MaterialPageRoute(builder: (_) => TeamLeadScreen()))),
+                  _buildTile(context, Icons.local_offer_outlined, "Coupon", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CouponScreen()))),
+                  _buildTile(context, Icons.person_4_outlined, "Provider", () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProviderScreen()))),
+                  _buildTile(context, Icons.person_4, "Customer", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerScreen(isMenu: true))))
                 ]),
-
-                // 5.height,
-                _buildSection(context,"Preferences", [
-                  _buildTile(context, Icons.description_outlined, "About Us", () => Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUsScreen(),)),),
-                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),),
-                  _buildTile(context, Icons.settings_outlined, "Settings", () => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen(),)),),
-                  _buildTile(context, Icons.support_agent, "Help & Support", () => Navigator.push(context, MaterialPageRoute(builder: (context) => HelpSupportScreen(),)),),
-                  _buildTile(context, Icons.security, "Privacy & Policy",() => Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicyScreen(),)),),
-                  _buildTile(context, Icons.rule, "Terms And Conditions", () => Navigator.push(context, MaterialPageRoute(builder: (context) => TermsConditionsScreen(),)),),
-                  _buildTile(context, Icons.receipt_long, "Refund Policy", () => Navigator.push(context, MaterialPageRoute(builder: (context) => RefundPolicyScreen(),)),),
-                  _buildTile(context, Icons.cancel_outlined, "Cancellation Policy",() => Navigator.push(context, MaterialPageRoute(builder: (context) => CancellationPolicyScreen(),)),),
+                _buildSection(context, "Preferences", [
+                  _buildTile(context, Icons.description_outlined, "About Us", () => Navigator.push(context, MaterialPageRoute(builder: (_) => AboutUsScreen()))),
+                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () => Navigator.push(context, MaterialPageRoute(builder: (_) => NotificationScreen()))),
+                  _buildTile(context, Icons.settings_outlined, "Settings", () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingScreen()))),
+                  _buildTile(context, Icons.support_agent, "Help & Support", () => Navigator.push(context, MaterialPageRoute(builder: (_) => HelpSupportScreen()))),
+                  _buildTile(context, Icons.security, "Privacy & Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => PrivacyPolicyScreen()))),
+                  _buildTile(context, Icons.rule, "Terms And Conditions", () => Navigator.push(context, MaterialPageRoute(builder: (_) => TermsConditionsScreen()))),
+                  _buildTile(context, Icons.receipt_long, "Refund Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => RefundPolicyScreen()))),
+                  _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CancellationPolicyScreen())))
                 ]),
-
-                // 5.height,
-                _buildSection(context,"Others", [
-                  _buildTile(context, Icons.delete_outline, "Delete Account",() => Navigator.push(context, MaterialPageRoute(builder: (context) => DeleteAccountScreen(),)),),
-
-
-                  /// sign in hai to ('Sign Out' ) nhi to (Sign In)
+                _buildSection(context, "Others", [
+                  _buildTile(context, Icons.delete_outline, "Delete Account", () => Navigator.push(context, MaterialPageRoute(builder: (_) => DeleteAccountScreen()))),
                   _buildTile(
                     context,
                     token != null ? Icons.logout : Icons.login,
                     token != null ? 'Sign Out' : 'Sign In',
-                          () async {
-                        if (token == null) {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const AuthScreen()),
-                          );
-
-                          /// If login is successful
-                          if (result == true) {
-                            final prefs = await SharedPreferences.getInstance();
-                            setState(() {
-                              token = prefs.getString('token');
-                              userId = prefs.getString('_id');
-                            });
-                          }
-                        } else {
-                          showLogoutDialog(context, () async {
-                            await signOutUser();
-                            Navigator.pop(context); /// Close dialog
-                          });
+                        () async {
+                      if (token == null) {
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+                        if (result == true) {
+                          loadUserData();
                         }
+                      } else {
+                        showLogoutDialog(context, () async {
+                          await signOutUser();
+                          Navigator.pop(context);
+                        });
                       }
-                  ),
-
-                ]),
+                    },
+                  )
+                ])
               ],
             ),
           )
@@ -165,33 +169,31 @@ class _MoreScreenState extends State<MoreScreen> {
     );
   }
 
-
   Widget _buildSection(BuildContext context, String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding:  EdgeInsets.only(left: 15.0,bottom: 5),
-          child: Text(title, style:  textStyle14(context,)),
+          padding: const EdgeInsets.only(left: 15.0, bottom: 5),
+          child: Text(title, style: textStyle14(context)),
         ),
-
         CustomContainer(
           border: true,
-         backgroundColor: Colors.white,
-          padding: EdgeInsets.all(0),
-          margin: EdgeInsets.only(top: 0, bottom: 10, right: 10,left: 10),
+          backgroundColor: Colors.white,
+          padding: EdgeInsets.zero,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(children: children),
-        )
+        ),
       ],
     );
   }
 
   Widget _buildTile(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-      leading: Icon(icon,color: Colors.black54, size: 22),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+      leading: Icon(icon, color: Colors.black54, size: 22),
       title: Text(title, style: textStyle14(context)),
-      trailing:  Icon(Icons.arrow_forward_ios, size: 14, color: CustomColor.iconColor,),
+      trailing:  Icon(Icons.arrow_forward_ios, size: 14, color: CustomColor.iconColor),
       onTap: onTap,
     );
   }
@@ -203,21 +205,17 @@ void showLogoutDialog(BuildContext context, VoidCallback onConfirmLogout) {
     builder: (context) => AlertDialog(
       backgroundColor: CustomColor.whiteColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      title:  Text("Log Out", style: textStyle20(context, color: CustomColor.appColor )),
+      title: Text("Log Out", style: textStyle20(context, color: CustomColor.appColor)),
       content: const Text("Are you sure you want to log out?"),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context), // Cancel
-          child:  Text("Cancel", style: textStyle14(context, color: Colors.red),),
+          onPressed: () => Navigator.pop(context),
+          child: Text("Cancel", style: textStyle14(context, color: Colors.red)),
         ),
-
         TextButton(
-           onPressed: () {
-             onConfirmLogout();
-           },
-          child:  Text("Log Out", style: textStyle14(context, color:CustomColor.appColor),),
-        ),
-
+          onPressed: onConfirmLogout,
+          child: Text("Log Out", style: textStyle14(context, color: CustomColor.appColor)),
+        )
       ],
     ),
   );

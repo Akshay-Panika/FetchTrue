@@ -7,6 +7,7 @@ import '../../../core/widgets/custom_headline.dart';
 import '../../auth/firebase_uth/PhoneNumberScreen.dart';
 import '../../extra_earning/screen/extra_earning_screen.dart';
 import '../../my_lead/screen/my_Lead_screen.dart';
+import '../../rating_review/screen/ratting_review_screen.dart';
 import '../../team_build/screen/team_build_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
 
@@ -60,7 +61,7 @@ class LeadsWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 10),
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneNumberScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RatingReviewScreen(),)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

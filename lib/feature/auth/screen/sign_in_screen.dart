@@ -25,8 +25,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // final TextEditingController _phoneController = TextEditingController();
-  // final TextEditingController _emailController = TextEditingController();
   final TextEditingController _mainController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -68,19 +66,42 @@ class _SignInScreenState extends State<SignInScreen> {
 
     final input = _mainController.text.trim();
     final password = _passwordController.text.trim();
-    final email = RegExp(r'^\d+$').hasMatch(input) ? '+91$input' : input;
 
-    final response = await UserSignInService.signIn(email: email, password: password);
-    setState(() => _isLoading = false);
+    String email = "";
+    String mobileNumber = "";
 
-    if (response != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', response.token);
-      await prefs.setString('userId', response.user.id);
-      showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
-      Navigator.pop(context, true);
+    // ✅ Determine whether it's phone or email and set the correct field
+    if (RegExp(r'^\d{10}$').hasMatch(input)) {
+      mobileNumber = '$input';
+    } else if (input.contains('@')) {
+      email = input;
     } else {
-      showCustomSnackBar(context, "Login Failed. Try again.");
+      showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      final response = await UserSignInService.signIn(
+        mobileNumber: mobileNumber,
+        email: email,
+        password: password,
+      );
+
+      setState(() => _isLoading = false);
+
+      if (response != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', response.token);
+        await prefs.setString('userId', response.user.id);
+        showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
+        Navigator.pop(context, true);
+      } else {
+        showCustomSnackBar(context, "Login failed. Please check your credentials.");
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      showCustomSnackBar(context, "Login Error: ${e.toString()}");
     }
   }
 
@@ -118,19 +139,16 @@ class _SignInScreenState extends State<SignInScreen> {
                 controller: _passwordController,
                 keyboardType: TextInputType.text,
                 isRequired: true,
-                obscureText: _obscureText ? true : false),
-            0.height,
-
-            /// Show/Hide Password Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: () => setState(() => _obscureText = !_obscureText),
-                icon: Icon( _obscureText ? Icons.visibility_off:Icons.visibility, color: CustomColor.appColor,),
-                label: Text( _obscureText ? 'Show Password' : 'Hide Password', style: textStyle12(context, color: CustomColor.appColor),),
-              ),
+                obscureText: _obscureText ? true : false,
+                suffixIcon: InkWell(
+                  onTap: (){
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                  child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
             ),
-            20.height,
+            50.height,
 
             CustomButton(
               label: 'Sign In',

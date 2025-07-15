@@ -11,7 +11,8 @@ import '../../package/screen/package_screen.dart';
 
 class ProfileAppWidget extends StatefulWidget {
   final UserModel? userdata;
-  const ProfileAppWidget({super.key, this.userdata});
+  final bool isLoading;
+  const ProfileAppWidget({super.key, this.userdata, required this.isLoading});
 
   @override
   State<ProfileAppWidget> createState() => _ProfileAppWidgetState();
@@ -36,7 +37,7 @@ class _ProfileAppWidgetState extends State<ProfileAppWidget> {
       margin: EdgeInsets.all(0),
       backgroundColor: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: widget.userdata == null
+      child: widget.isLoading
           ? _buildShimmerEffect()
           : Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

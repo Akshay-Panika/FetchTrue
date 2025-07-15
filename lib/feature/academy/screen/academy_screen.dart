@@ -39,7 +39,7 @@ class AcademyScreen extends StatelessWidget {
     final List<Map<String, dynamic>> _services = [
       {
         'title': 'Training Tutorial',
-        'icon': Icons.verified,
+        'icon': Icons.video_camera_back_outlined,
         'screenBuilder': () => TrainingTutorialScreen(),
       },
       {
@@ -61,6 +61,11 @@ class AcademyScreen extends StatelessWidget {
         'title': 'Documents',
         'icon': Icons.insert_drive_file,
         'screenBuilder': () => DocumentScreen(),
+      },
+      {
+        'title': 'Podcast',
+        'icon': Icons.podcasts,
+        'screenBuilder': _openShorts,
       },
     ];
 

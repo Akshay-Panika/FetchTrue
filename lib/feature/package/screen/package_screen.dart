@@ -351,7 +351,7 @@ class _PackageScreenState extends State<PackageScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Growth Total'),
-              CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+              CustomAmountText(amount: '${pkg.grandtotal}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
             ],
           ),
           Divider(),
@@ -359,7 +359,7 @@ class _PackageScreenState extends State<PackageScreen> {
 
           GestureDetector(
             onTap: () {
-              double price = double.tryParse(pkg.discountedPrice.toString()) ?? 0;
+              double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
               showPaymentBottomSheet(context, price);
             },
             child: CustomContainer(
@@ -378,7 +378,7 @@ class _PackageScreenState extends State<PackageScreen> {
   }
 }
 
-void showPaymentBottomSheet(BuildContext context, double discountedPrice) {
+void showPaymentBottomSheet(BuildContext context, double grandTotal) {
   bool isFullPayment = true;
 
   showModalBottomSheet(
@@ -425,7 +425,7 @@ void showPaymentBottomSheet(BuildContext context, double discountedPrice) {
                           children: [
                             Text('Full payment'),
                             CustomAmountText(
-                              amount: discountedPrice.toStringAsFixed(2),
+                              amount: grandTotal.toStringAsFixed(2),
                             ),
                           ],
                         ),
@@ -450,7 +450,7 @@ void showPaymentBottomSheet(BuildContext context, double discountedPrice) {
                           children: [
                             Text('Half payment'),
                             CustomAmountText(
-                              amount: (discountedPrice / 2).toStringAsFixed(2),
+                              amount: (grandTotal / 2).toStringAsFixed(2),
                             ),
                           ],
                         ),

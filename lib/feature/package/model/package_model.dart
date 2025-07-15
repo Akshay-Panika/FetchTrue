@@ -4,6 +4,7 @@ class PackageModel {
   final int discount;
   final int discountedPrice;
   final int deposit;
+  final int grandtotal;
   final Map<String, String> description;
 
   PackageModel({
@@ -13,6 +14,7 @@ class PackageModel {
     required this.discountedPrice,
     required this.deposit,
     required this.description,
+    required this.grandtotal,
   });
 
   factory PackageModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class PackageModel {
       discount: json['discount'],
       discountedPrice: json['discountedPrice'],
       deposit: json['deposit'],
+      grandtotal: json['grandtotal'],
       description: Map<String, String>.from(json['description']),
     );
   }

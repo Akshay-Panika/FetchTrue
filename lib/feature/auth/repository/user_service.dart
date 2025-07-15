@@ -5,9 +5,8 @@ import '../../../helper/api_helper.dart';
 import '../model/sign_in_model.dart';
 
 class UserSignInService {
-
-  /// Login with email & password
   static Future<LoginResponse?> signIn({
+    required String mobileNumber,
     required String email,
     required String password,
   }) async {
@@ -15,20 +14,18 @@ class UserSignInService {
       final response = await ApiClient.dio.post(
         ApiUrls.signIn,
         data: {
-          "email": email,
-          "password": password,
+          'mobileNumber': mobileNumber,
+          'email': email,
+          'password': password,
         },
       );
-
-      if (response.statusCode == 200) {
-        return LoginResponse.fromJson(response.data);
-      } else {
-        print("Login failed: ${response.statusMessage}");
-        return null;
-      }
+      return LoginResponse.fromJson(response.data);
     } on DioException catch (e) {
-      print("Login error: ${e.message}");
-      return null;
+      if (e.response?.data != null) {
+        throw e.response?.data['error'] ?? "Login failed";
+      } else {
+        throw "Something went wrong. Please try again.";
+      }
     }
   }
 }
