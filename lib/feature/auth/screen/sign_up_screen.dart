@@ -1,14 +1,14 @@
-import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
-import 'package:fetchtrue/feature/auth/repository/sign_up_service.dart';
-import 'package:flutter/material.dart';
+import 'package:fetchtrue/feature/auth/firebase_uth/verify_number_service.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
-import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../../../core/costants/text_style.dart';
+import '../repository/sign_up_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -20,61 +20,27 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
 
-
   final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _raffController = TextEditingController();
 
-  bool _obscureText = true;
+  final VerifyNumberService _verifyNumberService = VerifyNumberService();
+  final SignUpService _signUpService = SignUpService();
+
   bool _isOtpVerified = false;
-  bool _isAgree = true;
   bool _isLoading = false;
+  bool _obscureText = true;
 
-  final _signUpService = SignUpService();
-  void _signUp() async {
-    if (!_isOtpVerified) {
-      showCustomSnackBar(context, 'Please verify your mobile number first');
-      return;
-    }
-
-    if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {
-      showCustomSnackBar(context, 'Passwords do not match');
-      return;
-    }
-
-    if (_emailController.text.trim().isEmpty || _fullNameController.text.trim().isEmpty) {
-      showCustomSnackBar(context, 'All required fields must be filled');
-      return;
-    }
-
-    if (!_isAgree) {
-      showCustomSnackBar(context, 'Please agree to the terms & conditions');
-      return;
-    }
-
-    setState(() => _isLoading = true);
-
-    try {
-      final result = await _signUpService.registerUser(
-        fullName: _fullNameController.text.trim(),
-        mobileNumber: _phoneController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        referredBy: _raffController.text.trim(),
-        isAgree: _isAgree,
-      );
-      showCustomSnackBar(context, 'Registration successful');
-      widget.onToggle(false); // Move to login screen
-    } catch (e) {
-      showCustomSnackBar(context, e.toString());
-    } finally {
-      setState(() => _isLoading = false);
-    }
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,25 +49,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Column(
           children: [
+            /// Logo
             Center(
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
                 height: _isOtpVerified ? 150 : 300,
                 child: Image.asset(CustomLogo.fetchTrueLogo),
               ),
             ),
 
-            // Center(child: Image.asset(CustomLogo.fetchTrueLogo, height: _isOtpVerified ?100 : 300)),
-
-            CustomFormField(
+            /// Full Name
+            CustomLabelFormField(
               context,
               'Full name',
               hint: 'Enter full name',
               controller: _fullNameController,
               keyboardType: TextInputType.text,
               isRequired: true,
-              enabled: _isOtpVerified ?false :true
+              enabled: !_isOtpVerified,
             ),
             15.height,
 
@@ -133,37 +99,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     10.width,
-                    Expanded(
-                      child: TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        style: textStyle14(context,
-                            color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                        decoration: InputDecoration(
-                          hintText: 'Enter phone number',
-                          hintStyle: textStyle14(context,
-                              color: CustomColor.descriptionColor,
-                              fontWeight: FontWeight.w400),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color:Colors.grey.shade300)
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey.shade300)
-                          ),
-                          filled: true,
-                          // fillColor: Colors.white,
-                          fillColor: _isOtpVerified ? Colors.grey.shade200 : CustomColor.whiteColor,
-                          enabled: _isOtpVerified ? false :true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                        ),
-                        validator: (value) => null,
-                      ),
+                    Expanded(child:
+                    CustomFormField(
+                      context,
+                      hint: 'Enter phone number',
+                      controller: _phoneController,
+                      keyboardType: TextInputType.text,
+                      isRequired: true,
+                      enabled: !_isOtpVerified,
+                    ),
                     ),
                   ],
                 ),
@@ -171,107 +115,171 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             15.height,
 
-            /// esme ek or logic ad kro jab full name or phone empty hai to Verify Number button work na kre
-            /// ✅ Show verify button only if OTP not verified
+            /// Verify Button
             if (!_isOtpVerified)
               Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 30.0),
                 child: CustomButton(
-                  isLoading: false,
+                  isLoading: _isLoading,
                   label: 'Verify Number',
                   onPressed: () async {
-                    // 🔐 Validation check
-                    if (_fullNameController.text.trim().isEmpty ||
-                        _phoneController.text.trim().isEmpty) {
-                      showCustomSnackBar(context, 'Please enter full name and phone number first');
+                    final fullName = _fullNameController.text.trim();
+                    final phone = _phoneController.text.trim().replaceAll(" ", "");
+
+                    if (fullName.isEmpty || phone.isEmpty) {
+                      showCustomSnackBar(
+                          context, 'Please enter full name and phone number first');
                       return;
                     }
 
-                    // ✅ Proceed to OTP screen
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const VerifyOtpScreen()),
-                    );
-                    if (result == true) {
-                      setState(() {
-                        _isOtpVerified = true;
-                      });
+                    if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+                      showCustomSnackBar(context, 'Please enter a valid 10-digit phone number');
+                      return;
+                    }
+
+                    setState(() => _isLoading = true);
+
+                    try {
+                      await _verifyNumberService.sendOtp(
+                        phone,
+                        onCodeSent: (verificationId) async {
+                          setState(() => _isLoading = false);
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VerifyOtpScreen(
+                                phoneNumber: phone,
+                                verifyService: _verifyNumberService,
+                              ),
+                            ),
+                          );
+                          if (result == true) {
+                            setState(() => _isOtpVerified = true);
+                          }
+                        },
+                      );
+                    } catch (e) {
+                      setState(() => _isLoading = false);
+                      showCustomSnackBar(context, e.toString());
                     }
                   },
                 ),
               ),
 
-
             /// User Info Fields (Always shown)
             if (_isOtpVerified)
-             Column(
-               children: [
-                 CustomFormField(
-                   context,
-                   'Email',
-                   hint: 'Enter email id',
-                   controller: _emailController,
-                   keyboardType: TextInputType.emailAddress,
-                   isRequired: true,
-                 ),
-                 15.height,
+              Column(
+                children: [
+                  CustomLabelFormField(
+                    context,
+                    'Email',
+                    hint: 'Enter email id',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    isRequired: true,
+                  ),
+                  15.height,
 
-                 CustomFormField(
-                   context,
-                   'Password',
-                   hint: 'Enter password',
-                   controller: _passwordController,
-                   keyboardType: TextInputType.text,
-                   isRequired: true,
-                   obscureText: _obscureText,
-                   suffixIcon: InkWell(
-                     onTap: (){
-                       setState(() {
-                         _obscureText = !_obscureText;
-                       });
-                     },
-                     child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
-                 ),
-                 15.height,
+                  CustomLabelFormField(
+                      context,
+                      'Password',
+                      hint: 'Enter password',
+                      controller: _passwordController,
+                      keyboardType: TextInputType.text,
+                      isRequired: true,
+                      obscureText: _obscureText,
+                      suffixIcon: InkWell(
+                        onTap: (){
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
+                  ),
+                  15.height,
 
-                 CustomFormField(
-                   context,
-                   'Confirm Password',
-                   hint: 'Enter confirm password',
-                   controller: _confirmPasswordController,
-                   keyboardType: TextInputType.text,
-                   isRequired: true,
-                   obscureText: _obscureText,
-                     suffixIcon: InkWell(
-                       onTap: (){
-                         setState(() {
-                           _obscureText = !_obscureText;
-                         });
-                       },
-                       child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
-                 ),
-                 15.height,
+                  CustomLabelFormField(
+                      context,
+                      'Confirm Password',
+                      hint: 'Enter confirm password',
+                      controller: _confirmPasswordController,
+                      keyboardType: TextInputType.text,
+                      isRequired: true,
+                      obscureText: _obscureText,
+                      suffixIcon: InkWell(
+                        onTap: (){
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
+                  ),
+                  15.height,
 
-                 CustomFormField(
-                   context,
-                   'Referral Code (Optional)',
-                   hint: 'Enter referral code',
-                   controller: _raffController,
-                   keyboardType: TextInputType.text,
-                   isRequired: false,
-                 ),
-                 50.height,
+                  CustomLabelFormField(
+                    context,
+                    'Referral Code (Optional)',
+                    hint: 'Enter referral code',
+                    controller: _raffController,
+                    keyboardType: TextInputType.text,
+                    isRequired: false,
+                  ),
+                  50.height,
 
-                 CustomButton(
-                   isLoading: _isLoading,
-                   label: 'Sign Up',
-                   onPressed: () {
-                     if (!_isLoading) _signUp();
-                   },
-                 ),
+                  CustomButton(
+                    isLoading: _isLoading,
+                    label: 'Sign Up',
+                      onPressed: () async {
+                        final email = _emailController.text.trim();
+                        final password = _passwordController.text.trim();
+                        final confirmPassword = _confirmPasswordController.text.trim();
+                        final name = _fullNameController.text.trim();
+                        final phone = _phoneController.text.trim();
+                        final referredBy = _raffController.text.trim();
 
-               ],
-             ) ,
+                        if (email.isEmpty || password.isEmpty || name.isEmpty || phone.isEmpty) {
+                          showCustomSnackBar(context, 'Please fill all required fields');
+                          return;
+                        }
+
+                        if (!email.contains('@')) {
+                          showCustomSnackBar(context, 'Please enter valid email');
+                          return;
+                        }
+
+                        if (password != confirmPassword) {
+                          showCustomSnackBar(context, 'Passwords do not match');
+                          return;
+                        }
+
+                        setState(() => _isLoading = true);
+
+                        try {
+                          final response = await _signUpService.registerUser(
+                            fullName: name,
+                            email: email,
+                            mobileNumber: phone,
+                            password: password,
+                            referredBy: referredBy,
+                            isAgree: true,
+                          );
+
+                          if (response.statusCode == 200) {
+                            showCustomSnackBar(context, '🎉 Registration successful');
+                            widget.onToggle(false); // go to Sign In
+                          } else {
+                            showCustomSnackBar(context, 'Something went wrong');
+                          }
+                        } catch (e) {
+                          showCustomSnackBar(context, e.toString());
+                        } finally {
+                          setState(() => _isLoading = false);
+                        }
+                      }
+                  ),
+
+                ],
+              ) ,
             30.height,
 
             Row(
@@ -292,7 +300,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 }
 
 class VerifyOtpScreen extends StatefulWidget {
-  const VerifyOtpScreen({super.key});
+  final String phoneNumber;
+  final VerifyNumberService verifyService;
+  const VerifyOtpScreen({super.key, required this.phoneNumber, required this.verifyService});
 
   @override
   State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();
@@ -302,6 +312,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   final List<TextEditingController> _controllers =
   List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  bool _isVerifying = false;
 
   @override
   void dispose() {
@@ -327,121 +338,80 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: const CustomAppBar(title: 'Verify OTP', showBackButton: true),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 10),
-              Center(
-                child: Image.asset(
-                  'assets/image/otpImage.jpg',
-                  height: 300,
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              /// ✅ OTP Description
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Enter the verification code sent to ',
-                      style: textStyle14(context,
-                          color: CustomColor.descriptionColor),
-                    ),
-                    TextSpan(
-                      text: '+91 XXXX XXXX XX ',
-                      style:
-                      textStyle14(context, color: CustomColor.greenColor),
-                    ),
-                    TextSpan(
-                      text: 'Wrong Number ?',
-                      style:
-                      textStyle14(context, color: CustomColor.blackColor),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              /// ✅ OTP TextFields
-              SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(6, (index) {
-                    return SizedBox(
-                      width: 48,
-                      child: TextField(
-                        controller: _controllers[index],
-                        focusNode: _focusNodes[index],
-                        keyboardType: TextInputType.number,
-                        maxLength: 1,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                        onChanged: (value) => _onOtpChanged(value, index),
-                        decoration: InputDecoration(
-                          counterText: '',
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              /// ✅ Resend Info
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "Didn't receive the code? ",
-                        style: textStyle14(context,
-                            color: CustomColor.descriptionColor),
-                      ),
-                      TextSpan(
-                        text: 'Resend in 00:30',
-                        style:
-                        textStyle14(context, color: CustomColor.blackColor),
-                      ),
-                    ],
+        child: Column(
+          children: [
+            Image.asset('assets/image/otpImage.jpg', height: 280),
+            const SizedBox(height: 20),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Enter the verification code sent to ',
+                    style: textStyle14(context, color: CustomColor.descriptionColor),
                   ),
-                ),
+                  TextSpan(
+                    text: '+91 ${widget.phoneNumber}',
+                    style: textStyle14(context, color: CustomColor.greenColor),
+                  ),
+                ],
               ),
-              const SizedBox(height: 60),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Wrong Number?", style: textStyle14(context)),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(6, (index) {
+                return SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Center(
+                    child: TextField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      maxLength: 1,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      onChanged: (value) => _onOtpChanged(value, index),
+                      decoration: const InputDecoration(counterText: '', border: OutlineInputBorder()),
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 50),
+            CustomButton(
+              label: 'Verify OTP',
+              isLoading: _isVerifying,
+              onPressed: () async {
+                final otp = _controllers.map((e) => e.text.trim()).join();
 
-              /// ✅ Verify OTP Button
-              CustomButton(
-                isLoading: false,
-                label: 'Verify OTP',
-                onPressed: () {
-                  String otp = _controllers.map((e) => e.text).join();
-                  print('Entered OTP: $otp');
-                  Navigator.pop(context, true);
-                },
-              ),
-            ],
-          ),
+                if (otp.length != 6 || otp.contains(RegExp(r'\D'))) {
+                  showCustomSnackBar(context, 'Please enter a valid 6-digit OTP');
+                  return;
+                }
+
+                setState(() => _isVerifying = true);
+                try {
+                  final verified = await widget.verifyService.verifyOtp(otp);
+                  if (verified) {
+                    Navigator.pop(context, true);
+                  } else {
+                    showCustomSnackBar(context, 'OTP verification failed');
+                  }
+                } catch (e) {
+                  showCustomSnackBar(context, 'Something went wrong otp');
+                } finally {
+                  setState(() => _isVerifying = false);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

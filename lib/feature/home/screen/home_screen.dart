@@ -9,6 +9,7 @@ import '../../../core/widgets/custom_highlight_service.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../advisers/screen/adviser_screen.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../more/model/user_model.dart';
 import '../../more/repository/user_service.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
@@ -22,66 +23,14 @@ import '../widget/module_widget.dart';
 import '../widget/profile_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key,});
+  final UserModel? user;
+  const HomeScreen({super.key, this.user,});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  String? userId;
-  String? token;
-  UserModel? userData;
-  bool isLoading = true;
-
-  final UserService userService = UserService();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    loadUserData();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      loadUserData();
-    }
-  }
-
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString('userId');
-    final tkn = prefs.getString('token');
-
-    if (!mounted) return;
-
-    setState(() {
-      userId = id;
-      token = tkn;
-      isLoading = true;
-    });
-
-    if (id != null) {
-      final user = await userService.fetchUserById(id);
-      if (!mounted) return;
-      setState(() {
-        userData = user;
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +43,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Profile App Widget
             SliverToBoxAdapter(
-              child: ProfileAppWidget(userdata: userData, isLoading: isLoading,),
+              // child: Text(widget.user?.fullName??'User name'),
+              child: ProfileAppWidget(
+                userdata: widget.user,
+                isLoading: widget.user == null,),
             ),
 
             /// Search bar

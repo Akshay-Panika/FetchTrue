@@ -122,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
             )),
             30.height,
 
-            CustomFormField(
+            CustomLabelFormField(
               context,
               inputLabel,
               hint: 'Enter email or phone number',
@@ -134,7 +134,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
             15.height,
 
-            CustomFormField(context, 'Password',
+            CustomLabelFormField(context, 'Password',
                 hint: 'Enter Password',
                 controller: _passwordController,
                 keyboardType: TextInputType.text,

@@ -61,7 +61,7 @@ class LeadsWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 10),
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RatingReviewScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneNumberScreen(),)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

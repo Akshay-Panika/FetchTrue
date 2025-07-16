@@ -128,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               20.height,
 
-              CustomFormField(
+              CustomLabelFormField(
                 context,
                 'Name',
                 hint: 'Enter name',
@@ -138,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               10.height,
 
-              CustomFormField(
+              CustomLabelFormField(
                 context,
                 'Phone',
                 hint: 'Enter phone no',
@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               10.height,
 
-              CustomFormField(
+              CustomLabelFormField(
                 context,
                 'Email',
                 hint: 'Enter email id',
@@ -158,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               10.height,
 
-              CustomFormField(
+              CustomLabelFormField(
                 context,
                 'Address',
                 hint: 'Enter address',
@@ -196,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               10.height,
 
-              CustomFormField(
+              CustomLabelFormField(
                 context,
                 "Country",
                 isRequired: true,

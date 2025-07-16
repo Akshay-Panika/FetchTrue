@@ -8,6 +8,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/screen/auth_screen.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../cancellation_policy/screen/cancellation_policy_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../delete_account/screen/delete_account_screen.dart';
@@ -61,6 +62,35 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
     }
   }
 
+  // Future<void> loadUserData() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final id = prefs.getString('userId');
+  //   final tkn = prefs.getString('token');
+  //
+  //   if (!mounted) return;
+  //
+  //   setState(() {
+  //     userId = id;
+  //     token = tkn;
+  //     isLoading = true;
+  //   });
+  //
+  //   if (id != null) {
+  //     final user = await userService.fetchUserById(id);
+  //     if (!mounted) return;
+  //     setState(() {
+  //       userData = user;
+  //       isLoading = false;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       userData = null;
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+
+
   Future<void> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final id = prefs.getString('userId');
@@ -81,13 +111,17 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         userData = user;
         isLoading = false;
       });
+
+      userNotifier.value = user; // ✅ Sync to notifier
     } else {
       setState(() {
         userData = null;
         isLoading = false;
       });
+      userNotifier.value = null; // ✅ Ensure logout clears state
     }
   }
+
 
   Future<void> signOutUser() async {
     final prefs = await SharedPreferences.getInstance();

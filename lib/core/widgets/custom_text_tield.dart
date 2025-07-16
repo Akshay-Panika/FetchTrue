@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../costants/custom_color.dart';
 import '../costants/text_style.dart';
 
-Widget CustomFormField(
+Widget CustomLabelFormField(
     BuildContext context,
     String label,
     {
@@ -67,3 +67,54 @@ Widget CustomFormField(
     ],
   );
 }
+
+
+
+Widget CustomFormField(
+    BuildContext context,
+    {
+      bool isRequired = false,
+      bool enabled = true,
+      int maxLines = 1,
+      int? maxLength,
+      String? hint,
+      String? prefixText,
+      Widget? suffixIcon,
+      bool obscureText = false,
+      required TextInputType  keyboardType,
+      final TextEditingController? controller,
+      String? Function(String?)? validator,
+      VoidCallback? onTap
+    }) {
+  return TextFormField(
+    onTap: onTap,
+    controller: controller,
+    enabled: enabled,
+    maxLines: maxLines,
+    obscureText: obscureText,
+    style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+    decoration: InputDecoration(
+      hintText: hint,
+      prefixText: prefixText,
+      suffixIcon: suffixIcon,
+      hintStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+      border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade300)
+      ),
+      focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color:Colors.grey.shade300)
+      ),
+      enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade300)
+      ),
+      disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey.shade300)
+      ),
+      filled: true,
+      fillColor: enabled ? Colors.white : Colors.grey.shade200,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    ),
+    validator: validator,
+  );
+}
+
