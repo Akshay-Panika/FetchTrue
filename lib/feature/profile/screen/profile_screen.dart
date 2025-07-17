@@ -1,135 +1,137 @@
+import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
-import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/dimension.dart';
-import '../../../core/costants/text_style.dart';
-import '../../../core/widgets/custom_container.dart';
-import '../../auth/user_notifier/user_notifier.dart';
-import '../../more/model/user_model.dart';
-import '../../more/repository/user_service.dart';
+
+import 'add_address_screen.dart';
+
 
 class ProfileScreen extends StatefulWidget {
-  final String userId;
-  const ProfileScreen({super.key, required this.userId});
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late final UserService _userService;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
-
-  String? userId;
-  UserModel? user;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _userService = UserService();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<UserSession>(context, listen: false);
-      userId = provider.userId;
-
-      if (userId == null) {
-        // अगर लॉगिन नहीं है तो pop करके वापस ले जाए या मैसेज दिखाएं
-        setState(() => isLoading = false);
-        return;
-      }
-
-      _fetchUserData(userId!);
-    });
-  }
-
-  Future<void> _fetchUserData(String id) async {
-    final result = await _userService.fetchUserById(id);
-    if (result != null) {
-      setState(() {
-        user = result;
-        _nameController.text = result.fullName ?? '';
-        _emailController.text = result.email ?? '';
-        _phoneController.text = result.mobileNumber ?? '';
-        _addressController.text = '' ?? '';
-        _countryController.text = '' ?? '';
-      });
-    }
-    setState(() => isLoading = false);
-  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Profile', showBackButton: true,),
-      body: isLoading
-          ?  Center(child: CircularProgressIndicator(color: CustomColor.appColor,))
-          : userId == null
-          ?  Center(child: Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 35,
-                backgroundImage: AssetImage(CustomImage.nullImage),),
-              15.height,
-              Text("Please sign in to view your profile."),
-              100.height
-            ],
-          ))
-          : user == null
-          ? const Center(child: Text("No user data found."))
-          : Padding(
-        padding: const EdgeInsets.all(12),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              10.height,
 
-              Center(
-                child: CustomContainer(
-                  border: true,
-                  height: 100,width: 100,
-                  assetsImg: CustomImage.nullImage,
-                ),
-              ),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildField("Name", "Enter your full name", _nameController),
-                  _buildField("Phone", "Enter your mobile number", _phoneController),
-                  _buildField("Email", "Enter your email address", _emailController),
-                  _buildField("Address", "Enter your address", _addressController),
-                  _buildField("Country", "Enter your country", _countryController),
-                ],
-              ),
-
-            ],
+      body: Stack(
+        alignment: AlignmentDirectional.topStart,
+        children: [
+          Container(
+            height: 250,
+            color: Colors.grey,
+            width: double.infinity,
+            child: Image.asset(CustomImage.nullImage,fit: BoxFit.fill,),
           ),
-        ),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 200.0,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomContainer(
+                  border: true,
+                  backgroundColor: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Personal Details', style: textStyle16(context),),
+                          
+                          Row(
+                            children: [
+                              IconButton(onPressed: () => null, icon: Icon(Icons.mode_edit_outline_outlined)),
+                              IconButton(onPressed: () => null, icon: Icon(Icons.camera_alt_outlined)),
+                            ],
+                          )
+                        ],
+                      ),
+                      10.height,
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Akshay Panika', style: textStyle18(context),),
+                              Text('+91 8989207770', style: textStyle14(context, color: CustomColor.descriptionColor),),
+                              Text('Email Id', style: textStyle14(context, color: CustomColor.descriptionColor),),
+                          
+                            ],
+                          ),
+                          
+                          CustomContainer(
+                            border: true,
+                            backgroundColor: CustomColor.whiteColor,
+                            margin: EdgeInsets.zero,
+                            child: Text('Verify'),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+
+                CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  child: ListTile(
+                    minVerticalPadding: 0,
+                    minTileHeight: 0,
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text('Financial Details'),
+                    subtitle: Text('Income, employment details and more'),
+                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
+                  ),
+                ),
+
+                CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  child: ListTile(
+                    minVerticalPadding: 0,
+                    minTileHeight: 0,
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text('Additional Details'),
+                    subtitle: Text('Age, gender, and more'),
+                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, top: 20),
+                  child: Text('Save Addresses', style: textStyle14(context),),
+                ),
+                CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 10),
+                  child: Column(
+                    children: [
+                      Icon(Icons.add),
+                      Text('Add New')
+                    ],
+                  ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),)),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
-
-  Widget _buildField(String label, String hint, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: CustomLabelFormField(
-        context,
-        label,
-        hint: hint,
-        controller: controller,
-        keyboardType: TextInputType.text,
-      ),
-    );
-  }
-
 }
