@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/module/lead_bloc.dart';
 import '../bloc/module/lead_event.dart';
 import '../bloc/module/lead_state.dart';
@@ -42,6 +43,8 @@ class _MyLeadScreenState extends State<MyLeadScreen> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+    final userSession = Provider.of<UserSession>(context);
+
     return Scaffold(
       appBar: CustomAppBar(
         title: 'My Leads',

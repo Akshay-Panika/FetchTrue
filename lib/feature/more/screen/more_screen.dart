@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
 import 'package:fetchtrue/feature/more/widget/profile_card_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
@@ -24,8 +24,7 @@ import '../../settings/screen/setting_screen.dart';
 import '../../team_build/screen/team_build_screen.dart';
 import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
-import '../model/user_model.dart';
-import '../repository/user_service.dart';
+
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -35,106 +34,11 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
-  String? userId;
-  String? token;
-  UserModel? userData;
-  bool isLoading = true;
 
-  final UserService userService = UserService();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    loadUserData();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      loadUserData();
-    }
-  }
-
-  // Future<void> loadUserData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final id = prefs.getString('userId');
-  //   final tkn = prefs.getString('token');
-  //
-  //   if (!mounted) return;
-  //
-  //   setState(() {
-  //     userId = id;
-  //     token = tkn;
-  //     isLoading = true;
-  //   });
-  //
-  //   if (id != null) {
-  //     final user = await userService.fetchUserById(id);
-  //     if (!mounted) return;
-  //     setState(() {
-  //       userData = user;
-  //       isLoading = false;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       userData = null;
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
-
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString('userId');
-    final tkn = prefs.getString('token');
-
-    if (!mounted) return;
-
-    setState(() {
-      userId = id;
-      token = tkn;
-      isLoading = true;
-    });
-
-    if (id != null) {
-      final user = await userService.fetchUserById(id);
-      if (!mounted) return;
-      setState(() {
-        userData = user;
-        isLoading = false;
-      });
-
-      userNotifier.value = user; // ✅ Sync to notifier
-    } else {
-      setState(() {
-        userData = null;
-        isLoading = false;
-      });
-      userNotifier.value = null; // ✅ Ensure logout clears state
-    }
-  }
-
-
-  Future<void> signOutUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (!mounted) return;
-    setState(() {
-      token = null;
-      userId = null;
-      userData = null;
-    });
-  }
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Profile',
@@ -148,52 +52,98 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             toolbarHeight: 200,
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
-              background: ProfileCardWidget(userData: userData, isLoading: isLoading,),
+              background: ProfileCardWidget(),
+              // background: Center(
+              //   child: Text(
+              //     userSession.isLoggedIn
+              //         ? "Welcome User ID: ${userSession.userId}"
+              //         : "You are not logged in",
+              //     style: textStyle16(context, fontWeight: FontWeight.w600),
+              //   ),
+              // ),
             ),
           ),
           SliverToBoxAdapter(
             child: Column(
               children: [
                 _buildSection(context, "Account", [
-                  _buildTile(context, Icons.person_outline, "Profile", () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen()))),
-                  _buildTile(context, Icons.favorite_border, "Favorite", () => Navigator.push(context, MaterialPageRoute(builder: (_) => FavoriteScreen(userId: userId)))),
-                  _buildTile(context, Icons.wallet_outlined, "Wallet", () => Navigator.push(context, MaterialPageRoute(builder: (_) => WalletScreen()))),
-                  _buildTile(context, Icons.card_giftcard, "Package", () => Navigator.push(context, MaterialPageRoute(builder: (_) => PackageScreen()))),
-                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () => Navigator.push(context, MaterialPageRoute(builder: (_) => TeamLeadScreen()))),
-                  _buildTile(context, Icons.local_offer_outlined, "Coupon", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CouponScreen()))),
-                  _buildTile(context, Icons.person_4_outlined, "Provider", () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProviderScreen()))),
-                  _buildTile(context, Icons.person_4, "Customer", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerScreen(isMenu: true))))
+                  _buildTile(context, Icons.person_outline, "Profile", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                  }),
+                  _buildTile(context, Icons.favorite_border, "Favorite", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                        FavoriteScreen(userId: userSession.userId)));
+                  }),
+                  _buildTile(context, Icons.wallet_outlined, "Wallet", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()));
+                  }),
+                  _buildTile(context, Icons.card_giftcard, "Package", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const PackageScreen()));
+                  }),
+                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const TeamLeadScreen()));
+                  }),
+                  _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
+                  }),
+                  _buildTile(context, Icons.person_4_outlined, "Provider", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProviderScreen()));
+                  }),
+                  _buildTile(context, Icons.person_4, "Customer", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomerScreen(isMenu: true)));
+                  }),
                 ]),
                 _buildSection(context, "Preferences", [
-                  _buildTile(context, Icons.description_outlined, "About Us", () => Navigator.push(context, MaterialPageRoute(builder: (_) => AboutUsScreen()))),
-                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () => Navigator.push(context, MaterialPageRoute(builder: (_) => NotificationScreen()))),
-                  _buildTile(context, Icons.settings_outlined, "Settings", () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingScreen()))),
-                  _buildTile(context, Icons.support_agent, "Help & Support", () => Navigator.push(context, MaterialPageRoute(builder: (_) => HelpSupportScreen()))),
-                  _buildTile(context, Icons.security, "Privacy & Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => PrivacyPolicyScreen()))),
-                  _buildTile(context, Icons.rule, "Terms And Conditions", () => Navigator.push(context, MaterialPageRoute(builder: (_) => TermsConditionsScreen()))),
-                  _buildTile(context, Icons.receipt_long, "Refund Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => RefundPolicyScreen()))),
-                  _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () => Navigator.push(context, MaterialPageRoute(builder: (_) => CancellationPolicyScreen())))
+                  _buildTile(context, Icons.description_outlined, "About Us", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutUsScreen()));
+                  }),
+                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+                  }),
+                  _buildTile(context, Icons.settings_outlined, "Settings", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingScreen()));
+                  }),
+                  _buildTile(context, Icons.support_agent, "Help & Support", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
+                  }),
+                  _buildTile(context, Icons.security, "Privacy & Policy", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
+                  }),
+                  _buildTile(context, Icons.rule, "Terms And Conditions", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
+                  }),
+                  _buildTile(context, Icons.receipt_long, "Refund Policy", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
+                  }),
+                  _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
+                  }),
                 ]),
                 _buildSection(context, "Others", [
-                  _buildTile(context, Icons.delete_outline, "Delete Account", () => Navigator.push(context, MaterialPageRoute(builder: (_) => DeleteAccountScreen()))),
+                  _buildTile(context, Icons.delete_outline, "Delete Account", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeleteAccountScreen()));
+                  }),
                   _buildTile(
                     context,
-                    token != null ? Icons.logout : Icons.login,
-                    token != null ? 'Sign Out' : 'Sign In',
+                    userSession.isLoggedIn ? Icons.logout : Icons.login,
+                    userSession.isLoggedIn ? 'Sign Out' : 'Sign In',
                         () async {
-                      if (token == null) {
-                        final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
+                      if (!userSession.isLoggedIn) {
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()),
+                        );
                         if (result == true) {
-                          loadUserData();
+                          setState(() {}); // Optional, Provider will rebuild
                         }
                       } else {
                         showLogoutDialog(context, () async {
-                          await signOutUser();
-                          Navigator.pop(context);
+                          Navigator.pop(context); // close dialog
+                          await userSession.logout(); // ✅ actual logout
+                          setState(() {}); // Optional: to refresh UI if needed
                         });
                       }
                     },
                   )
+
                 ])
               ],
             ),
@@ -227,7 +177,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
       contentPadding: const EdgeInsets.symmetric(horizontal: 15),
       leading: Icon(icon, color: Colors.black54, size: 22),
       title: Text(title, style: textStyle14(context)),
-      trailing:  Icon(Icons.arrow_forward_ios, size: 14, color: CustomColor.iconColor),
+      trailing: Icon(Icons.arrow_forward_ios, size: 14, color: CustomColor.iconColor),
       onTap: onTap,
     );
   }

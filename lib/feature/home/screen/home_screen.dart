@@ -1,6 +1,6 @@
 import 'package:fetchtrue/feature/home/widget/all_service_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -10,21 +10,18 @@ import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../advisers/screen/adviser_screen.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../more/model/user_model.dart';
-import '../../more/repository/user_service.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
 import '../../team_build/screen/team_build_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
+import '../widget/profile_card_widget.dart';
 import '../widget/team_build_widget.dart';
 import '../widget/module_widget.dart';
-import '../widget/profile_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  final UserModel? user;
-  const HomeScreen({super.key, this.user,});
+  const HomeScreen({super.key,});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -35,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+    final userSession = Provider.of<UserSession>(context);
+
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0,),
       body: SafeArea(
@@ -43,11 +42,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Profile App Widget
             SliverToBoxAdapter(
-              // child: Text(widget.user?.fullName??'User name'),
-              child: ProfileAppWidget(
-                userdata: widget.user,
-                isLoading: widget.user == null,),
+              child: ProfileAppWidget(),
             ),
+
 
             /// Search bar
             SliverAppBar(

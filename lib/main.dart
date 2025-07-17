@@ -1,16 +1,28 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
 import 'feature/auth/screen/splash_screen.dart';
+import 'feature/auth/user_notifier/user_notifier.dart';
 import 'firebase_options.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  final userSession = UserSession();
+  await userSession.loadUserSession();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => userSession), // ✅ Fix किया
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,9 +41,12 @@ class MyApp extends StatelessWidget {
           elevation: 0,
           iconTheme: IconThemeData(color: CustomColor.iconColor),
           actionsIconTheme: IconThemeData(color: CustomColor.iconColor),
-          titleTextStyle:  TextStyle(fontSize: 16, color: CustomColor.appColor, fontWeight: FontWeight.w600,),
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            color: CustomColor.appColor,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-
       ),
       title: 'Fetch True',
       home: SplashScreen(),

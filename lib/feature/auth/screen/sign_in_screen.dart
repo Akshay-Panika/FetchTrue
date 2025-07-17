@@ -3,6 +3,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
@@ -12,6 +13,7 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../repository/user_service.dart';
+import '../user_notifier/user_notifier.dart';
 
 class SignInScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -70,9 +72,8 @@ class _SignInScreenState extends State<SignInScreen> {
     String email = "";
     String mobileNumber = "";
 
-    // ✅ Determine whether it's phone or email and set the correct field
     if (RegExp(r'^\d{10}$').hasMatch(input)) {
-      mobileNumber = '$input';
+      mobileNumber = input;
     } else if (input.contains('@')) {
       email = input;
     } else {
@@ -91,11 +92,17 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() => _isLoading = false);
 
       if (response != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', response.token);
-        await prefs.setString('userId', response.user.id);
+        /// ✅ Use centralized UserSession (no SharedPreferences here)
+        await Provider.of<UserSession>(context, listen: false).login(
+          response.user.id,
+          response.token,
+          response.user.fullName,
+          response.user.email,
+          response.user.createdAt
+        );
+
         showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
-        Navigator.pop(context, true);
+        Navigator.pop(context, true); // return success
       } else {
         showCustomSnackBar(context, "Login failed. Please check your credentials.");
       }

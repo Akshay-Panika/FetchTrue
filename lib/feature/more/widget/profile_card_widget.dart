@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../model/user_model.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../package/screen/package_screen.dart';
 
-class ProfileCardWidget extends StatelessWidget {
-  final UserModel? userData;
-  final bool isLoading;
-  const ProfileCardWidget({super.key, required this.userData, required this.isLoading});
+class ProfileCardWidget extends StatefulWidget {
+  const ProfileCardWidget({super.key,});
+
+  @override
+  State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
+
+  static String _formatDate(String isoDate) {
+    try {
+      final date = DateTime.parse(isoDate);
+      return "${date.day}/${date.month}/${date.year}";
+    } catch (_) {
+      return "-";
+    }
+  }
+}
+
+class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final userSession = Provider.of<UserSession>(context);
+
     return CustomContainer(
       backgroundColor: CustomColor.whiteColor,
       padding: const EdgeInsets.all(15),
-      child: isLoading
-          ? _buildShimmerEffect()
-          : Column(
+      child:  Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           /// TOP ROW
@@ -35,12 +50,15 @@ class ProfileCardWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userData?.fullName ?? 'User Name',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        userSession.isLoggedIn
+                            ? "${userSession.name}"
+                            : "Guest",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),overflow: TextOverflow.clip,
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        userData?.email ?? 'Email',
+                      Text(userSession.isLoggedIn
+                          ? "${userSession.email}"
+                          :'Email Id',
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -76,9 +94,12 @@ class ProfileCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildStatus(
-                value: userData != null ? _formatDate(userData!.createdAt) : '00/00/25',
+                value:_formatDate( userSession.isLoggedIn && userSession.loginDate != null
+                    ? userSession.loginDate!
+                    : "",),
                 valueType: 'Joining date',
               ),
+
               _buildStatus(value: '00', valueType: 'Lead Completed'),
               _buildStatus(value: '00', valueType: 'Total Earning'),
             ],
@@ -106,6 +127,7 @@ class ProfileCardWidget extends StatelessWidget {
       ],
     );
   }
+
 
   static String _formatDate(String isoDate) {
     try {
