@@ -14,7 +14,7 @@ class PackageBenefitsScreen extends StatelessWidget {
       body: SafeArea(child:
       CustomContainer(
         backgroundColor: Colors.white,
-        child: Html(data: htmlDesc),
+        child: SingleChildScrollView(child: Html(data: htmlDesc)),
       )),
     );
   }

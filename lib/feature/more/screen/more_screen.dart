@@ -68,7 +68,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
               children: [
                 _buildSection(context, "Account", [
                   _buildTile(context, Icons.person_outline, "Profile", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId!,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId.toString(),)));
                   }),
                   _buildTile(context, Icons.favorite_border, "Favorite", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
