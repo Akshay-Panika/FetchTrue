@@ -52,4 +52,25 @@ class UserModel {
       createdAt: json['createdAt'] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "_id": id,
+      "fullName": fullName,
+      "email": email,
+      "mobileNumber": mobileNumber,
+      "referralCode": referralCode,
+      "referredBy": referredBy,
+      "isAgree": isAgree,
+      "isEmailVerified": isEmailVerified,
+      "isMobileVerified": isMobileVerified,
+      "packageActive": packageActive,
+      "isCommissionDistribute": isCommissionDistribute,
+      "serviceCustomers": serviceCustomers,
+      "favoriteServices": favoriteServices,
+      "favoriteProviders": favoriteProviders,
+      "createdAt": createdAt,
+    };
+  }
+
 }

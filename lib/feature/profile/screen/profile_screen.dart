@@ -8,9 +8,14 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../../../helper/Image_picker_helper.dart';
+import '../../more/model/user_model.dart';
+import '../../more/repository/user_service.dart';
+
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String userId;
+
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -33,21 +38,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Gujarat': ['Ahmedabad', 'Surat', 'Rajkot'],
   };
 
+  final UserService _userService = UserService();
+  UserModel? _userData;
+  bool _isLoading = true;
   File? _selectedProfile;
+
+  late final String userId;
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = "Akshay Panika";
-    _emailController.text = "akshay@example.com";
-    _phoneController.text = "+91 8989207770";
-    _addressController.text = "123, Waidhan singrauli mp";
-    _countryController.text = 'India';
+    userId = widget.userId;
+    fetchUserProfile();
 
     selectedState.addListener(() {
       cityList.value = stateCityMap[selectedState.value] ?? [];
       selectedCity.value = '';
     });
+  }
+
+  Future<void> fetchUserProfile() async {
+    final data = await _userService.fetchUserById(userId);
+
+    if (data != null) {
+      setState(() {
+        _userData = data;
+        _isLoading = false;
+
+        _nameController.text = data.fullName;
+        _emailController.text = data.email;
+        _phoneController.text = data.mobileNumber;
+        _addressController.text = data.toJson()['address'] ?? '';
+        _countryController.text = data.toJson()['country'] ?? 'India';
+
+        selectedState.value = data.toJson()['state'] ?? '';
+        selectedCity.value = data.toJson()['city'] ?? '';
+      });
+    } else {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to load user data")),
+      );
+    }
   }
 
   @override
@@ -62,9 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> pickLogo() async {
     final image = await ImagePickerHelper.pickImage();
     if (image != null && mounted) {
-      setState(() {
-        _selectedProfile = image;
-      });
+      setState(() => _selectedProfile = image);
     }
   }
 
@@ -79,6 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(
@@ -87,7 +118,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
-        child: SingleChildScrollView(
+        child:
+        _isLoading ? Center(child: CircularProgressIndicator(color: CustomColor.appColor,)) :
+        SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 20),
@@ -102,7 +135,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       border: true,
                       padding: EdgeInsets.zero,
                       backgroundColor: CustomColor.whiteColor,
-                      // borderRadius:,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(55),
                         child: _selectedProfile != null
