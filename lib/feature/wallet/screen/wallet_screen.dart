@@ -99,14 +99,15 @@ class _WalletScreenState extends State<WalletScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 150.0),
                 child: NoUserSignWidget(),
-              )
-            else
+              ),
+
+            if (widget.userId.isNotEmpty)
             Expanded(
               child: Container(
                 color: CustomColor.whiteColor,
                 child: TabBarView(
                   children: [
-                    _buildTransactionList(_walletData!.transactions),
+                    _buildTransactionList(),
                     _noDataFound(context), // Placeholder for "Team Build"
                     _noDataFound(context), // Placeholder for "Team Revenue"
                   ],
@@ -215,72 +216,75 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
-}
 
-Widget _buildTransactionList(List<TransactionModel> transactions) {
-  if (transactions.isEmpty) {
-    return Center(child: Text('No transactions found.'));
-  }
+  Widget _buildTransactionList() {
 
-  return ListView.builder(
-    itemCount: transactions.length,
-    padding: const EdgeInsets.symmetric(horizontal: 10),
-    itemBuilder: (context, index) {
-      final tx = transactions[index];
-      final isCredit = tx.type == 'credit';
+    final transactions = _walletData?.transactions;
 
-      return Column(
-        children: [
-          ListTile(
-            minLeadingWidth: 0,
-            contentPadding: const EdgeInsets.only(top: 10),
-            leading: CircleAvatar(
-              backgroundColor: CustomColor.whiteColor,
-              child: Icon(
-                isCredit
-                    ? CupertinoIcons.arrow_turn_left_down
-                    : CupertinoIcons.arrow_turn_left_up,
-                color: isCredit ? CustomColor.appColor : CustomColor.redColor,
+    if (transactions == null || transactions.isEmpty) {
+      return const Center(child: Text('No transactions.'));
+    }
+
+    return ListView.builder(
+      itemCount: transactions.length,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      itemBuilder: (context, index) {
+        final tx = transactions[index];
+        final isCredit = tx.type == 'credit';
+
+        return Column(
+          children: [
+            ListTile(
+              minLeadingWidth: 0,
+              contentPadding: const EdgeInsets.only(top: 10),
+              leading: CircleAvatar(
+                backgroundColor: CustomColor.whiteColor,
+                child: Icon(
+                  isCredit
+                      ? CupertinoIcons.arrow_turn_left_down
+                      : CupertinoIcons.arrow_turn_left_up,
+                  color: isCredit ? CustomColor.appColor : CustomColor.redColor,
+                ),
               ),
-            ),
-            title: Text('Ref #${tx.referenceId.substring(0, 6)}', style: textStyle12(context)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(tx.description,
+              title: Text('Ref #${tx.referenceId.substring(0, 6)}', style: textStyle12(context)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(tx.description,
+                      style: textStyle12(
+                        context,
+                        color: CustomColor.descriptionColor,
+                        fontWeight: FontWeight.w400,
+                      )),
+                  Text(
+                    DateFormat('dd MMM yyyy, hh:mm a').format(tx.createdAt.toLocal()),
                     style: textStyle12(
                       context,
                       color: CustomColor.descriptionColor,
                       fontWeight: FontWeight.w400,
-                    )),
-                Text(
-                  DateFormat('dd MMM yyyy, hh:mm a').format(tx.createdAt.toLocal()),
-                  style: textStyle12(
-                    context,
-                    color: CustomColor.descriptionColor,
-                    fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('₹ ${tx.amount}',
-                      style: textStyle12(context, fontWeight: FontWeight.w500)),
-                  Text('Amount',
-                      style: textStyle12(context, fontWeight: FontWeight.w400)),
                 ],
               ),
+          trailing: Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('₹ ${tx.amount}',
+                    style: textStyle12(context, fontWeight: FontWeight.w500)),
+                Text('Amount',
+                    style: textStyle12(context, fontWeight: FontWeight.w400)),
+              ],
             ),
-          ),
-          const Divider(color: Colors.grey, thickness: 0.3),
-        ],
-      );
-    },
-  );
+          )),
+            const Divider(color: Colors.grey, thickness: 0.3),
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 Widget _noDataFound(BuildContext context) {

@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(user?.fullName ?? 'Username', style: textStyle18(context)),
+                                  Text(user?.fullName ?? 'Guest', style: textStyle18(context)),
                                   Text( user?.mobileNumber != null
                                       ? '+91 ${user!.mobileNumber}'
                                       : 'Mobile Number', style: textStyle14(context, color: CustomColor.descriptionColor)),
