@@ -1,9 +1,9 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/no_user_sign_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
@@ -11,7 +11,6 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../model/wallet_model.dart';
 import '../repository/wallet_service.dart';
-
 
 class WalletScreen extends StatefulWidget {
   final String userId;
@@ -28,7 +27,11 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchWallet();
+    if (widget.userId.isNotEmpty) {
+      _fetchWallet();
+    } else {
+      isLoading = false;
+    }
   }
 
   Future<void> _fetchWallet() async {
@@ -43,78 +46,82 @@ class _WalletScreenState extends State<WalletScreen> {
       setState(() => isLoading = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-       backgroundColor: CustomColor.whiteColor,
-
-      appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
-      body:  isLoading
+      backgroundColor: CustomColor.whiteColor,
+      appBar: CustomAppBar(title: 'Wallet', showBackButton: true),
+      body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _walletData == null
-          ? const Center(child: Text("No Data."))
-          :  DefaultTabController(
+          : DefaultTabController(
         length: 3,
         child: Column(
           children: [
-            // 10.height,
-            _buildStatsCard(context, _walletData!),
-            5.height,
+            _buildStatsCard(context),
 
-            // Container(
-            //   color: CustomColor.whiteColor,
-            //   child: Row(
-            //     children: [
-            //       15.width,
-            //       Expanded(
-            //         child: Align(
-            //           alignment: Alignment.centerLeft,
-            //           child: TabBar(
-            //             isScrollable: true,
-            //             labelColor: CustomColor.appColor,
-            //             unselectedLabelColor: CustomColor.descriptionColor,
-            //             indicatorColor: CustomColor.appColor,
-            //             padding: EdgeInsets.zero,
-            //             tabs: const [
-            //               Tab(text: "Self"),
-            //               Tab(text: "Team Build"),
-            //               Tab(text: "Team Revenue"),
-            //             ],
-            //           ),
-            //         ),
-            //       ),
-            //       CustomContainer(
-            //         backgroundColor: CustomColor.whiteColor,
-            //         onTap: () {
-            //           _showFilterSheet(context);
-            //         },
-            //         child: Icon(Icons.filter_list, color: CustomColor.iconColor),
-            //       )
-            //
-            //     ],
-            //   ),
-            // ),
+            Container(
+              color: CustomColor.whiteColor,
+              child: Row(
+                children: [
+                  15.width,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TabBar(
+                        isScrollable: true,
+                        labelColor: CustomColor.appColor,
+                        unselectedLabelColor: CustomColor.descriptionColor,
+                        indicatorColor: CustomColor.appColor,
+                        padding: EdgeInsets.zero,
+                        tabs: const [
+                          Tab(text: "Self"),
+                          Tab(text: "Team Build"),
+                          Tab(text: "Team Revenue"),
+                        ],
+                      ),
+                    ),
+                  ),
+                  CustomContainer(
+                    backgroundColor: CustomColor.whiteColor,
+                    onTap: () {
+                      _showFilterSheet(context);
+                    },
+                    child: Icon(Icons.filter_list, color: CustomColor.iconColor),
+                  )
 
-            // Expanded(
-            //   child: Container(
-            //     color: CustomColor.whiteColor,
-            //     child: TabBarView(
-            //       children: [
-            //         _buildTransactionList(_walletData!.transactions),
-            //         _noDataFound(context), // Placeholder for "Team Build"
-            //         _noDataFound(context), // Placeholder for "Team Revenue"
-            //       ],
-            //     ),
-            //   ),
-            // ),
+                ],
+              ),
+            ),
+
+            if (widget.userId.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 150.0),
+                child: NoUserSignWidget(),
+              )
+            else
+            Expanded(
+              child: Container(
+                color: CustomColor.whiteColor,
+                child: TabBarView(
+                  children: [
+                    _buildTransactionList(_walletData!.transactions),
+                    _noDataFound(context), // Placeholder for "Team Build"
+                    _noDataFound(context), // Placeholder for "Team Revenue"
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatsCard(BuildContext context,  WalletModel wallet) {
+  Widget _buildStatsCard(BuildContext context) {
+    final wallet = _walletData;
+
     return Container(
       color: CustomColor.canvasColor,
       child: Column(
@@ -125,41 +132,40 @@ class _WalletScreenState extends State<WalletScreen> {
             child: Column(
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Earnings Statistics", style: textStyle16(context, fontWeight: FontWeight.w400, color: CustomColor.appColor)),
-
+                    Text(
+                      "Earnings Statistics",
+                      style: textStyle16(context,
+                          fontWeight: FontWeight.w400,
+                          color: CustomColor.appColor),
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         CustomAmountText(
-                          amount: _walletData?.balance?.toString() ?? "00",
+                          amount: wallet?.balance.toStringAsFixed(2) ?? "00",
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
                         ),
-                        Text("Total Earnings", style: textStyle12(context, color: CustomColor.appColor)),
+                        Text(
+                          "Total Earnings",
+                          style: textStyle12(context,
+                              color: CustomColor.appColor),
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
                 const Divider(height: 24, thickness: 0.5),
-                _earningRow(
-                    "Franchise Deposit",
-                    wallet.balance != null ? " ₹ ${wallet.balance.toStringAsFixed(2)}" : "₹ 00"
-                ),
-                _earningRow(
-                    "Monthly Fix Earnings",
-                    wallet.balance != null ? "₹ 00" : "₹ 00"
-                ),
-                _earningRow(
-                    "Lock In Period",
-                    wallet.balance != null ? " 00, Months" : "00, Month"
-                ),
+                _earningRow("Franchise Deposit",
+                    wallet?.balance != null ? "₹ ${wallet!.balance.toStringAsFixed(2)}" : "₹ 00"),
+                _earningRow("Monthly Fix Earnings", "₹ 00"), // Placeholder
+                _earningRow("Lock In Period",
+                    wallet?.balance != null ? "00, Months" : "00, Month"),
               ],
             ),
           ),
-
           Row(
             children: [
               Expanded(
@@ -168,11 +174,10 @@ class _WalletScreenState extends State<WalletScreen> {
                   backgroundColor: CustomColor.whiteColor,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(CupertinoIcons.arrow_turn_left_down),
+                      const Icon(CupertinoIcons.arrow_turn_left_down),
                       10.width,
-                      Text('Add Amount', style: textStyle14(context),)
+                      Text('Add Amount', style: textStyle14(context)),
                     ],
                   ),
                 ),
@@ -183,11 +188,10 @@ class _WalletScreenState extends State<WalletScreen> {
                   backgroundColor: CustomColor.whiteColor,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(CupertinoIcons.arrow_turn_up_right),
+                      const Icon(CupertinoIcons.arrow_turn_up_right),
                       10.width,
-                      Text('Withdraw Amount ', style: textStyle14(context),)
+                      Text('Withdraw Amount', style: textStyle14(context)),
                     ],
                   ),
                 ),
@@ -205,84 +209,85 @@ class _WalletScreenState extends State<WalletScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title),
-          Text(value, style: const TextStyle()),
+          Text(title, style: textStyle14(context, fontWeight: FontWeight.w500)),
+          Text(value, style: textStyle14(context,fontWeight: FontWeight.w400)),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTransactionList(List<TransactionModel> transactions) {
-    if (transactions.isEmpty) {
-      return Center(child: Text('No transactions found.'));
-    }
+Widget _buildTransactionList(List<TransactionModel> transactions) {
+  if (transactions.isEmpty) {
+    return Center(child: Text('No transactions found.'));
+  }
 
-    return ListView.builder(
-      itemCount: transactions.length,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      itemBuilder: (context, index) {
-        final tx = transactions[index];
-        final isCredit = tx.type == 'credit';
+  return ListView.builder(
+    itemCount: transactions.length,
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    itemBuilder: (context, index) {
+      final tx = transactions[index];
+      final isCredit = tx.type == 'credit';
 
-        return Column(
-          children: [
-            ListTile(
-              minLeadingWidth: 0,
-              contentPadding: const EdgeInsets.only(top: 10),
-              leading: CircleAvatar(
-                backgroundColor: CustomColor.whiteColor,
-                child: Icon(
-                  isCredit
-                      ? CupertinoIcons.arrow_turn_left_down
-                      : CupertinoIcons.arrow_turn_left_up,
-                  color: isCredit ? CustomColor.appColor : CustomColor.redColor,
-                ),
+      return Column(
+        children: [
+          ListTile(
+            minLeadingWidth: 0,
+            contentPadding: const EdgeInsets.only(top: 10),
+            leading: CircleAvatar(
+              backgroundColor: CustomColor.whiteColor,
+              child: Icon(
+                isCredit
+                    ? CupertinoIcons.arrow_turn_left_down
+                    : CupertinoIcons.arrow_turn_left_up,
+                color: isCredit ? CustomColor.appColor : CustomColor.redColor,
               ),
-              title: Text('Ref #${tx.referenceId.substring(0, 6)}', style: textStyle12(context)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(tx.description,
-                      style: textStyle12(
-                        context,
-                        color: CustomColor.descriptionColor,
-                        fontWeight: FontWeight.w400,
-                      )),
-                  Text(
-                    DateFormat('dd MMM yyyy, hh:mm a').format(tx.createdAt.toLocal()),
+            ),
+            title: Text('Ref #${tx.referenceId.substring(0, 6)}', style: textStyle12(context)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tx.description,
                     style: textStyle12(
                       context,
                       color: CustomColor.descriptionColor,
                       fontWeight: FontWeight.w400,
-                    ),
+                    )),
+                Text(
+                  DateFormat('dd MMM yyyy, hh:mm a').format(tx.createdAt.toLocal()),
+                  style: textStyle12(
+                    context,
+                    color: CustomColor.descriptionColor,
+                    fontWeight: FontWeight.w400,
                   ),
+                ),
+              ],
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('₹ ${tx.amount}',
+                      style: textStyle12(context, fontWeight: FontWeight.w500)),
+                  Text('Amount',
+                      style: textStyle12(context, fontWeight: FontWeight.w400)),
                 ],
               ),
-              trailing: Padding(
-                padding: const EdgeInsets.only(right: 15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('₹ ${tx.amount}',
-                        style: textStyle12(context, fontWeight: FontWeight.w500)),
-                    Text('Amount',
-                        style: textStyle12(context, fontWeight: FontWeight.w400)),
-                  ],
-                ),
-              ),
             ),
-            const Divider(color: Colors.grey, thickness: 0.3),
-          ],
-        );
-      },
-    );
-  }
+          ),
+          const Divider(color: Colors.grey, thickness: 0.3),
+        ],
+      );
+    },
+  );
+}
 
-  Widget _noDataFound(BuildContext context) {
-    return ListView.builder(
-      itemCount: 10,
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      itemBuilder: (context, index) {
+Widget _noDataFound(BuildContext context) {
+  return ListView.builder(
+    itemCount: 10,
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    itemBuilder: (context, index) {
       return Column(
         children: [
           ListTile(
@@ -320,11 +325,7 @@ class _WalletScreenState extends State<WalletScreen> {
         ],
       );
     },);
-  }
 }
-
-
-
 
 void _showFilterSheet(BuildContext context) {
   showModalBottomSheet(
@@ -451,7 +452,7 @@ void _showFilterSheet(BuildContext context) {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                 label: 'Apply',
+                  label: 'Apply',
                 ),
               ),
               20.height

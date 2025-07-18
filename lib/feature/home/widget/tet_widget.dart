@@ -105,7 +105,7 @@ class _WalletWidgetState extends State<WalletWidget> {
       backgroundColor: CustomColor.whiteColor,
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId.toString(),)),
+        MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId??'',)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
