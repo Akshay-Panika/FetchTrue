@@ -17,7 +17,7 @@ import '../../banner/widget/home_banner_widget.dart';
 import '../../team_build/screen/team_build_screen.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
 import '../widget/profile_card_widget.dart';
-import '../widget/team_build_widget.dart';
+import '../widget/tet_widget.dart';
 import '../widget/module_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SliverToBoxAdapter(child: 10.height,),
 
             /// Futures
-            SliverToBoxAdapter(child: LeadsWidget(),),
+            SliverToBoxAdapter(child: TETWidget(userId: userSession.userId,),),
             SliverToBoxAdapter(child: 15.height,),
 
             /// Modules

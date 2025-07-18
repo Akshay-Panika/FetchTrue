@@ -1,31 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
+import '../../more/model/user_model.dart';
 
-import '../../../helper/api_helper.dart';
-import '../model/sign_in_model.dart';
+class UserService {
+  final Dio _dio = Dio();
 
-class UserSignInService {
-  static Future<LoginResponse?> signIn({
-    required String mobileNumber,
-    required String email,
-    required String password,
-  }) async {
+  Future<UserModel?> fetchUserById(String userId) async {
     try {
-      final response = await ApiClient.dio.post(
-        ApiUrls.signIn,
-        data: {
-          'mobileNumber': mobileNumber,
-          'email': email,
-          'password': password,
-        },
-      );
-      return LoginResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response?.data != null) {
-        throw e.response?.data['error'] ?? "Login failed";
+      // ⚠️ Make sure userId is sent in query params or as part of URL
+      final response = await _dio.get('${ApiUrls.user}/$userId');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return UserModel.fromJson(response.data['data']);
       } else {
-        throw "Something went wrong. Please try again.";
+        print('API returned false: ${response.data}');
       }
+    } catch (e) {
+      print('Fetch Error: $e');
     }
+    return null;
   }
 }

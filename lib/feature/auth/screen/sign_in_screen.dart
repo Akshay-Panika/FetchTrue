@@ -12,7 +12,7 @@ import '../../../core/widgets/custom_alert_dialog.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
-import '../repository/user_service.dart';
+import '../repository/sign_in_service.dart';
 import '../user_notifier/user_notifier.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -83,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
     }
 
     try {
-      final response = await UserSignInService.signIn(
+      final response = await SignInService.signIn(
         mobileNumber: mobileNumber,
         email: email,
         password: password,

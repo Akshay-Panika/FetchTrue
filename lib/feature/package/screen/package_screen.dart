@@ -297,7 +297,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg) {
 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text('Franchise Fees'),
             Column(

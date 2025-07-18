@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../more/model/user_model.dart';
-import '../../more/repository/user_service.dart';
+import '../../auth/repository/user_service.dart';
 import '../widget/my_team_section_widget.dart';
 import '../widget/invite_franchise_section_widget.dart';
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
@@ -5,14 +7,17 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../auth/repository/user_service.dart';
+import '../../more/model/user_model.dart';
 import 'add_address_screen.dart';
 import 'additional_details_screen.dart';
-import 'financial_details_screen.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String? userId;
+  const ProfileScreen({super.key, this.userId});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -20,21 +25,61 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
+
+  final userService = UserService();
+  UserModel? user;
+  bool isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.userId != null) {
+      getUserData(widget.userId!);
+    } else {
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> getUserData(String userId) async {
+    user = await userService.fetchUserById(userId);
+    setState(() => isLoading = false);
+  }
+
+
+  File? selectedImage;
+
+  Future<void> pickImageFromGallery() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        selectedImage = File(picked.path);
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Profile', showBackButton: true,),
 
-      body: Stack(
+      body:
+      isLoading
+          ? Center(child: CircularProgressIndicator())
+          :Stack(
         alignment: AlignmentDirectional.topStart,
         children: [
+
           Container(
             height: 280,
-            color: Colors.grey,
             width: double.infinity,
-            child: Image.asset(CustomImage.nullImage,fit: BoxFit.fill,),
+            color: Colors.grey,
+            child: selectedImage != null ? Image.file(selectedImage!, fit: BoxFit.cover,)
+                : Image.asset(CustomImage.nullImage, fit: BoxFit.cover,),
           ),
+
 
           Padding(
             padding: const EdgeInsets.only(top: 250.0, left: 10, right: 10),
@@ -56,7 +101,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               IconButton(onPressed: () => null, icon: Icon(Icons.mode_edit_outline_outlined)),
-                              IconButton(onPressed: () => null, icon: Icon(Icons.camera_alt_outlined)),
+                              IconButton( onPressed: () async{
+                                await pickImageFromGallery();
+                              }, icon: Icon(Icons.camera_alt_outlined)),
                             ],
                           )
                         ],
@@ -70,10 +117,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Akshay Panika', style: textStyle18(context),),
-                              Text('+91 8989207770', style: textStyle14(context, color: CustomColor.descriptionColor),),
-                              Text('Email Id', style: textStyle14(context, color: CustomColor.descriptionColor),),
-                          
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(user?.fullName ?? 'Username', style: textStyle18(context)),
+                                  Text( user?.mobileNumber != null
+                                      ? '+91 ${user!.mobileNumber}'
+                                      : 'Mobile Number', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                                  Text(user?.email ?? 'Email ID', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                                ],
+                              ),
                             ],
                           ),
                           
@@ -81,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             border: true,
                             backgroundColor: CustomColor.whiteColor,
                             margin: EdgeInsets.zero,
-                            child: Text('KYC', style: textStyle14(context,color: CustomColor.appColor),),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
+                            child: Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
                         ],
                       )
                     ],
@@ -105,6 +158,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 10.height,
 
+                Text('Save Addresses', style: textStyle14(context),),
+                5.height,
                 CustomContainer(
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
@@ -113,29 +168,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     minVerticalPadding: 0,
                     minTileHeight: 0,
                     contentPadding: EdgeInsets.all(0),
-                    title: Text('Financial Details'),
-                    subtitle: Text('Income, employment details and more'),
+                    title: Text('Address'),
+                    subtitle: Text('Add Address',),
                     trailing: Icon(Icons.arrow_forward_ios,size: 20,),
                   ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FinancialDetailsScreen(),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),)),
                 ),
                 10.height,
-
-                Text('Save Addresses', style: textStyle14(context),),
-                5.height,
-                CustomContainer(
-                  border: true,
-                  backgroundColor: CustomColor.whiteColor,
-                  margin: EdgeInsets.zero,
-                  padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 10),
-                  child: Column(
-                    children: [
-                      Icon(Icons.add),
-                      Text('Add New')
-                    ],
-                  ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),)),
-                )
               ],
             ),
           )
