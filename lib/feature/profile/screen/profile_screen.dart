@@ -7,6 +7,8 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 
 import 'add_address_screen.dart';
+import 'additional_details_screen.dart';
+import 'financial_details_screen.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -28,20 +30,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         alignment: AlignmentDirectional.topStart,
         children: [
           Container(
-            height: 250,
+            height: 280,
             color: Colors.grey,
             width: double.infinity,
             child: Image.asset(CustomImage.nullImage,fit: BoxFit.fill,),
           ),
 
           Padding(
-            padding: const EdgeInsets.only(top: 200.0,),
+            padding: const EdgeInsets.only(top: 250.0, left: 10, right: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomContainer(
                   border: true,
                   backgroundColor: Colors.white,
+                  margin: EdgeInsets.zero,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -78,29 +81,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             border: true,
                             backgroundColor: CustomColor.whiteColor,
                             margin: EdgeInsets.zero,
-                            child: Text('Verify'),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
+                            child: Text('KYC', style: textStyle14(context,color: CustomColor.appColor),),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
                         ],
                       )
                     ],
                   ),
                 ),
+                10.height,
 
                 CustomContainer(
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
-                  child: ListTile(
-                    minVerticalPadding: 0,
-                    minTileHeight: 0,
-                    contentPadding: EdgeInsets.all(0),
-                    title: Text('Financial Details'),
-                    subtitle: Text('Income, employment details and more'),
-                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
-                  ),
-                ),
-
-                CustomContainer(
-                  border: true,
-                  backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.zero,
                   child: ListTile(
                     minVerticalPadding: 0,
                     minTileHeight: 0,
@@ -109,15 +101,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     subtitle: Text('Age, gender, and more'),
                     trailing: Icon(Icons.arrow_forward_ios,size: 20,),
                   ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(),)),
                 ),
+                10.height,
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, top: 20),
-                  child: Text('Save Addresses', style: textStyle14(context),),
-                ),
                 CustomContainer(
                   border: true,
                   backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    minVerticalPadding: 0,
+                    minTileHeight: 0,
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text('Financial Details'),
+                    subtitle: Text('Income, employment details and more'),
+                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
+                  ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FinancialDetailsScreen(),)),
+                ),
+                10.height,
+
+                Text('Save Addresses', style: textStyle14(context),),
+                5.height,
+                CustomContainer(
+                  border: true,
+                  backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.zero,
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 10),
                   child: Column(
                     children: [

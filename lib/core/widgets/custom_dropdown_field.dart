@@ -61,7 +61,7 @@ class CustomDropdownField extends StatelessWidget {
               items: items.toSet().map((item) {
                 return DropdownMenuItem<String>(
                   value: item,
-                  child: Text(item),
+                  child: IntrinsicWidth(child: Text(item)),
                 );
               }).toList(),
               onChanged: (newValue) {
