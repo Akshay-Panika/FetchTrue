@@ -69,7 +69,10 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceReviewWidget(serviceId: data.id,),));
                           },
-                          child: RattingAndReviewsWidget(serviceId: data.id,)),
+                          child: Text(
+                            '⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
+                            style: TextStyle(fontSize: 12, color:CustomColor.blackColor ),
+                          )),
                     ],
                   ),
 

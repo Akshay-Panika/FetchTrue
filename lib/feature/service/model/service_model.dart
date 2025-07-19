@@ -14,6 +14,12 @@ class ServiceModel {
   final List<KeyValue> keyValues;
   final List<ProviderPrice> providerPrices;
 
+  /// rating
+  final double averageRating;
+  final int totalReviews;
+  final bool recommendedServices;
+
+
   ServiceModel({
     required this.id,
     required this.serviceName,
@@ -29,6 +35,10 @@ class ServiceModel {
     required this.franchiseDetails,
     required this.keyValues,
     required this.providerPrices,
+
+    required this.averageRating,
+    required this.totalReviews,
+    required this.recommendedServices
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -51,6 +61,10 @@ class ServiceModel {
       providerPrices: json['providerPrices'] != null
           ? List<ProviderPrice>.from(json['providerPrices'].map((x) => ProviderPrice.fromJson(x)))
           : [],
+
+      averageRating: (json['averageRating'] ?? 0).toDouble(),
+      totalReviews: json['totalReviews'],
+      recommendedServices: json['recommendedServices'],
     );
   }
 }

@@ -25,44 +25,9 @@ class ServiceProviderWidget extends StatefulWidget {
 }
 
 class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
-  List<String> _favoriteProviderIds = [];
-  String? userId;
-  bool _isLoadingUserId = true;
-  late Future<FavoriteProviderModel?> _favoriteProviderFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserId(); // 🔑 Important call
-  }
-
-  Future<void> _loadUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('userId');
-
-    if (userId != null) {
-      _favoriteProviderFuture = fetchFavoriteProvider(userId!);
-      final response = await _favoriteProviderFuture;
-
-      if (response != null) {
-        _favoriteProviderIds = response.favoriteProvider;
-      }
-    }
-
-    setState(() {
-      _isLoadingUserId = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoadingUserId) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (userId == null) {
-      return const Center(child: Text('⚠️ User not found.'));
-    }
 
     return BlocProvider(
       create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
@@ -94,7 +59,6 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                       itemCount: provider.length,
                       itemBuilder: (context, index, realIndex) {
                         final data = provider[index];
-                        final isFavorite = _favoriteProviderIds.contains(data.id);
 
                         return CustomContainer(
                           width: double.infinity,
@@ -175,18 +139,9 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                 top: 0,
                                 right: 0,
                                 child: FavoriteProviderButtonWidget(
-                                  userId: userId!,
+                                  userId: '',
                                   providerId: data.id,
-                                  isInitiallyFavorite: isFavorite,
-                                  onChanged: (isNowFavorite) {
-                                    setState(() {
-                                      if (isNowFavorite) {
-                                        _favoriteProviderIds.add(data.id);
-                                      } else {
-                                        _favoriteProviderIds.remove(data.id);
-                                      }
-                                    });
-                                  },
+                                  isInitiallyFavorite: true,
                                 ),
                               ),
                             ],

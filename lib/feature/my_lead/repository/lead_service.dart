@@ -6,7 +6,6 @@ import '../model/lead_model.dart';
 
 class LeadService {
   final Dio _dio = ApiClient.dio;
-
   Future<List<LeadModel>> fetchLeads() async {
     try {
       final response = await _dio.get(ApiUrls.checkout);

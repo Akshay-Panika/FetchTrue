@@ -18,7 +18,7 @@ class UnderstandingBizBoosterWidget extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-            child: Text('Understanding BizBooster', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
+            child: Text('Understanding Fetch True', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
           ),
           SizedBox(
             height: 210,

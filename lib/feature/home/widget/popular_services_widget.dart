@@ -8,10 +8,10 @@ import '../../service/bloc/module_service/module_service_state.dart';
 import '../../service/repository/api_service.dart';
 import 'service_card_widget.dart';
 
-class AllServiceWidget extends StatelessWidget {
+class PopularServicesWidget extends StatelessWidget {
   final String headline;
   final String userId;
-  const AllServiceWidget({super.key, required this.headline, required this.userId});
+  const PopularServicesWidget({super.key, required this.headline, required this.userId});
 
   @override
   Widget build(BuildContext context) {
