@@ -119,7 +119,7 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               Icon(Icons.lock,
+              Icon(Icons.lock,
                   color: CustomColor.appColor),
               10.width,
               Text(
@@ -130,21 +130,28 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
             ],
           ),
         ),
-
-        SizedBox(height: dimensions!.screenHeight * 0.03),
+        60.height,
 
         /// ✅ Share / Upgrade Button with shimmer
         widget.userData == null
             ? shimmerBox(height: 50, width: 200)
             : widget.userData!.packageActive == true
-            ? CircleAvatar(
-          backgroundColor: Colors.blue.shade50,
-          child: IconButton(
-            onPressed: () {},
-            icon:  Icon(Icons.share,
-                color: CustomColor.appColor),
-          ),
-        )
+            ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Share this code'),
+                15.width,
+                CircleAvatar(
+                          backgroundColor: Colors.blue.shade50,
+                          child: IconButton(
+                onPressed: () {},
+                icon:  Icon(Icons.share,
+                    color: CustomColor.appColor),
+                          ),
+                        ),
+              ],
+            )
             : CustomContainer(
           width: 200,
           backgroundColor: CustomColor.appColor,

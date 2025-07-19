@@ -51,7 +51,6 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Wallet', showBackButton: true),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -159,11 +158,9 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
                 const Divider(height: 24, thickness: 0.5),
-                _earningRow("Franchise Deposit",
-                    wallet?.balance != null ? "₹ ${wallet!.balance.toStringAsFixed(2)}" : "₹ 00"),
+                _earningRow("Franchise Deposit", "₹ 00"),
                 _earningRow("Monthly Fix Earnings", "₹ 00"), // Placeholder
-                _earningRow("Lock In Period",
-                    wallet?.balance != null ? "00, Months" : "00, Month"),
+                _earningRow("Lock In Period", "00, Month"),
               ],
             ),
           ),
@@ -210,7 +207,7 @@ class _WalletScreenState extends State<WalletScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: textStyle14(context, fontWeight: FontWeight.w500)),
+          Text(title, style: textStyle14(context, fontWeight: FontWeight.w400)),
           Text(value, style: textStyle14(context,fontWeight: FontWeight.w400)),
         ],
       ),

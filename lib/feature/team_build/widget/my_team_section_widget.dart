@@ -74,7 +74,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
   Future<void> fetchMyLeads() async {
     setState(() => isTeamLoading = true); // 🔄 Start loading
 
-    final result = await NonGpService().fetchMyLeads('681c72d2062be714d7037844');
+    final result = await NonGpService().fetchMyLeads(widget.userData!.id);
 
     setState(() {
       _nonGpList = result.where((e) => e.packageActive == false).toList(); // Non-GP

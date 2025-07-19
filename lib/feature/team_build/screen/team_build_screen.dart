@@ -1,89 +1,89 @@
-import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fetchtrue/core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
-import '../../more/model/user_model.dart';
+import '../../auth/bloc/user_bloc/user_bloc.dart';
+import '../../auth/bloc/user_bloc/user_event.dart';
+import '../../auth/bloc/user_bloc/user_state.dart';
 import '../../auth/repository/user_service.dart';
-import '../widget/my_team_section_widget.dart';
+import '../../more/model/user_model.dart';
 import '../widget/invite_franchise_section_widget.dart';
+import '../widget/my_team_section_widget.dart';
 
-class TeamLeadScreen extends StatefulWidget {
-  const TeamLeadScreen({super.key});
+class TeamBuildScreen extends StatefulWidget {
+  final String userId;
+  const TeamBuildScreen({super.key, required this.userId});
 
   @override
-  State<TeamLeadScreen> createState() => _TeamLeadScreenState();
+  State<TeamBuildScreen> createState() => _TeamBuildScreenState();
 }
 
-class _TeamLeadScreenState extends State<TeamLeadScreen> {
+class _TeamBuildScreenState extends State<TeamBuildScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+  UserModel? _userData;
 
-  String? userId;
-  String? token;
-  UserModel? userData;
-
-  final UserService userService = UserService();
+  late UserBloc _userBloc;
 
   @override
   void initState() {
     super.initState();
-    loadUserData();
+
+    _tabController = TabController(length: 2, vsync: this);
+    _userBloc = UserBloc(UserService());
+    _userBloc.add(FetchUserById(widget.userId));
   }
 
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getString('userId');
-    final tkn = prefs.getString('token');
-
-    setState(() {
-      userId = id;
-      token = tkn;
-    });
-
-    if (id != null) {
-      final user = await userService.fetchUserById(id);
-      setState(() {
-        userData = user;
-      });
-    }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _userBloc.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: 'Team Build', showBackButton: true),
-        body: SafeArea(
-          child: Column(
-            children: [
-
-              /// TabBar
-              TabBar(
-                indicatorColor: CustomColor.appColor,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                tabs: const [
-                  Tab(text: 'Team Build'),
-                  Tab(text: 'My Team'),
-                ],
-              ),
-
-              const SizedBox(height: 8),
-
-              /// TabBarView
-               Expanded(
-                child: TabBarView(
-                  physics: BouncingScrollPhysics(),
-                  children: [
-                    InviteFranchiseSectionWidget(userData: userData,),
-                    MyTeamSectionWidget(userData: userData,),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: 'Team Build', showBackButton: true),
+      body: SafeArea(
+        child: BlocProvider(
+          create: (_) => _userBloc,
+          child: BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              if (state is UserLoaded && mounted) {
+                setState(() {
+                  _userData = state.user;
+                });
+              }
+            },
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: CustomColor.appColor,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  tabs: const [
+                    Tab(text: 'Team Build'),
+                    Tab(text: 'My Team'),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      InviteFranchiseSectionWidget(userData: _userData),
+                      MyTeamSectionWidget(userData: _userData),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

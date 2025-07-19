@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SliverToBoxAdapter(child: 10.height,),
 
             /// Futures
+            if(userSession.userId != null)
             SliverToBoxAdapter(child: TETWidget(userId: userSession.userId,),),
             SliverToBoxAdapter(child: 15.height,),
 
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         Image.asset('assets/image/inviteFrnd.png', height: 200, width: double.infinity,)
                       ],
                     ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(userId: userSession.userId ?? '',),)),
                   ),
                   SizedBox(height: dimensions.screenHeight * 0.01,),
 
