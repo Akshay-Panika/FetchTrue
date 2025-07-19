@@ -10,8 +10,7 @@ import '../../service/screen/service_details_screen.dart';
 
 class ServiceCardWidget extends StatelessWidget {
   final List<ServiceModel> services;
-  final String userId;
-  const ServiceCardWidget({super.key, required this.services, required this.userId,});
+  const ServiceCardWidget({super.key, required this.services,});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,7 @@ class ServiceCardWidget extends StatelessWidget {
                           FavoriteServiceButtonWidget(
                             userId:'',
                             serviceId: '',
-                            isInitiallyFavorite: true,
+                            isInitiallyFavorite: false,
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),

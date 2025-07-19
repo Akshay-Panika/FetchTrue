@@ -16,7 +16,8 @@ import '../repository/customer_service.dart';
 
 class CustomerScreen extends StatefulWidget {
   final bool? isMenu;
-  const CustomerScreen({super.key, this.isMenu});
+  final String userId;
+  const CustomerScreen({super.key, this.isMenu, required this.userId});
 
   @override
   State<CustomerScreen> createState() => _CustomerScreenState();
@@ -25,24 +26,6 @@ class CustomerScreen extends StatefulWidget {
 class _CustomerScreenState extends State<CustomerScreen> {
   List<TextEditingController> _messageControllers = [];
   int? _selectedCustomer;
-
-
-
-  String? userId;
-
-  @override
-  void initState() {
-    super.initState();
-    loadUserData();
-  }
-
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('userId');
-    });
-  }
-
 
   @override
   void dispose() {
@@ -77,7 +60,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
               } else if (state is CustomerLoaded) {
                 // final customer = state.customerModel;
                 final customer = state.customerModel.where((customerId) =>
-                customerId.userId == userId).toList();
+                customerId.userId == widget.userId).toList();
 
                 // Initialize _messageControllers safely
                 if (_messageControllers.length != customer.length) {

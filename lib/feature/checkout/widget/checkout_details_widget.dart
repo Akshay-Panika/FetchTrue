@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -9,6 +10,7 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
@@ -30,7 +32,6 @@ class CheckoutDetailsWidget extends StatefulWidget {
 class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
-  String? userId;
   String? customer_Id;
   String? customerId;
   String? customerName;
@@ -40,24 +41,11 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
   bool _isAgree = false;
 
-  @override
-  void initState() {
-    super.initState();
-    loadUserData();
-  }
-
-  Future<void> loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('userId');
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
     var data = widget.services.first;
-
+    final userSession = Provider.of<UserSession>(context);
     Dimensions dimensions = Dimensions(context);
     return Column(
       children: [
@@ -152,7 +140,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                       border: true,
                       padding: EdgeInsets.symmetric(vertical: 8),
                       onTap: () async {
-                        final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CustomerScreen()),);
+                        final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  CustomerScreen(userId: userSession.userId.toString(),)),);
 
                         if (selectedCustomer != null) {
                           setState(() {
@@ -188,10 +176,24 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                             Text('Add New Customer', style: textStyle12(context, color: CustomColor.appColor),),
                           ],
                         ),
-                        onTap: (){
+                        onTap: () async {
+                          final selectedCustomer = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddCustomerScreen(userId: userSession.userId!),
+                            ),
+                          );
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userId!,),));
-                      },
+                          if (selectedCustomer != null) {
+                            setState(() {
+                              customer_Id = selectedCustomer['_id'];
+                              customerId = selectedCustomer['userId'];
+                              customerName = selectedCustomer['fullName'];
+                              customerPhone = selectedCustomer['phone'];
+                              message = selectedCustomer['message'];
+                            });
+                          }
+                        }
                     ),
                   ),
 
@@ -336,11 +338,11 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
               final fetchTure = 'fetchTure';
               final checkoutData = CheckoutModel(
-                user: userId.toString(),
+                user: userSession.userId.toString(),
                 service: data.id,
                 serviceCustomer: customer_Id.toString(),
                 // provider: widget.providerId,
-                provider: widget.providerId == fetchTure ? null : widget.providerId!.isNotEmpty == true ? widget.providerId : null,
+                provider: widget.providerId == fetchTure ? null : widget.providerId.isNotEmpty == true ? widget.providerId : null,
                 coupon: null,
                 subtotal: 0,
                 serviceDiscount: data.discountedPrice ?? 0,

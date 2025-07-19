@@ -6,12 +6,12 @@ import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
 import '../../service/repository/api_service.dart';
+import '../../service/screen/all_service_screen.dart';
 import 'service_card_widget.dart';
 
 class PopularServicesWidget extends StatelessWidget {
   final String headline;
-  final String userId;
-  const PopularServicesWidget({super.key, required this.headline, required this.userId});
+  const PopularServicesWidget({super.key, required this.headline,});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,9 @@ class PopularServicesWidget extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomHeadline(headline: headline),
+                CustomHeadline(headline: headline, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AllServiceScreen(headline: headline, services: services,),)),),
                 ServiceCardWidget(
                   services: services,
-                  userId: userId,
                 )
 
               ],

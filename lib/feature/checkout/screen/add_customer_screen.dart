@@ -71,15 +71,27 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       try {
         final result = await AddCustomerService.createCustomer(newCustomer);
 
-        showCustomSnackBar(context, result != null
-            ? "✅ Customer Created: ${result.fullName}"
-            : "❌ Failed to create customer");
+        if (result != null) {
+          showCustomSnackBar(context, "✅ Customer Created: ${result.fullName}");
+
+          Navigator.pop(context, {
+            "_id": result.id,
+            "userId": result.user,
+            "fullName": result.fullName,
+            "phone": result.phone,
+            "message": result.description,
+          });
+
+        }
+
+        else {
+          showCustomSnackBar(context, "❌ Failed to create customer");
+        }
 
       } catch (e) {
-
-        showCustomSnackBar(context,"❌ Error: ${e.toString()}");
+        showCustomSnackBar(context, "❌ Error: ${e.toString()}");
       } finally {
-        setState(() => _isLoading = false); // ✅ Loader off
+        setState(() => _isLoading = false);
       }
     }
   }

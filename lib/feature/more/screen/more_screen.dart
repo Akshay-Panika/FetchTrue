@@ -90,7 +90,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const ProviderScreen()));
                   }),
                   _buildTile(context, Icons.person_4, "Customer", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomerScreen(isMenu: true)));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  CustomerScreen(userId: userSession.userId.toString(), isMenu: true)));
                   }),
                 ]),
                 _buildSection(context, "Preferences", [

@@ -6,12 +6,12 @@ import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
 import '../../service/repository/api_service.dart';
+import '../../service/screen/all_service_screen.dart';
 import 'service_card_widget.dart';
 
 class RecommendedServicesWidget extends StatelessWidget {
   final String headline;
-  final String userId;
-  const RecommendedServicesWidget({super.key, required this.headline, required this.userId});
+  const RecommendedServicesWidget({super.key, required this.headline});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +29,12 @@ class RecommendedServicesWidget extends StatelessWidget {
             if (services.isEmpty) {
               return const Center(child: Text('No Service found.'));
             }
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomHeadline(headline: headline),
+                CustomHeadline(headline: headline, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AllServiceScreen(headline: headline, services: services,),)),),
                 ServiceCardWidget(
                   services: services,
-                  userId: userId,
                 )
 
               ],
