@@ -4,6 +4,7 @@ import 'package:fetchtrue/core/widgets/no_user_sign_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
@@ -53,7 +54,7 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'Wallet', showBackButton: true),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? _buildShimmer()
           : DefaultTabController(
         length: 3,
         child: Column(
@@ -462,5 +463,116 @@ void _showFilterSheet(BuildContext context) {
         );
       });
     },
+  );
+}
+
+Widget _buildShimmer() {
+  return SingleChildScrollView(
+    padding: const EdgeInsets.all(12),
+    child: Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Stats Card
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          SizedBox(height: 16),
+
+          // Buttons
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(left: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          15.height,
+
+          CustomContainer(
+            height: 40,
+            margin: EdgeInsets.zero,
+            backgroundColor: CustomColor.whiteColor,
+          ),
+
+          SizedBox(height: 20),
+
+          // Transaction list shimmer
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: 7,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    // Icon
+                    Container(
+                      width: 40,
+                      height: 40,
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    // Title & Subtitle
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 10,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          SizedBox(height: 6),
+                          Container(
+                            height: 10,
+                            width: 150,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    // Amount
+                    Container(
+                      height: 10,
+                      width: 60,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ),
   );
 }

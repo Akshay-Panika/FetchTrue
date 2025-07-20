@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +55,6 @@ class _ProviderScreenState extends State<ProviderScreen> {
                   itemBuilder: (context, index) {
                 final data = provider[index];
 
-                ImageProvider _getProfileImage(String? logoUrl) {
-                  if (logoUrl == null || logoUrl.isEmpty || logoUrl == 'null') {
-                    return const NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
-                  }
-                  return NetworkImage(logoUrl);
-                }
 
                 return CustomContainer(
                   width: double.infinity,
@@ -73,26 +68,19 @@ class _ProviderScreenState extends State<ProviderScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundColor: Color(0xFFF2F2F2),
-                                backgroundImage: _getProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'),
+                                backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                backgroundImage: AssetImage(CustomImage.nullImage),
                               ),
                               10.width,
 
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data.fullName,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  Text(data.fullName,style: textStyle14(context),),
                                   Text('Onboarding Service', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
                                   5.height,
                                   RattingAndReviewsWidget()

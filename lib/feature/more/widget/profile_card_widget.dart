@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -41,9 +42,10 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/image/Null_Profile.jpg'),
+                   CircleAvatar(
+                    radius: 25,
+                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                    backgroundImage: AssetImage(CustomImage.nullImage),
                   ),
                   const SizedBox(width: 16),
                   Column(

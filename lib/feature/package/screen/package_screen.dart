@@ -363,104 +363,125 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    showDragHandle: true,
+    showDragHandle: false,
+    backgroundColor: WidgetStateColor.transparent,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (BuildContext context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.all(30)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          return CustomContainer(
+            backgroundColor: CustomColor.whiteColor,
+            padding: EdgeInsets.all(20),
+            child: Stack(
               children: [
-                20.height,
-                Text(
-                  'Select Payment Option',
-                  style: textStyle16(context, color: CustomColor.appColor),
-                ),
-                30.height,
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// Full Payment Option
-                    Row(
-                      children: [
-                        Radio<bool>(
-                          value: true,
-                          activeColor: CustomColor.appColor,
-                          groupValue: isFullPayment,
-                          onChanged: (value) {
-                            setState(() {
-                              isFullPayment = value!;
-                            });
-                          },
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Full payment'),
-                            CustomAmountText(
-                              amount: grandTotal.toStringAsFixed(2),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                     20.height,
+                    
+                    Text('Total Amount', style: textStyle16(context, color: CustomColor.appColor),),
+                    CustomAmountText(amount: grandTotal.toStringAsFixed(2),fontSize: 18,fontWeight: FontWeight.w500),
+                    20.height,
+                
+                    Text('Select Payment Option', style: textStyle14(context, color: CustomColor.descriptionColor),),
+                    10.height,
+                    CustomContainer(
+                      border: true,
+                      margin: EdgeInsets.zero,
+                      backgroundColor: CustomColor.whiteColor,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          /// Full Payment Option
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Radio<bool>(
+                                value: true,
+                                activeColor: CustomColor.appColor,
+                                groupValue: isFullPayment,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isFullPayment = value!;
+                                  });
+                                },
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Full payment', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                                  CustomAmountText(amount: grandTotal.toStringAsFixed(2),fontSize: 16,fontWeight: FontWeight.w500),
+                                ],
+                              ),
+                            ],
+                          ),
 
-                    /// Half Payment Option
-                    Row(
-                      children: [
-                        Radio<bool>(
-                          value: false,
-                          activeColor: CustomColor.appColor,
-                          groupValue: isFullPayment,
-                          onChanged: (value) {
-                            setState(() {
-                              isFullPayment = value!;
-                            });
-                          },
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Half payment'),
-                            CustomAmountText(
-                              amount: (grandTotal / 2).toStringAsFixed(2),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-               50.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('Cancel', style: textStyle16(context,color: Colors.red),),
-                    ),
-                    const SizedBox(width: 30),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
-                      },
-                      child: Text(
-                        'Continue',
-                        style: textStyle16(context, color: CustomColor.appColor),
+                          /// Half Payment Option
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Radio<bool>(
+                                value: false,
+                                activeColor: CustomColor.appColor,
+                                groupValue: isFullPayment,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isFullPayment = value!;
+                                  });
+                                },
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Half payment', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                                  CustomAmountText(amount: (grandTotal / 2).toStringAsFixed(2),fontSize: 16,fontWeight: FontWeight.w500),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
+                    20.height,
+
+
+                    Text('Pay Full Payment Now Get __ % Off', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                    50.height,
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('Cancel', style: textStyle16(context,color: Colors.red),),
+                        ),
+                        const SizedBox(width: 30),
+                        CustomContainer(
+                          backgroundColor: CustomColor.appColor,
+                          padding: EdgeInsetsGeometry.symmetric(horizontal: 25,vertical: 10),
+                          child: Text(
+                            'Pay Now',
+                            style: textStyle16(context, color: CustomColor.whiteColor),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
+                          },
+                        ),
+                      ],
+                    ),
+                    50.height,
                   ],
                 ),
-
-                150.height,
+                
+                Positioned(
+                    right: 0,top: 0,
+                    child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close)))
               ],
             ),
           );

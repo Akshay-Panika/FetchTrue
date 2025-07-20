@@ -38,8 +38,8 @@ class ProfileAppWidget extends StatelessWidget {
             children: [
                CircleAvatar(
                 radius: 25,
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage(CustomImage.nullImage),
+                 backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                 backgroundImage: AssetImage(CustomImage.nullImage),
               ),
               const SizedBox(width: 10),
               Column(
