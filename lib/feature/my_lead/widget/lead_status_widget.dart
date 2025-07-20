@@ -58,18 +58,11 @@ class _LeadStatusWidgetState extends State<LeadStatusWidget> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return LinearProgressIndicator(
-        backgroundColor: CustomColor.appColor,
-        color: Colors.white,
-        minHeight: 2.5,
-      );
+      return Center(child: CircularProgressIndicator(color: CustomColor.appColor,),);
     }
 
     if (leadStatus.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 300.0),
-        child: Text("Not Update: ${widget.bookingId}"),
-      );
+      return Center(child: Text("Not Update"));
     }
 
     return ListView.builder(

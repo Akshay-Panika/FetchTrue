@@ -16,7 +16,7 @@ class ServiceCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return SizedBox(
-      height: 250,
+      height: 220,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: services.length,

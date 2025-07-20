@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/feature/academy/screen/recorded_webinar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -77,106 +78,99 @@ class AcademyScreen extends StatelessWidget {
       body: Column(
         children: [
           /// Banner Section
-          const AcademyBannerWidget(),
+          // const AcademyBannerWidget(),
 
-          /// Tutorials Headline and Grid
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CustomHeadline(
-                headline: 'Tutorials',
-                viewSeeAll: false,
-              ),
+          20.height,
+          /// Grid of services
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _services.length,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1.11 / 1,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              final item = _services[index];
 
+              return CustomContainer(
+                border: false,
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+                margin: EdgeInsets.zero,
+                onTap: () async {
+                  final screenBuilder = item['screenBuilder'];
 
-              /// Grid of services
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _services.length,
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.11 / 1,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                ),
-                itemBuilder: (context, index) {
-                  final item = _services[index];
-
-                  return CustomContainer(
-                    border: true,
-                    backgroundColor: Colors.white,
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
-                    onTap: () async {
-                      final screenBuilder = item['screenBuilder'];
-
-                      if (screenBuilder is Widget Function()) {
-                        // Navigate normally
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => screenBuilder()),
-                        );
-                      } else if (screenBuilder is Function) {
-                        // Call function (like _openShorts)
-                        await screenBuilder();
-                      }
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: CustomContainer(
-                            backgroundColor: Colors.transparent,
-                            child: Icon(
-                              item['icon'] as IconData,
-                              size: 30,
-                              color: CustomColor.appColor,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                          child: Text(
-                            item['title'] as String,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  if (screenBuilder is Widget Function()) {
+                    // Navigate normally
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => screenBuilder()),
+                    );
+                  } else if (screenBuilder is Function) {
+                    // Call function (like _openShorts)
+                    await screenBuilder();
+                  }
                 },
-              ),
-            ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CustomContainer(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          item['icon'] as IconData,
+                          size: 30,
+                          color: CustomColor.appColor,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      child: Text(
+                        item['title'] as String,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
 
            SizedBox(height: dimensions.screenHeight*0.02),
 
           /// Flexible empty container (can be used for footer or other content)
           CustomContainer(
-            height: 200,
-            border: true,
-            backgroundColor: Colors.green.shade50,
-            width: double.infinity,
-            networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 15),
-                child: Container(
-                    color: CustomColor.whiteColor,
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text('Contact Us', style: textStyle16(context, color: CustomColor.appColor),)),
-              ),
+            backgroundColor: CustomColor.whiteColor,
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('You Have Any Doubt For Your Business Ideas', style: TextStyle(fontSize: 16),),
+                      InkWell(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
+                          child: Text('Contact Now', style: textStyle18(context, color: CustomColor.appColor),)),
+                    ],
+                  ),
+                ),
+                
+                Image.asset(CustomImage.nullImage, height: 150,)
+              ],
             ),
-          ),
+          )
         ],
       ),
     );

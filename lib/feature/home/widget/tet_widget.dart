@@ -15,8 +15,6 @@ import '../../team_build/screen/team_build_screen.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
 import '../../wallet/bloc/wallet_event.dart';
 import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/model/wallet_model.dart';
-import '../../wallet/repository/wallet_service.dart';
 import '../../wallet/screen/wallet_screen.dart';
 
 class TETWidget extends StatelessWidget {
@@ -26,8 +24,9 @@ class TETWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return SizedBox(
+    return Container(
       height: dimensions.screenHeight*0.15,
+      margin: EdgeInsetsGeometry.only(top: 20),
       child: Row(
         children: [
           Expanded(

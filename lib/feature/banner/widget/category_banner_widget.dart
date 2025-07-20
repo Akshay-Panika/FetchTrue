@@ -48,6 +48,7 @@ class _CategoryBannerWidgetState extends State<CategoryBannerWidget> {
             return CustomBanner(
               bannerData: banner,
               height: widget.height ?? 200,
+
                 onTap: (banner) {
 
                   if (banner.selectionType == 'subcategory') {

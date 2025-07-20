@@ -15,12 +15,9 @@ class NearByProviderWidget extends StatelessWidget {
       borderRadius: false,
       margin: EdgeInsets.zero,
       backgroundColor: Colors.teal.shade50,
-      child: Container(
-        color: Colors.black.withOpacity(0.1),
-        child: Center(
-          child: Text('Explore Near By provider',
-            style: textStyle22(context, color: CustomColor.appColor, fontWeight: FontWeight.bold),),
-        ),
+      child: Center(
+        child: Text('Explore Near By provider',
+          style: textStyle22(context, color: CustomColor.appColor, fontWeight: FontWeight.bold),),
       ),
     );
   }

@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Banner
             SliverToBoxAdapter(child: HomeBannerWidget(),),
-            SliverToBoxAdapter(child: 10.height,),
 
             /// Futures
             if(userSession.userId != null)
@@ -79,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Popular Services
             SliverToBoxAdapter(child:  PopularServicesWidget(headline: 'Popular Services'),),
-            SliverToBoxAdapter(child: AdviserWidget(),),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: ServiceProviderWidget(),),
             SliverToBoxAdapter(child: NearByProviderWidget(),),

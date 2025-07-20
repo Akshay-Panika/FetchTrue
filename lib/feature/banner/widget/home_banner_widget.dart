@@ -86,8 +86,7 @@ class HomeBannerShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
+    return Column(
       children: [
         Center(
           child: Shimmer.fromColors(
@@ -99,33 +98,30 @@ class HomeBannerShimmerWidget extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 5,
-                  width: 24,
-                  backgroundColor: CustomColor.greyColor.withOpacity(0.2)
-              ),
-              CustomContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 5,
-                  width: 10,
-                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
-              ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomContainer(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 5,
+                width: 24,
+                backgroundColor: CustomColor.greyColor.withOpacity(0.2)
+            ),
+            CustomContainer(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 5,
+                width: 10,
+                backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
+            ),
 
-              CustomContainer(
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 5,
-                  width: 10,
-                  backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
-              ),
-            ],
-          ),
+            CustomContainer(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 5,
+                width: 10,
+                backgroundColor: CustomColor.descriptionColor.withOpacity(0.1)
+            ),
+          ],
         ),
       ],
     );

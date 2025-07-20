@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../core/costants/custom_icon.dart';
+import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
-import '../../../helper/Contact_helper.dart';
 import '../model/lead_model.dart';
 import '../widget/lead_details_widget.dart';
 import '../widget/lead_status_widget.dart';
 
 class LeadDetailsScreen extends StatefulWidget {
- final LeadModel lead;
+  final LeadModel lead;
   const LeadDetailsScreen({super.key, required this.lead});
 
   @override
@@ -20,53 +19,46 @@ class LeadDetailsScreen extends StatefulWidget {
 
 class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
-  int _tapIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Lead Details', showBackButton: true,),
-
-      body: SafeArea(child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          15.height,
-
-          /// Tabs
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal:dimensions.screenHeight*0.02),
-            child: CustomToggleTabs(
-              labels: ['Lead Details', 'Status'],
-              selectedIndex: _tapIndex,
-              onTap: (index) {
-                setState(() {
-                  _tapIndex = index;
-                });
-              },
+      appBar: CustomAppBar(
+        title: 'Lead Details',
+        showBackButton: true,
+      ),
+      body: SafeArea(
+          child: DefaultTabController(
+        length: 2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              color: Colors.white,
+              child: TabBar(
+                dividerColor: Colors.transparent,
+                indicatorColor: CustomColor.appColor,
+                labelColor: Colors.black,
+                tabs: [
+                  Tab(text: "Lead Details"),
+                  Tab(text: "Status"),
+                ],
+              ),
             ),
-          ),
 
-          Expanded(
-            child: SingleChildScrollView(
-              padding:  EdgeInsets.all(10.0),
-              child:
-              _tapIndex ==0 ?
-            LeadDetailsWidget(dimensions: dimensions, lead: widget.lead,):
-              LeadStatusWidget(bookingId :widget.lead.id),
-            ),
-          ),
+            Expanded(child: TabBarView(
+              children: [
+                LeadDetailsWidget(
+                  dimensions: dimensions,
+                  lead: widget.lead,
+                ),
+                LeadStatusWidget(bookingId: widget.lead.id)
+              ],
+            )),
 
-          if(_tapIndex==0)
-          Padding(
-            padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.015),
-            child: CustomButton(label: 'Pay Now',onPressed: () => null,),
-          ),
-        ],
+          ],
+        ),
       )),
     );
   }
 }
-
-
-

@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomContainer(
-                  border: true,
+                  border: false,
                   backgroundColor: Colors.white,
                   margin: EdgeInsets.zero,
                   child: Column(
@@ -133,8 +133,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           CustomContainer(
                             border: true,
                             backgroundColor: CustomColor.whiteColor,
-                            margin: EdgeInsets.zero,
-                            child: Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),)
+                            margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),
+                            child: Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),)
                         ],
                       )
                     ],
@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 10.height,
 
                 CustomContainer(
-                  border: true,
+                  border: false,
                   backgroundColor: CustomColor.whiteColor,
                   margin: EdgeInsets.zero,
                   child: ListTile(
@@ -152,16 +152,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     contentPadding: EdgeInsets.all(0),
                     title: Text('Additional Details'),
                     subtitle: Text('Age, gender, and more'),
-                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
+                    trailing: Icon(Icons.arrow_forward_ios,size: 20, color: Colors.grey,),
                   ),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(),)),
                 ),
                 10.height,
 
-                Text('Save Addresses', style: textStyle14(context),),
-                5.height,
                 CustomContainer(
-                  border: true,
+                  border: false,
                   backgroundColor: CustomColor.whiteColor,
                   margin: EdgeInsets.zero,
                   child: ListTile(
@@ -170,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     contentPadding: EdgeInsets.all(0),
                     title: Text('Address'),
                     subtitle: Text('Add Address',),
-                    trailing: Icon(Icons.arrow_forward_ios,size: 20,),
+                    trailing: Icon(Icons.arrow_forward_ios,size: 20,color: Colors.grey,),
                   ),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),)),
                 ),

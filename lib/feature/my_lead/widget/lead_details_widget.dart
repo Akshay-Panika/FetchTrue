@@ -26,50 +26,63 @@ class LeadDetailsWidget extends StatefulWidget {
 class _LeadDetailsWidgetState extends State<LeadDetailsWidget> {
   @override
   Widget build(BuildContext context) {
-    return   Column(
-      children: [
-        SizedBox(height: widget.dimensions.screenHeight*0.01,),
+    return   SingleChildScrollView(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          SizedBox(height: widget.dimensions.screenHeight*0.01,),
+      
+          /// Booking card
+          _buildBookingCard(context , lead: widget.lead),
+          SizedBox(height: widget.dimensions.screenHeight*0.015,),
+      
+          /// Custom details card
+          _customerDetails(context, widget.lead),
+          SizedBox(height: widget.dimensions.screenHeight*0.015,),
+      
+      
+          /// Payment status card
+          _buildPaymentStatus(context, widget.lead),
+          SizedBox(height: widget.dimensions.screenHeight*0.015,),
+      
+          /// Booking summary card
+          _buildBookingSummary(context,widget.lead),
 
-        /// Booking card
-        _buildBookingCard(context , lead: widget.lead),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
+          CustomContainer(
+            width: double.infinity,
+            backgroundColor: CustomColor.whiteColor,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-        /// Custom details card
-        _customerDetails(context, widget.lead),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
-
-
-        /// Payment status card
-        _buildPaymentStatus(context, widget.lead),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
-
-        /// Booking summary card
-        _buildBookingSummary(context,widget.lead),
-        SizedBox(height: widget.dimensions.screenHeight*0.02,),
-
-        CustomContainer(
-          width: double.infinity,
-          backgroundColor: Colors.transparent,
-          // backgroundColor: CustomColor.greenColor.withOpacity(0.1),
-          margin: EdgeInsets.zero,
-          child: RichText(
-            textAlign: TextAlign.center,
-              text: TextSpan(
-            children: [
-              TextSpan(text: 'You Will Earn', style: textStyle16(context, color: CustomColor.appColor)),
-              WidgetSpan(child: 5.width),
-              TextSpan(text: '${00}', style: textStyle16(context,color: CustomColor.greenColor)),
-              WidgetSpan(child: 5.width),
-              TextSpan(text: 'Commission From This Product', style: textStyle16(context, color: CustomColor.appColor)),
-            ]
-          )),),
-        SizedBox(height: widget.dimensions.screenHeight*0.02,),
-
-
-        /// Provider Card
-        ProviderCardWidget(lead:widget.lead),
-        SizedBox(height: widget.dimensions.screenHeight*0.015,),
-      ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      20.height,
+                     Text('You Will Earn Commission', style: textStyle16(context, color: CustomColor.appColor),)  ,
+                     Row(
+                       children: [
+                         Text('Up To', style: textStyle14(context),),
+                         10.width,
+                         Text('00', style: textStyle16(context, color: Colors.green),),
+                       ],
+                     )  ,
+                    ],
+                  ),
+                ),
+                Image.asset('assets/package/packageBuyImg.png', height: 150,)
+              ],
+            ),),
+      
+          /// Provider Card
+          ProviderCardWidget(lead:widget.lead),
+          SizedBox(height: widget.dimensions.screenHeight*0.015,),
+        ],
+      ),
     );
   }
 }
