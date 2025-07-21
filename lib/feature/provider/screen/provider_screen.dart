@@ -70,36 +70,61 @@ class _ProviderScreenState extends State<ProviderScreen> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                backgroundImage: AssetImage(CustomImage.nullImage),
+                              Stack(
+                                alignment: AlignmentDirectional.bottomEnd,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                    backgroundImage: AssetImage(CustomImage.nullImage),
+                                  ),
+                                  CustomContainer(
+                                      backgroundColor: CustomColor.appColor,
+                                      margin: EdgeInsets.zero,
+                                      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                      child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                ],
                               ),
                               10.width,
 
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data.fullName,style: textStyle14(context),),
-                                  Text('Onboarding Service', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                  Text(data.storeInfo!.storeName,style: textStyle14(context),),
+                                  Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
                                   5.height,
-                                  RattingAndReviewsWidget()
+                                  Text(
+                                    '⭐ ${data.averageRating} (${data.totalReviews} Review)',
+                                    style: TextStyle(fontSize: 12, color: Colors.black),
+                                  )
                                 ],
                               )
                             ],
                           ),
-                          15.height,
+                          10.height,
 
+                          if(data.subscribedServices.isNotEmpty)
+                          Divider(thickness: 0.3,),
                           Wrap(
                             spacing: 10,
                             runSpacing: 10,
-                            children: List.generate(4, (index) {
+                            children: List.generate(data.subscribedServices.length, (index) {
+                              final service = data.subscribedServices[index];
                               return CustomContainer(
-                                  margin: EdgeInsets.zero,
-                                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                  child: Text('type of tag', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),));
+                                margin: EdgeInsets.zero,
+                                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                child: Text(
+                                  service.category!.name ?? 'Unknown', // <-- यहाँ actual tag value दिखेगी
+                                  style: textStyle12(
+                                    context,
+                                    fontWeight: FontWeight.w400,
+                                    color: CustomColor.descriptionColor,
+                                  ),
+                                ),
+                              );
                             }),
-                          ),
+                          )
+
                         ],
                       ),
                       const Positioned(

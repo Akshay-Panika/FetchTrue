@@ -1,12 +1,9 @@
-import 'package:fetchtrue/feature/home/widget/service_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
 import '../../../core/widgets/custom_search_bar.dart';
-import '../../../core/widgets/custom_service_list.dart';
-import '../../advisers/widget/adviser_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
@@ -14,7 +11,6 @@ import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
 import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
 import '../widget/all_service_widget.dart';
-import '../widget/near_by_provider_widget.dart';
 import '../widget/popular_services_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/recommended_ervices_widget.dart';
@@ -80,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SliverToBoxAdapter(child:  PopularServicesWidget(headline: 'Popular Services'),),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: ServiceProviderWidget(),),
-            SliverToBoxAdapter(child: NearByProviderWidget(),),
             SliverToBoxAdapter(child:  AllServiceWidget(headline: 'All Services',),),
             SliverToBoxAdapter(child: UnderstandingBizBoosterWidget(),),
             SliverToBoxAdapter(child: PartnerReviewWidget(),),

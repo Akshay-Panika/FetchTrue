@@ -1,18 +1,16 @@
 import 'dart:io';
-
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/feature/profile/screen/update_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../auth/repository/user_service.dart';
 import '../../more/model/user_model.dart';
-import '../../my_lead/screen/my_Lead_screen.dart';
 import 'add_address_screen.dart';
 import 'additional_details_screen.dart';
 
@@ -102,8 +100,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           
                           Row(
                             children: [
-                              IconButton(onPressed: () => null, icon: Icon(Icons.mode_edit_outline_outlined)),
+                              IconButton(onPressed: () {
+                                if(widget.userId != null)
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateInfoScreen(user: user!,),));
+                              }, icon: Icon(Icons.mode_edit_outline_outlined)),
                               IconButton( onPressed: () async{
+                                if(widget.userId != null)
                                 await pickImageFromGallery();
                               }, icon: Icon(Icons.camera_alt_outlined)),
                             ],
@@ -136,7 +138,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             border: true,
                             backgroundColor: CustomColor.whiteColor,
                             margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),
-                            child: Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),)
+                            child: Row(
+                              children: [
+                                Icon(Icons.verified, size: 20,color: Colors.grey,),10.width,
+                                Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),
+                              ],
+                            ),)
                         ],
                       )
                     ],
@@ -154,9 +161,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     contentPadding: EdgeInsets.all(0),
                     title: Text('Additional Details'),
                     subtitle: Text('Age, gender, and more'),
-                    trailing: Icon(Icons.arrow_forward_ios,size: 20, color: Colors.grey,),
+                    trailing: Icon(Icons.verified,size: 20, color: Colors.grey,),
                   ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(),)),
+
+                  onTap: () {
+                    if(widget.userId != null)
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(),));
+                  }
                 ),
                 10.height,
 
@@ -170,9 +181,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     contentPadding: EdgeInsets.all(0),
                     title: Text('Address'),
                     subtitle: Text('Add Address',),
-                    trailing: Icon(Icons.arrow_forward_ios,size: 20,color: Colors.grey,),
+                    trailing: Icon(Icons.verified,size: 20,color: Colors.grey,),
                   ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),)),
+                  onTap: () {
+                    if(widget.userId != null)
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(),));
+                  }
                 ),
                 10.height,
               ],

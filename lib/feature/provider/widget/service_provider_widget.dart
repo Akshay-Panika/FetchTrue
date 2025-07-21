@@ -25,6 +25,7 @@ class ServiceProviderWidget extends StatefulWidget {
 }
 
 class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +79,25 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  15.height,
                                   Row(
                                     children: [
-                                      CircleAvatar(
-                                        radius: 30,
-                                        backgroundColor: const Color(0xFFF2F2F2),
-                                        backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
+                                      Stack(
+                                        alignment: AlignmentDirectional.bottomEnd,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundColor: const Color(0xFFF2F2F2),
+                                            backgroundImage: NetworkImage(data.storeInfo!.logo),
+                                          ),
+                                          CustomContainer(
+                                            backgroundColor: CustomColor.appColor,
+                                              margin: EdgeInsets.zero,
+                                              padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                              child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                        ],
                                       ),
                                       10.width,
                                       Column(
@@ -110,20 +122,28 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                             ),
                                           ),
                                           5.height,
-                                          RattingAndReviewsWidget(serviceId: data.id,)
+                                          Text(
+                                            '⭐ ${data.averageRating} (${data.totalReviews} Review)',
+                                            style: TextStyle(fontSize: 12, color: Colors.black),
+                                          )
                                         ],
                                       ),
                                     ],
                                   ),
+
+
+                                  Divider(thickness: 0.3,),
+                                  if (_currentIndex == index)
                                   Wrap(
                                     spacing: 10,
                                     runSpacing: 10,
-                                    children: List.generate(4, (index) {
+                                    children: List.generate(data.subscribedServices.length, (index) {
+                                      final service = data.subscribedServices[index];
                                       return CustomContainer(
                                         margin: EdgeInsets.zero,
-                                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                                         child: Text(
-                                          'type of tag',
+                                          service.category!.name ?? 'Unknown', // <-- यहाँ actual tag value दिखेगी
                                           style: textStyle12(
                                             context,
                                             fontWeight: FontWeight.w400,
@@ -132,7 +152,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                         ),
                                       );
                                     }),
-                                  ),
+                                  )
                                 ],
                               ),
                               Positioned(

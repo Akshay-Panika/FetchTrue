@@ -39,9 +39,18 @@ class TeamGpWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: CustomColor.appColor,
-                            backgroundImage: AssetImage(CustomImage.nullImage),
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                backgroundImage: AssetImage(CustomImage.nullImage),
+                              ),
+
+                              Positioned(
+                                  bottom: 0,right: 0,
+                                  child: Icon(Icons.check_circle, color: Colors.grey,)),
+                            ],
                           ),
                           10.width,
                           Column(

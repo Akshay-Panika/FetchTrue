@@ -35,7 +35,8 @@ class NonGpWidget extends StatelessWidget {
                     Row(
                       children: [
                         CircleAvatar(
-                          backgroundColor: CustomColor.appColor,
+                          radius: 30,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                           backgroundImage: AssetImage(CustomImage.nullImage),
                         ),
                         10.width,

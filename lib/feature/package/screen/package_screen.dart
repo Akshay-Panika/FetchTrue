@@ -1,8 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
-import 'package:fetchtrue/feature/package/screen/scratch_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -97,7 +95,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                           itemBuilder: (context, index, realIndex) {
                             final descKey = _packages[index].toLowerCase();
                             final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
-                  
+
                             // ✅ apka original custom card
                             return _buildPackageCard(context, dimensions, pkg, htmlDesc);
                           },
@@ -116,7 +114,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                           ),
                         ),
                       ),
-                  
+
                       10.height,
                       _buildAssuranceSection(context,pkg),
                     ],
@@ -381,11 +379,11 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                      20.height,
-                    
+
                     Text('Total Amount', style: textStyle16(context, color: CustomColor.appColor),),
                     CustomAmountText(amount: grandTotal.toStringAsFixed(2),fontSize: 18,fontWeight: FontWeight.w500),
                     20.height,
-                
+
                     Text('Select Payment Option', style: textStyle14(context, color: CustomColor.descriptionColor),),
                     10.height,
                     CustomContainer(
@@ -450,7 +448,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                     20.height,
 
 
-                    Text('Pay Full Payment Now Get __ % Off', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                    Text('Descriptions_', style: textStyle12(context, color: CustomColor.descriptionColor),),
                     50.height,
 
                     Row(
@@ -478,7 +476,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                     50.height,
                   ],
                 ),
-                
+
                 Positioned(
                     right: 0,top: 0,
                     child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close)))

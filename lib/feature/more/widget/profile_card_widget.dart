@@ -43,7 +43,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
               Row(
                 children: [
                    CircleAvatar(
-                    radius: 25,
+                    radius: 30,
                     backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                     backgroundImage: AssetImage(CustomImage.nullImage),
                   ),

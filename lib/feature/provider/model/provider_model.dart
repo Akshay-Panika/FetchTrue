@@ -14,6 +14,9 @@ class ProviderModel {
   final String registrationStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double averageRating;
+  final int totalReviews;
+  final List<String> galleryImages;
   final StoreInfo? storeInfo;
   final KYC? kyc;
   final List<SubscribedService> subscribedServices;
@@ -34,6 +37,9 @@ class ProviderModel {
     required this.registrationStatus,
     required this.createdAt,
     required this.updatedAt,
+    required this.averageRating,
+    required this.totalReviews,
+    required this.galleryImages,
     this.storeInfo,
     this.kyc,
     required this.subscribedServices,
@@ -46,16 +52,19 @@ class ProviderModel {
       phoneNo: json['phoneNo'],
       email: json['email'],
       password: json['password'],
-      isRejected: json['isRejected'],
-      isApproved: json['isApproved'],
-      isVerified: json['isVerified'],
-      isDeleted: json['isDeleted'],
-      step1Completed: json['step1Completed'],
-      storeInfoCompleted: json['storeInfoCompleted'],
-      kycCompleted: json['kycCompleted'],
-      registrationStatus: json['registrationStatus'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      isRejected: json['isRejected'] ?? false,
+      isApproved: json['isApproved'] ?? false,
+      isVerified: json['isVerified'] ?? false,
+      isDeleted: json['isDeleted'] ?? false,
+      step1Completed: json['step1Completed'] ?? false,
+      storeInfoCompleted: json['storeInfoCompleted'] ?? false,
+      kycCompleted: json['kycCompleted'] ?? false,
+      registrationStatus: json['registrationStatus'] ?? '',
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
+      averageRating: (json['averageRating'] ?? 0).toDouble(),
+      totalReviews: json['totalReviews'] ?? 0,
+      galleryImages: List<String>.from(json['galleryImages'] ?? []),
       storeInfo: json['storeInfo'] != null
           ? StoreInfo.fromJson(json['storeInfo'])
           : null,
@@ -172,6 +181,7 @@ class SubscribedService {
   final int price;
   final int? discountedPrice;
   final bool isDeleted;
+  final ServiceCategory? category;
 
   SubscribedService({
     required this.id,
@@ -179,6 +189,7 @@ class SubscribedService {
     required this.price,
     this.discountedPrice,
     required this.isDeleted,
+    this.category,
   });
 
   factory SubscribedService.fromJson(Map<String, dynamic> json) {
@@ -187,7 +198,27 @@ class SubscribedService {
       serviceName: json['serviceName'],
       price: json['price'],
       discountedPrice: json['discountedPrice'],
-      isDeleted: json['isDeleted'],
+      isDeleted: json['isDeleted'] ?? false,
+      category: json['category'] != null
+          ? ServiceCategory.fromJson(json['category'])
+          : null,
+    );
+  }
+}
+
+class ServiceCategory {
+  final String id;
+  final String name;
+
+  ServiceCategory({
+    required this.id,
+    required this.name,
+  });
+
+  factory ServiceCategory.fromJson(Map<String, dynamic> json) {
+    return ServiceCategory(
+      id: json['_id'],
+      name: json['name'],
     );
   }
 }

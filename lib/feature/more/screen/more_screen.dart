@@ -158,11 +158,11 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 15.0, bottom: 5),
+          padding: const EdgeInsets.only(left: 15.0,top: 10),
           child: Text(title, style: textStyle14(context)),
         ),
         CustomContainer(
-          border: true,
+          border: false,
           backgroundColor: Colors.white,
           padding: EdgeInsets.zero,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

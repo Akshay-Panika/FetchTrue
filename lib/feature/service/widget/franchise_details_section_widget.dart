@@ -16,6 +16,9 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final commissionString = services.first.franchiseDetails.commission;
+    final commission = double.tryParse(commissionString) ?? 0;
+    final commissionHalf = commission / 2;
 
     return Column(
       children: [
@@ -51,7 +54,9 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
                         ),
                       ),
                       10.width,
-                      Text('${services.first.franchiseDetails.commission}', style: textStyle22(context, color: CustomColor.greenColor),)
+                      Text('${services.first.franchiseDetails.commission}', style: textStyle22(context, color: CustomColor.greenColor),),
+                      20.width,
+                      // Text('${commissionHalf.toStringAsFixed(2)}', style: textStyle22(context, color: CustomColor.greenColor),)
                     ],
                   ),
                 ],
