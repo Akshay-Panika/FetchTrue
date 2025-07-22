@@ -193,6 +193,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text('Withdraw Amount', style: textStyle14(context)),
                     ],
                   ),
+                  // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(),)),
                 ),
               ),
             ],

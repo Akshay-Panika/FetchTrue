@@ -1,12 +1,14 @@
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
 import '../repository/check_out_service.dart';
@@ -57,6 +59,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+    final userSession = Provider.of<UserSession>(context);
 
     return Padding(
       padding:  EdgeInsets.all(15.0),
@@ -260,10 +263,10 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         if (selectedPayment == PaymentMethod.cashFree) {
                           await generateCashFreeLink( context,
                             amount: payableAmount,
-                            customerId: widget.checkoutData.user,
-                            name: "Customer Name",
-                            email: "customer@example.com",
-                            phone: '8989207770',
+                            customerId: userSession.userId!,
+                            name: userSession.name!,
+                            email: userSession.email!,
+                            phone: '',
                           );
                         }
 
