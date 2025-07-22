@@ -9,13 +9,11 @@ import 'package:http/http.dart' as http;
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_favorite_button.dart';
 import '../../auth/repository/user_service.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/repository/provider_service.dart';
-import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
@@ -194,7 +192,6 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                                   )
                                 ],
                               ),
-                              RattingAndReviewsWidget(serviceId: data.id,),
                               const SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment:
@@ -340,7 +337,7 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
                                 radius: 40,
                                 backgroundColor: Colors.white,
                                 backgroundImage:
-                                NetworkImage(data.storeInfo!.logo),
+                                NetworkImage(data.storeInfo!.logo.toString()),
                               ),
                               CustomContainer(
                                 backgroundColor: CustomColor.appColor,

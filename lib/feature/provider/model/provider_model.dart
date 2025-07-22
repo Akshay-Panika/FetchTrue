@@ -48,10 +48,10 @@ class ProviderModel {
   factory ProviderModel.fromJson(Map<String, dynamic> json) {
     return ProviderModel(
       id: json['_id'],
-      fullName: json['fullName'],
-      phoneNo: json['phoneNo'],
-      email: json['email'],
-      password: json['password'],
+      fullName: json['fullName'] ?? '',
+      phoneNo: json['phoneNo'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
       isRejected: json['isRejected'] ?? false,
       isApproved: json['isApproved'] ?? false,
       isVerified: json['isVerified'] ?? false,
@@ -65,14 +65,11 @@ class ProviderModel {
       averageRating: (json['averageRating'] ?? 0).toDouble(),
       totalReviews: json['totalReviews'] ?? 0,
       galleryImages: List<String>.from(json['galleryImages'] ?? []),
-      storeInfo: json['storeInfo'] != null
-          ? StoreInfo.fromJson(json['storeInfo'])
-          : null,
+      storeInfo: json['storeInfo'] != null ? StoreInfo.fromJson(json['storeInfo']) : null,
       kyc: json['kyc'] != null ? KYC.fromJson(json['kyc']) : null,
-      subscribedServices: (json['subscribedServices'] as List?)
-          ?.map((e) => SubscribedService.fromJson(e))
-          .toList() ??
-          [],
+      subscribedServices: (json['subscribedServices'] as List? ?? [])
+          .map((e) => SubscribedService.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -83,8 +80,8 @@ class StoreInfo {
   final String storeEmail;
   final String? module;
   final String? zone;
-  final String logo;
-  final String cover;
+  final String? logo;
+  final String? cover;
   final String address;
   final String? officeNo;
   final String city;
@@ -99,8 +96,8 @@ class StoreInfo {
     required this.storeEmail,
     this.module,
     this.zone,
-    required this.logo,
-    required this.cover,
+    this.logo,
+    this.cover,
     required this.address,
     this.officeNo,
     required this.city,
@@ -112,22 +109,20 @@ class StoreInfo {
 
   factory StoreInfo.fromJson(Map<String, dynamic> json) {
     return StoreInfo(
-      storeName: json['storeName'],
-      storePhone: json['storePhone'],
-      storeEmail: json['storeEmail'],
+      storeName: json['storeName'] ?? '',
+      storePhone: json['storePhone'] ?? '',
+      storeEmail: json['storeEmail'] ?? '',
       module: json['module'],
       zone: json['zone'],
-      logo: json['logo'] ?? '',
-      cover: json['cover'] ?? '',
-      address: json['address'],
+      logo: json['logo'],
+      cover: json['cover'],
+      address: json['address'] ?? '',
       officeNo: json['officeNo'],
-      city: json['city'],
-      state: json['state'],
-      country: json['country'],
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      country: json['country'] ?? '',
       tax: json['tax'],
-      location: json['location'] != null
-          ? Location.fromJson(json['location'])
-          : null,
+      location: json['location'] != null ? Location.fromJson(json['location']) : null,
     );
   }
 }
@@ -143,8 +138,10 @@ class Location {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      type: json['type'],
-      coordinates: List<double>.from(json['coordinates'].map((e) => e.toDouble())),
+      type: json['type'] ?? '',
+      coordinates: List<double>.from(
+        (json['coordinates'] as List).map((e) => e.toDouble()),
+      ),
     );
   }
 }
@@ -195,8 +192,8 @@ class SubscribedService {
   factory SubscribedService.fromJson(Map<String, dynamic> json) {
     return SubscribedService(
       id: json['_id'],
-      serviceName: json['serviceName'],
-      price: json['price'],
+      serviceName: json['serviceName'] ?? '',
+      price: json['price'] ?? 0,
       discountedPrice: json['discountedPrice'],
       isDeleted: json['isDeleted'] ?? false,
       category: json['category'] != null
@@ -218,7 +215,7 @@ class ServiceCategory {
   factory ServiceCategory.fromJson(Map<String, dynamic> json) {
     return ServiceCategory(
       id: json['_id'],
-      name: json['name'],
+      name: json['name'] ?? '',
     );
   }
 }

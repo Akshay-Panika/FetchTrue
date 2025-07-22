@@ -1,4 +1,3 @@
-import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
@@ -76,7 +74,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                   CircleAvatar(
                                     radius: 30,
                                     backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                    backgroundImage: AssetImage(CustomImage.nullImage),
+                                    backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
                                   ),
                                   CustomContainer(
                                       backgroundColor: CustomColor.appColor,

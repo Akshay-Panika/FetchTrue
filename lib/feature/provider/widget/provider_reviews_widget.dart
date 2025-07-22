@@ -1,144 +1,162 @@
-
-
-
-
+import 'package:fetchtrue/feature/provider/model/provider_review_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../repository/provider_review_service.dart';
 
-class ProviderReviewsWidget extends StatelessWidget {
-  final List<Map<String, dynamic>> reviews = [
-    {
-      "name": "Anika Srishty",
-      "rating": 5.0,
-      "comment": "Your service is excellent",
-      "date": "23 Jan, 2023",
-    },
-    {
-      "name": "Anika Srishty",
-      "rating": 5.0,
-      "comment": "Great job",
-      "date": "23 Jan, 2023",
-    },
-    {
-      "name": "Anika Srishty",
-      "rating": 5.0,
-      "comment": "Great services",
-      "date": "23 Jan, 2023",
-    },
-    {
-      "name": "Anika Srishty",
-      "rating": 4.0,
-      "comment": "Excellent service",
-      "date": "23 Jan, 2023",
-    },
-  ];
+class ProviderReviewsWidget extends StatefulWidget {
+  final String? providerId;
+  const ProviderReviewsWidget({super.key, this.providerId});
+
+  @override
+  State<ProviderReviewsWidget> createState() => _ProviderReviewsWidgetState();
+}
+
+class _ProviderReviewsWidgetState extends State<ProviderReviewsWidget> {
+  late Future<ProviderReviewResponse?> _futureReviewResponse;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureReviewResponse = ProviderReviewService().fetchReviews(widget.providerId!);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ratingSummary(),
-        SizedBox(height: 20),
-        Padding(
-          padding: EdgeInsets.only(left: 15),
-          child: Text("4 Reviews", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        ),
-        SizedBox(height: 10),
-        ...reviews.map((review) => reviewCard(review)).toList(),
-      ],
+    return FutureBuilder<ProviderReviewResponse?>(
+      future: _futureReviewResponse,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 150.0),
+            child: Center(child: CircularProgressIndicator(color: CustomColor.appColor,),),
+          );
+
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return Padding(
+              padding: const EdgeInsets.only(top: 150.0),
+              child: const Center(child: Text('No reviews found.')));
+        }
+
+        final data = snapshot.data!;
+        final ratingDist = data.ratingDistribution;
+        final reviews = data.reviews;
+        final max = ratingDist.values.fold<int>(1, (a, b) => a > b ? a : b);
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ratingSummary(data, ratingDist, max),
+              const SizedBox(height: 20),
+              Text("${reviews.length} Reviews", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 10),
+              ...reviews.map((review) => reviewCard(review)).toList(),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget ratingSummary() {
+  Widget ratingSummary(ProviderReviewResponse data, Map<int, int> dist, int max) {
+    final labels = ['Excellent', 'Good', 'Average', 'Below Average', 'Poor'];
+    final ratingMap = {
+      5: dist[5] ?? 0,
+      4: dist[4] ?? 0,
+      3: dist[3] ?? 0,
+      2: dist[2] ?? 0,
+      1: dist[1] ?? 0,
+    };
+
     return CustomContainer(
       backgroundColor: Colors.transparent,
       child: Column(
         children: [
           Row(
             children: [
-              Icon(Icons.star, color: Colors.amber, size: 16,),
-              SizedBox(width: 4),
-              Text("4.75 / 5", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-              Spacer(),
-              Text("4 Ratings", style: TextStyle(color: Colors.grey.shade700)),
+              const Icon(Icons.star, color: Colors.amber, size: 16),
+              const SizedBox(width: 4),
+              Text("${data.averageRating.toStringAsFixed(2)} / 5", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              const Spacer(),
+              Text("${data.totalReviews} Ratings", style: TextStyle(color: Colors.grey.shade700)),
             ],
           ),
-          SizedBox(height: 10),
-          ratingBar("Excellent", 3),
-          ratingBar("Good", 1),
-          ratingBar("Average", 0),
-          ratingBar("Below Average", 0),
-          ratingBar("Poor", 0),
+          const SizedBox(height: 10),
+          for (int i = 0; i < labels.length; i++)
+            ratingBar(labels[i], ratingMap[5 - i] ?? 0, max: max),
         ],
       ),
     );
   }
 
-  Widget ratingBar(String label, int value) {
+  Widget ratingBar(String label, int value, {required int max}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          SizedBox(width: 80, child: Text(label, style: TextStyle(fontSize: 14),)),
+          SizedBox(width: 100, child: Text(label, style: const TextStyle(fontSize: 14))),
           Expanded(
             child: LinearProgressIndicator(
-              value: value / 3,
+              value: max == 0 ? 0 : value / max,
               backgroundColor: Colors.grey[300],
               color: Colors.blue,
               minHeight: 6,
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(value.toString()),
         ],
       ),
     );
   }
 
-  Widget reviewCard(Map<String, dynamic> review) {
+  Widget reviewCard(Review review) {
     return CustomContainer(
       backgroundColor: Colors.transparent,
-      margin: EdgeInsets.symmetric(vertical: 0),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(CustomImage.nullImage), // Replace with your own image or use NetworkImage
+            backgroundImage: AssetImage(CustomImage.nullImage),
             radius: 20,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Text(review['name'], style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-                    Spacer(),
-                    Text(review['date'], style: TextStyle(color: Colors.grey.shade700,fontSize: 14)),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Row(
-                      children: List.generate(5,
-                            (index) => Icon(
-                          index < review['rating'].round()
-                              ? Icons.star
-                              : Icons.star_border, size: 14, color: Colors.blue,),
-                      ),
+                    Text(
+                      review.userEmail.split('@')[0],
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                     ),
-                    SizedBox(width: 5,),
-                    Text('4.0')
+                    const Spacer(),
+                    Text(
+                      review.createdAt.toLocal().toString().split(' ')[0],
+                      style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                    ),
                   ],
                 ),
-                SizedBox(height: 4),
-                Text(review['comment'], style: TextStyle(fontSize: 12),),
+                const SizedBox(height: 4),
+                Row(
+                  children: List.generate(
+                    5,
+                        (index) => Icon(
+                      index < review.rating ? Icons.star : Icons.star_border,
+                      size: 14,
+                      color: Colors.blue,
+                    ),
+                  )..add(const SizedBox(width: 5))
+                    ..add(Text(review.rating.toString())),
+                ),
+                const SizedBox(height: 4),
+                Text(review.comment, style: const TextStyle(fontSize: 12)),
               ],
             ),
           ),
@@ -146,63 +164,4 @@ class ProviderReviewsWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-class ReviewBarGraph extends StatelessWidget {
-  final Map<int, int> ratings; // Example: {1: 2, 2: 4, 3: 5, 4: 3, 5: 6}
-
-  const ReviewBarGraph({super.key, required this.ratings});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      width: double.infinity,
-      child: CustomPaint(
-        painter: _BarGraphPainter(ratings),
-      ),
-    );
-  }
-}
-
-class _BarGraphPainter extends CustomPainter {
-  final Map<int, int> ratings;
-  _BarGraphPainter(this.ratings);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-    final barWidth = size.width / (ratings.length * 2); // spacing
-
-    final maxValue = ratings.values.reduce((a, b) => a > b ? a : b);
-
-    int index = 0;
-    ratings.forEach((star, value) {
-      final x = barWidth + index * 2 * barWidth;
-      final barHeight = (value / maxValue) * size.height;
-      final y = size.height - barHeight;
-
-      paint.color = Colors.blueAccent;
-
-      // Draw bar
-      canvas.drawRect(Rect.fromLTWH(x, y, barWidth, barHeight), paint);
-
-      // Draw label
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: '$star⭐',
-          style: const TextStyle(color: Colors.black, fontSize: 12),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-          canvas, Offset(x + barWidth / 2 - textPainter.width / 2, size.height + 5));
-
-      index++;
-    });
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

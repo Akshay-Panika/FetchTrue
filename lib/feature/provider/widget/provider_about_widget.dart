@@ -1,18 +1,57 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/costants/custom_color.dart';
+import '../bloc/provider_by_id/provider_by_id_bloc.dart';
+import '../bloc/provider_by_id/provider_by_id_event.dart';
+import '../bloc/provider_by_id/provider_by_id_state.dart';
+import '../repository/provider_by_id_service.dart';
 
 class ProviderAboutWidget extends StatelessWidget {
-  const ProviderAboutWidget({super.key});
+   final String providerId;
+    ProviderAboutWidget({super.key, required this.providerId});
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('''Where does it come from?
-                        Contrary to popular belief, Lorem Ipsvrbj j  xiuefcuig4g buobe2h0hqr  g3ribr3oi biwehgih3gn   brnbri um is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.'''),
-        )
-      ],
+    return  SafeArea(
+      child: BlocProvider(
+        create: (_) => ProviderByIdBloc(ProviderByIdService())..add(GetProviderByIdEvent(providerId.toString())),
+        child:  BlocBuilder<ProviderByIdBloc, ProviderByIdState>(
+          builder: (context, state) {
+            if (state is ProviderLoading) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 150.0),
+                child: Center(child: CircularProgressIndicator(color: CustomColor.appColor,),),
+              );
+            }
+
+            else if(state is ProviderLoaded){
+
+              final data = state.provider;
+
+              return Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Provider : ${data.fullName}'),
+                    // Text('Contact : ${data.phoneNo}'),
+                    Text('Email Id : ${data.email}'),
+
+                    Text('About : ${''}'),
+                  ],
+                ),
+              );
+            }
+
+            else if (state is ProviderError) {
+              return Center(child: Text(state.message));
+            }
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
     );
   }
 }

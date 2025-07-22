@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../feature/ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../feature/service/screen/service_details_screen.dart';
 import '../costants/custom_color.dart';
 import '../costants/text_style.dart';
@@ -70,7 +69,6 @@ class CustomServiceList extends StatelessWidget {
                                       ),
                                       color: CustomColor.blackColor.withOpacity(0.3),
                                     ),
-                                  child: RattingAndReviewsWidget(color: CustomColor.whiteColor,),
                                 )
                               ],
                             ),

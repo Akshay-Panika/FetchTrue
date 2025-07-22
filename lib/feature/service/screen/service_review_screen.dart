@@ -4,8 +4,8 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../ratting_and_reviews/model/retting_and_reviews_model.dart';
-import '../../ratting_and_reviews/repository/ratting_and_reviews_service.dart';
+import '../model/service_review_model.dart';
+import '../repository/service_review_service.dart';
 
 class ServiceReviewWidget extends StatefulWidget {
   final String? serviceId;
@@ -16,7 +16,7 @@ class ServiceReviewWidget extends StatefulWidget {
 }
 
 class _ServiceReviewWidgetState extends State<ServiceReviewWidget> {
-  late Future<ReviewResponse?> _futureReviewResponse;
+  late Future<ServiceReviewResponse?> _futureReviewResponse;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _ServiceReviewWidgetState extends State<ServiceReviewWidget> {
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Service Review', showBackButton: true),
       body: SafeArea(
-        child: FutureBuilder<ReviewResponse?>(
+        child: FutureBuilder<ServiceReviewResponse?>(
           future: _futureReviewResponse,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,7 +63,7 @@ class _ServiceReviewWidgetState extends State<ServiceReviewWidget> {
     );
   }
 
-  Widget ratingSummary(ReviewResponse data, Map<int, int> dist, int max) {
+  Widget ratingSummary(ServiceReviewResponse data, Map<int, int> dist, int max) {
     final labels = ['Excellent', 'Good', 'Average', 'Below Average', 'Poor'];
     final ratingMap = {
       5: dist[5] ?? 0,

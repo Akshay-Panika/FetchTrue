@@ -13,7 +13,6 @@ import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
-import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../../service/model/service_model.dart';
 import '../model/check_out_model.dart';
 import '../screen/add_customer_screen.dart';
@@ -71,7 +70,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('${data.serviceName}'?? 'Service Name', style: textStyle14(context),),
-                    RattingAndReviewsWidget(serviceId: data.id,),
                     5.height,
 
 

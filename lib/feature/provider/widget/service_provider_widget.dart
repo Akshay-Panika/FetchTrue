@@ -1,19 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/favorite/model/favorite_provider_model.dart';
-import 'package:fetchtrue/feature/favorite/repository/favorite_provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_headline.dart';
 import '../../favorite/widget/favorite_provider_button_widget.dart';
-import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
+import '../repository/provider_by_id_service.dart';
 import '../repository/provider_service.dart';
 import '../screen/provider__details_screen.dart';
 
@@ -90,7 +87,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                           CircleAvatar(
                                             radius: 30,
                                             backgroundColor: const Color(0xFFF2F2F2),
-                                            backgroundImage: NetworkImage(data.storeInfo!.logo),
+                                            backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
                                           ),
                                           CustomContainer(
                                             backgroundColor: CustomColor.appColor,
@@ -133,15 +130,17 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
 
 
                                   Divider(thickness: 0.3,),
-                                  if (_currentIndex == index)
+                                  // if (_currentIndex == index)
                                   Wrap(
                                     spacing: 10,
                                     runSpacing: 10,
                                     children: List.generate(data.subscribedServices.length, (index) {
                                       final service = data.subscribedServices[index];
                                       return CustomContainer(
+                                        border: true,
+                                        backgroundColor: CustomColor.whiteColor,
                                         margin: EdgeInsets.zero,
-                                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                                         child: Text(
                                           service.category!.name ?? 'Unknown', // <-- यहाँ actual tag value दिखेगी
                                           style: textStyle12(

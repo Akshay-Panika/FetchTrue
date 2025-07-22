@@ -19,21 +19,16 @@ class ProviderServicesListWidget extends StatelessWidget {
     return  ListView(
       physics: NeverScrollableScrollPhysics(),
       children: [
-        Container(
-            color: CustomColor.appColor.withOpacity(0.1),
-            child: CustomServiceList(headline: 'Best Service')),
-        Container(
-            color: CustomColor.blueColor.withOpacity(0.1),
-            child: CustomServiceList(headline: 'Popular Service')),
-
-
         /// Services
         BlocProvider(
           create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
           child:  BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
             builder: (context, state) {
               if (state is ModuleServiceLoading) {
-                return Center(child: LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,),);
+                return Padding(
+                  padding: const EdgeInsets.only(top: 150.0),
+                  child: Center(child: CircularProgressIndicator(color: CustomColor.appColor,),),
+                );
               }
 
               else if(state is ModuleServiceLoaded){

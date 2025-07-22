@@ -54,9 +54,9 @@ class _SubscribedProviderWidgetState extends State<SubscribedProviderWidget> {
           } else if (state is ProviderLoaded) {
 
 
-            providerList = state.providerModel.where(
-                  (moduleService) => moduleService.subscribedServices.any(
-                    (service) => service.id == widget.serviceId,
+            providerList = state.providerModel.where((moduleService) =>
+                moduleService.subscribedServices.any(
+                (service) => service.id == widget.serviceId,
               ),
             ).toList();
 

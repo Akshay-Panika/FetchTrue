@@ -1,4 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/provider/bloc/provider_by_id/provider_by_id_bloc.dart';
+import 'package:fetchtrue/feature/provider/bloc/provider_by_id/provider_by_id_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
@@ -6,12 +8,9 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../ratting_and_reviews/ratting_and_reviews_widget.dart';
-import '../bloc/provider/provider_bloc.dart';
-import '../bloc/provider/provider_event.dart';
-import '../bloc/provider/provider_state.dart';
+import '../bloc/provider_by_id/provider_by_id_event.dart';
 import '../model/provider_model.dart';
-import '../repository/provider_service.dart';
+import '../repository/provider_by_id_service.dart';
 import '../widget/provider_about_widget.dart';
 import '../widget/provider_gallery_widget.dart';
 import '../widget/provider_reviews_widget.dart';
@@ -61,31 +60,17 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
 
       body:  SafeArea(
         child: BlocProvider(
-          create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
-          child:  BlocBuilder<ProviderBloc, ProviderState>(
+          create: (_) => ProviderByIdBloc(ProviderByIdService())..add(GetProviderByIdEvent(widget.providerId.toString())),
+          child:  BlocBuilder<ProviderByIdBloc, ProviderByIdState>(
             builder: (context, state) {
               if (state is ProviderLoading) {
                 return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
               }
         
               else if(state is ProviderLoaded){
-        
-                // final provider = state.providerModel;
-                final provider = state.providerModel.where((providerId) =>
-                providerId.id == widget.providerId
-                ).toList();
-        
-                if (provider.isEmpty) {
-                  return const Center(child: Text('No provider found.'));
-                }
-        
-                final data = provider.first;
-                ImageProvider _getProfileImage(String? logoUrl) {
-                  if (logoUrl == null || logoUrl.isEmpty || logoUrl == 'null') {
-                    return const NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
-                  }
-                  return NetworkImage(logoUrl);
-                }
+
+                final data = state.provider;
+
                 return CustomScrollView(
                   slivers: [
 
@@ -98,9 +83,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                       flexibleSpace: FlexibleSpaceBar(
                         background:Container(
                           decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: _getProfileImage(data.storeInfo!.cover)
-                                  ,fit: BoxFit.cover)
+                            image: DecorationImage(image: NetworkImage(data.storeInfo!.cover ??''), fit: BoxFit.fill)
                           ),
                         ),
                       ),
@@ -137,11 +120,11 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                           children: [
                             ProviderServicesListWidget(data: data,),
                 
-                            ProviderReviewsWidget(),
+                            ProviderReviewsWidget(providerId: data.id,),
                 
-                            ProviderAboutWidget(),
+                            ProviderAboutWidget(providerId: data.id,),
                 
-                            ProviderGalleryWidget()
+                            ProviderGalleryWidget(providerId: data.id,)
                           ],
                         ),
                       ),)
@@ -153,7 +136,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
               }
         
               else if (state is ProviderError) {
-                return Center(child: Text(state.errorMessage));
+                return Center(child: Text(state.message));
               }
               return const SizedBox.shrink();
             },
@@ -164,12 +147,6 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
   }
 
   Widget _profileCard({ ProviderModel? data}) {
-    ImageProvider _getProfileImage(String? logoUrl) {
-      if (logoUrl == null || logoUrl.isEmpty || logoUrl == 'null') {
-        return const NetworkImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
-      }
-      return NetworkImage(logoUrl);
-    }
     return CustomContainer(
      // border: true,
       backgroundColor: Colors.white,
@@ -183,22 +160,36 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey.shade200,
-                  backgroundImage: _getProfileImage(data!.storeInfo!.logo),
+                Stack(
+                  alignment: AlignmentDirectional.bottomCenter,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: const Color(0xFFF2F2F2),
+                      backgroundImage: NetworkImage(data!.storeInfo!.logo.toString()),
+                    ),
+                    CustomContainer(
+                        backgroundColor: CustomColor.appColor,
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                        child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                  ],
                 ),
-                const SizedBox(width: 12),
+                10.width,
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(data.fullName,
+                       Text(data.storeInfo!.storeName,
                         style: textStyle16(context),
                       ),
                       Text( "Module Name", style: textStyle14(context, fontWeight: FontWeight.w400)),
 
-                      RattingAndReviewsWidget(serviceId: data.id,),
+                      Text(
+                        '⭐ ${data.averageRating} (${data.totalReviews} Review)',
+                        style: TextStyle(fontSize: 12, color: Colors.black),
+                      ),
                       5.height,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,37 +226,12 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
             right: 0,
             child: CustomFavoriteButton(),
           ),
-
-          /// Availability Tag Bottom Left
-          Positioned(
-            bottom: -2,
-            left: 8,
-            child: CustomContainer(
-              border: true,
-              borderColor: Colors.green,
-              backgroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.circle, size: 10, color: Colors.green),
-                  SizedBox(width: 6),
-                  Text(
-                    'Available',
-                    style: TextStyle(color: Colors.green, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 
 }
-
-
 
 /// Sticky TabBar Delegate
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
