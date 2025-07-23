@@ -287,7 +287,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             spacing: 10,
             children: [
               _buildRow(context,
-              keys: 'Sub Total', amount: '${data.discountedPrice}'),
+              keys: 'Price', amount: '${data.discountedPrice}'),
               _buildRow(context, keys: 'Service Discount', amount: '${data.discount} %', isAmount: false),
               _buildRow(context, keys: 'Coupon Discount', amount: '00.00',isAmount: false),
               _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),

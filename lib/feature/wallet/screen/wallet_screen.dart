@@ -12,6 +12,8 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../model/wallet_model.dart';
 import '../repository/wallet_service.dart';
+import 'add_amount.dart';
+import 'add_amount_screen.dart';
 
 class WalletScreen extends StatefulWidget {
   final String userId;
@@ -179,6 +181,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text('Add Amount', style: textStyle14(context)),
                     ],
                   ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AmountScreen(),)),
                 ),
               ),
               Expanded(
@@ -193,7 +196,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text('Withdraw Amount', style: textStyle14(context)),
                     ],
                   ),
-                  // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(),)),
+                  // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAmountScreen(),)),
                 ),
               ),
             ],

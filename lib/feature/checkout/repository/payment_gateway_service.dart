@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:fetchtrue/feature/checkout/widget/payment.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,7 +36,7 @@ Future<void> generateCashFreeLink(BuildContext context,{
       final data = jsonDecode(response.body);
       final paymentLink = data['paymentLink'];
       if (paymentLink != null) {
-        await launchUrl(Uri.parse(paymentLink), mode: LaunchMode.externalApplication);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen(url: paymentLink)));
       } else {
         showCustomSnackBar(context, 'Payment link not received.');
       }
@@ -43,4 +46,39 @@ Future<void> generateCashFreeLink(BuildContext context,{
   } catch (e) {
     showCustomSnackBar(context, 'Error: $e');
   }
+
+  void openWebView(String url) {
+    InAppWebViewController? webViewController;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        content: SizedBox(
+          height: 500,
+          child: InAppWebView(
+            initialUrlRequest: URLRequest(url: WebUri(url)),
+            onWebViewCreated: (controller) {
+              webViewController = controller;
+            },
+            onLoadStop: (controller, uri) {
+              final currentUrl = uri.toString();
+              if (currentUrl.contains("response")) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("✅ Payment Success")),
+                );
+              } else if (currentUrl.contains("failed")) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("❌ Payment Failed")),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }

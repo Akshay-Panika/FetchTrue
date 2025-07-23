@@ -23,8 +23,8 @@ class ApiUrls{
   static const String leadStatus = '${baseUrl}leads';
 
 
-  static const CASHFREE_APP_ID= 'TEST10670800c5ec32bec81b65cc43c200807601';
-  static const CASHFREE_SECRET_KEY= 'cfsk_ma_test_068c676f7fad1ab1ddb933fbf77c874e_a4063bc9';
+  static const Client_id= 'TEST107274954a9cf3c92a3b5a1a511359472701';
+  static const Client_secret= 'cfsk_ma_test_dc62307065968e39980c69ffe07fa7dd_2f0a9615';
 
-  static const cashfreeUil  =  '${baseUrl}cashfree/order';
+  static const cashfreeUrl  =  '${baseUrl}cashfree/order';
 }
