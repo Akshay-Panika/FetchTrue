@@ -10,15 +10,14 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../service/model/service_model.dart';
-import '../model/check_out_model.dart';
+import '../model/checkout_model.dart';
 import '../repository/cashfree_service.dart';
-import '../repository/check_out_service.dart';
-import '../repository/payment_gateway_service.dart';
+import '../repository/checkout_service.dart';
 
 class CheckPaymentWidget extends StatefulWidget {
   final List<ServiceModel> services;
   final VoidCallback onPaymentDone;
-  final CheckoutModel checkoutData;
+  final CheckOutModel checkoutData;
   final String providerId;
 
   const CheckPaymentWidget({
@@ -237,10 +236,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       final updatedCheckout = widget.checkoutData.copyWith(
                         paymentMethod: ['pac'],
                         walletAmount: 0,
-                        paidByOtherMethodAmount: 0,
-                        partialPaymentNow: isPartial ? partialAmount : 0,
-                        partialPaymentLater: isPartial ? partialAmount : 0,
-                        remainingPaymentStatus: 'pending',
                         paymentStatus: 'pending',
                         orderStatus: 'processing',
                         totalAmount: serviceAmount,
@@ -262,7 +257,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           if (selectedPayment == PaymentMethod.cashFree) {
                             await cashFreeService( context,
                               amount: payableAmount,
-                              customerId: widget.checkoutData.user,
+                              customerId: '',
                               name: "Customer Name",
                               email: "customer@example.com",
                               phone: '8989207770',

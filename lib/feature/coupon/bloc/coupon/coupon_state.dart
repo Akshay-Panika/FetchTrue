@@ -1,21 +1,19 @@
-
-
 import '../../model/coupon_model.dart';
 
-abstract class CouponState{}
+abstract class CouponState {}
 
-class CouponInitial extends CouponState{}
+class CouponInitial extends CouponState {}
 
 class CouponLoading extends CouponState {}
 
 class CouponLoaded extends CouponState {
-  final List<CouponModel>  couponModel;
-  final CouponModel? appliedCoupon;
+  final List<CouponModel> coupons;
 
-  CouponLoaded(this.couponModel, {this.appliedCoupon});
+  CouponLoaded(this.coupons);
 }
 
 class CouponError extends CouponState {
-  final String errorMessage;
-  CouponError(this.errorMessage);
+  final String message;
+
+  CouponError(this.message);
 }

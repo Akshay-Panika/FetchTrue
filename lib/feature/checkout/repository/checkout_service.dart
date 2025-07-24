@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import '../../../helper/api_helper.dart';
 import '../../../helper/api_urls.dart';
-import '../model/check_out_model.dart';
+import '../model/checkout_model.dart';
 
 class CheckOutService {
-  static Future<CheckoutModel?> checkOutService(CheckoutModel model) async {
+  static Future<CheckOutModel?> checkOutService(CheckOutModel model) async {
     try {
       print("🚀 Request Data: ${model.toJson()}");
 
@@ -16,7 +16,7 @@ class CheckOutService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = response.data['data'];
         print('✅ Response: $jsonData');
-        return CheckoutModel.fromJson(jsonData);
+        return CheckOutModel.fromJson(jsonData);
       } else {
         print('❌ Invalid response: ${response.data}');
         return null;

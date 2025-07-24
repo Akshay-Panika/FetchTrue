@@ -5,7 +5,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../service/model/service_model.dart';
-import '../model/check_out_model.dart';
+import '../model/checkout_model.dart';
 import '../widget/check_payment_widget.dart';
 import '../widget/checkout_details_widget.dart';
 import '../widget/checkout_payment_done_widget.dart';
@@ -21,7 +21,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   int _paymentStep = 0;
-  CheckoutModel? checkoutData;
+  CheckOutModel? checkoutData;
 
   final steps = [
     {'icon': CupertinoIcons.doc_fill, 'label': 'Details'},
@@ -67,7 +67,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       CheckoutDetailsWidget(
                         providerId: widget.providerId,
                         services: widget.services,
-                        onPaymentDone: (CheckoutModel model) {
+                        onPaymentDone: (CheckOutModel model) {
                           setState(() {
                             checkoutData = model;
                             _paymentStep = 1;

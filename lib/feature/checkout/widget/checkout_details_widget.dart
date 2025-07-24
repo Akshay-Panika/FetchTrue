@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -11,17 +10,20 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../coupon/model/coupon_model.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../service/model/service_model.dart';
-import '../model/check_out_model.dart';
+import '../model/checkout_model.dart';
+import '../model/summery_model.dart';
+import '../repository/summery_service.dart';
 import '../screen/add_customer_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final String providerId;
   final List<ServiceModel> services;
   // final VoidCallback onPaymentDone;
-  final Function(CheckoutModel) onPaymentDone;
+  final Function(CheckOutModel) onPaymentDone;
   const CheckoutDetailsWidget({super.key, required this.services, required this.onPaymentDone, required this.providerId,});
 
   @override
@@ -39,7 +41,24 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
   bool _isAgree = false;
+  CouponModel? selectedCoupon;
 
+  CommissionModel? _commission;
+
+  @override
+  void initState() {
+    super.initState();
+    loadCommission();
+  }
+
+  Future<void> loadCommission() async {
+    final result = await CommissionService.fetchCommission();
+    if (result != null) {
+      setState(() {
+        _commission = result;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +234,18 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   Center(child: _buildHeadline(context, icon: Icons.card_giftcard, headline: 'Best Coupon For You')),
 
                   InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CouponScreen(),)),
+                    onTap: () async {
+                      final selected = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const CouponScreen()),
+                      );
+
+                      if (selected != null && selected is CouponModel) {
+                        setState(() {
+                          selectedCoupon = selected;
+                        });
+                      }
+                    },
                     child: Row(
                       children: [
                         Text('See All', style: textStyle12(context),),
@@ -228,50 +258,104 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               ),
               10.height,
 
-              CustomContainer(
-                border: true,
-                width: double.infinity,
-                borderColor: CustomColor.greenColor,
-                backgroundColor: CustomColor.whiteColor,
-                margin: EdgeInsets.zero,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Extra 00 Off', style: textStyle12(context),),
-                    Text('You save an extra ₹00 with this coupon.', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-
-                    10.height,
-                    Row(
-                      children: [
-                        Expanded(flex: 3,
+              if (selectedCoupon != null) ...[
+                CustomContainer(
+                  border: true,
+                  width: double.infinity,
+                  borderColor: CustomColor.greenColor,
+                  backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.zero,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Extra ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? '%' : ''} Off', style: textStyle12(context)),
+                      Text(
+                        'You save an extra ₹${selectedCoupon!.amount} with this coupon.',
+                        style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                      ),
+                      10.height,
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
                             child: CustomContainer(
                               border: true,
                               height: 40,
                               margin: EdgeInsets.zero,
-                              child: TextField(
-                                style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                                decoration: InputDecoration(
-                              border: InputBorder.none,
-                              suffixIcon: Icon(CupertinoIcons.check_mark_circled, color: CustomColor.appColor,size: 18,),
-                              labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                              hintText: 'Type Coupon Here...',
+                              child: Center(
+                                child: Text(
+                                  "#${selectedCoupon!.couponCode}",
+                                  style: textStyle14(context, color: CustomColor.greenColor),
                                 ),
                               ),
-                            )),
-
-                        10.width,
-                        Expanded(
-                          child: CustomContainer(
-                           border: true,
-                            height: 40,
-                            margin: EdgeInsets.zero,
-                            child: Center(child: Text('Apply', style: textStyle12(context, color: CustomColor.appColor),)),),
-                        ),
-                      ],
-                    )
-                  ],
+                            ),
+                          ),
+                          10.width,
+                          Expanded(
+                            child: CustomContainer(
+                              border: true,
+                              height: 40,
+                              margin: EdgeInsets.zero,
+                              child: Center(
+                                child: Text(
+                                  'Applied',
+                                  style: textStyle12(context, color: CustomColor.appColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
+              ] else ...[
+                CustomContainer(
+                  border: true,
+                  width: double.infinity,
+                  borderColor: CustomColor.greenColor,
+                  backgroundColor: CustomColor.whiteColor,
+                  margin: EdgeInsets.zero,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Extra 00 Off', style: textStyle12(context),),
+                      Text('You save an extra ₹00 with this coupon.', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+
+                      10.height,
+                      Row(
+                        children: [
+                          Expanded(flex: 3,
+                              child: CustomContainer(
+                                border: true,
+                                height: 40,
+                                margin: EdgeInsets.zero,
+                                child: TextField(
+                                  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    suffixIcon: Icon(CupertinoIcons.check_mark_circled, color: CustomColor.appColor,size: 18,),
+                                    labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                                    hintText: 'Type Coupon Here...',
+                                  ),
+                                ),
+                              )),
+
+                          10.width,
+                          Expanded(
+                            child: CustomContainer(
+                              border: true,
+                              height: 40,
+                              margin: EdgeInsets.zero,
+                              child: Center(child: Text('Apply', style: textStyle12(context, color: CustomColor.appColor),)),),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+
               10.height,
 
             ],
@@ -286,16 +370,30 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           child: Column(
             spacing: 10,
             children: [
-              _buildRow(context,
-              keys: 'Price', amount: '${data.discountedPrice}'),
-              _buildRow(context, keys: 'Service Discount', amount: '${data.discount} %', isAmount: false),
-              _buildRow(context, keys: 'Coupon Discount', amount: '00.00',isAmount: false),
-              _buildRow(context, keys: 'Campaign Discount', amount: '00.00'),
-              _buildRow(context, keys: 'Service GST', amount: '00'),
-              _buildRow(context, keys: 'Platform Fee', amount: '00.00'),
-              _buildRow(context, keys: 'Fetch True Assurity Charges', amount: '00.00'),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Price', style:textStyle12(context),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomAmountText(amount: data.price.toString(), isLineThrough: true),
+                      10.width,
+                      CustomAmountText(amount: data.discountedPrice.toString()),
+                    ],
+                  ),
+                ],
+              ),
+
+              _buildRow(context, title: 'Service Discount', amount: '${data.discount} %',),
+              _buildRow(context, title: 'Coupon Discount', amount: selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '00.00',),
+              _buildRow(context, title: 'Campaign Discount', amount: '00.00',),
+              _buildRow(context, title: 'Service GST', amount: '00.00'),
+              _buildRow(context, title: 'Platform Fee', amount: _commission?.platformFee.toString() ?? '00.00',),
+              _buildRow(context, title: 'Fetch True Assurity Charges', amount: _commission?.assurityFee.toString() ?? '00.00',),
               Divider(),
-              _buildRow(context, keys: 'Grand Total', amount: '${data.discountedPrice}'),
+              _buildRow(context, title: 'Grand Total', amount: 'Tatal',),
               5.height
             ],
           ),
@@ -335,35 +433,32 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               }
 
               final fetchTure = 'fetchTure';
-              final checkoutData = CheckoutModel(
-                user: userSession.userId.toString(),
-                service: data.id,
-                serviceCustomer: customer_Id.toString(),
-                // provider: widget.providerId,
-                provider: widget.providerId == fetchTure ? null : widget.providerId.isNotEmpty == true ? widget.providerId : null,
-                coupon: null,
-                subtotal: 0,
-                serviceDiscount: data.discountedPrice ?? 0,
-                totalAmount: data.discountedPrice ?? 0,
-                couponDiscount: 0,
-                champaignDiscount: 0,
-                vat: 0,
-                platformFee: 0,
-                garrantyFee: 0,
-                tax: 0,
-                paymentMethod: [''],
-                walletAmount: 0,
-                paidByOtherMethodAmount: 0,
-                partialPaymentNow: 0,
-                partialPaymentLater: 0,
-                remainingPaymentStatus: 'pending',
-                paymentStatus: 'pending',
-                orderStatus: 'processing',
-                notes: message ?? '',
-                termsCondition: _isAgree,
+              final checkoutData = CheckOutModel(
+                  user: userSession.userId.toString(),
+                  service: data.id,
+                  serviceCustomer: customer_Id.toString(),
+                  provider: widget.providerId == fetchTure ? null : widget.providerId.isNotEmpty == true ? widget.providerId : null,
+                  coupon: selectedCoupon?.id,
+                  subtotal: 0,
+                  serviceDiscount: data.discountedPrice ?? 0,
+                  couponDiscount: selectedCoupon?.amount ?? 0,
+                  champaignDiscount: 0,
+                  gst: 0,
+                  platformFee: _commission?.platformFee,
+                  assurityfee:_commission?.assurityFee,
+                  totalAmount: data.discountedPrice,
+                  paymentMethod: [],
+                  walletAmount: 0,
+                  otherAmount: 0,
+                  paidAmount: 0,
+                  remainingAmount: 0,
+                  isPartialPayment: false,
+                  paymentStatus: '',
+                  orderStatus: '',
+                  notes: message ?? '',
+                  termsCondition: _isAgree
               );
 
-              /// sara data back screen me dikhani hai
               widget.onPaymentDone(checkoutData);
             },
             label: 'Proceed',
@@ -388,18 +483,12 @@ Widget _buildHeadline(BuildContext context, { required IconData icon, required S
 }
 
 
-Widget _buildRow(BuildContext context, {required String keys, required String amount, bool isAmount = true}){
+Widget _buildRow(BuildContext context, {required String title, required String amount,}){
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(keys, style: textStyle12(context),),
-      Row(
-        children: [
-          if(isAmount == true)
-          Icon(Icons.currency_rupee, size: 12,),
-          Text(amount, style: textStyle12(context),)
-        ],
-      ),
+      Text(title, style: textStyle12(context),),
+      Text(amount, style: textStyle12(context),),
     ],
   );
 }

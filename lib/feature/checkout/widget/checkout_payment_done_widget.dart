@@ -21,8 +21,8 @@ class CheckoutPaymentDoneWidget extends StatelessWidget {
           Icon(CupertinoIcons.checkmark_seal_fill, color: CustomColor.greenColor, size: 100,),
           SizedBox(height: dimensions.screenHeight*0.05,),
 
-          Text('Your place the booking successfully', style: textStyle16(context, color: CustomColor.appColor),),
-          Text('Booking Id, FTFL01', style: textStyle14(context),),
+          Text('Your place the lead successfully', style: textStyle16(context, color: CustomColor.appColor),),
+          Text('Lead Id : ______', style: textStyle14(context,color: CustomColor.descriptionColor),),
           SizedBox(height: dimensions.screenHeight*0.05,),
 
           CustomContainer(

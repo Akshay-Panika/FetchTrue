@@ -33,7 +33,7 @@ class _CashfreePaymentScreenState extends State<CashfreePaymentScreen> {
                 SnackBar(content: Text("✅ Payment Success")),
               );
         
-              Future.delayed(Duration(seconds: 1), () {Navigator.pop(context);});
+              Future.delayed(Duration(seconds: 3), () {Navigator.pop(context);});
             }
         
             if (currentUrl.contains("failed")) {
