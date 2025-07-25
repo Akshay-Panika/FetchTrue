@@ -132,6 +132,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return;
                     }
 
+                    if (fullName.length < 3) {
+                      showCustomSnackBar(context, 'Please Enter correct name');
+                      return;
+                    }
+
+                    if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(fullName)) {
+                      showCustomSnackBar(context, 'Full name can contain only letters and spaces');
+                      return;
+                    }
+
                     if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
                       showCustomSnackBar(context, 'Please enter a valid 10-digit phone number');
                       return;
@@ -182,6 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   CustomLabelFormField(
                       context,
+
                       'Password',
                       hint: 'Enter password',
                       controller: _passwordController,
@@ -229,8 +240,104 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   CustomButton(
                     isLoading: _isLoading,
                     label: 'Sign Up',
+                      // onPressed: () async {
+                      //   final email = _emailController.text.trim().toLowerCase();
+                      //   final password = _passwordController.text.trim();
+                      //   final confirmPassword = _confirmPasswordController.text.trim();
+                      //   final name = _fullNameController.text.trim();
+                      //   final phone = _phoneController.text.trim();
+                      //   final referredBy = _raffController.text.trim();
+                      //
+                      //   if (email.isEmpty || password.isEmpty || name.isEmpty || phone.isEmpty) {
+                      //     showCustomSnackBar(context, 'Please fill all required fields');
+                      //     return;
+                      //   }
+                      //
+                      //   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+                      //     showCustomSnackBar(context, 'Please enter a valid email address');
+                      //     return;
+                      //   }
+                      //
+                      //   // ❌ Block only specific serial passwords
+                      //   const blockedPasswords = [
+                      //     '01','1','12','123','1234', '12345','123456', '1234567', '12345678', '123456789', '1234567890',
+                      //     'abcdef', 'abcdefg', 'abcdefgh',
+                      //   ];
+                      //
+                      //   if (blockedPasswords.contains(password.toLowerCase())) {
+                      //     showCustomSnackBar(context, 'This password is too common or weak.');
+                      //     return;
+                      //   }
+                      //
+                      //   if (password != confirmPassword) {
+                      //     showCustomSnackBar(context, 'Passwords do not match');
+                      //     return;
+                      //   }
+                      //
+                      //   setState(() => _isLoading = true);
+                      //
+                      //   try {
+                      //     final response = await _signUpService.registerUser(
+                      //       fullName: name,
+                      //       email: email,
+                      //       mobileNumber: phone,
+                      //       password: password,
+                      //       referredBy: referredBy,
+                      //       isAgree: true,
+                      //     );
+                      //
+                      //     if (response.statusCode == 200) {
+                      //       showCustomSnackBar(context, '🎉 Registration successful');
+                      //       widget.onToggle(false); // go to Sign In
+                      //     } else {
+                      //       showCustomSnackBar(context, 'Something went wrong');
+                      //     }
+                      //   } catch (e) {
+                      //     showCustomSnackBar(context, e.toString());
+                      //   } finally {
+                      //     setState(() => _isLoading = false);
+                      //   }
+                      // }
                       onPressed: () async {
-                        final email = _emailController.text.trim();
+                        // 🔢 Helper: Check if digits are sequential
+                        bool isIncrementalNumberSequence(String str) {
+                          for (int i = 0; i < str.length - 1; i++) {
+                            if (int.parse(str[i + 1]) != int.parse(str[i]) + 1) return false;
+                          }
+                          return true;
+                        }
+
+                        // 🔠 Helper: Check if letters are sequential
+                        bool isIncrementalAlphabetSequence(String str) {
+                          for (int i = 0; i < str.length - 1; i++) {
+                            if (str.codeUnitAt(i + 1) != str.codeUnitAt(i) + 1) return false;
+                          }
+                          return true;
+                        }
+
+                        // 🔍 Check if password contains numeric sequence like 123, 234...
+                        bool containsNumericSequence(String text) {
+                          for (int i = 0; i <= text.length - 3; i++) {
+                            final part = text.substring(i, i + 3);
+                            if (RegExp(r'^\d{3,}$').hasMatch(part)) {
+                              if (isIncrementalNumberSequence(part)) return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        // 🔍 Check if password contains alphabetic sequence like abc, bcd...
+                        bool containsAlphabeticSequence(String text) {
+                          for (int i = 0; i <= text.length - 3; i++) {
+                            final part = text.substring(i, i + 3);
+                            if (RegExp(r'^[a-z]{3,}$').hasMatch(part)) {
+                              if (isIncrementalAlphabetSequence(part)) return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        final email = _emailController.text.trim().toLowerCase();
                         final password = _passwordController.text.trim();
                         final confirmPassword = _confirmPasswordController.text.trim();
                         final name = _fullNameController.text.trim();
@@ -242,8 +349,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return;
                         }
 
-                        if (!email.contains('@')) {
-                          showCustomSnackBar(context, 'Please enter valid email');
+                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+                          showCustomSnackBar(context, 'Please enter a valid email address');
+                          return;
+                        }
+
+                        final lowered = password.toLowerCase();
+
+                        if (containsNumericSequence(lowered) || containsAlphabeticSequence(lowered)) {
+                          showCustomSnackBar(context,
+                              'Password should not contain serial patterns like "123" or "abc".');
                           return;
                         }
 
@@ -276,6 +391,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setState(() => _isLoading = false);
                         }
                       }
+
                   ),
 
                 ],
@@ -332,6 +448,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       _focusNodes[index - 1].requestFocus();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

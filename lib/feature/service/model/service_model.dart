@@ -3,6 +3,7 @@ class ServiceModel {
   final String serviceName;
   final int? price;
   final int? discountedPrice;
+  final int? gst;
   final int? discount;
   final String thumbnailImage;
   final List<String> bannerImages;
@@ -25,6 +26,7 @@ class ServiceModel {
     required this.serviceName,
     this.price,
     this.discountedPrice,
+    this.gst,
     this.discount,
     required this.thumbnailImage,
     required this.tags,
@@ -46,6 +48,7 @@ class ServiceModel {
       id: json['_id'],
       serviceName: json['serviceName'],
       price: json['price'] is int ? json['price'] : int.tryParse(json['price'].toString()),
+      gst: json['gst'] is int ? json['gst'] : int.tryParse(json['gst'].toString()),
       discountedPrice: json['discountedPrice'] is int ? json['discountedPrice'] : int.tryParse(json['discountedPrice'].toString()),
       discount: json['discount'] is int ? json['discount'] : int.tryParse(json['discount'].toString()),
       thumbnailImage: json['thumbnailImage'],

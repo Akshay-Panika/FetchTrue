@@ -6,7 +6,7 @@ import '../../../core/costants/dimension.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
-import '../../my_lead/screen/my_Lead_screen.dart';
+import '../../my_lead/screen/leads_screen.dart';
 import '../../offer/screen/offer_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -36,19 +36,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
     'Menu',
   ];
 
-  List<Widget> getScreens() {
-    return const [
-      HomeScreen(),
-      MyLeadScreen(),
-      OfferScreen(),
-      AcademyScreen(),
-      MoreScreen(),
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = _generateScreens(); // initialize screens list
+  }
+
+  List<Widget> _generateScreens() {
+    return [
+      const HomeScreen(),
+      LeadsScreen(key: UniqueKey()), // Always create a new key
+      const OfferScreen(),
+      const AcademyScreen(),
+      const MoreScreen(),
     ];
+  }
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex != index) {
+      if (_history.isEmpty || _history.last != index) {
+        _history.add(index);
+      }
+
+      // If user navigates to My Lead, regenerate LeadsScreen with new key
+      if (index == 1) {
+        setState(() {
+          _screens[1] = LeadsScreen(key: UniqueKey()); // force rebuild My Lead
+          _selectedIndex = index;
+        });
+      } else {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Dimensions dimensions = Dimensions(context); // keep if used in future
+    Dimensions(context); // Initialize dimensions if needed
 
     return PopScope(
       canPop: _history.length == 1,
@@ -63,19 +91,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         body: IndexedStack(
           index: _selectedIndex,
-          children: getScreens(),
+          children: _screens,
         ),
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
-            onTap: (index) {
-              if (_selectedIndex != index) {
-                if (_history.isEmpty || _history.last != index) {
-                  _history.add(index);
-                }
-                setState(() => _selectedIndex = index);
-              }
-            },
+            onTap: _onItemTapped,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: CustomColor.appColor,
             unselectedItemColor: CustomColor.descriptionColor,
