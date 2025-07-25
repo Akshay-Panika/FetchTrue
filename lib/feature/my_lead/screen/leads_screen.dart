@@ -1,6 +1,7 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/feature/my_lead/model/leads_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,9 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/module/leads_bloc.dart';
 import '../bloc/module/leads_event.dart';
 import '../bloc/module/leads_state.dart';
+import '../model/lead_model.dart';
 import 'lead_details_screen.dart';
+import 'leads_details_screen.dart';
 
 class LeadsScreen extends StatefulWidget {
   final String? isBack;
@@ -130,7 +133,9 @@ class _LeadsScreenState extends State<LeadsScreen> {
 
                   SliverToBoxAdapter(
                     child:  filteredList.isEmpty
-                        ? const Center(child: Text('😕 No leads found.'))
+                        ? Padding(
+                        padding: EdgeInsetsGeometry.only(top: 300),
+                        child: const Center(child: Text('No leads.')))
                         : ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -180,6 +185,10 @@ class _LeadsScreenState extends State<LeadsScreen> {
                               ),
                             ],
                           ),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadsDetailsScreen(
+                            leadName: lead.service.serviceName,
+                            lead: lead,
+                          ),)),
                         );
                       },
                     ),
@@ -219,7 +228,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
         '$label ($count)',
         style: TextStyle(
           color: isSelected ? CustomColor.appColor : CustomColor.blackColor,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
         ),
       ),),
     );
