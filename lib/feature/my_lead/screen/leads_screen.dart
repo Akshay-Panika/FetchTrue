@@ -1,12 +1,20 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/module/leads_bloc.dart';
 import '../bloc/module/leads_event.dart';
 import '../bloc/module/leads_state.dart';
+import 'lead_details_screen.dart';
 
 class LeadsScreen extends StatefulWidget {
   final String? isBack;
@@ -64,7 +72,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
         child: BlocBuilder<LeadsBloc, LeadsState>(
           builder: (context, state) {
             if (state is CheckoutLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return _buildShimmer();
             }
             else if (state is CheckoutLoaded) {
               final allLeads = state.checkouts;
@@ -100,46 +108,84 @@ class _LeadsScreenState extends State<LeadsScreen> {
                   filteredList = allLeads;
               }
 
-              // 🔹 Final UI
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 48,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildFilterChip('All', allLeads.length),
-                        _buildFilterChip('Pending', pendingLeads.length),
-                        _buildFilterChip('Accepted', acceptedLeads.length),
-                        _buildFilterChip('Completed', completedLeads.length),
-                        _buildFilterChip('Cancel', cancelLeads.length),
-                      ],
-                    ),
+              /// 🔹 Final UI
+              return  CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                      toolbarHeight: 30,
+                      backgroundColor: CustomColor.whiteColor,
+                     flexibleSpace: FlexibleSpaceBar(
+                 background: ListView(
+                   scrollDirection: Axis.horizontal,
+                   children: [
+                     _buildFilterChip('All', allLeads.length),
+                     _buildFilterChip('Pending', pendingLeads.length),
+                     _buildFilterChip('Accepted', acceptedLeads.length),
+                     _buildFilterChip('Completed', completedLeads.length),
+                     _buildFilterChip('Cancel', cancelLeads.length),
+                   ],
+                 ),),
                   ),
-                  const Divider(),
-                  Expanded(
-                    child: filteredList.isEmpty
+
+                  SliverToBoxAdapter(
+                    child:  filteredList.isEmpty
                         ? const Center(child: Text('😕 No leads found.'))
                         : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
                       itemCount: filteredList.length,
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
                       itemBuilder: (context, index) {
-                        final item = filteredList[index];
-                        return Card(
-                          child: ListTile(
-                            title: Text("📌 ${item.bookingId}"),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("💵 Amount: ₹${item.totalAmount}"),
-                                Text("📦 Order Status: ${item.orderStatus}"),
-                                Text("💳 Payment: ${item.paymentStatus}"),
-                              ],
-                            ),
+                        final lead = filteredList[index];
+
+
+                        return CustomContainer(
+                          backgroundColor: Colors.white,
+                          margin: EdgeInsets.only(top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(lead.service.serviceName, style: textStyle14(context)),
+                                  Text(
+                                    '[ ${getLeadStatus(lead)} ]',
+                                    style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
+                                  )
+                                ],
+                              ),
+                              Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                              const Divider(),
+                              5.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Booking Date:  ${formatDate(lead.createdAt)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                                      Text('Service Date:  ${formatDate(lead.acceptedDate)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
+                                      CustomAmountText(amount: '${lead.totalAmount}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         );
                       },
                     ),
                   ),
+
+                  SliverToBoxAdapter(child: SizedBox(height: 20,),)
                 ],
               );
             }
@@ -155,25 +201,156 @@ class _LeadsScreenState extends State<LeadsScreen> {
     );
   }
 
+
+  /// Filter
   Widget _buildFilterChip(String label, int count) {
     final isSelected = label == selectedFilter;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 6),
-      child: ChoiceChip(
-        label: Text('$label ($count)'),
-        selected: isSelected,
-        onSelected: (_) {
-          setState(() {
-            selectedFilter = label;
-          });
-        },
-        selectedColor: Colors.blue,
-        backgroundColor: Colors.grey[200],
-        labelStyle: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
-          fontWeight: FontWeight.w500,
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        onTap: () {
+        setState(() {
+          selectedFilter = label;
+        });
+      }, child: Text(
+        '$label ($count)',
+        style: TextStyle(
+          color: isSelected ? CustomColor.appColor : CustomColor.blackColor,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
+      ),),
+    );
+  }
+
+  /// Format Date
+  String formatDate(String? rawDate) {
+    if (rawDate == null) return 'N/A';
+    final date = DateTime.tryParse(rawDate);
+    if (date == null) return 'Invalid Date';
+    return DateFormat('dd MMM yyyy').format(date);
+  }
+
+  /// Lead Status
+  String getLeadStatus(lead) {
+    if (lead.isCanceled == true) return 'Cancel';
+    if (lead.isCompleted == true) return 'Completed';
+    if (lead.isAccepted == true) return 'Accepted';
+    return 'Pending';
+  }
+
+  /// Status Color
+  Color getStatusColor(lead) {
+    if (lead.isCanceled == true) return Colors.red;
+    if (lead.isCompleted == true) return Colors.green;
+    if (lead.isAccepted == true) return Colors.orange;
+    return Colors.grey;
+  }
+
+}
+
+
+
+
+Widget _buildShimmer() {
+  return Column(
+    children: [
+      Container(
+        color: CustomColor.whiteColor,
+        padding: EdgeInsetsGeometry.only(bottom: 10),
+        child: Row(children: List.generate(4, (index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: ShimmerBox(height: 14,width: 80,)),
+        ),),),
+      ),
+      Expanded(
+        child: ListView(
+          children: List.generate(
+            6, (index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: CustomContainer(
+              backgroundColor: CustomColor.whiteColor,
+              margin: EdgeInsetsGeometry.only(top: 10),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title and Badge
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        ShimmerBox(height: 14, width: 120),
+                        ShimmerBox(height: 14, width: 60),
+                      ],
+                    ),
+                    5.height,
+                    const ShimmerBox(height: 12, width: 180),
+                    5.height,
+                    const Divider(),
+                    10.height,
+                    // Dates & Amount
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:  [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShimmerBox(height: 12, width: 140),
+                            5.height,
+                            ShimmerBox(height: 12, width: 140),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ShimmerBox(height: 12, width: 60),
+                            5.height,
+                            ShimmerBox(height: 14, width: 70),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+class ShimmerBox extends StatelessWidget {
+  final double height;
+  final double width;
+  final BorderRadius? borderRadius;
+
+  const ShimmerBox({
+    super.key,
+    required this.height,
+    required this.width,
+    this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: borderRadius ?? BorderRadius.circular(4),
       ),
     );
   }
 }
+
