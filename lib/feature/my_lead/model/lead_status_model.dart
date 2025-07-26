@@ -1,67 +1,66 @@
+// lead_status_model.dart
 class LeadStatusModel {
   final String id;
+  final String checkout;
   final int amount;
+  final String newCommission;
   final bool? isAdminApproved;
-  final List<LeadData> leads;
-  final CheckoutData? checkout;
+  final List<LeadStatusItem> leads;
 
   LeadStatusModel({
     required this.id,
+    required this.checkout,
     required this.amount,
-    this.isAdminApproved,
+    required this.newCommission,
+    required this.isAdminApproved,
     required this.leads,
-    this.checkout,
   });
 
   factory LeadStatusModel.fromJson(Map<String, dynamic> json) {
     return LeadStatusModel(
       id: json['_id'],
+      checkout: json['checkout'],
       amount: json['amount'],
+      newCommission: json['newCommission'],
       isAdminApproved: json['isAdminApproved'],
-      leads: (json['leads'] as List<dynamic>)
-          .map((e) => LeadData.fromJson(e))
+      leads: (json['leads'] as List)
+          .map((e) => LeadStatusItem.fromJson(e))
           .toList(),
-      checkout: json['checkout'] != null
-          ? CheckoutData.fromJson(json['checkout'])
-          : null,
     );
   }
 }
 
-class LeadData {
-  final String id;
+class LeadStatusItem {
   final String statusType;
-  final String? description;
-  final String? zoomLink;
+  final String description;
+  final String zoomLink;
+  final String? paymentLink;
+  final String? paymentType;
+  final String id;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
-  LeadData({
-    required this.id,
+  LeadStatusItem({
     required this.statusType,
-    this.description,
-    this.zoomLink,
+    required this.description,
+    required this.zoomLink,
+    this.paymentLink,
+    this.paymentType,
+    required this.id,
     required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory LeadData.fromJson(Map<String, dynamic> json) {
-    return LeadData(
-      id: json['_id'],
-      statusType: json['statusType'] ?? '',
+  factory LeadStatusItem.fromJson(Map<String, dynamic> json) {
+    return LeadStatusItem(
+      statusType: json['statusType'],
       description: json['description'],
-      zoomLink: json['zoomLink'],
-      createdAt: DateTime.parse(json['createdAt']),
-    );
-  }
-}
-
-class CheckoutData {
-  final String id;
-
-  CheckoutData({required this.id});
-
-  factory CheckoutData.fromJson(Map<String, dynamic> json) {
-    return CheckoutData(
+      zoomLink: json['zoomLink'] ?? '',
+      paymentLink: json['paymentLink'],
+      paymentType: json['paymentType'],
       id: json['_id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
 }

@@ -1,20 +1,25 @@
-import 'package:fetchtrue/feature/my_lead/model/lead_status_model.dart';
-import '../../../helper/api_helper.dart';
-import '../../../helper/api_urls.dart';
+import 'package:dio/dio.dart';
+
+import '../model/lead_status_model.dart';
 
 class LeadStatusService {
-  static Future<List<LeadStatusModel>> fetchLeadStatus() async {
+  final Dio _dio = Dio();
+
+  Future<LeadStatusModel?> fetchLeadStatusByCheckout(String checkoutId) async {
     try {
-      final response = await ApiClient.dio.get(ApiUrls.leadStatus);
-      if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
-        return data.map((json) => LeadStatusModel.fromJson(json)).toList();
+      final response = await _dio.get(
+        'https://biz-booster.vercel.app/api/leads/FindByCheckout/$checkoutId',
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return LeadStatusModel.fromJson(response.data['data']);
       } else {
-        throw Exception('Failed to load leads');
+        print("Error: ${response.data}");
+        return null;
       }
     } catch (e) {
-      print("❌ Error fetching leads: $e");
-      rethrow;
+      print("API Error: $e");
+      return null;
     }
   }
 }

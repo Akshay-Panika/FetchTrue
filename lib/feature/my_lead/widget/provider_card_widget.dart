@@ -14,9 +14,10 @@ import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/repository/provider_service.dart';
 import '../../provider/screen/provider__details_screen.dart';
 import '../model/lead_model.dart';
+import '../model/leads_model.dart';
 
 class ProviderCardWidget extends StatefulWidget {
-  final LeadModel lead;
+  final LeadsModel lead;
   const ProviderCardWidget({super.key, required this.lead});
 
   @override
@@ -38,7 +39,7 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 
           else if(state is ProviderLoaded){
 
-            final providerId = widget.lead.provider?['_id'];
+            final providerId = widget.lead.provider;
             if (providerId == null) return _buildFTProviderCard();
             final provider = state.providerModel.where((moduleService) =>
             moduleService.id == providerId
@@ -176,6 +177,7 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 
 Widget _buildFTProviderCard(){
   return  CustomContainer(
+    border: true,
     backgroundColor: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
@@ -184,7 +186,7 @@ Widget _buildFTProviderCard(){
       children: [
         Text('Service Provider', style: TextStyle(),),
         10.height,
-    
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +200,7 @@ Widget _buildFTProviderCard(){
                 Text('This Service Provided By Fetch True', style: TextStyle(),),
               ],
             ),
-    
+
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: Row(
@@ -210,7 +212,7 @@ Widget _buildFTProviderCard(){
                   40.width,
                   InkWell(onTap: () => ContactHelper.call(''),
                       child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-    
+
                 ],
               ),
             )

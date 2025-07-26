@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
-import 'package:fetchtrue/feature/my_lead/model/leads_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -15,8 +14,6 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/module/leads_bloc.dart';
 import '../bloc/module/leads_event.dart';
 import '../bloc/module/leads_state.dart';
-import '../model/lead_model.dart';
-import 'lead_details_screen.dart';
 import 'leads_details_screen.dart';
 
 class LeadsScreen extends StatefulWidget {
@@ -171,7 +168,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text('Booking Date:  ${formatDate(lead.createdAt)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-                                      Text('Service Date:  ${formatDate(lead.acceptedDate)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                                      Text('Schedule Date:  ${formatDate(lead.acceptedDate)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
                                     ],
                                   ),
                                   Column(

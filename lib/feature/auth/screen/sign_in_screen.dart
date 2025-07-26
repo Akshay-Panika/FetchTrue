@@ -75,7 +75,8 @@ class _SignInScreenState extends State<SignInScreen> {
     if (RegExp(r'^\d{10}$').hasMatch(input)) {
       mobileNumber = input;
     } else if (input.contains('@')) {
-      email = input;
+      // email = input;
+      email = input.toLowerCase();
     } else {
       showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
       setState(() => _isLoading = false);
@@ -124,8 +125,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
             Center(
                 child: Image.asset(
-              CustomLogo.fetchTrueLogo,
-              height: 180,
+                CustomLogo.fetchTrueLogo,
+                height: 180,
             )),
             30.height,
 

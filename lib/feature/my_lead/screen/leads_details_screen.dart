@@ -5,7 +5,7 @@ import '../../../core/costants/custom_color.dart';
 import '../model/lead_model.dart';
 import '../model/leads_model.dart';
 import '../widget/leads_details_widget.dart';
-import '../widget/leads_ststus_widget.dart';
+import '../widget/leads_status_widget.dart';
 
 class LeadsDetailsScreen extends StatelessWidget {
   final String? leadName;
@@ -17,7 +17,7 @@ class LeadsDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: '${leadName}', showBackButton: true,),
 
-
+      backgroundColor: CustomColor.whiteColor,
       body: SafeArea(
           child: DefaultTabController(
             length: 2,
@@ -27,7 +27,7 @@ class LeadsDetailsScreen extends StatelessWidget {
                 Container(
                   color: Colors.white,
                   child: TabBar(
-                    dividerColor: Colors.transparent,
+                    dividerColor: Colors.grey.shade300,
                     indicatorColor: CustomColor.appColor,
                     labelColor: Colors.black,
                     tabs: [
@@ -40,7 +40,7 @@ class LeadsDetailsScreen extends StatelessWidget {
                 Expanded(child: TabBarView(
                   children: [
                     LeadsDetailsWidget( lead: lead,),
-                    LeadsStatusWidget()
+                    LeadsStatusWidget(checkoutId: lead.id,)
                   ],
                 )),
 

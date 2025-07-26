@@ -240,7 +240,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   CustomButton(
                     isLoading: _isLoading,
                     label: 'Sign Up',
+
                       // onPressed: () async {
+                      //   // 🔢 Helper: Check if digits are sequential
+                      //   bool isIncrementalNumberSequence(String str) {
+                      //     for (int i = 0; i < str.length - 1; i++) {
+                      //       if (int.parse(str[i + 1]) != int.parse(str[i]) + 1) return false;
+                      //     }
+                      //     return true;
+                      //   }
+                      //
+                      //   // 🔠 Helper: Check if letters are sequential
+                      //   bool isIncrementalAlphabetSequence(String str) {
+                      //     for (int i = 0; i < str.length - 1; i++) {
+                      //       if (str.codeUnitAt(i + 1) != str.codeUnitAt(i) + 1) return false;
+                      //     }
+                      //     return true;
+                      //   }
+                      //
+                      //   // 🔍 Check if password contains numeric sequence like 123, 234...
+                      //   bool containsNumericSequence(String text) {
+                      //     for (int i = 0; i <= text.length - 3; i++) {
+                      //       final part = text.substring(i, i + 3);
+                      //       if (RegExp(r'^\d{3,}$').hasMatch(part)) {
+                      //         if (isIncrementalNumberSequence(part)) return true;
+                      //       }
+                      //     }
+                      //     return false;
+                      //   }
+                      //
+                      //   // 🔍 Check if password contains alphabetic sequence like abc, bcd...
+                      //   bool containsAlphabeticSequence(String text) {
+                      //     for (int i = 0; i <= text.length - 3; i++) {
+                      //       final part = text.substring(i, i + 3);
+                      //       if (RegExp(r'^[a-z]{3,}$').hasMatch(part)) {
+                      //         if (isIncrementalAlphabetSequence(part)) return true;
+                      //       }
+                      //     }
+                      //     return false;
+                      //   }
+                      //
                       //   final email = _emailController.text.trim().toLowerCase();
                       //   final password = _passwordController.text.trim();
                       //   final confirmPassword = _confirmPasswordController.text.trim();
@@ -248,27 +287,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //   final phone = _phoneController.text.trim();
                       //   final referredBy = _raffController.text.trim();
                       //
+                      //   // 🛑 Empty field check
                       //   if (email.isEmpty || password.isEmpty || name.isEmpty || phone.isEmpty) {
                       //     showCustomSnackBar(context, 'Please fill all required fields');
                       //     return;
                       //   }
                       //
+                      //   // 📧 Email validation
                       //   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
                       //     showCustomSnackBar(context, 'Please enter a valid email address');
                       //     return;
                       //   }
                       //
-                      //   // ❌ Block only specific serial passwords
-                      //   const blockedPasswords = [
-                      //     '01','1','12','123','1234', '12345','123456', '1234567', '12345678', '123456789', '1234567890',
-                      //     'abcdef', 'abcdefg', 'abcdefgh',
-                      //   ];
+                      //   final lowered = password.toLowerCase();
                       //
-                      //   if (blockedPasswords.contains(password.toLowerCase())) {
-                      //     showCustomSnackBar(context, 'This password is too common or weak.');
+                      //   // 🔒 Minimum 8 character password
+                      //   if (password.length < 8) {
+                      //     showCustomSnackBar(context, 'Password must be at least 8 characters long');
                       //     return;
                       //   }
                       //
+                      //   // 🔒 Block sequential patterns like 123 or abc
+                      //   if (containsNumericSequence(lowered) || containsAlphabeticSequence(lowered)) {
+                      //     showCustomSnackBar(context, 'Password should not contain serial patterns like "123" or "abc".');
+                      //     return;
+                      //   }
+                      //
+                      //   // 🔒 Confirm password match
                       //   if (password != confirmPassword) {
                       //     showCustomSnackBar(context, 'Passwords do not match');
                       //     return;
@@ -288,7 +333,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //
                       //     if (response.statusCode == 200) {
                       //       showCustomSnackBar(context, '🎉 Registration successful');
-                      //       widget.onToggle(false); // go to Sign In
+                      //       widget.onToggle(false); // Navigate to Sign In
                       //     } else {
                       //       showCustomSnackBar(context, 'Something went wrong');
                       //     }
@@ -298,45 +343,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       //     setState(() => _isLoading = false);
                       //   }
                       // }
+
                       onPressed: () async {
-                        // 🔢 Helper: Check if digits are sequential
-                        bool isIncrementalNumberSequence(String str) {
-                          for (int i = 0; i < str.length - 1; i++) {
-                            if (int.parse(str[i + 1]) != int.parse(str[i]) + 1) return false;
-                          }
-                          return true;
-                        }
-
-                        // 🔠 Helper: Check if letters are sequential
-                        bool isIncrementalAlphabetSequence(String str) {
-                          for (int i = 0; i < str.length - 1; i++) {
-                            if (str.codeUnitAt(i + 1) != str.codeUnitAt(i) + 1) return false;
-                          }
-                          return true;
-                        }
-
-                        // 🔍 Check if password contains numeric sequence like 123, 234...
-                        bool containsNumericSequence(String text) {
-                          for (int i = 0; i <= text.length - 3; i++) {
-                            final part = text.substring(i, i + 3);
-                            if (RegExp(r'^\d{3,}$').hasMatch(part)) {
-                              if (isIncrementalNumberSequence(part)) return true;
-                            }
-                          }
-                          return false;
-                        }
-
-                        // 🔍 Check if password contains alphabetic sequence like abc, bcd...
-                        bool containsAlphabeticSequence(String text) {
-                          for (int i = 0; i <= text.length - 3; i++) {
-                            final part = text.substring(i, i + 3);
-                            if (RegExp(r'^[a-z]{3,}$').hasMatch(part)) {
-                              if (isIncrementalAlphabetSequence(part)) return true;
-                            }
-                          }
-                          return false;
-                        }
-
                         final email = _emailController.text.trim().toLowerCase();
                         final password = _passwordController.text.trim();
                         final confirmPassword = _confirmPasswordController.text.trim();
@@ -344,11 +352,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         final phone = _phoneController.text.trim();
                         final referredBy = _raffController.text.trim();
 
+                        // 🛑 Empty field check
                         if (email.isEmpty || password.isEmpty || name.isEmpty || phone.isEmpty) {
                           showCustomSnackBar(context, 'Please fill all required fields');
                           return;
                         }
 
+                        // 📧 Email validation
                         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
                           showCustomSnackBar(context, 'Please enter a valid email address');
                           return;
@@ -356,17 +366,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         final lowered = password.toLowerCase();
 
-                        if (containsNumericSequence(lowered) || containsAlphabeticSequence(lowered)) {
-                          showCustomSnackBar(context,
-                              'Password should not contain serial patterns like "123" or "abc".');
+                        // 🔐 Password length check
+                        if (password.length < 8 || password.length > 15) {
+                          showCustomSnackBar(context, 'Password must be between 8 to 15 characters.');
                           return;
                         }
 
+                        // 🚫 Block strictly sequential numbers like "12345678"
+                        bool hasStrictSequentialNumbers(String input) {
+                          for (int i = 0; i <= input.length - 4; i++) {
+                            int a = int.tryParse(input[i]) ?? -100;
+                            int b = int.tryParse(input[i + 1]) ?? -100;
+                            int c = int.tryParse(input[i + 2]) ?? -100;
+                            int d = int.tryParse(input[i + 3]) ?? -100;
+
+                            if (b == a + 1 && c == b + 1 && d == c + 1) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        // 🚫 Block strictly sequential alphabets like "abcdefg"
+                        bool hasStrictSequentialAlphabets(String input) {
+                          for (int i = 0; i <= input.length - 4; i++) {
+                            int a = input.codeUnitAt(i);
+                            int b = input.codeUnitAt(i + 1);
+                            int c = input.codeUnitAt(i + 2);
+                            int d = input.codeUnitAt(i + 3);
+
+                            if (b == a + 1 && c == b + 1 && d == c + 1) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        if (hasStrictSequentialNumbers(lowered) || hasStrictSequentialAlphabets(lowered)) {
+                          showCustomSnackBar(context, 'Avoid using sequential patterns like "1234" or "abcd" in password.');
+                          return;
+                        }
+
+                        // 🔁 Confirm password match
                         if (password != confirmPassword) {
                           showCustomSnackBar(context, 'Passwords do not match');
                           return;
                         }
 
+                        // ✅ Everything passed
                         setState(() => _isLoading = true);
 
                         try {
@@ -381,7 +428,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           if (response.statusCode == 200) {
                             showCustomSnackBar(context, '🎉 Registration successful');
-                            widget.onToggle(false); // go to Sign In
+                            widget.onToggle(false); // Navigate to Sign In
                           } else {
                             showCustomSnackBar(context, 'Something went wrong');
                           }
@@ -391,6 +438,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setState(() => _isLoading = false);
                         }
                       }
+
 
                   ),
 
