@@ -1,12 +1,19 @@
+import 'package:fetchtrue/core/costants/custom_color.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../model/lead_status_model.dart';
-import '../repository/lead_service.dart';
+import '../model/leads_model.dart';
 import '../repository/lead_status_service.dart';
 
 class LeadsStatusWidget extends StatefulWidget {
   final String checkoutId;
-  const LeadsStatusWidget({super.key, required this.checkoutId});
+  final LeadsModel lead;
+  const LeadsStatusWidget({super.key, required this.checkoutId, required this.lead});
 
   @override
   State<LeadsStatusWidget> createState() => _LeadsStatusWidgetState();
@@ -32,72 +39,182 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : leadData == null
-        ? const Center(child: Text('No data found'))
-        : ListView.builder(
-      padding: const EdgeInsets.all(12),
-      itemCount: leadData!.leads.length,
-      itemBuilder: (context, index) {
-        final lead = leadData!.leads[index];
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return Column(
+      children: [
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text('Booking Status :', style: textStyle14(context),),
+                  10.width,
+                  Text(
+                    '[ ${getLeadStatus(widget.lead)} ]',
+                    style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(widget.lead)),
+                  )
+                ],
+              ),
+              5.height,
+
+              _iconText(context,icon: Icons.calendar_month, text: 'Booking Date : ${formatDate(widget.lead.createdAt)}'),
+              _iconText(context,icon: Icons.calendar_month, text: 'Schedule Date: ${formatDate(widget.lead.acceptedDate)}'),
+            ],
           ),
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        ),
+
+        /// Status
+        isLoading
+            ?  LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,)
+            : leadData == null
+            ? SizedBox.shrink()
+            : Expanded(
+              child: ListView.builder(
+                        padding: const EdgeInsets.all(12),
+                        itemCount: leadData!.leads.length,
+                        itemBuilder: (context, index) {
+              final lead = leadData!.leads[index];
+              final isLast = index == leadData!.leads.length - 1;
+              
+              return IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.bolt, color: Colors.blue),
-                    const SizedBox(width: 8),
+                    Column(
+                      children: [
+                        const Icon(Icons.check_circle, color: Colors.green),
+                        if (!isLast)
+                          Expanded(
+                            child: Container(
+                              width: 3,
+                              decoration: BoxDecoration(
+                                color: CustomColor.appColor.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    10.width,
                     Expanded(
-                      child: Text(
-                        lead.statusType,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(lead.statusType, style: textStyle14(context)),
+                              10.width,
+
+                              Text('( Admin )', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                            ],
+                          ),
+              
+                          Text(
+                            "Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(lead.createdAt.toLocal())}",
+                            style: textStyle12(context, color: CustomColor.descriptionColor),
+                          ),
+                          5.height,
+              
+                          if (lead.description != null && lead.description!.isNotEmpty)
+                            Text(lead.description!, style: const TextStyle(fontSize: 14)),
+              
+              
+                          if (lead.zoomLink.isNotEmpty)
+                            InkWell(
+                              onTap: () async {
+                                final url = lead.zoomLink;
+                                if (await canLaunchUrl(Uri.parse(url))) {
+                                  await launchUrl(Uri.parse(url));
+                                }
+                              },
+                              child: CustomContainer(
+                                width: 300,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.videocam, color: CustomColor.appColor),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        "Zoom: ${lead.zoomLink}",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          5.height,
+              
+                          if (lead.paymentLink != null)
+                            CustomContainer(
+                              width: 300,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.payment, color: Colors.green),
+                                      10.width,
+                                      Text("Payment: ${lead.paymentType ?? ''}"),
+                                    ],
+                                  ),
+                                  Text("Pay Now",
+                                      style: textStyle12(context, color: CustomColor.appColor)),
+                                ],
+                              ),
+                            ),
+              
+                          15.height
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  lead.description,
-                  style: const TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 10),
-                if (lead.zoomLink.isNotEmpty)
-                  Row(
-                    children: [
-                      const Icon(Icons.videocam, color: Colors.purple),
-                      const SizedBox(width: 6),
-                      Text("Zoom: ${lead.zoomLink}"),
-                    ],
-                  ),
-                if (lead.paymentLink != null)
-                  Row(
-                    children: [
-                      const Icon(Icons.payment, color: Colors.green),
-                      const SizedBox(width: 6),
-                      Text("Payment: ${lead.paymentType ?? ''}"),
-                    ],
-                  ),
-                const SizedBox(height: 8),
-                Text(
-                  "Date: ${lead.createdAt.toLocal()}",
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                )
-              ],
+              );
+                        },
+                      ),
             ),
-          ),
-        );
-      },
+      ],
     );
   }
+
+  /// Lead Status
+  String getLeadStatus(lead) {
+    if (lead.isCanceled == true) return 'Cancel';
+    if (lead.isCompleted == true) return 'Completed';
+    if (lead.isAccepted == true) return 'Accepted';
+    return 'Pending';
+  }
+
+  /// Status Color
+  Color getStatusColor(lead) {
+    if (lead.isCanceled == true) return Colors.red;
+    if (lead.isCompleted == true) return Colors.green;
+    if (lead.isAccepted == true) return Colors.orange;
+    return Colors.grey;
+  }
+
+  /// Format Date
+  String formatDate(String? rawDate) {
+    if (rawDate == null) return 'N/A';
+    final date = DateTime.tryParse(rawDate);
+    if (date == null) return 'Invalid Date';
+    return DateFormat('dd MMM yyyy').format(date);
+  }
+}
+
+
+
+Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? iconColor, String? text, Color? textColor,FontWeight? fontWeight}){
+  return Row(
+    spacing: 10,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Icon(icon!, size: iconSize ?? 14,color: iconColor ?? Colors.grey,),
+      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
+    ],
+  );
 }
