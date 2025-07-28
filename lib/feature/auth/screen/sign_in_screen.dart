@@ -4,7 +4,6 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
 import '../../../core/costants/text_style.dart';
@@ -14,6 +13,7 @@ import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../repository/sign_in_service.dart';
 import '../user_notifier/user_notifier.dart';
+import 'forgot_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -98,6 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
           response.user.id,
           response.token,
           response.user.fullName,
+          response.user.mobileNumber,
           response.user.email,
           response.user.createdAt
         );
@@ -168,9 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
             /// Forgot Password
             TextButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Forgot Password')),
-                );
+               Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
               },
               child: Text(
                 'Forgot Password ?',

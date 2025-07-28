@@ -118,24 +118,70 @@ class LeadsModel {
       serviceMan: json['serviceMan'],
       coupon: json['coupon'],
       paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
+      // paymentMethod: (json['paymentMethod'] != null && json['paymentMethod'] is List)
+      //     ? List<String>.from(json['paymentMethod'].map((e) => e.toString()))
+      //     : [],
     );
   }
 }
 
+// class ServiceModel {
+//   final String id;
+//   final String serviceName;
+//
+//   ServiceModel({
+//     required this.id,
+//     required this.serviceName,
+//   });
+//
+//   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+//     return ServiceModel(
+//       id: json['_id'] ?? '',
+//       serviceName: json['serviceName'] ?? '',
+//     );
+//   }
+// }
 class ServiceModel {
   final String id;
   final String serviceName;
+  final int price;
+  final int discount;
+  final double discountedPrice;
 
   ServiceModel({
     required this.id,
     required this.serviceName,
+    required this.price,
+    required this.discount,
+    required this.discountedPrice,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    final int price = json['price'] ?? 0;
+    final int discount = json['discount'] ?? 0;
+
+    // अगर discountedPrice नहीं दिया गया है तो खुद से calculate करें
+    final double discountedPrice = json.containsKey('discountedPrice')
+        ? (json['discountedPrice'] as num).toDouble()
+        : price - ((discount / 100) * price);
+
     return ServiceModel(
       id: json['_id'] ?? '',
       serviceName: json['serviceName'] ?? '',
+      price: price,
+      discount: discount,
+      discountedPrice: double.parse(discountedPrice.toStringAsFixed(2)),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'serviceName': serviceName,
+      'price': price,
+      'discount': discount,
+      'discountedPrice': discountedPrice,
+    };
   }
 }
 

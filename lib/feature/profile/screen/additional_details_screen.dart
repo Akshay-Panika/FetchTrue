@@ -126,7 +126,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
 
               CustomLabelFormField(
                 context,
-                'Pronations',
+                'professional',
                 hint: 'Enter here...',
                 keyboardType: TextInputType.text,
                 isRequired: true,

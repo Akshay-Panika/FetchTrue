@@ -54,10 +54,12 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           10.width,
                           
                           CustomAmountText(
-                            amount: data.discountedPrice.toString(),
+                            amount: '${(data.discountedPrice ?? 0).toInt()}',
+                            // amount: data.discountedPrice.toString(),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
+
                           10.width,
 
                           if(data.discount != null)
@@ -75,7 +77,8 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                     ],
                   ),
 
-
+                  if(data.includeGst == true)
+                  Text('GST Included In Price (Provider Pays GST)', style: textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
 
                   10.height,
                   if (data.keyValues.isNotEmpty)
@@ -97,7 +100,6 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                         ],
                       ),
                     )),
-
 
                 ],
               ),

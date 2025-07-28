@@ -2,7 +2,8 @@ class ServiceModel {
   final String id;
   final String serviceName;
   final int? price;
-  final int? discountedPrice;
+  final num? discountedPrice;
+  // final int? discountedPrice;
   final int? gst;
   final int? discount;
   final String thumbnailImage;
@@ -19,6 +20,7 @@ class ServiceModel {
   final double averageRating;
   final int totalReviews;
   final bool recommendedServices;
+  final bool includeGst;
 
 
   ServiceModel({
@@ -40,7 +42,8 @@ class ServiceModel {
 
     required this.averageRating,
     required this.totalReviews,
-    required this.recommendedServices
+    required this.recommendedServices,
+    required this.includeGst
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -49,7 +52,8 @@ class ServiceModel {
       serviceName: json['serviceName'],
       price: json['price'] is int ? json['price'] : int.tryParse(json['price'].toString()),
       gst: json['gst'] is int ? json['gst'] : int.tryParse(json['gst'].toString()),
-      discountedPrice: json['discountedPrice'] is int ? json['discountedPrice'] : int.tryParse(json['discountedPrice'].toString()),
+      discountedPrice: _parseNum(json['discountedPrice']),
+      // discountedPrice: json['discountedPrice'] is int ? json['discountedPrice'] : int.tryParse(json['discountedPrice'].toString()),
       discount: json['discount'] is int ? json['discount'] : int.tryParse(json['discount'].toString()),
       thumbnailImage: json['thumbnailImage'],
       bannerImages: List<String>.from(json['bannerImages'] ?? []),
@@ -68,7 +72,13 @@ class ServiceModel {
       averageRating: (json['averageRating'] ?? 0).toDouble(),
       totalReviews: json['totalReviews'],
       recommendedServices: json['recommendedServices'],
+      includeGst: json['includeGst'],
     );
+  }
+  static num? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value;
+    return num.tryParse(value.toString());
   }
 }
 

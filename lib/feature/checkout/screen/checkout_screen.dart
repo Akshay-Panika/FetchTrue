@@ -79,7 +79,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       CheckPaymentWidget(
                         services: widget.services,
                         checkoutData: checkoutData!,
-                        providerId: widget.providerId,
                         onPaymentDone: () {
                           setState(() => _paymentStep = 2);
                         },

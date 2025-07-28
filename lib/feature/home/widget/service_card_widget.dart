@@ -93,10 +93,15 @@ class ServiceCardWidget extends StatelessWidget {
                                 isLineThrough: true,
                               ),
                               10.width,
+                              // CustomAmountText(
+                              //   amount: '${data.discountedPrice}',
+                              //   color: CustomColor.descriptionColor,
+                              // ),
                               CustomAmountText(
-                                amount: '${data.discountedPrice}',
+                                amount: '${(data.discountedPrice ?? 0).toInt()}',
                                 color: CustomColor.descriptionColor,
                               ),
+
                             ],
                           ),
                           Row(

@@ -109,6 +109,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           ),
         ),
 
+        _buildCommissionCard(context),
+
         /// Add customer
         CustomContainer(
           border: false,
@@ -361,8 +363,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             ],
           ),
         ),
-
-        /// Summery
         CustomContainer(
           border: false,
           backgroundColor: CustomColor.whiteColor,
@@ -370,7 +370,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           child: Column(
             spacing: 10,
             children: [
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -378,34 +377,26 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CustomAmountText(amount: data.price.toString(), isLineThrough: true),
+                      CustomAmountText(amount: '${data.price}', isLineThrough: true),
                       10.width,
-                      CustomAmountText(amount: data.discountedPrice.toString()),
+                      CustomAmountText(amount:  '${data.discountedPrice}'),
                     ],
                   ),
                 ],
               ),
 
-              _buildRow(context, title: 'Service Discount', amount: '- ${data.discount} %',),
-              _buildRow(context, title: 'Coupon Discount', amount: selectedCoupon != null ? '- ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '00.00',),
-              _buildRow(context, title: 'Campaign Discount', amount: '- 00.00 %',),
-              _buildRow(context, title: 'Service GST ( ${data.gst}% )', amount: '+ ₹ ${data.gst}'),
-              // _buildRow(context, title: 'Service GST', amount: '${data.gst ?? 00}'),
-              _buildRow(context, title: 'Platform Fee', amount: '+ ${_commission?.platformFee} %',),
-              _buildRow(context, title: 'Fetch True Assurity Charges', amount: '+ ${_commission?.assurityFee}'
-                  ' %',),
-              Divider(),
-              _buildRow(context, title: 'Grand Total', amount: 'Tatal',),
-              5.height
+              _buildRow(context, title: 'Service Discount ( ${data.discount} % )', amount: '- ₹ 00'),
+              _buildRow(context, title: 'Coupon Discount ( ${selectedCoupon != null ? '- ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '0 %'})', amount: '- ₹ 00',),
+              _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
+              _buildRow(context, title: 'Service GST ( ${data.gst} % )', amount: '+ ₹ 00'),
+              _buildRow(context, title: 'Platform Fee ( ₹ ${_commission?.platformFee} )', amount: '+ ₹ 00',),
+              _buildRow(context, title: 'Fetch True Assurity Charges ( ₹ ${_commission?.assurityFee} )', amount: '+ ₹ 00',),
+              Divider(thickness: 0.4,),
+              _buildRow(context, title: 'Grand Total', amount: '₹ ${data.discountedPrice}',),
             ],
           ),
         ),
 
-        
-        CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
-          child: Center(child: Text('You Will Earn ₹ 00 Commission From This Service', style: textStyle14(context, color: CustomColor.appColor),)),
-        ),
        
         Row(
           children: [
@@ -442,13 +433,15 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   provider: widget.providerId == fetchTure ? null : widget.providerId.isNotEmpty == true ? widget.providerId : null,
                   coupon: selectedCoupon?.id,
                   subtotal: 0,
-                  serviceDiscount: data.discountedPrice ?? 0,
+                  serviceDiscount: (data.discountedPrice ?? 0).toInt(),
+                  // serviceDiscount: data.discountedPrice ?? 0,
                   couponDiscount: selectedCoupon?.amount ?? 0,
                   champaignDiscount: 0,
                   gst: data.gst ??0,
                   platformFee: _commission?.platformFee,
                   assurityfee:_commission?.assurityFee,
-                  totalAmount: data.discountedPrice,
+                  totalAmount: data.discountedPrice?.toInt(), // ✅ Fixed
+                  // totalAmount: data.discountedPrice,
                   paymentMethod: [],
                   walletAmount: 0,
                   otherAmount: 0,
@@ -492,5 +485,27 @@ Widget _buildRow(BuildContext context, {required String title, required String a
       Text(title, style: textStyle12(context),),
       Text(amount, style: textStyle12(context),),
     ],
+  );
+}
+
+Widget _buildCommissionCard(BuildContext context){
+  return CustomContainer(
+    border: false,
+    width: double.infinity,
+    backgroundColor: CustomColor.whiteColor,
+    margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+    child:  Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('You Will Earn Commission', style: textStyle14(context, color: CustomColor.appColor),)  ,
+        Row(
+          children: [
+            Text('Up To', style: textStyle12(context),),
+            10.width,
+            Text('00', style: textStyle14(context, color: Colors.green),),
+          ],
+        )  ,
+      ],
+    ),
   );
 }

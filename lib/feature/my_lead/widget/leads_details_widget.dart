@@ -31,7 +31,10 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
           /// Booking card
           _buildBookingCard(context , lead: widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
-      
+
+          _buildCommissionCard(context),
+          SizedBox(height: dimensions.screenHeight*0.015,),
+
           /// Custom details card
           _customerDetails(context, widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
@@ -43,37 +46,7 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
       
           /// Booking summary card
           _buildBookingSummary(context,widget.lead),
-
-          CustomContainer(
-            border: true,
-            width: double.infinity,
-            backgroundColor: CustomColor.whiteColor,
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      20.height,
-                     Text('You Will Earn Commission', style: textStyle16(context, color: CustomColor.appColor),)  ,
-                     Row(
-                       children: [
-                         Text('Up To', style: textStyle14(context),),
-                         10.width,
-                         Text('00', style: textStyle16(context, color: Colors.green),),
-                       ],
-                     )  ,
-                    ],
-                  ),
-                ),
-                Image.asset('assets/package/packageBuyImg.png', height: 100,)
-              ],
-            ),),
+          SizedBox(height: dimensions.screenHeight*0.015,),
       
           /// Provider Card
           ProviderCardWidget(lead:widget.lead),
@@ -120,7 +93,7 @@ Widget _buildBookingCard(BuildContext context, { required LeadsModel lead}){
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('OTP: 010101', style:  textStyle14(context,color: CustomColor.descriptionColor),),
+            Text('OTP: ${lead.otp}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
             Text('Invoice Download', style:  textStyle14(context,color: CustomColor.appColor),),
           ],
         ),
@@ -172,32 +145,24 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
     border: true,
     backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
+    width: double.infinity,
     child: Stack(
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _iconText(context,
-              icon: Icons.person,
-              iconSize: 16,
-              iconColor: CustomColor.appColor,
-              text: 'Customer Details',
-              fontWeight: FontWeight.w500,
-              textColor: Colors.black,),
-
+            Text('Customer Details', style: textStyle12(context),),
+            5.height,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Name : ${lead.serviceCustomer.fullName}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                 Text('Phone : ${lead.serviceCustomer.phone}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                 // Text('Email Id : ${lead.serviceCustomer!.email}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                Text('Address: ${lead.serviceCustomer.city}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Address: ${lead.serviceCustomer.address}, ${lead.serviceCustomer.city}, ${lead.serviceCustomer.state}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
 
                 if(lead.notes.isNotEmpty)
-                CustomContainer(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Text('Note: ${lead.notes}',  style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),)),
-
+                Text('Note : ${lead.notes}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
               ],
             ),
        ],
@@ -234,31 +199,80 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _iconText( context,
-                icon: Icons.currency_rupee,
-                iconSize: 16,
-                iconColor: CustomColor.appColor,
-                text: 'Payment Status',
-                fontWeight: FontWeight.w500,
-                textColor: Colors.black,),
-              10.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('Payment Status', style: textStyle12(context),),
+                      10.width,
 
-              Text('Status: ${lead.paymentMethod}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-              Text('Transaction Id:',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      Text('( ${lead.paymentStatus} )', style: textStyle12(context, color: Colors.orangeAccent),),
+                    ],
+                  ),
+                  InkWell(onTap: () => null, child: Icon(Icons.share, color: CustomColor.appColor,))
+                ],
+              ),
+
+              Text(
+                'Status: ${lead.paymentMethod.map((method) {
+                  switch (method) {
+                    case 'pac':
+                      return 'Pay After Consultation';
+                    case 'cashfree':
+                      return 'Cashfree';
+                    case 'wallet':
+                      return 'Wallet';
+                    default:
+                      return method;
+                  }
+                }).join(', ')}',
+                style: textStyle12(
+                  context,
+                  color: CustomColor.descriptionColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              if (!lead.paymentMethod.contains('pac'))
+              Text('Transaction Id : N/A',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+              Row(
+                children: [
+                  Text('Price :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                  10.width,
+                  CustomAmountText(amount: '${lead.service.price}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
+                  10.width,
+                  CustomAmountText(amount: '${lead.service.discountedPrice}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                ],
+              ),
+              Divider(thickness: 0.4,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('Wallet :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      5.width,
+                      CustomAmountText(amount: '${lead.walletAmount},', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
+                      20.width,
+                      Text('Amount : ',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      if (lead.remainingAmount !=0)
+                      CustomAmountText(amount: '${lead.remainingAmount}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
+                      5.width,
+                      CustomAmountText(amount: '${lead.totalAmount}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('Pay Now',style: textStyle14(context, color: CustomColor.greenColor),)
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),
-
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          spacing: 20,
-          children: [
-            Text('${lead.paymentStatus}', style: TextStyle(color: CustomColor.appColor, fontWeight: FontWeight.w500),),
-            CustomAmountText(amount: '${lead.serviceDiscount}', color: CustomColor.appColor,fontWeight: FontWeight.w500,fontSize: 14)
-          ],
-        ),
-
       ],
     ),
   );
@@ -267,31 +281,68 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
 Widget _buildBookingSummary(BuildContext context, LeadsModel lead){
   return CustomContainer(
     border: true,
-    backgroundColor: Colors.white,
+    backgroundColor: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
       spacing: 10,
       children: [
-        _buildRow(context,label: 'Sub Total', value: '${lead.serviceDiscount}' ),
-        _buildRow(context,label: 'Coupon Discount', value: '${lead.couponDiscount}' ),
-        _buildRow(context ,label: 'Campaign Discount', value: '${lead.champaignDiscount}'),
-        _buildRow(context ,label: 'Platform Fee', value: '${lead.platformFee}'),
-        _buildRow(context ,label: 'Guarantee Fee', value: '${lead.platformFee}'),
-        Divider(),
-        _buildRow(context,label: 'Grand Total', value: '${lead.serviceDiscount}' , textColor: CustomColor.appColor),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Price', style:textStyle12(context),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CustomAmountText(amount: '${lead.service.price}', isLineThrough: true),
+                10.width,
+                CustomAmountText(amount:  '00'),
+              ],
+            ),
+          ],
+        ),
+
+        _buildRow(context, title: 'Service Discount ( ${lead.serviceDiscount} % )', amount: '- ₹ 00'),
+        _buildRow(context, title: 'Coupon Discount ( ${lead.couponDiscount} % )', amount: '- ₹ 00',),
+        _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
+        _buildRow(context, title: 'Service GST ( ${lead.gst} % )', amount: '+ ₹ 00'),
+        _buildRow(context, title: 'Platform Fee ( ₹ ${lead.platformFee} )', amount: '+ ₹ 00',),
+        _buildRow(context, title: 'Fetch True Assurity Charges ( ₹ ${lead.assurityFee} )', amount: '+ ₹ 00',),
+        Divider(thickness: 0.4,),
+        _buildRow(context, title: 'Grand Total', amount: '₹ ${lead.totalAmount}',),
       ],
     ),
   );
 }
 
-Widget _buildRow(BuildContext context,{String? label, Color? textColor, String? value}){
+Widget _buildRow(BuildContext context, {required String title, required String amount,}){
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(label!, style: textStyle12(context,color: textColor ?? CustomColor.descriptionColor),),
-      CustomAmountText(amount: value!, color: textColor ?? CustomColor.descriptionColor, fontSize: 12),
+      Text(title, style: textStyle12(context, fontWeight: FontWeight.w400),),
+      Text(amount, style: textStyle12(context, fontWeight: FontWeight.w400),),
     ],
   );
 }
 
+Widget _buildCommissionCard(BuildContext context){
+  return CustomContainer(
+    border: true,
+    width: double.infinity,
+    backgroundColor: CustomColor.whiteColor,
+    margin: EdgeInsets.zero,
+    child:  Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('You Will Earn Commission', style: textStyle14(context, color: CustomColor.appColor),)  ,
+        Row(
+          children: [
+            Text('Up To', style: textStyle12(context),),
+            10.width,
+            Text('00', style: textStyle14(context, color: Colors.green),),
+          ],
+        )  ,
+      ],
+    ),
+  );
+}
 
