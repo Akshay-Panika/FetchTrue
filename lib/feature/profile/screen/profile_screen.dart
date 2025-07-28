@@ -165,8 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
 
                   onTap: () {
-                    if(widget.userId != null)
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(),));
+                    if(widget.userId != null) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(user: user!.id.toString(),),));
+                    }
                   }
                 ),
                 10.height,

@@ -1,15 +1,20 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../../auth/repository/user_service.dart';
+import '../../more/model/user_model.dart';
+import '../../my_lead/widget/leads_details_widget.dart';
+import '../repository/user_additional_details_service.dart';
 
 class AdditionalDetailsScreen extends StatefulWidget {
-  const AdditionalDetailsScreen({super.key});
+  final String user;
+  const AdditionalDetailsScreen({super.key, required this.user});
 
   @override
   State<AdditionalDetailsScreen> createState() => _AdditionalDetailsScreenState();
@@ -17,20 +22,80 @@ class AdditionalDetailsScreen extends StatefulWidget {
 
 class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController educationController = TextEditingController();
+  final TextEditingController professionController = TextEditingController();
+  final TextEditingController emergencyContactController = TextEditingController();
 
   String? gender;
   String? maritalStatus;
-  String? nationality;
   String? bloodGroup;
-  String? emergencyContact;
-  String? panNumber;
-  String? aadharNumber;
 
   final ValueNotifier<String> selectedBloodGroups = ValueNotifier('');
   final List<String> bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
+  UserModel? _user; // ✅ fetched user data
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+  bool isSaving = false;
+
+  Future<void> fetchUser() async {
+    try {
+      final user = await UserService().fetchUserById(widget.user);
+      _user = user;
+      populateFields(user!);
+      if (mounted) setState(() {}); // ✅ rebuild with fresh data
+    } catch (e) {
+      debugPrint("Error fetching user: $e");
+    }
+  }
+
+  void populateFields(UserModel user) {
+    gender = user.gender?.capitalize();
+    maritalStatus = user.maritalStatus?.capitalize();
+
+    final blood = user.bloodGroup?.toUpperCase() ?? '';
+    selectedBloodGroups.value = bloodGroups.contains(blood) ? blood : '';
+
+    if (user.dateOfBirth != null && user.dateOfBirth!.isNotEmpty) {
+      try {
+        final date = DateTime.parse(user.dateOfBirth!);
+        dobController.text =
+        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+      } catch (_) {
+        dobController.text = '';
+      }
+    }
+
+    educationController.text = user.education ?? '';
+    professionController.text = user.profession ?? '';
+    emergencyContactController.text = user.emergencyContact ?? '';
+  }
+
+
+  @override
+  void dispose() {
+    dobController.dispose();
+    educationController.dispose();
+    professionController.dispose();
+    emergencyContactController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    if (_user == null) {
+      return  Scaffold(
+        appBar: CustomAppBar(title: 'Additional Details', showBackButton: true,),
+        body: Center(child: CircularProgressIndicator(color: CustomColor.appColor,)),
+      );
+    }
+
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Additional Details', showBackButton: true,),
@@ -49,6 +114,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                   Radio<String>(
                     value: "Male",
                     groupValue: gender,
+                    activeColor: CustomColor.appColor,
                     onChanged: (value) => setState(() => gender = value),
                   ),
                   const Text("Male"),
@@ -57,6 +123,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                   Radio<String>(
                     value: "Female",
                     groupValue: gender,
+                    activeColor: CustomColor.appColor,
                     onChanged: (value) => setState(() => gender = value),
                   ),
                   const Text("Female"),
@@ -65,6 +132,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                   Radio<String>(
                     value: "Other",
                     groupValue: gender,
+                    activeColor: CustomColor.appColor,
                     onChanged: (value) => setState(() => gender = value),
                   ),
                   const Text("Other"),
@@ -78,6 +146,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                   Radio<String>(
                     value: "Single",
                     groupValue: maritalStatus,
+                    activeColor: CustomColor.appColor,
                     onChanged: (value) => setState(() => maritalStatus = value),
                   ),
                   const Text("Single"),
@@ -85,6 +154,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
 
                   Radio<String>(
                     value: "Married",
+                    activeColor: CustomColor.appColor,
                     groupValue: maritalStatus,
                     onChanged: (value) => setState(() => maritalStatus = value),
                   ),
@@ -106,21 +176,43 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
               ),
               15.height,
 
-              CustomLabelFormField(
-                context,
-                'DOB',
-                hint: 'Enter here...',
-                keyboardType: TextInputType.text,
-                isRequired: true,
+              GestureDetector(
+                onTap: () async {
+                  FocusScope.of(context).unfocus(); // hide keyboard
+
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2000),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+
+                  if (pickedDate != null) {
+                    String formattedDate = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                    setState(() {
+                      dobController.text = formattedDate;
+                    });
+                  }
+                },
+                child: AbsorbPointer(
+                  child: CustomLabelFormField(
+                    context,
+                    'DOB',
+                    controller: dobController,
+                    hint: 'Select Date of Birth',
+                    keyboardType: TextInputType.none,
+                  ),
+                ),
               ),
+
               15.height,
 
               CustomLabelFormField(
                 context,
                 'Education',
                 hint: 'Enter here...',
+                controller: educationController,
                 keyboardType: TextInputType.text,
-                isRequired: true,
               ),
               15.height,
 
@@ -128,8 +220,8 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 context,
                 'professional',
                 hint: 'Enter here...',
+                controller: professionController,
                 keyboardType: TextInputType.text,
-                isRequired: true,
               ),
               15.height,
 
@@ -137,8 +229,8 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 context,
                 'Emergency Contact',
                 hint: 'Enter here...',
+                controller: emergencyContactController,
                 keyboardType: TextInputType.number,
-                isRequired: true,
               ),
               50.height,
 
@@ -157,10 +249,50 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                       border: true,
                       borderColor: CustomColor.appColor,
                       backgroundColor: CustomColor.whiteColor,
-                      onTap: () {},
-                      child: Center(
-                        child: Text("SAVE", style: textStyle16(context)),
-                      ),
+                        child: Center(
+                          child: isSaving
+                              ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: CustomColor.appColor,
+                            ),
+                          )
+                              : Text("SAVE", style: textStyle16(context)),
+                        ),
+
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() => isSaving = true); // Start loading
+
+                            final Map<String, dynamic> data = {
+                              "gender": gender?.toLowerCase(),
+                              "maritalStatus": maritalStatus?.toLowerCase(),
+                              "bloodGroup": selectedBloodGroups.value.toLowerCase(),
+                              "dateOfBirth": dobController.text.trim(),
+                              "education": educationController.text.trim(),
+                              "profession": professionController.text.trim(),
+                              "emergencyContact": emergencyContactController.text.trim(),
+                            };
+
+                            try {
+                              await UserAdditionalDetailsService().updateAdditionalDetails(
+                                userId: widget.user,
+                                data: data,
+                              );
+
+                              showCustomSnackBar(context, 'Details updated successfully');
+
+                              Navigator.pop(context);
+                            } catch (e) {
+                              showCustomSnackBar(context, 'Error: $e');
+
+                            } finally {
+                              if (mounted) setState(() => isSaving = false); // Stop loading
+                            }
+                          }
+                        }
+
                     ),
                   ),
                 ],
@@ -170,5 +302,12 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
         ),
       ),
     );
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return this;
+    return this[0].toUpperCase() + substring(1).toLowerCase();
   }
 }

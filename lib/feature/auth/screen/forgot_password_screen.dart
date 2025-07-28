@@ -2,11 +2,15 @@ import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_button.dart';
+import 'package:fetchtrue/feature/auth/screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/costants/custom_color.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../firebase_uth/verify_number_service.dart';
+import '../repository/forgot_password_service.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -17,69 +21,48 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _phoneController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  final VerifyNumberService _verifyNumberService = VerifyNumberService();
+  final ForgotPasswordService _forgotPasswordService = ForgotPasswordService();
 
-  final List<TextEditingController> _otpControllers =
-  List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-
-  bool _showOtp = false;
-  bool _showPasswordFields = false;
+  bool _isOtpVerified = false;
+  bool _isLoading = false;
+  bool _obscureText = true;
 
   @override
   void dispose() {
     _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    for (var controller in _otpControllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
     super.dispose();
-  }
-
-  void _onOtpChanged(String value, int index) {
-    if (value.isNotEmpty && index < 5) {
-      _focusNodes[index + 1].requestFocus();
-    }
-    if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
-    }
-
-    final otp = _otpControllers.map((e) => e.text.trim()).join();
-    if (otp.length == 6) {
-      setState(() => _showPasswordFields = true);
-    }
-  }
-
-  void _onKeyPressed(RawKeyEvent event, int index) {
-    if (event is RawKeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace &&
-        _otpControllers[index].text.isEmpty &&
-        index > 0) {
-      _otpControllers[index - 1].text = '';
-      _focusNodes[index - 1].requestFocus();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Forgot Password', showBackButton: true,),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
 
-            /// Phone Field
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Image.asset(CustomLogo.fetchTrueLogo, height: 150,)),
+                /// Logo
+                Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                    height: _isOtpVerified ? 150 : 300,
+                    child: Image.asset(CustomLogo.fetchTrueLogo),
+                  ),
+                ),
+
+                /// Phone Field
                 RichText(
                   text: const TextSpan(
                     text: 'Phone',
@@ -111,113 +94,198 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       controller: _phoneController,
                       keyboardType: TextInputType.text,
                       isRequired: true,
-                      enabled: true,
+                      enabled: !_isOtpVerified,
                     ),
                     ),
                   ],
                 ),
+
+
+                /// Password
+                if (_isOtpVerified)
+                Column(
+                  children: [
+                    20.height,
+
+                    CustomLabelFormField(
+                        context,
+                        'Password',
+                        hint: 'Enter password',
+                        controller: _passwordController,
+                        keyboardType: TextInputType.text,
+                        isRequired: true,
+                        obscureText: _obscureText,
+                        suffixIcon: InkWell(
+                          onTap: (){
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
+                    ),
+                    15.height,
+
+                    CustomLabelFormField(
+                        context,
+                        'Confirm Password',
+                        hint: 'Enter confirm password',
+                        controller: _confirmPasswordController,
+                        keyboardType: TextInputType.text,
+                        isRequired: true,
+                        obscureText: _obscureText,
+                        suffixIcon: InkWell(
+                          onTap: (){
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          child: Icon( _obscureText ? Icons.visibility_off : Icons.visibility,color: CustomColor.appColor,),)
+                    ),
+                  ],
+                )
               ],
             ),
 
+            /// Verify Button
+            Column(
+                children: [
+                  200.height,
+                  if (!_isOtpVerified)
+                  CustomButton(
+                    isLoading: _isLoading,
+                    label: 'Verify Number',
+                    onPressed: () async {
+                      final phone = _phoneController.text.trim().replaceAll(" ", "");
 
-            Padding(
-              padding: const EdgeInsets.only(top: 50.0),
-              child: CustomButton(
-                label: 'Verify',
-                onPressed: () {
-                  if (_phoneController.text.length == 10) {
-                    setState(() {
-                      _showOtp = true;
-                      _showPasswordFields = false;
-                      for (var controller in _otpControllers) {
-                        controller.clear();
+                      if (phone.isEmpty) {
+                        showCustomSnackBar(context, 'Please enter phone number ');
+                        return;
                       }
-                    });
-                    _focusNodes[0].requestFocus();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Enter valid phone number')),
-                    );
-                  }
-                },
 
-              ),
-            ),
+                      if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+                        showCustomSnackBar(context, 'Please enter a valid 10-digit phone number');
+                        return;
+                      }
 
-            if (_showOtp)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(6, (index) {
-                    return SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: RawKeyboardListener(
-                        focusNode: FocusNode(), // for key events
-                        onKey: (event) => _onKeyPressed(event, index),
-                        child: TextField(
-                          controller: _otpControllers[index],
-                          focusNode: _focusNodes[index],
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          maxLength: 1,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          onChanged: (value) => _onOtpChanged(value, index),
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            counterText: '',
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.all(0),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+                      setState(() => _isLoading = true);
 
-            if (_showPasswordFields) ...[
-              const SizedBox(height: 20),
-              TextField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _confirmPasswordController,
-                decoration: const InputDecoration(
-                  labelText: "Confirm Password",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_passwordController.text != _confirmPasswordController.text) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Passwords do not match")),
-                    );
-                    return;
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Password changed successfully")),
-                  );
-                },
-                child: const Text("Reset Password"),
-              ),
-            ]
+                      try {
+                        await _verifyNumberService.sendOtp(
+                          phone,
+                          onCodeSent: (verificationId) async {
+                            setState(() => _isLoading = false);
+                            final result = await Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => VerifyOtpScreen(
+                                phoneNumber: phone,
+                                verifyService: _verifyNumberService,
+                              ),
+                            ),
+                            );
+                            if (result == true) {
+                              setState(() => _isOtpVerified = true);
+                            }
+                          },
+                        );
+                      } catch (e) {
+                        setState(() => _isLoading = false);
+                        showCustomSnackBar(context, e.toString());
+                      }
+                    },
+                  ),
+
+                  if (_isOtpVerified)
+                  CustomButton(
+                      isLoading: _isLoading,
+                      label: 'Save Password',
+
+                      onPressed: () async {
+                        final password = _passwordController.text.trim();
+                        final confirmPassword = _confirmPasswordController.text.trim();
+                        final phone = _phoneController.text.trim();
+
+                        // 🛑 Empty field check
+                        if (password.isEmpty || phone.isEmpty) {
+                          showCustomSnackBar(context, 'Please fill all required fields');
+                          return;
+                        }
+
+
+                        final lowered = password.toLowerCase();
+
+                        // 🔐 Password length check
+                        if (password.length < 8 || password.length > 15) {
+                          showCustomSnackBar(context, 'Password must be between 8 to 15 characters.');
+                          return;
+                        }
+
+                        // 🚫 Block strictly sequential numbers like "12345678"
+                        bool hasStrictSequentialNumbers(String input) {
+                          for (int i = 0; i <= input.length - 4; i++) {
+                            int a = int.tryParse(input[i]) ?? -100;
+                            int b = int.tryParse(input[i + 1]) ?? -100;
+                            int c = int.tryParse(input[i + 2]) ?? -100;
+                            int d = int.tryParse(input[i + 3]) ?? -100;
+
+                            if (b == a + 1 && c == b + 1 && d == c + 1) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        // 🚫 Block strictly sequential alphabets like "abcdefg"
+                        bool hasStrictSequentialAlphabets(String input) {
+                          for (int i = 0; i <= input.length - 4; i++) {
+                            int a = input.codeUnitAt(i);
+                            int b = input.codeUnitAt(i + 1);
+                            int c = input.codeUnitAt(i + 2);
+                            int d = input.codeUnitAt(i + 3);
+
+                            if (b == a + 1 && c == b + 1 && d == c + 1) {
+                              return true;
+                            }
+                          }
+                          return false;
+                        }
+
+                        if (hasStrictSequentialNumbers(lowered) || hasStrictSequentialAlphabets(lowered)) {
+                          showCustomSnackBar(context, 'Avoid using sequential patterns like "1234" or "abcd" in password.');
+                          return;
+                        }
+
+                        // 🔁 Confirm password match
+                        if (password != confirmPassword) {
+                          showCustomSnackBar(context, 'Passwords do not match');
+                          return;
+                        }
+
+                        // ✅ Everything passed
+                        setState(() => _isLoading = true);
+
+                        try {
+                          final response = await _forgotPasswordService.forgotPasswordUser(
+                            mobileNumber: phone,
+                            newPassword: password,
+                          );
+
+                          if (response.statusCode == 200) {
+                            showCustomSnackBar(context, '🎉 Password reset successful');
+                            Navigator.pop(context); // Navigate to Sign In
+                          } else {
+                            showCustomSnackBar(context, 'Something went wrong');
+                          }
+                        } catch (e) {
+                          showCustomSnackBar(context, e.toString());
+                        } finally {
+                          setState(() => _isLoading = false);
+                        }
+                      }
+                  ),
+                ],
+              ) ,
           ],
         ),
-      ),
+      )
     );
   }
 }

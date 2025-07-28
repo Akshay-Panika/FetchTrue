@@ -25,8 +25,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   @override
   void initState() {
     super.initState();
-
-    // UserModel से data initialize करें
     _nameController = TextEditingController(text: widget.user.fullName);
     _phoneController = TextEditingController(text: widget.user.mobileNumber);
     _emailController = TextEditingController(text: widget.user.email);
