@@ -85,7 +85,8 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                     Column(
                       children: [
                         const Icon(Icons.check_circle, color: Colors.green),
-                        if (!isLast)
+                        // if (!isLast)
+                        if(lead.statusType != 'Completed')
                           Expanded(
                             child: Container(
                               width: 3,

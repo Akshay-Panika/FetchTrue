@@ -93,15 +93,6 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
               ),
               15.height,
 
-              CustomLabelFormField(
-                context,
-                'Nationality',
-                hint: 'Enter here...',
-                keyboardType: TextInputType.text,
-                isRequired: true,
-              ),
-              15.height,
-
               ValueListenableBuilder<String>(
                 valueListenable: selectedBloodGroups,
                 builder: (context, value, _) {
@@ -113,8 +104,33 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                   );
                 },
               ),
+              15.height,
 
+              CustomLabelFormField(
+                context,
+                'DOB',
+                hint: 'Enter here...',
+                keyboardType: TextInputType.text,
+                isRequired: true,
+              ),
+              15.height,
 
+              CustomLabelFormField(
+                context,
+                'Education',
+                hint: 'Enter here...',
+                keyboardType: TextInputType.text,
+                isRequired: true,
+              ),
+              15.height,
+
+              CustomLabelFormField(
+                context,
+                'Pronations',
+                hint: 'Enter here...',
+                keyboardType: TextInputType.text,
+                isRequired: true,
+              ),
               15.height,
 
               CustomLabelFormField(

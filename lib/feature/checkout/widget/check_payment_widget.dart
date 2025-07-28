@@ -249,7 +249,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       else {
                         if(selectedPayment == PaymentMethod.afterConsultation){
                           final isSuccess = await CheckOutService.checkOutService(updatedCheckout);
-                          // showCustomSnackBar(context, 'Successfully!');
+                          showCustomSnackBar(context, 'Successfully!');
                           widget.onPaymentDone();
                         }
 
@@ -257,7 +257,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           if (selectedPayment == PaymentMethod.cashFree) {
                             await cashFreeService( context,
                               amount: payableAmount,
-                              customerId: '',
+                              customerId: widget.checkoutData.serviceCustomer!,
                               name: "Customer Name",
                               email: "customer@example.com",
                               phone: '8989207770',
