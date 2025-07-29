@@ -50,15 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   File? selectedImage;
-
-  // Future<void> pickImageFromGallery() async {
-  //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (picked != null) {
-  //     setState(() {
-  //       selectedImage = File(picked.path);
-  //     });
-  //   }
-  // }
+  bool isUploading = false;
 
   Future<void> pickImageFromGallery() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -66,13 +58,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       File imageFile = File(picked.path);
       setState(() {
         selectedImage = imageFile;
+        isUploading = true;
       });
 
-      // 🔁 Immediately upload image after selection
       if (widget.userId != null) {
         var request = http.MultipartRequest(
           'PATCH',
-          Uri.parse('https://biz-booster.vercel.app/api/users/update-profile-photo/${widget.userId}'),
+          Uri.parse(
+              'https://biz-booster.vercel.app/api/users/update-profile-photo/${widget.userId}'),
         );
 
         request.files.add(await http.MultipartFile.fromPath(
@@ -85,17 +78,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           if (response.statusCode == 200) {
             print("✅ Profile photo updated");
-            // Optionally, refresh user data from server
+
+            // Optionally refresh user data and UI
             await getUserData(widget.userId!);
           } else {
-            print("❌ Failed to upload: ${response.statusCode}");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("❌ Failed to upload image")),
+            );
           }
         } catch (e) {
           print("❌ Upload error: $e");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("❌ Upload failed")),
+          );
+        } finally {
+          setState(() {
+            isUploading = false;
+          });
         }
       }
     }
   }
+
+
+  // Future<void> pickImageFromGallery() async {
+  //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (picked != null) {
+  //     setState(() {
+  //       selectedImage = File(picked.path);
+  //     });
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,20 +123,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
           :Stack(
         alignment: AlignmentDirectional.topStart,
         children: [
-
           Container(
             height: 280,
             width: double.infinity,
             color: Colors.grey,
-          //   child: selectedImage != null ? Image.file(selectedImage!, fit: BoxFit.cover,)
-          //       : Image.asset(CustomImage.nullImage, fit: BoxFit.cover,),
-          // ),
-            child: selectedImage != null
+            child: isUploading
+                ? const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            )
+                : selectedImage != null
                 ? Image.file(selectedImage!, fit: BoxFit.cover)
                 : (user?.profilePhoto != null
                 ? Image.network(user!.profilePhoto!, fit: BoxFit.cover)
                 : Image.asset(CustomImage.nullImage, fit: BoxFit.cover)),
           ),
+
+          // Container(
+          //   height: 280,
+          //   width: double.infinity,
+          //   color: Colors.grey,
+          //   child: selectedImage != null
+          //       ? Image.file(selectedImage!, fit: BoxFit.cover)
+          //       : (user?.profilePhoto != null
+          //       ? Image.network(user!.profilePhoto!, fit: BoxFit.cover)
+          //       : Image.asset(CustomImage.nullImage, fit: BoxFit.cover)),
+          // ),
+
 
           Container(
             child:  SingleChildScrollView(

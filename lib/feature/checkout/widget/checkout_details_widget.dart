@@ -65,6 +65,51 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
     var data = widget.services.first;
     final userSession = Provider.of<UserSession>(context);
     Dimensions dimensions = Dimensions(context);
+
+    // final double originalPrice = data.price?.toDouble() ?? 0.0;
+    // final double serviceDiscountPercent = data.discount?.toDouble() ?? 0.0;
+    // final double serviceDiscountAmount = originalPrice * serviceDiscountPercent / 100;
+    // final double afterServiceDiscountPrice = originalPrice - serviceDiscountAmount;
+    //
+    // double couponDiscountAmount = 0.0;
+    //
+    // if (selectedCoupon != null) {
+    //   if (selectedCoupon!.discountAmountType == 'Percentage') {
+    //     couponDiscountAmount = afterServiceDiscountPrice * (selectedCoupon!.amount.toDouble()) / 100;
+    //   } else {
+    //     couponDiscountAmount = selectedCoupon!.amount.toDouble();
+    //   }
+    // }
+    //
+    // final double finalAmount = afterServiceDiscountPrice - couponDiscountAmount;
+
+    final double originalPrice = data.price?.toDouble() ?? 0.0;
+    final double serviceDiscountPercent = data.discount?.toDouble() ?? 0.0;
+    final double serviceDiscountAmount = originalPrice * serviceDiscountPercent / 100;
+    final double afterServiceDiscountPrice = originalPrice - serviceDiscountAmount;
+
+    double couponDiscountAmount = 0.0;
+    if (selectedCoupon != null) {
+      if (selectedCoupon!.discountAmountType == 'Percentage') {
+        couponDiscountAmount = afterServiceDiscountPrice * (selectedCoupon!.amount.toDouble()) / 100;
+      } else {
+        couponDiscountAmount = selectedCoupon!.amount.toDouble();
+      }
+    }
+    final double afterCouponPrice = afterServiceDiscountPrice - couponDiscountAmount;
+
+// ✅ GST, Platform Fee, Assurity Fee Calculate करो
+    final double gstPercent = data.gst?.toDouble() ?? 0.0;
+    final double platformFeePercent = _commission?.platformFee?.toDouble() ?? 0.0;
+    final double assurityFeePercent = _commission?.assurityFee?.toDouble() ?? 0.0;
+
+    final double gstAmount = afterCouponPrice * gstPercent / 100;
+    final double platformFeeAmount = afterCouponPrice * platformFeePercent / 100;
+    final double assurityFeeAmount = afterCouponPrice * assurityFeePercent / 100;
+
+    final double grandTotal = afterCouponPrice + gstAmount + platformFeeAmount + assurityFeeAmount;
+
+
     return Column(
       children: [
 
@@ -363,41 +408,133 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             ],
           ),
         ),
+
+
+        /// Summery
+        // CustomContainer(
+        //   border: false,
+        //   backgroundColor: CustomColor.whiteColor,
+        //   margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+        //   child: Column(
+        //     spacing: 10,
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Text('Listing Price', style:textStyle12(context),),
+        //           Row(
+        //             mainAxisAlignment: MainAxisAlignment.end,
+        //             children: [
+        //               // CustomAmountText(amount: '${data.price}', isLineThrough: true),
+        //               10.width,
+        //               CustomAmountText(amount:  '${data.price}'),
+        //             ],
+        //           ),
+        //         ],
+        //       ),
+        //
+        //       _buildRow(
+        //         context,
+        //         title: 'Service Discount ( ${data.discount} % )',
+        //         amount: '- ₹ ${serviceDiscountAmount.toStringAsFixed(2)}',
+        //       ),
+        //
+        //       // _buildRow(context, title: 'Service Discount ( ${data.discount} % )', amount: '- ₹ ${data.price-data.discount}'),
+        //       _buildRow(context, title: 'Discounted Price ', amount: '₹ ${data.discountedPrice}'),
+        //
+        //       _buildRow(context, title: 'Coupon Discount ( ${selectedCoupon != null ? '- ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '0 '})', amount: '₹ ${finalAmount.toStringAsFixed(2)}'),
+        //       // _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
+        //       _buildRow(context, title: 'Service GST ( ${data.gst} % )', amount: '+ ₹ 00'),
+        //       _buildRow(context, title: 'Platform Fee (${_commission?.platformFee} % )', amount: '+ ₹ 00',),
+        //       _buildRow(context, title: 'Fetch True Assurity Charges ( ${_commission?.assurityFee} % )', amount: '+ ₹ 00',),
+        //       Divider(thickness: 0.4,),
+        //       _buildRow(context, title: 'Grand Total', amount: '₹ ${data.discountedPrice}',),
+        //     ],
+        //   ),
+        // ),
+
         CustomContainer(
           border: false,
           backgroundColor: CustomColor.whiteColor,
-          margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             spacing: 10,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Price', style:textStyle12(context),),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CustomAmountText(amount: '${data.price}', isLineThrough: true),
-                      10.width,
-                      CustomAmountText(amount:  '${data.discountedPrice}'),
-                    ],
-                  ),
-                ],
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text('Listing Price', style: textStyle12(context)),
+              //     Row(
+              //       children: [
+              //         10.width,
+              //         CustomAmountText(amount: '${originalPrice.toStringAsFixed(2)}'),
+              //       ],
+              //     ),
+              //   ],
+              // ),
+
+              _buildRow(
+                context,
+                title: 'Listing Price',
+                amount: '₹ ${originalPrice.toStringAsFixed(2)}',
               ),
 
-              _buildRow(context, title: 'Service Discount ( ${data.discount} % )', amount: '- ₹ 00'),
-              _buildRow(context, title: 'Coupon Discount ( ${selectedCoupon != null ? '- ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '0 %'})', amount: '- ₹ 00',),
-              _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
-              _buildRow(context, title: 'Service GST ( ${data.gst} % )', amount: '+ ₹ 00'),
-              _buildRow(context, title: 'Platform Fee ( ₹ ${_commission?.platformFee} )', amount: '+ ₹ 00',),
-              _buildRow(context, title: 'Fetch True Assurity Charges ( ₹ ${_commission?.assurityFee} )', amount: '+ ₹ 00',),
-              Divider(thickness: 0.4,),
-              _buildRow(context, title: 'Grand Total', amount: '₹ ${data.discountedPrice}',),
+              _buildRow(
+                context,
+                title: 'Service Discount (${serviceDiscountPercent.toStringAsFixed(0)} %)',
+                amount: '- ₹ ${serviceDiscountAmount.toStringAsFixed(2)}',
+              ),
+
+              _buildRow(
+                context,
+                title: 'Price After Discount',
+                amount: '₹ ${afterServiceDiscountPrice.toStringAsFixed(2)}',
+              ),
+
+              _buildRow(
+                context,
+                title:
+                'Coupon Discount (${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'})',
+                amount: '- ₹ ${couponDiscountAmount.toStringAsFixed(2)}',
+              ),
+
+              // _buildRow(
+              //   context,
+              //   title: 'Price After Coupon',
+              //   amount: '₹ ${afterCouponPrice.toStringAsFixed(2)}',
+              // ),
+              //
+              // Divider(thickness: 0.4),
+
+              _buildRow(
+                context,
+                title: 'Service GST (${gstPercent.toStringAsFixed(0)} %)',
+                amount: '+ ₹ ${gstAmount.toStringAsFixed(2)}',
+              ),
+              _buildRow(
+                context,
+                title: 'Platform Fee (${platformFeePercent.toStringAsFixed(0)} %)',
+                amount: '+ ₹ ${platformFeeAmount.toStringAsFixed(2)}',
+              ),
+              _buildRow(
+                context,
+                title: 'Fetch True Assurity Charges (${assurityFeePercent.toStringAsFixed(0)} %)',
+                amount: '+ ₹ ${assurityFeeAmount.toStringAsFixed(2)}',
+              ),
+
+              Divider(thickness: 0.4),
+
+              _buildRow(
+                context,
+                title: 'Grand Total',
+                amount: '₹ ${grandTotal.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
 
-       
+
+
         Row(
           children: [
             Checkbox(value: _isAgree, onChanged: (value) {
@@ -426,14 +563,16 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               }
 
               final fetchTure = 'fetchTure';
+
+              /// Model
               final checkoutData = CheckOutModel(
                   user: userSession.userId.toString(),
                   service: data.id,
                   serviceCustomer: customer_Id.toString(),
                   provider: widget.providerId == fetchTure ? null : widget.providerId.isNotEmpty == true ? widget.providerId : null,
                   coupon: selectedCoupon?.id,
-                  subtotal: 0,
-                  serviceDiscount: (data.discountedPrice ?? 0).toInt(),
+                  subtotal: (data.discountedPrice ?? 0).toInt(),
+                  serviceDiscount: (data.discount ?? 0).toInt(),
                   // serviceDiscount: data.discountedPrice ?? 0,
                   couponDiscount: selectedCoupon?.amount ?? 0,
                   champaignDiscount: 0,
