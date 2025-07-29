@@ -7,7 +7,7 @@ import '../../auth/bloc/user_bloc/user_bloc.dart';
 import '../../auth/bloc/user_bloc/user_event.dart';
 import '../../auth/bloc/user_bloc/user_state.dart';
 import '../../auth/repository/user_service.dart';
-import '../../more/model/user_model.dart';
+import '../../profile/model/user_model.dart';
 import '../widget/invite_franchise_section_widget.dart';
 import '../widget/my_team_section_widget.dart';
 

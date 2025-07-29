@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
@@ -6,20 +7,36 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
+import '../model/address_model.dart';
+import '../repository/address_service.dart';
+
 
 class AddAddressScreen extends StatefulWidget {
-  const AddAddressScreen({super.key});
+  final String userId;
+  const AddAddressScreen({super.key, required this.userId});
 
   @override
   State<AddAddressScreen> createState() => _AddAddressScreenState();
 }
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
-  final TextEditingController _countryController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
+  final TextEditingController landmarkController = TextEditingController();
+  final TextEditingController fullAddressController = TextEditingController();
+  final TextEditingController pinCodeController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+
   final int tagCount = 3;
   int selectedIndex = 0;
 
-  final List<String> labels = ['Home', 'Work', 'Other'];
+  bool isLoading = false;
+
+  final Map<String, String> displayLabels = {
+    'homeAddress': 'Home',
+    'workAddress': 'Work',
+    'otherAddress': 'Other',
+  };
+  final List<String> labels = ['homeAddress', 'workAddress', 'otherAddress'];
   final List<IconData> icons = [Icons.home, Icons.work, Icons.location_pin];
 
   final ValueNotifier<String> selectedState = ValueNotifier('');
@@ -30,12 +47,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
     'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior'],
     'Gujarat': ['Ahmedabad', 'Surat', 'Rajkot'],
+    'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Varanasi'],
   };
 
   @override
   void initState() {
     super.initState();
-    _countryController.text = 'India';
+    countryController.text = 'India';
 
     selectedState.addListener(() {
       cityList.value = stateCityMap[selectedState.value] ?? [];
@@ -45,8 +63,54 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
   @override
   void dispose() {
-    _countryController.dispose();
+    houseNumberController.dispose();
+    landmarkController.dispose();
+    fullAddressController.dispose();
+    pinCodeController.dispose();
+    countryController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+
+    final model = AddressModel(
+      addressType: labels[selectedIndex],
+      address: Address(
+        houseNumber: houseNumberController.text.trim(),
+        landmark: landmarkController.text.trim(),
+        state: selectedState.value,
+        city: selectedCity.value,
+        pinCode: pinCodeController.text.trim(),
+        country: countryController.text.trim(),
+        fullAddress: fullAddressController.text.trim(),
+      ),
+    );
+
+    // Validation
+    if (model.address.houseNumber.isEmpty ||
+        model.address.landmark.isEmpty ||
+        model.address.fullAddress.isEmpty ||
+        model.address.state.isEmpty ||
+        model.address.city.isEmpty ||
+        model.address.pinCode.isEmpty) {
+      setState(() => isLoading = false);
+
+      showCustomSnackBar(context, 'Please fill all required fields');
+      return;
+    }
+
+    final success = await AddressService.updateUserAddress(widget.userId, model);
+
+    setState(() => isLoading = false);
+
+    if (success) {
+      showCustomSnackBar(context, 'Address updated successfully!');
+      Navigator.pop(context, true);
+    } else {
+      showCustomSnackBar(context, 'Failed to update address.');
+    }
   }
 
   @override
@@ -66,6 +130,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     child: CustomLabelFormField(
                       context,
                       'House/Flat/Floor Number',
+                      controller: houseNumberController,
                       hint: 'Enter here...',
                       keyboardType: TextInputType.text,
                       isRequired: true,
@@ -76,6 +141,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     child: CustomLabelFormField(
                       context,
                       'Landmark',
+                      controller: landmarkController,
                       hint: 'Enter here...',
                       keyboardType: TextInputType.text,
                       isRequired: true,
@@ -87,6 +153,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
               CustomLabelFormField(
                 context,
                 'Complete Address',
+                controller: fullAddressController,
                 hint: 'Enter here...',
                 keyboardType: TextInputType.text,
                 isRequired: true,
@@ -125,75 +192,79 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     child: CustomLabelFormField(
                       context,
                       'Pin Code',
+                      controller: pinCodeController,
                       hint: 'Enter here...',
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       isRequired: true,
                     ),
                   ),
                   10.width,
-
                   Expanded(
                     child: CustomLabelFormField(
                       context,
                       "Country",
+                      controller: countryController,
                       isRequired: true,
                       hint: 'India',
                       enabled: false,
-                      controller: _countryController,
                       keyboardType: TextInputType.text,
                     ),
                   ),
                 ],
               ),
               25.height,
-
               Text('Save As', style: textStyle16(context)),
               10.height,
               Row(
                 children: List.generate(
-                  tagCount,
-                      (index) => CustomContainer(
-                    border: true,
-                    backgroundColor: CustomColor.whiteColor,
-                    borderColor: selectedIndex == index
-                        ? CustomColor.appColor
-                        : Colors.grey.shade400,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    margin: const EdgeInsets.only(right: 10),
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          icons[index],
-                          color: selectedIndex == index
-                              ? CustomColor.appColor
-                              : Colors.grey,
-                          size: 18,
-                        ),
-                        6.width,
-                        Text(
-                          labels[index],
-                          style: textStyle14(context),
-                        ),
-                      ],
-                    ),
-                  ),
+                  labels.length,
+                      (index) {
+                    final labelKey = labels[index];
+
+                    // Filter only Home, Work, Other
+                    if (!displayLabels.containsKey(labelKey)) return const SizedBox.shrink();
+
+                    return CustomContainer(
+                      border: true,
+                      backgroundColor: CustomColor.whiteColor,
+                      borderColor: selectedIndex == index
+                          ? CustomColor.appColor
+                          : Colors.grey.shade400,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      margin: const EdgeInsets.only(right: 10),
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            icons[index],
+                            color: selectedIndex == index
+                                ? CustomColor.appColor
+                                : Colors.grey,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            displayLabels[labelKey]!,
+                            style: textStyle14(context),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-              50.height,
 
+              50.height,
               Row(
                 children: [
                   Expanded(
                     child: TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text("CANCEL",
-                          style: TextStyle(color: Colors.red)),
+                      child: const Text("CANCEL", style: TextStyle(color: Colors.red)),
                     ),
                   ),
                   10.width,
@@ -202,9 +273,15 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       border: true,
                       borderColor: CustomColor.appColor,
                       backgroundColor: CustomColor.whiteColor,
-                      onTap: () {},
+                      onTap: isLoading ? null : _handleSave,
                       child: Center(
-                        child: Text("SAVE", style: textStyle16(context)),
+                        child: isLoading
+                            ?  SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(color: CustomColor.appColor,),
+                        )
+                            : Text("SAVE", style: textStyle16(context)),
                       ),
                     ),
                   ),

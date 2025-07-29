@@ -8,7 +8,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../../auth/repository/user_service.dart';
-import '../../more/model/user_model.dart';
+import '../model/user_model.dart';
 import '../../my_lead/widget/leads_details_widget.dart';
 import '../repository/user_additional_details_service.dart';
 
@@ -48,7 +48,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
       final user = await UserService().fetchUserById(widget.user);
       _user = user;
       populateFields(user!);
-      if (mounted) setState(() {}); // ✅ rebuild with fresh data
+      if (mounted) setState(() {});
     } catch (e) {
       debugPrint("Error fetching user: $e");
     }
@@ -201,6 +201,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                     controller: dobController,
                     hint: 'Select Date of Birth',
                     keyboardType: TextInputType.none,
+                    isRequired: true,
                   ),
                 ),
               ),
@@ -213,6 +214,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 hint: 'Enter here...',
                 controller: educationController,
                 keyboardType: TextInputType.text,
+                isRequired: true,
               ),
               15.height,
 
@@ -222,6 +224,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 hint: 'Enter here...',
                 controller: professionController,
                 keyboardType: TextInputType.text,
+                isRequired: true,
               ),
               15.height,
 
@@ -231,6 +234,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 hint: 'Enter here...',
                 controller: emergencyContactController,
                 keyboardType: TextInputType.number,
+                isRequired: true,
               ),
               50.height,
 
@@ -261,8 +265,77 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                               : Text("SAVE", style: textStyle16(context)),
                         ),
 
+                        // onTap: () async {
+                        //   if (_formKey.currentState!.validate()) {
+                        //     setState(() => isSaving = true); // Start loading
+                        //
+                        //     final Map<String, dynamic> data = {
+                        //       "gender": gender?.toLowerCase(),
+                        //       "maritalStatus": maritalStatus?.toLowerCase(),
+                        //       "bloodGroup": selectedBloodGroups.value.toLowerCase(),
+                        //       "dateOfBirth": dobController.text.trim(),
+                        //       "education": educationController.text.trim(),
+                        //       "profession": professionController.text.trim(),
+                        //       "emergencyContact": emergencyContactController.text.trim(),
+                        //     };
+                        //
+                        //     try {
+                        //       await UserAdditionalDetailsService().updateAdditionalDetails(
+                        //         userId: widget.user,
+                        //         data: data,
+                        //       );
+                        //
+                        //       showCustomSnackBar(context, 'Details updated successfully');
+                        //
+                        //       Navigator.pop(context);
+                        //     } catch (e) {
+                        //       showCustomSnackBar(context, 'Error: $e');
+                        //
+                        //     } finally {
+                        //       if (mounted) setState(() => isSaving = false); // Stop loading
+                        //     }
+                        //   }
+                        // }
+
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
+                            // Extra manual validations
+                            if (gender == null || gender!.isEmpty) {
+                              showCustomSnackBar(context, 'Please select gender');
+                              return;
+                            }
+
+                            if (maritalStatus == null || maritalStatus!.isEmpty) {
+                              showCustomSnackBar(context, 'Please select marital status');
+                              return;
+                            }
+
+                            if (selectedBloodGroups.value.isEmpty) {
+                              showCustomSnackBar(context, 'Please select blood group');
+                              return;
+                            }
+
+                            if (dobController.text.isEmpty) {
+                              showCustomSnackBar(context, 'Please enter date of birth');
+                              return;
+                            }
+
+                            if (educationController.text.trim().isEmpty) {
+                              showCustomSnackBar(context, 'Please enter education details');
+                              return;
+                            }
+
+                            if (professionController.text.trim().isEmpty) {
+                              showCustomSnackBar(context, 'Please enter profession');
+                              return;
+                            }
+
+                            if (emergencyContactController.text.trim().length != 10 ||
+                                !RegExp(r'^\d+$').hasMatch(emergencyContactController.text.trim())) {
+                              showCustomSnackBar(context, 'Please enter valid 10-digit emergency contact number');
+                              return;
+                            }
+
                             setState(() => isSaving = true); // Start loading
 
                             final Map<String, dynamic> data = {
@@ -282,16 +355,15 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                               );
 
                               showCustomSnackBar(context, 'Details updated successfully');
-
                               Navigator.pop(context);
                             } catch (e) {
                               showCustomSnackBar(context, 'Error: $e');
-
                             } finally {
                               if (mounted) setState(() => isSaving = false); // Stop loading
                             }
                           }
                         }
+
 
                     ),
                   ),

@@ -11,7 +11,7 @@ import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../../helper/Contact_helper.dart';
-import '../../more/model/user_model.dart';
+import '../../profile/model/user_model.dart';
 import '../../my_admin/model/referral_user_model.dart';
 import '../../my_admin/repository/referral_service.dart';
 import '../model/non_gp_model.dart';

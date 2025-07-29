@@ -1,4 +1,4 @@
-import '../../more/model/user_model.dart';
+import '../../profile/model/user_model.dart';
 
 class WalletModel {
   final String id;

@@ -1,13 +1,14 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../more/model/user_model.dart';
+import '../model/user_model.dart';
+import '../repository/info_service.dart';
 
 class UpdateInfoScreen extends StatefulWidget {
   final UserModel user;
@@ -21,6 +22,8 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+
+  bool isLoading = false; // 🔄 Loader control
 
   @override
   void initState() {
@@ -38,7 +41,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     super.dispose();
   }
 
-  void _onSave() {
+  void _onSave() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
 
@@ -49,9 +52,26 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       return;
     }
 
-    // यहाँ API या Bloc इत्यादि से डेटा भेज सकते हैं
-    print('Saving Name: $name');
-    print('Saving Email: $email');
+    setState(() {
+      isLoading = true;
+    });
+
+    final success = await InfoService().updateUserInfo(
+      userId: widget.user.id,
+      fullName: name,
+      email: email,
+    );
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (success) {
+      showCustomSnackBar(context, 'User info saved');
+      Navigator.pop(context, true);
+    } else {
+      showCustomSnackBar(context, 'User info note saved');
+    }
   }
 
   @override
@@ -103,9 +123,14 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                     border: true,
                     borderColor: CustomColor.appColor,
                     backgroundColor: CustomColor.whiteColor,
-                    onTap: _onSave,
+                    onTap: isLoading ? null : _onSave,
                     child: Center(
-                      child: Text("SAVE", style: textStyle16(context)),
+                      child: isLoading
+                          ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(color: CustomColor.appColor))
+                          : Text("SAVE", style: textStyle16(context)),
                     ),
                   ),
                 ),

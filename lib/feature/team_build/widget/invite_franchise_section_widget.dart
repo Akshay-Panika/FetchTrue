@@ -9,7 +9,7 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../more/model/user_model.dart';
+import '../../profile/model/user_model.dart';
 
 class InviteFranchiseSectionWidget extends StatefulWidget {
   final UserModel? userData;
