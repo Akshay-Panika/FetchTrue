@@ -189,155 +189,116 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
 
 /// Payment status
 Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
+
+  String getPaymentStatus(LeadsModel lead) {
+    final paid = lead.paidAmount;
+    final remaining = lead.remainingAmount;
+
+    if ((paid == null || paid == 0) && (remaining == null || remaining == 0)) {
+      return 'Unpaid';
+    } else if (paid != null && paid > 0 && remaining != null && remaining > 0) {
+      return 'Pending';
+    } else if (paid != null && paid > 0 && (remaining == null || remaining == 0)) {
+      return 'Paid';
+    } else {
+      return 'Unpaid';
+    }
+  }
+
+  Color getPaymentStatusColor(String status) {
+    switch (status) {
+      case 'Paid':
+        return Colors.green;
+      case 'Pending':
+        return Colors.orangeAccent;
+      case 'Unpaid':
+        return Colors.redAccent;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  final status = getPaymentStatus(lead);
+  final statusColor = getPaymentStatusColor(status);
   return CustomContainer(
     border: true,
     backgroundColor: Colors.white,
     margin: EdgeInsets.zero,
-    child: Row(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text('Payment Status', style: textStyle12(context),),
-                      10.width,
+        Row(
+          children: [
+            Text('Payment Status', style: textStyle12(context),),
+            10.width,
+            Text('( $status )', style: textStyle12(context, color: statusColor),),
+          ],
+        ),
+        Text(
+          'Status: ${lead.paymentMethod.map((method) {
+            switch (method) {
+              case 'pac':
+                return 'Pay After Consultation';
+              case 'cashfree':
+                return 'Cashfree';
+              case 'wallet':
+                return 'Wallet';
+              default:
+                return method;
+            }
+          }).join(', ')}',
+          style: textStyle12(context, fontWeight: FontWeight.w400),
+        ),
+        if (!lead.paymentMethod.contains('pac'))
+        Text('Transaction Id : N/A',  style: textStyle12(context, fontWeight: FontWeight.w400),),
+        Divider(thickness: 0.4,),
 
-                      Text('( ${lead.paymentStatus} )', style: textStyle12(context, color: Colors.orangeAccent),),
-                    ],
-                  ),
-                  InkWell(onTap: () => null, child: Icon(Icons.share, color: CustomColor.appColor,))
-                ],
-              ),
+        Column(
+          spacing: 10,
+          children: [
+            if (lead.walletAmount !=0)
+            _buildRow(
+              context,
+              title: 'Wallet Amount',
+              amount: '₹ ${lead.walletAmount}',
+            ),
 
-              Text(
-                'Status: ${lead.paymentMethod.map((method) {
-                  switch (method) {
-                    case 'pac':
-                      return 'Pay After Consultation';
-                    case 'cashfree':
-                      return 'Cashfree';
-                    case 'wallet':
-                      return 'Wallet';
-                    default:
-                      return method;
-                  }
-                }).join(', ')}',
-                style: textStyle12(
-                  context,
-                  color: CustomColor.descriptionColor,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              if (!lead.paymentMethod.contains('pac'))
-              Text('Transaction Id : N/A',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-              Row(
-                children: [
-                  Text('Price :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                  10.width,
-                  CustomAmountText(amount: '${lead.service.price}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
-                  10.width,
-                  CustomAmountText(amount: '${lead.service.discountedPrice}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
-                ],
-              ),
-              Divider(thickness: 0.4,),
+            if (lead.paidAmount !=0)
+            _buildRow(
+              context,
+              title: 'Paid Amount',
+              amount: '₹ ${lead.paidAmount}',
+            ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text('Wallet: ${lead.walletAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                      10.width,
-                      if (lead.remainingAmount !=0)
-                      Text('Remaining: ${lead.remainingAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                      10.width,
-                      Text('Paid: ${lead.paidAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text('Pay Now',style: textStyle14(context, color: CustomColor.greenColor),)
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+            if (lead.remainingAmount !=0)
+            _buildRow(
+              context,
+              title: 'Remaining Amount',
+              amount: '₹ ${lead.remainingAmount}',
+            ),
+          ],
+        ),
+        10.height,
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+
+            Text('Share Link',style: textStyle14(context, color: CustomColor.appColor),),
+            Text('Pay Now',style: textStyle14(context, color: CustomColor.greenColor),),
+          ],
         ),
       ],
     ),
   );
 }
 
-// Widget _buildBookingSummary(BuildContext context, LeadsModel lead){
-//   return CustomContainer(
-//     border: true,
-//     backgroundColor: CustomColor.whiteColor,
-//     margin: EdgeInsets.zero,
-//     child: Column(
-//       spacing: 10,
-//       children: [
-//
-//         _buildRow(
-//           context,
-//           title: 'Listing Price',
-//           amount: '₹ ${lead.service.price}',
-//         ),
-//
-//         _buildRow(
-//           context,
-//           title: 'Service Discount (${lead.service.discount}%)',
-//           amount: '- ₹ 00',
-//         ),
-//
-//         _buildRow(
-//           context,
-//           title: 'Price After Discount',
-//           amount: '₹ ${lead.service.discountedPrice}',
-//         ),
-//
-//         _buildRow(
-//           context,
-//           title:
-//           'Coupon Discount (${lead.couponDiscount})',
-//           amount: '- ₹ 00',
-//         ),
-//
-//         _buildRow(
-//           context,
-//           title: 'Service GST (${lead.gst} %)',
-//           amount: '+ ₹ 00',
-//         ),
-//         _buildRow(
-//           context,
-//           title: 'Platform Fee (${lead.platformFee}%)',
-//           amount: '+ ₹ 00',
-//         ),
-//         _buildRow(
-//           context,
-//           title: 'Fetch True Assurity Charges (${lead.assurityFee}%)',
-//           amount: '+ ₹ ',
-//         ),
-//
-//         Divider(thickness: 0.4),
-//
-//         _buildRow(
-//           context,
-//           title: 'Grand Total',
-//           amount: '₹ ${lead.totalAmount}',
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
 Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
+  String formatPrice(num? value) {
+    if (value == null) return '0'; // या 'N/A' या कुछ भी fallback
+    return value.round().toString();
+  }
+
 
   return CustomContainer(
     border: true,
@@ -349,43 +310,57 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
         _buildRow(
           context,
           title: 'Listing Price',
-          amount: '₹ ${lead.listingPrice}',
+          // amount: '₹ ${lead.listingPrice}',
+          amount: '₹ ${formatPrice(lead.listingPrice)}',
         ),
         _buildRow(
           context,
           title: 'Service Discount (${lead.service.discount}%)',
-          amount: '- ₹ ${lead.serviceDiscountPrice}',
+          // amount: '- ₹ ${lead.serviceDiscountPrice}',
+          amount: '- ₹ ${formatPrice(lead.serviceDiscountPrice)}',
+
         ),
         _buildRow(
           context,
           title: 'Price After Discount',
-          amount: '₹ ${lead.service.discountedPrice}',
+          // amount: '₹ ${lead.service.discountedPrice}',
+          amount: '₹ ${formatPrice(lead.service.discountedPrice)}',
+
         ),
         _buildRow(
           context,
           title: 'Coupon Discount (₹ ${lead.couponDiscount})',
-          amount: '- ₹ ${lead.couponDiscountPrice}',
+          // amount: '- ₹ ${lead.couponDiscountPrice}',
+          amount: '- ₹ ${formatPrice(lead.couponDiscountPrice)}',
+
         ),
         _buildRow(
           context,
           title: 'Service GST (${lead.gst}%)',
-          amount: '+ ₹ ${lead.serviceGSTPrice}',
+          // amount: '+ ₹ ${lead.serviceGSTPrice}',
+          amount: '+ ₹ ${formatPrice(lead.serviceGSTPrice)}',
+
         ),
         _buildRow(
           context,
           title: 'Platform Fee (${lead.platformFee}%)',
-          amount: '+ ₹ ${lead.platformFeePrice}',
+          // amount: '+ ₹ ${lead.platformFeePrice}',
+          amount: '+ ₹ ${formatPrice(lead.platformFeePrice)}',
+
         ),
         _buildRow(
           context,
           title: 'Fetch True Assurity Charges (${lead.assurityFee}%)',
-          amount: '+ ₹ ${lead.assurityChargesPrice}',
+          // amount: '+ ₹ ${lead.assurityChargesPrice}',
+          amount: '+ ₹ ${formatPrice(lead.assurityChargesPrice)}',
+
         ),
         Divider(thickness: 0.4),
         _buildRow(
           context,
           title: 'Grand Total',
-          amount: '₹ ${lead.totalAmount}',
+          // amount: '₹ ${lead.totalAmount}',
+          amount: '₹ ${formatPrice(lead.totalAmount)}',
         ),
       ],
     ),

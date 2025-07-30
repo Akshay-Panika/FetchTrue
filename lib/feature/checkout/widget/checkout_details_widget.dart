@@ -92,6 +92,17 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
     final double grandTotal = afterCouponPrice + gstAmount + platformFeeAmount + assurityFeeAmount;
 
+    // String removeTrailingZero(double value) {
+    //   if (value == value.toInt()) {
+    //     return value.toInt().toString();
+    //   }
+    //   return value.toStringAsFixed(2);
+    // }
+
+    String formatPrice(num value) {
+      return value.round().toString();
+    }
+
 
     return Column(
       children: [
@@ -394,47 +405,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
         /// Summery
-        // CustomContainer(
-        //   border: false,
-        //   backgroundColor: CustomColor.whiteColor,
-        //   margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-        //   child: Column(
-        //     spacing: 10,
-        //     children: [
-        //       Row(
-        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Text('Listing Price', style:textStyle12(context),),
-        //           Row(
-        //             mainAxisAlignment: MainAxisAlignment.end,
-        //             children: [
-        //               // CustomAmountText(amount: '${data.price}', isLineThrough: true),
-        //               10.width,
-        //               CustomAmountText(amount:  '${data.price}'),
-        //             ],
-        //           ),
-        //         ],
-        //       ),
-        //
-        //       _buildRow(
-        //         context,
-        //         title: 'Service Discount ( ${data.discount} % )',
-        //         amount: '- ₹ ${serviceDiscountAmount.toStringAsFixed(2)}',
-        //       ),
-        //
-        //       // _buildRow(context, title: 'Service Discount ( ${data.discount} % )', amount: '- ₹ ${data.price-data.discount}'),
-        //       _buildRow(context, title: 'Discounted Price ', amount: '₹ ${data.discountedPrice}'),
-        //
-        //       _buildRow(context, title: 'Coupon Discount ( ${selectedCoupon != null ? '- ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '0 '})', amount: '₹ ${finalAmount.toStringAsFixed(2)}'),
-        //       // _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
-        //       _buildRow(context, title: 'Service GST ( ${data.gst} % )', amount: '+ ₹ 00'),
-        //       _buildRow(context, title: 'Platform Fee (${_commission?.platformFee} % )', amount: '+ ₹ 00',),
-        //       _buildRow(context, title: 'Fetch True Assurity Charges ( ${_commission?.assurityFee} % )', amount: '+ ₹ 00',),
-        //       Divider(thickness: 0.4,),
-        //       _buildRow(context, title: 'Grand Total', amount: '₹ ${data.discountedPrice}',),
-        //     ],
-        //   ),
-        // ),
 
         CustomContainer(
           border: false,
@@ -447,42 +417,42 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               _buildRow(
                 context,
                 title: 'Listing Price',
-                amount: '₹ ${originalPrice.toStringAsFixed(2)}',
+                amount: '₹ ${formatPrice(originalPrice)}',
               ),
 
               _buildRow(
                 context,
                 title: 'Service Discount (${serviceDiscountPercent.toStringAsFixed(0)} %)',
-                amount: '- ₹ ${serviceDiscountAmount.toStringAsFixed(2)}',
+                amount: '- ₹ ${formatPrice(serviceDiscountAmount)}',
               ),
 
               _buildRow(
                 context,
                 title: 'Price After Discount',
-                amount: '₹ ${afterServiceDiscountPrice.toStringAsFixed(2)}',
+                amount: '₹ ${formatPrice(afterServiceDiscountPrice)}',
               ),
 
               _buildRow(
                 context,
                 title:
                 'Coupon Discount (${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'})',
-                amount: '- ₹ ${couponDiscountAmount.toStringAsFixed(2)}',
+                amount: '- ₹ ${formatPrice(couponDiscountAmount)}',
               ),
 
               _buildRow(
                 context,
                 title: 'Service GST (${gstPercent.toStringAsFixed(0)} %)',
-                amount: '+ ₹ ${gstAmount.toStringAsFixed(2)}',
+                amount: '+ ₹ ${formatPrice(gstAmount)}',
               ),
               _buildRow(
                 context,
                 title: 'Platform Fee (${platformFeePercent.toStringAsFixed(0)} %)',
-                amount: '+ ₹ ${platformFeeAmount.toStringAsFixed(2)}',
+                amount: '+ ₹ ${formatPrice(platformFeeAmount)}',
               ),
               _buildRow(
                 context,
                 title: 'Fetch True Assurity Charges (${assurityFeePercent.toStringAsFixed(0)} %)',
-                amount: '+ ₹ ${assurityFeeAmount.toStringAsFixed(2)}',
+                amount: '+ ₹ ${formatPrice(assurityFeeAmount)}',
               ),
 
               Divider(thickness: 0.4),
@@ -490,7 +460,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               _buildRow(
                 context,
                 title: 'Grand Total',
-                amount: '₹ ${grandTotal.toStringAsFixed(2)}',
+                amount: '₹ ${formatPrice(grandTotal)}',
               ),
             ],
           ),
