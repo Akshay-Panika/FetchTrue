@@ -172,11 +172,42 @@ class KYC {
   }
 }
 
+// class SubscribedService {
+//   final String id;
+//   final String serviceName;
+//   final int price;
+//   final int? discountedPrice;
+//   final bool isDeleted;
+//   final ServiceCategory? category;
+//
+//   SubscribedService({
+//     required this.id,
+//     required this.serviceName,
+//     required this.price,
+//     this.discountedPrice,
+//     required this.isDeleted,
+//     this.category,
+//   });
+//
+//   factory SubscribedService.fromJson(Map<String, dynamic> json) {
+//     return SubscribedService(
+//       id: json['_id'],
+//       serviceName: json['serviceName'] ?? '',
+//       price: json['price'] ?? 0,
+//       discountedPrice: json['discountedPrice'],
+//       isDeleted: json['isDeleted'] ?? false,
+//       category: json['category'] != null
+//           ? ServiceCategory.fromJson(json['category'])
+//           : null,
+//     );
+//   }
+// }
+
 class SubscribedService {
   final String id;
   final String serviceName;
-  final int price;
-  final int? discountedPrice;
+  final double price;
+  final double discountedPrice;
   final bool isDeleted;
   final ServiceCategory? category;
 
@@ -184,17 +215,17 @@ class SubscribedService {
     required this.id,
     required this.serviceName,
     required this.price,
-    this.discountedPrice,
+    required this.discountedPrice,
     required this.isDeleted,
     this.category,
   });
 
   factory SubscribedService.fromJson(Map<String, dynamic> json) {
     return SubscribedService(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       serviceName: json['serviceName'] ?? '',
-      price: json['price'] ?? 0,
-      discountedPrice: json['discountedPrice'],
+      price: (json['price'] as num).toDouble(),
+      discountedPrice: (json['discountedPrice'] as num?)?.toDouble() ?? 0.0,
       isDeleted: json['isDeleted'] ?? false,
       category: json['category'] != null
           ? ServiceCategory.fromJson(json['category'])
@@ -202,6 +233,7 @@ class SubscribedService {
     );
   }
 }
+
 
 class ServiceCategory {
   final String id;

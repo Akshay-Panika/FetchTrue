@@ -66,23 +66,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
     final userSession = Provider.of<UserSession>(context);
     Dimensions dimensions = Dimensions(context);
 
-    // final double originalPrice = data.price?.toDouble() ?? 0.0;
-    // final double serviceDiscountPercent = data.discount?.toDouble() ?? 0.0;
-    // final double serviceDiscountAmount = originalPrice * serviceDiscountPercent / 100;
-    // final double afterServiceDiscountPrice = originalPrice - serviceDiscountAmount;
-    //
-    // double couponDiscountAmount = 0.0;
-    //
-    // if (selectedCoupon != null) {
-    //   if (selectedCoupon!.discountAmountType == 'Percentage') {
-    //     couponDiscountAmount = afterServiceDiscountPrice * (selectedCoupon!.amount.toDouble()) / 100;
-    //   } else {
-    //     couponDiscountAmount = selectedCoupon!.amount.toDouble();
-    //   }
-    // }
-    //
-    // final double finalAmount = afterServiceDiscountPrice - couponDiscountAmount;
-
     final double originalPrice = data.price?.toDouble() ?? 0.0;
     final double serviceDiscountPercent = data.discount?.toDouble() ?? 0.0;
     final double serviceDiscountAmount = originalPrice * serviceDiscountPercent / 100;
@@ -460,18 +443,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           child: Column(
             spacing: 10,
             children: [
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Text('Listing Price', style: textStyle12(context)),
-              //     Row(
-              //       children: [
-              //         10.width,
-              //         CustomAmountText(amount: '${originalPrice.toStringAsFixed(2)}'),
-              //       ],
-              //     ),
-              //   ],
-              // ),
 
               _buildRow(
                 context,
@@ -497,14 +468,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 'Coupon Discount (${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'})',
                 amount: '- ₹ ${couponDiscountAmount.toStringAsFixed(2)}',
               ),
-
-              // _buildRow(
-              //   context,
-              //   title: 'Price After Coupon',
-              //   amount: '₹ ${afterCouponPrice.toStringAsFixed(2)}',
-              // ),
-              //
-              // Divider(thickness: 0.4),
 
               _buildRow(
                 context,
@@ -532,7 +495,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             ],
           ),
         ),
-
 
 
         Row(
@@ -573,14 +535,13 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   coupon: selectedCoupon?.id,
                   subtotal: (data.discountedPrice ?? 0).toInt(),
                   serviceDiscount: (data.discount ?? 0).toInt(),
-                  // serviceDiscount: data.discountedPrice ?? 0,
                   couponDiscount: selectedCoupon?.amount ?? 0,
                   champaignDiscount: 0,
                   gst: data.gst ??0,
                   platformFee: _commission?.platformFee,
                   assurityfee:_commission?.assurityFee,
-                  totalAmount: data.discountedPrice?.toInt(), // ✅ Fixed
-                  // totalAmount: data.discountedPrice,
+                  // totalAmount: data.discountedPrice?.toInt(),
+                  totalAmount: grandTotal.toInt(),
                   paymentMethod: [],
                   walletAmount: 0,
                   otherAmount: 0,
@@ -590,8 +551,18 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   paymentStatus: '',
                   orderStatus: '',
                   notes: message ?? '',
-                  termsCondition: _isAgree
+                  termsCondition: _isAgree,
+
+                  listingPrice: originalPrice.toInt(),
+                  serviceDiscountPrice: serviceDiscountAmount.toInt(),
+                  priceAfterDiscount: afterServiceDiscountPrice.toInt(),
+                  couponDiscountPrice: couponDiscountAmount.toInt(),
+                  serviceGSTPrice: gstAmount.toInt(),
+                  platformFeePrice: platformFeeAmount.toInt(),
+                  assurityChargesPrice: assurityFeeAmount.toInt(),
               );
+              print("✅ serviceGSTPrice in model: ${checkoutData.serviceGSTPrice}");
+              print("📦 Final Payload: ${checkoutData.toJson()}");
 
               widget.onPaymentDone(checkoutData);
             },

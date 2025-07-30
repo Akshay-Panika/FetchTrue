@@ -1,3 +1,5 @@
+
+
 class CheckOutModel {
   final String? user;
   final String? service;
@@ -36,6 +38,15 @@ class CheckOutModel {
   final String? bookingId;
   final String? otp;
 
+  // ✅ Extra calculated fields
+  final int? listingPrice;
+  final int? serviceDiscountPrice;
+  final int? priceAfterDiscount;
+  final int? couponDiscountPrice;
+  final int? serviceGSTPrice;
+  final int? platformFeePrice;
+  final int? assurityChargesPrice;
+
   CheckOutModel({
     this.user,
     this.service,
@@ -73,6 +84,13 @@ class CheckOutModel {
     this.updatedAt,
     this.bookingId,
     this.otp,
+    this.listingPrice,
+    this.serviceDiscountPrice,
+    this.priceAfterDiscount,
+    this.couponDiscountPrice,
+    this.serviceGSTPrice,
+    this.platformFeePrice,
+    this.assurityChargesPrice,
   });
 
   factory CheckOutModel.fromJson(Map<String, dynamic> json) {
@@ -91,7 +109,7 @@ class CheckOutModel {
       platformFee: json['platformFee'],
       assurityfee: json['assurityfee'],
       totalAmount: json['totalAmount'],
-      paymentMethod: List<String>.from(json['paymentMethod']),
+      paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
       walletAmount: json['walletAmount'],
       otherAmount: json['otherAmount'],
       paidAmount: json['paidAmount'],
@@ -113,6 +131,13 @@ class CheckOutModel {
       updatedAt: json['updatedAt'],
       bookingId: json['bookingId'],
       otp: json['otp'],
+      listingPrice: json['listingPrice'],
+      serviceDiscountPrice: json['serviceDiscountPrice'],
+      priceAfterDiscount: json['priceAfterDiscount'],
+      couponDiscountPrice: json['couponDiscountPrice'],
+      serviceGSTPrice: json['serviceGSTPrice'],
+      platformFeePrice: json['platformFeePrice'],
+      assurityChargesPrice: json['assurityChargesPrice'],
     );
   }
 
@@ -154,10 +179,16 @@ class CheckOutModel {
       'updatedAt': updatedAt,
       'bookingId': bookingId,
       'otp': otp,
+      'listingPrice': listingPrice,
+      'serviceDiscountPrice': serviceDiscountPrice,
+      'priceAfterDiscount': priceAfterDiscount,
+      'couponDiscountPrice': couponDiscountPrice,
+      'serviceGSTPrice': serviceGSTPrice,
+      'platformFeePrice': platformFeePrice,
+      'assurityChargesPrice': assurityChargesPrice,
     };
   }
 
-  /// ✅ `copyWith` Method
   CheckOutModel copyWith({
     String? user,
     String? service,
@@ -195,6 +226,13 @@ class CheckOutModel {
     String? updatedAt,
     String? bookingId,
     String? otp,
+    int? listingPrice,
+    int? serviceDiscountPrice,
+    int? priceAfterDiscount,
+    int? couponDiscountPrice,
+    int? serviceGSTPrice,
+    int? platformFeePrice,
+    int? assurityChargesPrice,
   }) {
     return CheckOutModel(
       user: user ?? this.user,
@@ -233,6 +271,13 @@ class CheckOutModel {
       updatedAt: updatedAt ?? this.updatedAt,
       bookingId: bookingId ?? this.bookingId,
       otp: otp ?? this.otp,
+      listingPrice: listingPrice ?? this.listingPrice,
+      serviceDiscountPrice: serviceDiscountPrice ?? this.serviceDiscountPrice,
+      priceAfterDiscount: priceAfterDiscount ?? this.priceAfterDiscount,
+      couponDiscountPrice: couponDiscountPrice ?? this.couponDiscountPrice,
+      serviceGSTPrice: serviceGSTPrice ?? this.serviceGSTPrice,
+      platformFeePrice: platformFeePrice ?? this.platformFeePrice,
+      assurityChargesPrice: assurityChargesPrice ?? this.assurityChargesPrice,
     );
   }
 }

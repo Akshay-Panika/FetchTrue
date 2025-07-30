@@ -5,7 +5,8 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 
 class CheckoutPaymentDoneWidget extends StatelessWidget {
-  const CheckoutPaymentDoneWidget({super.key});
+  final String bookingId;
+  const CheckoutPaymentDoneWidget({super.key, required this.bookingId});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class CheckoutPaymentDoneWidget extends StatelessWidget {
           SizedBox(height: dimensions.screenHeight*0.05,),
 
           Text('Your place the lead successfully', style: textStyle16(context, color: CustomColor.appColor),),
-          Text('Lead Id : ______', style: textStyle14(context,color: CustomColor.descriptionColor),),
+          Text('Lead Id : ${bookingId}', style: textStyle14(context,color: CustomColor.descriptionColor),),
           SizedBox(height: dimensions.screenHeight*0.05,),
 
           CustomContainer(

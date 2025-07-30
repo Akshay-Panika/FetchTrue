@@ -251,15 +251,12 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
                 children: [
                   Row(
                     children: [
-                      Text('Wallet :',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                      5.width,
-                      CustomAmountText(amount: '${lead.walletAmount},', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
-                      20.width,
-                      Text('Amount : ',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      Text('Wallet: ${lead.walletAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      10.width,
                       if (lead.remainingAmount !=0)
-                      CustomAmountText(amount: '${lead.remainingAmount}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor, isLineThrough: true),
-                      5.width,
-                      CustomAmountText(amount: '${lead.totalAmount}', fontSize: 12, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                      Text('Remaining: ${lead.remainingAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                      10.width,
+                      Text('Paid: ${lead.paidAmount}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
                     ],
                   ),
                   Row(
@@ -278,7 +275,70 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
   );
 }
 
-Widget _buildBookingSummary(BuildContext context, LeadsModel lead){
+// Widget _buildBookingSummary(BuildContext context, LeadsModel lead){
+//   return CustomContainer(
+//     border: true,
+//     backgroundColor: CustomColor.whiteColor,
+//     margin: EdgeInsets.zero,
+//     child: Column(
+//       spacing: 10,
+//       children: [
+//
+//         _buildRow(
+//           context,
+//           title: 'Listing Price',
+//           amount: '₹ ${lead.service.price}',
+//         ),
+//
+//         _buildRow(
+//           context,
+//           title: 'Service Discount (${lead.service.discount}%)',
+//           amount: '- ₹ 00',
+//         ),
+//
+//         _buildRow(
+//           context,
+//           title: 'Price After Discount',
+//           amount: '₹ ${lead.service.discountedPrice}',
+//         ),
+//
+//         _buildRow(
+//           context,
+//           title:
+//           'Coupon Discount (${lead.couponDiscount})',
+//           amount: '- ₹ 00',
+//         ),
+//
+//         _buildRow(
+//           context,
+//           title: 'Service GST (${lead.gst} %)',
+//           amount: '+ ₹ 00',
+//         ),
+//         _buildRow(
+//           context,
+//           title: 'Platform Fee (${lead.platformFee}%)',
+//           amount: '+ ₹ 00',
+//         ),
+//         _buildRow(
+//           context,
+//           title: 'Fetch True Assurity Charges (${lead.assurityFee}%)',
+//           amount: '+ ₹ ',
+//         ),
+//
+//         Divider(thickness: 0.4),
+//
+//         _buildRow(
+//           context,
+//           title: 'Grand Total',
+//           amount: '₹ ${lead.totalAmount}',
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
+Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
+
   return CustomContainer(
     border: true,
     backgroundColor: CustomColor.whiteColor,
@@ -286,33 +346,52 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead){
     child: Column(
       spacing: 10,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Price', style:textStyle12(context),),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CustomAmountText(amount: '${lead.service.price}', isLineThrough: true),
-                10.width,
-                CustomAmountText(amount:  '00'),
-              ],
-            ),
-          ],
+        _buildRow(
+          context,
+          title: 'Listing Price',
+          amount: '₹ ${lead.listingPrice}',
         ),
-
-        _buildRow(context, title: 'Service Discount ( ${lead.serviceDiscount} % )', amount: '- ₹ 00'),
-        _buildRow(context, title: 'Coupon Discount ( ${lead.couponDiscount} % )', amount: '- ₹ 00',),
-        _buildRow(context, title: 'Campaign Discount ( 0 % )', amount: '- ₹ 00',),
-        _buildRow(context, title: 'Service GST ( ${lead.gst} % )', amount: '+ ₹ 00'),
-        _buildRow(context, title: 'Platform Fee ( ₹ ${lead.platformFee} )', amount: '+ ₹ 00',),
-        _buildRow(context, title: 'Fetch True Assurity Charges ( ₹ ${lead.assurityFee} )', amount: '+ ₹ 00',),
-        Divider(thickness: 0.4,),
-        _buildRow(context, title: 'Grand Total', amount: '₹ ${lead.totalAmount}',),
+        _buildRow(
+          context,
+          title: 'Service Discount (${lead.service.discount}%)',
+          amount: '- ₹ ${lead.serviceDiscountPrice}',
+        ),
+        _buildRow(
+          context,
+          title: 'Price After Discount',
+          amount: '₹ ${lead.service.discountedPrice}',
+        ),
+        _buildRow(
+          context,
+          title: 'Coupon Discount (₹ ${lead.couponDiscount})',
+          amount: '- ₹ ${lead.couponDiscountPrice}',
+        ),
+        _buildRow(
+          context,
+          title: 'Service GST (${lead.gst}%)',
+          amount: '+ ₹ ${lead.serviceGSTPrice}',
+        ),
+        _buildRow(
+          context,
+          title: 'Platform Fee (${lead.platformFee}%)',
+          amount: '+ ₹ ${lead.platformFeePrice}',
+        ),
+        _buildRow(
+          context,
+          title: 'Fetch True Assurity Charges (${lead.assurityFee}%)',
+          amount: '+ ₹ ${lead.assurityChargesPrice}',
+        ),
+        Divider(thickness: 0.4),
+        _buildRow(
+          context,
+          title: 'Grand Total',
+          amount: '₹ ${lead.totalAmount}',
+        ),
       ],
     ),
   );
 }
+
 
 Widget _buildRow(BuildContext context, {required String title, required String amount,}){
   return Row(

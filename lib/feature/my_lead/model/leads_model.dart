@@ -31,6 +31,14 @@ class LeadsModel {
   final String createdAt;
   final String updatedAt;
 
+  final int? listingPrice;
+  final int? serviceDiscountPrice;
+  final int? priceAfterDiscount;
+  final int? couponDiscountPrice;
+  final int? serviceGSTPrice;
+  final int? platformFeePrice;
+  final int? assurityChargesPrice;
+
   // Nested objects
   final ServiceModel service;
   final ServiceCustomerModel serviceCustomer;
@@ -77,6 +85,14 @@ class LeadsModel {
     this.serviceMan,
     this.coupon,
     required this.paymentMethod,
+
+    this.listingPrice,
+    this.serviceDiscountPrice,
+    this.priceAfterDiscount,
+    this.couponDiscountPrice,
+    this.serviceGSTPrice,
+    this.platformFeePrice,
+    this.assurityChargesPrice,
   });
 
   factory LeadsModel.fromJson(Map<String, dynamic> json) {
@@ -121,26 +137,18 @@ class LeadsModel {
       // paymentMethod: (json['paymentMethod'] != null && json['paymentMethod'] is List)
       //     ? List<String>.from(json['paymentMethod'].map((e) => e.toString()))
       //     : [],
+
+      listingPrice: json['listingPrice'],
+      serviceDiscountPrice: json['serviceDiscountPrice'],
+      priceAfterDiscount: json['priceAfterDiscount'],
+      couponDiscountPrice: json['couponDiscountPrice'],
+      serviceGSTPrice: json['serviceGSTPrice'],
+      platformFeePrice: json['platformFeePrice'],
+      assurityChargesPrice: json['assurityChargesPrice'],
     );
   }
 }
 
-// class ServiceModel {
-//   final String id;
-//   final String serviceName;
-//
-//   ServiceModel({
-//     required this.id,
-//     required this.serviceName,
-//   });
-//
-//   factory ServiceModel.fromJson(Map<String, dynamic> json) {
-//     return ServiceModel(
-//       id: json['_id'] ?? '',
-//       serviceName: json['serviceName'] ?? '',
-//     );
-//   }
-// }
 class ServiceModel {
   final String id;
   final String serviceName;

@@ -53,6 +53,7 @@ import '../screen/cashfree_payment_screen.dart';
 
 Future<bool> cashFreeService(
     BuildContext context, {
+      // required int orderId,
       required int amount,
       required String customerId,
       required String name,
@@ -62,6 +63,7 @@ Future<bool> cashFreeService(
     }) async {
   final url = Uri.parse('https://biz-booster.vercel.app/api/payment/generate-payment-link');
   final body = {
+    // "orderId": orderId,
     "amount": amount,
     "customerId": customerId,
     "customerName": name,
@@ -96,5 +98,5 @@ Future<bool> cashFreeService(
     showCustomSnackBar(context, 'Failed to generate payment link.');
   }
 
-  return false; // Default: fail
+  return false;
 }

@@ -22,6 +22,8 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   int _paymentStep = 0;
   CheckOutModel? checkoutData;
+  String? _bookingId;
+
 
   final steps = [
     {'icon': CupertinoIcons.doc_fill, 'label': 'Details'},
@@ -77,14 +79,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                     else if (_paymentStep == 1)
                       CheckPaymentWidget(
-                        services: widget.services,
                         checkoutData: checkoutData!,
-                        onPaymentDone: () {
-                          setState(() => _paymentStep = 2);
+                        onPaymentDone: (String bookingIdFromPayment) {
+                          setState(() {
+                            _bookingId = bookingIdFromPayment;
+                            _paymentStep = 2;
+                          });
                         },
+
                       )
                     else
-                      const CheckoutPaymentDoneWidget(),
+                       CheckoutPaymentDoneWidget(bookingId: _bookingId ??'',),
                   ],
                 ),
               ),

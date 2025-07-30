@@ -85,6 +85,7 @@ class ServiceWidget extends StatelessWidget {
                                 children: [
                                   CustomAmountText(amount: '${data.price}', color: CustomColor.descriptionColor, isLineThrough: true),
                                   10.width,
+                                  // Text("₹${service.discountedPrice.toStringAsFixed(2)}")
                                   CustomAmountText(amount: '${data.discountedPrice}', color: CustomColor.descriptionColor,),
                                 ],
                               ),

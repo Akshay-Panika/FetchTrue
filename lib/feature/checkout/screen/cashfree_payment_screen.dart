@@ -31,7 +31,7 @@ class _CashfreePaymentScreenState extends State<CashfreePaymentScreen> {
             final currentUrl = uri.toString();
 
             if (currentUrl.contains("response")) {
-              showCustomSnackBar(context, '✅ Payment Success');
+              print('✅ Payment Success');
 
               widget.onPaymentSuccess();
 

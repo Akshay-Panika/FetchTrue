@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -9,18 +10,19 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../service/model/service_model.dart';
 import '../model/checkout_model.dart';
 import '../repository/cashfree_service.dart';
 import '../repository/checkout_service.dart';
 
+
 class CheckPaymentWidget extends StatefulWidget {
-  final List<ServiceModel> services;
-  final VoidCallback onPaymentDone;
+  // final VoidCallback onPaymentDone;
+  final void Function(String bookingId) onPaymentDone;
+
   final CheckOutModel checkoutData;
+
   const CheckPaymentWidget({
     super.key,
-    required this.services,
     required this.onPaymentDone,
     required this.checkoutData,
   });
@@ -36,57 +38,41 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   PaymentMethod? selectedPayment;
   CashFreeOption selectedCashFreeOption = CashFreeOption.full;
 
-  late int serviceAmount;
-  late int partialAmount;
   bool _isLoading = false;
-
-
-  @override
-  void initState() {
-    super.initState();
-    /// Safe sum of all discounted prices
-    serviceAmount = widget.services.fold(0, (total, service) {
-      final price = int.tryParse(widget.services.first.discountedPrice.toString() ?? '0') ?? 0;
-      return total + price;
-    });
-
-    partialAmount = (serviceAmount / 2).round();
-  }
-
 
   @override
   Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
+    final dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
 
+    final int serviceAmount = widget.checkoutData.totalAmount ?? 0;
+    final int partialAmount = (serviceAmount / 2).round();
+
     return Padding(
-      padding:  EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15.0),
       child: Column(
         children: [
-          /// Payment Selection Title
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(text: TextSpan(
-                children: [
-                 TextSpan(text: 'Service amount: ', style: textStyle14(context)),
-                 TextSpan(text: '₹ ${widget.services.first.discountedPrice}',style: textStyle14(context)),
-                ]
-              )),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(text: 'Service amount: ', style: textStyle14(context)),
+                    TextSpan(text: '₹ $serviceAmount', style: textStyle14(context)),
+                  ],
+                ),
+              ),
               10.height,
-
-              /// Wallet
               WalletCardWidget(),
               30.height,
-
-              /// Pay via Online
               Text(
                 'Choose Payment Method',
                 style: textStyle14(context, color: CustomColor.descriptionColor),
               ),
               10.height,
 
-              /// CashFree Pay Option
+              /// CashFree Pay
               CustomContainer(
                 backgroundColor: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
@@ -97,9 +83,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       groupValue: selectedPayment,
                       activeColor: CustomColor.appColor,
                       onChanged: (value) {
-                        setState(() {
-                          selectedPayment = value;
-                        });
+                        setState(() => selectedPayment = value);
                       },
                     ),
                     Text('CashFree Pay', style: textStyle14(context)),
@@ -108,7 +92,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
               ),
               15.height,
 
-              /// Show full/partial options if CashFree is selected
               if (selectedPayment == PaymentMethod.cashFree)
                 CustomContainer(
                   backgroundColor: CustomColor.whiteColor,
@@ -116,7 +99,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      /// Full Payment
                       Row(
                         children: [
                           Radio<CashFreeOption>(
@@ -124,9 +106,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             groupValue: selectedCashFreeOption,
                             activeColor: CustomColor.appColor,
                             onChanged: (value) {
-                              setState(() {
-                                selectedCashFreeOption = value!;
-                              });
+                              setState(() => selectedCashFreeOption = value!);
                             },
                           ),
                           Column(
@@ -138,8 +118,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           ),
                         ],
                       ),
-
-                      /// Partial Payment
                       Row(
                         children: [
                           Radio<CashFreeOption>(
@@ -147,9 +125,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             groupValue: selectedCashFreeOption,
                             activeColor: CustomColor.appColor,
                             onChanged: (value) {
-                              setState(() {
-                                selectedCashFreeOption = value!;
-                              });
+                              setState(() => selectedCashFreeOption = value!);
                             },
                           ),
                           Column(
@@ -165,7 +141,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                   ),
                 ),
 
-              /// Pay After Consultation
+              /// After Consultation
               CustomContainer(
                 backgroundColor: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
@@ -184,9 +160,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       groupValue: selectedPayment,
                       activeColor: CustomColor.appColor,
                       onChanged: (value) {
-                        setState(() {
-                          selectedPayment = value;
-                        });
+                        setState(() => selectedPayment = value);
                       },
                     ),
                   ],
@@ -195,13 +169,11 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
             ],
           ),
 
-          SizedBox(height:
-          selectedPayment == PaymentMethod.cashFree ?
-          dimensions.screenHeight * 0.15:dimensions.screenHeight * 0.25),
+          SizedBox(height: selectedPayment == PaymentMethod.cashFree
+              ? dimensions.screenHeight * 0.15
+              : dimensions.screenHeight * 0.25),
 
-          /// Total + Pay Now Button
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Row(
@@ -210,75 +182,26 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                   Text('Total Price', style: textStyle16(context)),
                   10.width,
                   CustomAmountText(
-                    amount: selectedPayment == null ? '0' : selectedPayment == PaymentMethod.afterConsultation
-                        ? '$serviceAmount' : selectedCashFreeOption == CashFreeOption.full
-                        ? '$serviceAmount' : '$partialAmount',
+                    amount: selectedPayment == null
+                        ? '0'
+                        : selectedPayment == PaymentMethod.afterConsultation
+                        ? '$serviceAmount'
+                        : selectedCashFreeOption == CashFreeOption.full
+                        ? '$serviceAmount'
+                        : '$partialAmount',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: CustomColor.greenColor,
                   ),
                 ],
               ),
+
+
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: CustomButton(
                   isLoading: _isLoading,
                   label: 'Pay Now',
-
-                    // onPressed: () async {
-                    //   if (selectedPayment == null) {
-                    //     showCustomSnackBar(context, 'Please select a payment method');
-                    //     return;
-                    //   }
-                    //
-                    //   setState(() => _isLoading = true);
-                    //
-                    //   try {
-                    //     final isPartial = selectedCashFreeOption == CashFreeOption.partial;
-                    //     final payableAmount = selectedPayment == PaymentMethod.afterConsultation
-                    //         ? 0
-                    //         : isPartial
-                    //         ? partialAmount
-                    //         : serviceAmount;
-                    //
-                    //     // Map selectedPayment to String
-                    //     String paymentMethodString = selectedPayment == PaymentMethod.cashFree
-                    //         ? 'cashfree'
-                    //         : 'pac';
-                    //
-                    //     final updatedCheckout = widget.checkoutData.copyWith(
-                    //       paymentMethod: [paymentMethodString],
-                    //       walletAmount: 0,
-                    //       paymentStatus: 'pending',
-                    //       orderStatus: 'processing',
-                    //       totalAmount: serviceAmount,
-                    //     );
-                    //
-                    //     if (selectedPayment == PaymentMethod.afterConsultation) {
-                    //       final isSuccess = await CheckOutService.checkOutService(updatedCheckout);
-                    //       if (isSuccess != null) {
-                    //         showCustomSnackBar(context, 'Payment will be collected after consultation');
-                    //         widget.onPaymentDone();
-                    //       } else {
-                    //         showCustomSnackBar(context, 'Something went wrong');
-                    //       }
-                    //     } else if (selectedPayment == PaymentMethod.cashFree) {
-                    //       await cashFreeService(
-                    //         context,
-                    //         amount: payableAmount,
-                    //         customerId: widget.checkoutData.serviceCustomer!,
-                    //         name: "Customer Name",
-                    //         email: "customer@example.com",
-                    //         phone: '8989207770',
-                    //       );
-                    //     }
-                    //   } catch (e) {
-                    //     showCustomSnackBar(context, 'Payment failed: $e');
-                    //   } finally {
-                    //     setState(() => _isLoading = false);
-                    //   }
-                    // }
-
                     onPressed: () async {
                       if (selectedPayment == null) {
                         showCustomSnackBar(context, 'Please select a payment method');
@@ -286,66 +209,90 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       }
 
                       setState(() => _isLoading = true);
+                      String? bookingId;
 
                       try {
                         final isPartial = selectedCashFreeOption == CashFreeOption.partial;
-                        final payableAmount = selectedPayment == PaymentMethod.afterConsultation
-                            ? 0 : isPartial ? partialAmount : serviceAmount;
+                        final isCashFree = selectedPayment == PaymentMethod.cashFree;
+                        final isPac = selectedPayment == PaymentMethod.afterConsultation;
 
-                        String paymentMethodString = selectedPayment == PaymentMethod.cashFree
-                            ? 'cashfree'
-                            : 'pac';
+                        final paidAmount = isPac ? 0 : isPartial ? partialAmount : serviceAmount;
+                        final remainingAmount = isPac
+                            ? serviceAmount
+                            : isPartial
+                            ? serviceAmount - partialAmount
+                            : 0;
 
                         final updatedCheckout = widget.checkoutData.copyWith(
-                          paymentMethod: [paymentMethodString],
+                          paymentMethod: [isCashFree ? 'cashfree' : 'pac'],
                           walletAmount: 0,
-                          paymentStatus: 'pending',
+                          otherAmount: 0,
+                          paidAmount: paidAmount,
+                          remainingAmount: remainingAmount,
+                          paymentStatus: isPac ? 'unpaid' : 'pending',
                           orderStatus: 'processing',
-                          totalAmount: serviceAmount,
+                          isPartialPayment: isCashFree ? isPartial : false,
                         );
 
-                        if (selectedPayment == PaymentMethod.afterConsultation) {
-                          // 🔹 Directly call checkout service
-                          final isSuccess = await CheckOutService.checkOutService(updatedCheckout);
-                          if (isSuccess != null) {
-                            showCustomSnackBar(context, 'Payment will be collected after consultation');
-                            widget.onPaymentDone();
+                        if (isPac) {
+                          final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
+                          if (!mounted) return;
+                          if (checkoutResult != null) {
+                            bookingId = checkoutResult.bookingId;
+                            showCustomSnackBar(context, '✅ Booking confirmed.\nBooking ID: $bookingId');
+                            // widget.onPaymentDone();
+                            if (bookingId != null && mounted) {
+                              widget.onPaymentDone(bookingId);
+                            }
+
                           } else {
-                            showCustomSnackBar(context, 'Something went wrong');
+                            showCustomSnackBar(context, '❌ Something went wrong.');
                           }
-                        } else if (selectedPayment == PaymentMethod.cashFree) {
-                          // 🔹 Call only when payment is success
+                        } else {
+                          // Cashfree flow
                           final isSuccess = await cashFreeService(
                             context,
-                            amount: payableAmount,
+                            // orderId: bookingId.toString(),
+                            amount: paidAmount,
                             customerId: widget.checkoutData.serviceCustomer!,
                             name: userSession.name!,
                             email: userSession.email!,
                             phone: userSession.phone!,
                             onPaymentSuccess: () async {
-                              final checkoutStatus = await CheckOutService.checkOutService(updatedCheckout);
-                              if (checkoutStatus != null) {
-                                showCustomSnackBar(context, 'Payment successful!');
-                                widget.onPaymentDone();
+                              final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
+                              if (!mounted) return;
+                              if (checkoutResult != null) {
+                                bookingId = checkoutResult.bookingId;
+                                showCustomSnackBar(context, '✅ Payment Success, Booking ID: $bookingId');
+                                // widget.onPaymentDone();
+                                widget.onPaymentDone(bookingId!); // Pass to parent
                               } else {
-                                showCustomSnackBar(context, 'Checkout failed after payment');
+                                print('❌ Checkout failed after payment.');
                               }
                             },
                           );
 
-                          if (isSuccess != true) {
-                            showCustomSnackBar(context, 'Payment failed or cancelled');
+                          if (!isSuccess && mounted) {
+                            print('❌ Payment failed or cancelled..');
                           }
                         }
                       } catch (e) {
-                        showCustomSnackBar(context, 'Payment error: $e');
+                        if (e is DioException && e.response?.data != null) {
+                          final data = e.response!.data;
+                          final match = RegExp(r'bookingId[":\s]+([a-zA-Z0-9]+)').firstMatch(data.toString());
+                          if (match != null) bookingId = match.group(1);
+                        }
+
+                        if (mounted) {
+                          final errorMsg = bookingId != null
+                              ? '❌ Error for Booking ID: $bookingId'
+                              : '❌ Payment error: ${e.toString()}';
+                          showCustomSnackBar(context, errorMsg);
+                        }
                       } finally {
-                        setState(() => _isLoading = false);
+                        if (mounted) setState(() => _isLoading = false);
                       }
                     }
-
-
-
                 ),
               ),
             ],
