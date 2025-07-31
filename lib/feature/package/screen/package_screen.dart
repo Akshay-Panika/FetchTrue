@@ -9,6 +9,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../model/package_model.dart';
 import '../repository/package_buy_repository.dart';
@@ -362,8 +363,9 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg) {
 void showPaymentBottomSheet(BuildContext context, double grandTotal) {
   // final userSession = Provider.of<UserSession>(context);
   final userSession = Provider.of<UserSession>(context, listen: false);
-  bool _isLoading = false;
+
   bool isFullPayment = true;
+  bool _isLoading = false;
 
   showModalBottomSheet(
     context: context,
@@ -469,13 +471,10 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
                           padding: EdgeInsetsGeometry.symmetric(horizontal: 25,vertical: 10),
-                          child: _isLoading ? CircularProgressIndicator(color: CustomColor.whiteColor,):
-
-                          Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor),),
-
-                          onTap: () {
-                            Navigator.pop(context);
-                            initiatePayment(
+                          child:
+                          Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor)),
+                          onTap: ()async {
+                              initiatePayment(
                               context: context,
                               amount: isFullPayment ? grandTotal : grandTotal / 2,
                               orderId: "package_12345",

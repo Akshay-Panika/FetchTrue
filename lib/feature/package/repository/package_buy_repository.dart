@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
+
 
 Future<void> initiatePayment({
   required BuildContext context,
@@ -35,51 +38,79 @@ Future<void> initiatePayment({
       final paymentUrl = data["paymentLink"];
       _openInAppWebView(context, paymentUrl);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Failed to generate payment link")),
-      );
+      showCustomSnackBar(context, 'Failed to generate payment link');
     }
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("❌ Error: $e")),
-    );
+    showCustomSnackBar(context, 'Error: $e');
   }
 }
 
+
+// void _openInAppWebView(BuildContext context, String paymentUrl) {
+//   final uri = Uri.tryParse(paymentUrl);
+//
+//   if (uri == null) {
+//     showCustomSnackBar(context, 'Invalid Payment URL');
+//     return;
+//   }
+//
+//   Navigator.of(context).push(
+//     MaterialPageRoute(
+//       builder: (_) => Scaffold(
+//         appBar: CustomAppBar(title: 'Pay Now',showBackButton: true,),
+//         body: InAppWebView(
+//           initialUrlRequest: URLRequest(
+//             url: WebUri.uri(uri), // ✅ safer conversion
+//           ),
+//           onLoadStop: (controller, url) {
+//             final currentUrl = url?.toString() ?? "";
+//               // print("Current URL: $currentUrl");
+//             if (currentUrl.contains("response")) {
+//               // Navigator.pop(context,);
+//               showCustomSnackBar(context, 'Payment Successful!');
+//             } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
+//               // Navigator.pop(context,);
+//               showCustomSnackBar(context, 'Payment Failed or Cancelled');
+//             }
+//           },
+//         ),
+//       ),
+//     ),
+//   );
+// }
 
 void _openInAppWebView(BuildContext context, String paymentUrl) {
   final uri = Uri.tryParse(paymentUrl);
 
   if (uri == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("❌ Invalid Payment URL")),
-    );
+    showCustomSnackBar(context, 'Invalid Payment URL');
     return;
   }
+
+  bool isPaymentHandled = false; // ✅ Flag to prevent multiple calls
 
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => Scaffold(
-        appBar: AppBar(title: Text("Payment Gateway")),
+        appBar: CustomAppBar(title: 'Pay Now', showBackButton: true),
         body: InAppWebView(
           initialUrlRequest: URLRequest(
-            url: WebUri.uri(uri), // ✅ safer conversion
+            url: WebUri.uri(uri),
           ),
           onLoadStop: (controller, url) {
+            if (isPaymentHandled) return;
+
             final currentUrl = url?.toString() ?? "";
 
-            print("Current URL: $currentUrl");
-
-            if (currentUrl.contains("success")) {
-              Navigator.pop(context, true);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("✅ Payment Successful!")),
-              );
+            if (currentUrl.contains("response")) {
+              // print("Current URL: $currentUrl");
+              isPaymentHandled = true;
+              showCustomSnackBar(context, 'Payment Successful!');
+              // Navigator.pop(context); // ✅ Optional: Go back
             } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
-              Navigator.pop(context, true);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("❌ Payment Failed or Cancelled")),
-              );
+              isPaymentHandled = true;
+              showCustomSnackBar(context, 'Payment Failed or Cancelled');
+              // Navigator.pop(context); // ✅ Optional: Go back
             }
           },
         ),
