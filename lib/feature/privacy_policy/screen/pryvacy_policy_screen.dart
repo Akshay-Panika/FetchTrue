@@ -28,31 +28,30 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Privacy & Policy', showBackButton: true),
       body: SafeArea(
-        child: CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
-          child: FutureBuilder<List<PrivacyPolicyModel>>(
-            future: _htmlFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
+        child: FutureBuilder<List<PrivacyPolicyModel>>(
+          future: _htmlFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-              final dataList = snapshot.data ?? [];
+            final dataList = snapshot.data ?? [];
 
-              return ListView.separated(
-                itemCount: dataList.length,
-                separatorBuilder: (_, __) => const Divider(),
-                itemBuilder: (context, index) {
-                  final policy = dataList[index];
-                  return Html(data: policy.content);
-                },
-              );
-            },
-          ),
+            return ListView.separated(
+              itemCount: dataList.length,
+              separatorBuilder: (_, __) => const Divider(),
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+              itemBuilder: (context, index) {
+                final policy = dataList[index];
+                return Html(data: policy.content);
+              },
+            );
+          },
         ),
       ),
     );

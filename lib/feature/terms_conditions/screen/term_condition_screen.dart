@@ -28,25 +28,23 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Terms & Conditions', showBackButton: true),
       body: SafeArea(
-        child: CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
-          child: FutureBuilder<TermsConditionsModel>(
-            future: _termsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
+        child: FutureBuilder<TermsConditionsModel>(
+          future: _termsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-              final terms = snapshot.data!;
-              return  SingleChildScrollView(
-
-                  child: Html(data: terms.content));
-            },
-          ),
+            final terms = snapshot.data!;
+            return  SingleChildScrollView(
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                child: Html(data: terms.content));
+          },
         ),
       ),
     );

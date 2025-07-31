@@ -37,10 +37,9 @@ class _ProviderScreenState extends State<ProviderScreen> {
 
             else if(state is ProviderLoaded){
 
-              final provider = state.providerModel;
-              // final provider = state.providerModel.where((moduleService) =>
-              // moduleService.id == widget.
-              // ).toList();
+              // final provider = state.providerModel;
+              final provider = state.providerModel.where((e) => e.kycCompleted == true).toList();
+
 
               if (provider.isEmpty) {
                 return const Center(child: Text('No provider found.'));

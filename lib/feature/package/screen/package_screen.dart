@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -8,8 +9,11 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../model/package_model.dart';
+import '../repository/package_buy_repository.dart';
 import '../repository/package_service.dart';
+import '../widget/show_payment_bottom_widget.dart';
 
 class PackageScreen extends StatefulWidget {
   const PackageScreen({super.key});
@@ -356,6 +360,9 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg) {
 }
 
 void showPaymentBottomSheet(BuildContext context, double grandTotal) {
+  // final userSession = Provider.of<UserSession>(context);
+  final userSession = Provider.of<UserSession>(context, listen: false);
+  bool _isLoading = false;
   bool isFullPayment = true;
 
   showModalBottomSheet(
@@ -378,7 +385,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     20.height,
+                    20.height,
 
                     Text('Total Amount', style: textStyle16(context, color: CustomColor.appColor),),
                     CustomAmountText(amount: grandTotal.toStringAsFixed(2),fontSize: 18,fontWeight: FontWeight.w500),
@@ -462,13 +469,21 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
                           padding: EdgeInsetsGeometry.symmetric(horizontal: 25,vertical: 10),
-                          child: Text(
-                            'Pay Now',
-                            style: textStyle16(context, color: CustomColor.whiteColor),
-                          ),
+                          child: _isLoading ? CircularProgressIndicator(color: CustomColor.whiteColor,):
+
+                          Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+
                           onTap: () {
                             Navigator.pop(context);
-                            print("Selected: ${isFullPayment ? 'Full' : 'Half'}");
+                            initiatePayment(
+                              context: context,
+                              amount: isFullPayment ? grandTotal : grandTotal / 2,
+                              orderId: "package_12345",
+                              customerId: userSession.userId!,
+                              customerName: userSession.name!,
+                              customerEmail: userSession.email!,
+                              customerPhone: userSession.phone!,
+                            );
                           },
                         ),
                       ],

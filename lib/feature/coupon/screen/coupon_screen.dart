@@ -44,7 +44,7 @@ class _CouponScreenState extends State<CouponScreen> {
           child: BlocBuilder<CouponBloc, CouponState>(
             builder: (context, state) {
               if (state is CouponLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
               } else if (state is CouponLoaded) {
                 final coupons = state.coupons;
 

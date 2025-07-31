@@ -38,6 +38,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       appBar: CustomAppBar(title: 'Delete Account', showBackButton: true,),
       body: SafeArea(
         child: CustomContainer(
+          margin: EdgeInsets.zero,
           backgroundColor: CustomColor.whiteColor,
           child: Padding(
             padding: const EdgeInsets.all(16),

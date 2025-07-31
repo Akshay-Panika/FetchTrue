@@ -39,6 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
       appBar: CustomAppBar(title: 'Settings', showBackButton: true),
       body: SafeArea(
         child: CustomContainer(
+          margin: EdgeInsets.zero,
           backgroundColor: CustomColor.whiteColor,
           child: Column(
             children: [
