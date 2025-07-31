@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
-import '../../profile/model/user_model.dart';
+import '../model/user_model.dart';
 
 class UserService {
   final Dio _dio = Dio();

@@ -11,7 +11,12 @@ class UserModel {
   final bool isEmailVerified;
   final bool isMobileVerified;
   final List<String> serviceCustomers;
-  final bool packageActive;
+
+  final String? packageType;
+  final bool? packageActive;
+  final int? packageAmountPaid;
+  final int? remainingAmount;
+
   final bool isCommissionDistribute;
   final List<String> favoriteServices;
   final List<String> favoriteProviders;
@@ -45,7 +50,6 @@ class UserModel {
     required this.isEmailVerified,
     required this.isMobileVerified,
     required this.serviceCustomers,
-    required this.packageActive,
     required this.isCommissionDistribute,
     required this.favoriteServices,
     required this.favoriteProviders,
@@ -65,6 +69,11 @@ class UserModel {
     this.workAddress,
     this.homeAddress,
     this.otherAddress,
+
+    this.packageType,
+    this.packageActive,
+    this.packageAmountPaid,
+    this.remainingAmount,
   });
 
 
@@ -82,7 +91,7 @@ class UserModel {
       isEmailVerified: json['isEmailVerified'] ?? false,
       isMobileVerified: json['isMobileVerified'] ?? false,
       serviceCustomers: List<String>.from(json['serviceCustomers'] ?? []),
-      packageActive: json['packageActive'] ?? false,
+      // packageActive: json['packageActive'] ?? false,
       isCommissionDistribute: json['isCommissionDistribute'] ?? false,
       favoriteServices: List<String>.from(json['favoriteServices'] ?? []),
       favoriteProviders: List<String>.from(json['favoriteProviders'] ?? []),
@@ -108,6 +117,11 @@ class UserModel {
       otherAddress: json['otherAddress'] != null
           ? Address.fromJson(json['otherAddress'])
           : null,
+
+      packageType: json['packageType'],
+      packageActive: json['packageActive'],
+      packageAmountPaid: json['packageAmountPaid'],
+      remainingAmount: json['remainingAmount'],
     );
   }
 

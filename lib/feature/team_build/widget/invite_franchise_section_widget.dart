@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:fetchtrue/feature/package/screen/package_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../core/costants/custom_color.dart';
@@ -9,6 +10,7 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/model/user_model.dart';
 
 class InviteFranchiseSectionWidget extends StatefulWidget {
@@ -25,6 +27,7 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
   @override
   Widget build(BuildContext context) {
     dimensions = Dimensions(context);
+    final userSession = Provider.of<UserSession>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -162,7 +165,7 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
                   color: CustomColor.whiteColor),
             ),
           ),
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: userSession.userId!,),)),
         ),
 
         SizedBox(height: dimensions!.screenHeight * 0.05),

@@ -7,7 +7,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_text_tield.dart';
-import '../../auth/repository/user_service.dart';
+import '../repository/user_service.dart';
 import '../model/user_model.dart';
 import '../../my_lead/widget/leads_details_widget.dart';
 import '../repository/user_additional_details_service.dart';

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../auth/repository/user_service.dart';
+import '../repository/user_service.dart';
 import '../model/user_model.dart';
 import '../widget/address_widget.dart';
 import 'add_address_screen.dart';

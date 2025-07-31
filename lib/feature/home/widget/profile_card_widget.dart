@@ -70,7 +70,7 @@ class ProfileAppWidget extends StatelessWidget {
               InkWell(
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const PackageScreen()),
+                  MaterialPageRoute(builder: (_) =>  PackageScreen(userId: userSession.userId!,)),
                 ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),

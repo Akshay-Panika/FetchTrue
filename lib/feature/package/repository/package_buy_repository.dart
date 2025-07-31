@@ -46,38 +46,6 @@ Future<void> initiatePayment({
 }
 
 
-// void _openInAppWebView(BuildContext context, String paymentUrl) {
-//   final uri = Uri.tryParse(paymentUrl);
-//
-//   if (uri == null) {
-//     showCustomSnackBar(context, 'Invalid Payment URL');
-//     return;
-//   }
-//
-//   Navigator.of(context).push(
-//     MaterialPageRoute(
-//       builder: (_) => Scaffold(
-//         appBar: CustomAppBar(title: 'Pay Now',showBackButton: true,),
-//         body: InAppWebView(
-//           initialUrlRequest: URLRequest(
-//             url: WebUri.uri(uri), // ✅ safer conversion
-//           ),
-//           onLoadStop: (controller, url) {
-//             final currentUrl = url?.toString() ?? "";
-//               // print("Current URL: $currentUrl");
-//             if (currentUrl.contains("response")) {
-//               // Navigator.pop(context,);
-//               showCustomSnackBar(context, 'Payment Successful!');
-//             } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
-//               // Navigator.pop(context,);
-//               showCustomSnackBar(context, 'Payment Failed or Cancelled');
-//             }
-//           },
-//         ),
-//       ),
-//     ),
-//   );
-// }
 
 void _openInAppWebView(BuildContext context, String paymentUrl) {
   final uri = Uri.tryParse(paymentUrl);

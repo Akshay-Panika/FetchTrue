@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../auth/repository/user_service.dart';
+import '../../profile/repository/user_service.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';

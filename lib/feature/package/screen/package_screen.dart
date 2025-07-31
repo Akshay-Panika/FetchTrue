@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
@@ -11,13 +12,19 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
+import '../../profile/model/user_model.dart';
+import '../../profile/repository/user_service.dart';
 import '../model/package_model.dart';
 import '../repository/package_buy_repository.dart';
 import '../repository/package_service.dart';
 import '../widget/show_payment_bottom_widget.dart';
 
 class PackageScreen extends StatefulWidget {
-  const PackageScreen({super.key});
+  final String userId;
+  const PackageScreen({super.key, required this.userId});
 
   @override
   State<PackageScreen> createState() => _PackageScreenState();
@@ -39,6 +46,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
     futurePackages = PackageService.fetchPackages();
     _tabController = TabController(length: _packages.length, vsync: this);
   }
+
 
   @override
   void dispose() {
@@ -121,7 +129,27 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                       ),
 
                       10.height,
-                      _buildAssuranceSection(context,pkg),
+                      BlocProvider(
+                        create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId!)),
+                        child:  BlocBuilder<UserBloc, UserState>(
+                          builder: (context, state) {
+                            if (state is UserLoading) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+
+                            else if (state is UserLoaded) {
+                              final user = state.user;
+                              return  _buildAssuranceSection(context,pkg, user);
+                            }
+                            else if (state is UserError) {
+                              return Center(child: Text('Error: ${state.message}'));
+                            }
+                            return const Center(child: Text("No Data"));
+                          },
+                        ),
+                      ),
+                      50.height
+
                     ],
                   ),
                 );
@@ -256,109 +284,147 @@ Widget _buildDefineText(BuildContext context,
 }
 
 /// Assurance Section
-Widget _buildAssuranceSection(BuildContext context,PackageModel pkg) {
-  bool _isBuy = false;
-  return CustomContainer(
-    border: true,
-    borderColor: CustomColor.appColor,
-    backgroundColor: CustomColor.whiteColor,
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel user) {
+  return
+    CustomContainer(
+            border: true,
+            borderColor: CustomColor.appColor,
+            backgroundColor: CustomColor.whiteColor,
+            child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: 'We assure you  ',
-                          style: textStyle14(context)),
-                      TextSpan(
-                        text: '5X Return ',
-                        style: textStyle16(context,
-                            color: CustomColor.appColor),
-                      ),
-                    ]),
-                  ),
-                  10.height,
-                  Text(
-                    'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
-                    style: textStyle12(context,
-                        color: CustomColor.descriptionColor),
-                    textAlign: TextAlign.right,
+                  Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                                text: 'We assure you  ',
+                                style: textStyle14(context)),
+                            TextSpan(
+                              text: '5X Return ',
+                              style: textStyle16(context,
+                                  color: CustomColor.appColor),
+                            ),
+                          ]),
+                        ),
+                        10.height,
+                        Text(
+                          'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
+                          style: textStyle12(context,
+                              color: CustomColor.descriptionColor),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text('Franchise Fees'),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('Franchise Fees'),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                          CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                        ],
+                      ),
+                      CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(),
+
+              _buildAmountRow(label: 'Franchise Deposit', amount: '${pkg.deposit}'),
+              Divider(),
+
+              _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
+              Divider(),
+
+              // if(user.packageAmountPaid == null)
+              CustomContainer(
+                child: Column(
                   children: [
-                    Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                    CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                    // if(user.remainingAmount == null)
+                    _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString()),
+
+                     // if(user.remainingAmount == null)
+                    Column(
+                      children: [
+                        Divider(),
+                        _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString()),
+                      ],
+                    ),
+
+
+                    // if(user.remainingAmount == null)
+                      Column(
+                        children: [
+                          10.height,
+                          GestureDetector(
+                            onTap: () {},
+                            child: CustomContainer(
+                              backgroundColor: CustomColor.appColor,
+                              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                              child: Text(
+                                'Buy Now',
+                                style: textStyle14(context, color: CustomColor.whiteColor),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
                   ],
                 ),
-                CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
-              ],
+              ),
+
+
+              GestureDetector(
+                onTap: () {
+                  double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
+                  showPaymentBottomSheet(context, price);
+                },
+                child: CustomContainer(
+                  backgroundColor: CustomColor.appColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                  child: Text(
+                    'Buy Now',
+                    style: textStyle14(context, color: CustomColor.whiteColor),
+                  ),
+                ),
+              ),
+
+            ],
             ),
-          ],
-        ),
-        Divider(),
+    );
+}
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Franchise Deposit'),
-            CustomAmountText(amount: '${pkg.deposit}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
-          ],
-        ),
-        Divider(),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Growth Total'),
-            CustomAmountText(amount: '${pkg.grandtotal}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
-          ],
-        ),
-        Divider(),
-        10.height,
 
-        GestureDetector(
-          onTap: () {
-            double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
-            showPaymentBottomSheet(context, price);
-          },
-          child: CustomContainer(
-            backgroundColor: CustomColor.appColor,
-            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-            child: Text(
-              'Buy Now',
-              style: textStyle14(context, color: CustomColor.whiteColor),
-            ),
-          ),
-        )
-
-      ],
-    ),
+Widget _buildAmountRow({String? label, String? amount}){
+  return  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(label!),
+      CustomAmountText(amount: amount!, fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+    ],
   );
 }
+
 
 void showPaymentBottomSheet(BuildContext context, double grandTotal) {
   // final userSession = Provider.of<UserSession>(context);
@@ -366,6 +432,15 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
 
   bool isFullPayment = true;
   bool _isLoading = false;
+
+  final now = DateTime.now();
+  final formattedOrderId =
+      "${now.day.toString().padLeft(2, '0')}/"
+      "${now.month.toString().padLeft(2, '0')}/"
+      "${now.year.toString().substring(2)}/_"
+      "${now.hour.toString().padLeft(2, '0')}:"
+      "${now.minute.toString().padLeft(2, '0')}:"
+      "${now.second.toString().padLeft(2, '0')}";
 
   showModalBottomSheet(
     context: context,
@@ -470,20 +545,25 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                         const SizedBox(width: 30),
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
-                          padding: EdgeInsetsGeometry.symmetric(horizontal: 25,vertical: 10),
-                          child:
-                          Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor)),
-                          onTap: ()async {
-                              initiatePayment(
+                          padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 10),
+                          onTap: _isLoading ? null : () async {
+                            setState(() {_isLoading = true;});
+
+                            await initiatePayment(
                               context: context,
                               amount: isFullPayment ? grandTotal : grandTotal / 2,
-                              orderId: "package_12345",
+                              orderId: 'package_$formattedOrderId',
                               customerId: userSession.userId!,
                               customerName: userSession.name!,
                               customerEmail: userSession.email!,
                               customerPhone: userSession.phone!,
                             );
+
+                            setState(() {_isLoading = false;});
                           },
+                          child: _isLoading
+                              ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),)
+                              : Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor)),
                         ),
                       ],
                     ),
