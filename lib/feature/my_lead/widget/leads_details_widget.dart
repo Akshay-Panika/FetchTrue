@@ -32,7 +32,7 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
           _buildBookingCard(context , lead: widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
 
-          _buildCommissionCard(context),
+          _buildCommissionCard(context, lead: widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
 
           /// Custom details card
@@ -108,8 +108,8 @@ Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? i
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      Icon(icon!, size: iconSize ?? 14,color: iconColor ?? Colors.grey,),
-      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
+      Icon(icon!, size: iconSize ?? 14,color: iconColor ?? CustomColor.appColor,),
+      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.blackColor, fontWeight: fontWeight ??FontWeight.w400),))
     ],
   );
 }
@@ -156,13 +156,13 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Name : ${lead.serviceCustomer.fullName}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                Text('Phone : ${lead.serviceCustomer.phone}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Name : ${lead.serviceCustomer.fullName}', style:  textStyle12(context, fontWeight: FontWeight.w400)),
+                Text('Phone : ${lead.serviceCustomer.phone}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
                 // Text('Email Id : ${lead.serviceCustomer!.email}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                Text('Address: ${lead.serviceCustomer.address}, ${lead.serviceCustomer.city}, ${lead.serviceCustomer.state}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Address: ${lead.serviceCustomer.address}, ${lead.serviceCustomer.city}, ${lead.serviceCustomer.state}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
 
                 if(lead.notes.isNotEmpty)
-                Text('Note : ${lead.notes}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text('Note : ${lead.notes}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
               ],
             ),
        ],
@@ -235,7 +235,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
           ],
         ),
         Text(
-          'Status: ${lead.paymentMethod.map((method) {
+          'Payment Type: ${lead.paymentMethod.map((method) {
             switch (method) {
               case 'pac':
                 return 'Pay After Consultation';
@@ -278,8 +278,10 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
             ),
           ],
         ),
+        if(status != 'Paid')
         10.height,
 
+        if(status != 'Paid')
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -378,7 +380,7 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   );
 }
 
-Widget _buildCommissionCard(BuildContext context){
+Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
   return CustomContainer(
     border: true,
     width: double.infinity,

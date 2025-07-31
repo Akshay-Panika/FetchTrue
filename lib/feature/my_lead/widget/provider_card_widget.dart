@@ -51,6 +51,7 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 
 
             return  CustomContainer(
+              border: true,
               backgroundColor: CustomColor.whiteColor,
               margin: EdgeInsets.zero,
               child: Column(

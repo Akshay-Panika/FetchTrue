@@ -148,7 +148,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           ),
         ),
 
-        _buildCommissionCard(context),
+        _buildCommissionCard(context, commission: data.franchiseDetails.commission),
 
         /// Add customer
         CustomContainer(
@@ -405,7 +405,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 
         /// Summery
-
         CustomContainer(
           border: false,
           backgroundColor: CustomColor.whiteColor,
@@ -454,7 +453,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 title: 'Fetch True Assurity Charges (${assurityFeePercent.toStringAsFixed(0)} %)',
                 amount: '+ ₹ ${formatPrice(assurityFeeAmount)}',
               ),
-
               Divider(thickness: 0.4),
 
               _buildRow(
@@ -465,7 +463,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
             ],
           ),
         ),
-
 
         Row(
           children: [
@@ -522,7 +519,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   orderStatus: '',
                   notes: message ?? '',
                   termsCondition: _isAgree,
-
                   listingPrice: originalPrice.toInt(),
                   serviceDiscountPrice: serviceDiscountAmount.toInt(),
                   priceAfterDiscount: afterServiceDiscountPrice.toInt(),
@@ -533,7 +529,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               );
               print("✅ serviceGSTPrice in model: ${checkoutData.serviceGSTPrice}");
               print("📦 Final Payload: ${checkoutData.toJson()}");
-
               widget.onPaymentDone(checkoutData);
             },
             label: 'Proceed',
@@ -568,7 +563,7 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   );
 }
 
-Widget _buildCommissionCard(BuildContext context){
+Widget _buildCommissionCard(BuildContext context, {required String commission}){
   return CustomContainer(
     border: false,
     width: double.infinity,
@@ -582,7 +577,7 @@ Widget _buildCommissionCard(BuildContext context){
           children: [
             Text('Up To', style: textStyle12(context),),
             10.width,
-            Text('00', style: textStyle14(context, color: Colors.green),),
+            Text('${commission}', style: textStyle14(context, color: Colors.green),),
           ],
         )  ,
       ],
