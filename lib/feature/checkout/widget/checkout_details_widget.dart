@@ -106,6 +106,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
     return Column(
       children: [
+        5.height,
 
         /// Service
         CustomContainer(

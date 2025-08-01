@@ -52,6 +52,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
       padding: const EdgeInsets.all(15.0),
       child: Column(
         children: [
+          10.height,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
