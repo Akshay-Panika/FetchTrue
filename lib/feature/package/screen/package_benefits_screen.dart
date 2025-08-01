@@ -1,4 +1,3 @@
-import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../../../core/widgets/custom_appbar.dart';
@@ -9,8 +8,10 @@ class PackageBenefitsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return  Scaffold(
       backgroundColor: Colors.white,
+
       appBar: CustomAppBar(title: "Benefits", showBackButton: true,),
       body: SafeArea(child:
       SingleChildScrollView(

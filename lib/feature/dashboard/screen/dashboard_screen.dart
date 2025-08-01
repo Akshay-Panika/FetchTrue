@@ -8,6 +8,7 @@ import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
 import '../../my_lead/screen/leads_screen.dart';
 import '../../offer/screen/offer_screen.dart';
+import '../../offer/screen/offers_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -48,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return [
       const HomeScreen(),
       LeadsScreen(key: UniqueKey()), // Always create a new key
-      const OfferScreen(),
+      const OffersScreen(),
       const AcademyScreen(),
       const MoreScreen(),
     ];
