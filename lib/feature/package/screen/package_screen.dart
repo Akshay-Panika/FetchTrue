@@ -355,14 +355,15 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
               _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
               Divider(),
 
-              // if(user.packageAmountPaid == null)
+              if(user.packageAmountPaid != null)
               CustomContainer(
+                backgroundColor: Colors.blue.withOpacity(0.1),
                 child: Column(
                   children: [
-                    // if(user.remainingAmount == null)
+
                     _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString()),
 
-                     // if(user.remainingAmount == null)
+                     if(user.remainingAmount != null)
                     Column(
                       children: [
                         Divider(),
@@ -371,7 +372,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
                     ),
 
 
-                    // if(user.remainingAmount == null)
+                    if(user.remainingAmount != null)
                       Column(
                         children: [
                           10.height,
@@ -393,6 +394,8 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
               ),
 
 
+              ///  Buy Now
+               if(user.remainingAmount == null)
               GestureDetector(
                 onTap: () {
                   double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
@@ -477,6 +480,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+
                           /// Full Payment Option
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +534,6 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                       ),
                     ),
                     20.height,
-
 
                     Text('Descriptions_', style: textStyle12(context, color: CustomColor.descriptionColor),),
                     50.height,

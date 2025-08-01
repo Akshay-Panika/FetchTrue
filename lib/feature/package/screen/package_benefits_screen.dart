@@ -10,12 +10,12 @@ class PackageBenefitsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "Benefits", showBackButton: true,),
       body: SafeArea(child:
-      CustomContainer(
-        backgroundColor: Colors.white,
-        child: SingleChildScrollView(child: Html(data: htmlDesc)),
-      )),
+      SingleChildScrollView(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+          child: Html(data: htmlDesc))),
     );
   }
 }
