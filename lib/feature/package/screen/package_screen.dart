@@ -355,7 +355,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
               _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
               Divider(),
 
-              if(user.packageAmountPaid != null)
+              // if(user.packageAmountPaid == null)
               CustomContainer(
                 backgroundColor: Colors.blue.withOpacity(0.1),
                 child: Column(
@@ -363,7 +363,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
 
                     _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString()),
 
-                     if(user.remainingAmount != null)
+                     // if(user.remainingAmount != null)
                     Column(
                       children: [
                         Divider(),
@@ -372,7 +372,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
                     ),
 
 
-                    if(user.remainingAmount != null)
+                    // if(user.remainingAmount != null)
                       Column(
                         children: [
                           10.height,
@@ -395,7 +395,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
 
 
               ///  Buy Now
-               if(user.remainingAmount == null)
+              //  if(user.remainingAmount == null)
               GestureDetector(
                 onTap: () {
                   double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
@@ -435,6 +435,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
 
   bool isFullPayment = true;
   bool _isLoading = false;
+
 
   final now = DateTime.now();
   final formattedOrderId =
@@ -511,6 +512,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+
                               Radio<bool>(
                                 value: false,
                                 activeColor: CustomColor.appColor,
@@ -521,6 +523,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                                   });
                                 },
                               ),
+
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

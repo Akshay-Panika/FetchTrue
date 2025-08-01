@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
@@ -41,6 +42,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
             /// Section
             CustomContainer(
+              margin: EdgeInsets.zero,
+              borderRadius: false,
               backgroundColor: CustomColor.whiteColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -115,23 +118,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           onTap: onTap,
           child: Column(
             children: [
-              CircleAvatar(
-                backgroundColor: isActive ? CustomColor.appColor : Colors.grey.shade300,
-                radius: 20,
-                child: Icon(
-                  icon,
-                  color: isActive ? Colors.white : Colors.black54,
-                ),
-              ),
+              Icon(icon, color: isActive ? CustomColor.appColor : Colors.black54, size: 20,),
               4.height,
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: isActive ? CustomColor.appColor : Colors.grey,
-                ),
-              ),
+              Text(label,style: textStyle12(context, color: CustomColor.descriptionColor),),
             ],
           ),
         ),

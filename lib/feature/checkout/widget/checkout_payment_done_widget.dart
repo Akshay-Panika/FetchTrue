@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -11,29 +12,67 @@ class CheckoutPaymentDoneWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return  CustomContainer(
-      width: double.infinity,
-      height: dimensions.screenHeight*0.7,
-       backgroundColor: CustomColor.whiteColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(CupertinoIcons.checkmark_seal_fill, color: CustomColor.greenColor, size: 100,),
-          SizedBox(height: dimensions.screenHeight*0.05,),
+    return  Column(
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              children: [
+                40.height,
+                CustomContainer(
+                  width: double.infinity,
+                   backgroundColor: CustomColor.whiteColor,
+                   margin: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      50.height,
+                      Text('Your place the lead successfully', style: textStyle18(context, color: CustomColor.appColor),),
+                      Text('Thank you for your order with us', style: textStyle14(context, color: CustomColor.descriptionColor),),
 
-          Text('Your place the lead successfully', style: textStyle16(context, color: CustomColor.appColor),),
-          Text('Lead Id : ${bookingId}', style: textStyle14(context,color: CustomColor.descriptionColor),),
-          SizedBox(height: dimensions.screenHeight*0.05,),
+                      10.height,
+                      Divider(),
+                      10.height,
 
-          CustomContainer(
+                      Center(child: Text('Total Payment'),),
+                      10.height,
+
+                      Center(child: Text('₹ 00.00', style: textStyle22(context),),),
+                      50.height,
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Lead Id', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                          Text('${bookingId}', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Date & Time', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                          Text('________', style: textStyle14(context,color: CustomColor.descriptionColor),),
+                        ],
+                      ),
+                      SizedBox(height: dimensions.screenHeight*0.05,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            Positioned(top: 30, child: Icon(Icons.verified, size: 60, color: Colors.green,)),
+          ],
+        ),
+        100.height,
+        CustomContainer(
             width: 200,
             backgroundColor: CustomColor.appColor,
             child: Center(child: Text("Back", style: textStyle16(context, color: CustomColor.whiteColor),)),
-              onTap: () => Navigator.pop(context)
-          )
-        ],
-      ),
+            onTap: () => Navigator.pop(context)
+        )
+      ],
     );
   }
 }
