@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../bloc/module_service/module_service_bloc.dart';
 import '../bloc/module_service/module_service_event.dart';
 import '../bloc/module_service/module_service_state.dart';
@@ -157,10 +158,22 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                   color: CustomColor.appColor,
                   height: double.infinity,
                   child: InkWell(
+                    // onTap: () {
+                    //   String url = 'https://zeropls.com';
+                    //   Share.share('Check out this awesome content! $url');
+                    // },
                     onTap: () {
-                      String url = 'https://zeropls.com';
-                      Share.share('Check out this awesome content! $url');
+                      final serviceId = widget.serviceId;
+                      final userId = services.isNotEmpty ? services.first.id : null;
+
+                      if (userId != null) {
+                        final shareUrl = 'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
+                        Share.share('Check out this service on FetchTrue:\n$shareUrl');
+                      } else {
+                        showCustomSnackBar(context, 'Unable to share: user ID not found.');
+                      }
                     },
+
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

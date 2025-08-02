@@ -249,7 +249,9 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           } else {
                             showCustomSnackBar(context, '❌ Something went wrong.');
                           }
-                        } else {
+                        }
+
+                        else {
                           // Cashfree flow
                           final isSuccess = await cashFreeService(
                             context,
