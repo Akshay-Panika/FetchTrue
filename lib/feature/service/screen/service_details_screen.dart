@@ -135,7 +135,14 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () => showCustomBottomSheet(context, services: services ),
+                  onTap: () {
+                    final userId = services.isNotEmpty ? services.first.id : null;
+                    if (userId != null) {
+                      showCustomBottomSheet(context, services: services );
+                    } else {
+                      showCustomSnackBar(context, 'Please wait data is loading.');
+                    }
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -158,10 +165,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                   color: CustomColor.appColor,
                   height: double.infinity,
                   child: InkWell(
-                    // onTap: () {
-                    //   String url = 'https://zeropls.com';
-                    //   Share.share('Check out this awesome content! $url');
-                    // },
                     onTap: () {
                       final serviceId = widget.serviceId;
                       final userId = services.isNotEmpty ? services.first.id : null;
@@ -170,7 +173,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                         final shareUrl = 'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
                         Share.share('Check out this service on FetchTrue:\n$shareUrl');
                       } else {
-                        showCustomSnackBar(context, 'Unable to share: user ID not found.');
+                        showCustomSnackBar(context,  'Please wait data is loading.');
                       }
                     },
 
