@@ -8,14 +8,9 @@ import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../profile/bloc/user_bloc/user_state.dart';
 
-class ProfileCardWidget extends StatefulWidget {
+class ProfileCardWidget extends StatelessWidget {
   const ProfileCardWidget({super.key});
 
-  @override
-  State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
-}
-
-class _ProfileCardWidgetState extends State<ProfileCardWidget> {
   static String _formatDate(String isoDate) {
     try {
       final date = DateTime.parse(isoDate);
@@ -24,104 +19,115 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       return "-";
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading) {
           return _buildShimmerEffect();
-        } else if (state is UserLoaded) {
-          final user = state.user;
+        }
 
-          return CustomContainer(
-            backgroundColor: CustomColor.whiteColor,
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                /// TOP ROW
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                          backgroundImage: user.profilePhoto != null
-                              ? NetworkImage(user.profilePhoto!)
-                              : AssetImage(CustomImage.nullImage) as ImageProvider,
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user.fullName ?? 'Username',
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.clip,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              user.email ?? 'Email Id',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PackageScreen(userId: user.id!),
-                        ),
+        // ✅ Default values
+        String displayName = 'Guest';
+        String email = 'Email Id';
+        String profilePhoto = '';
+        String userId = '';
+        String joiningDate = '-';
+
+        if (state is UserLoaded) {
+          final user = state.user;
+          displayName = user.fullName?.isNotEmpty == true ? user.fullName! : 'Guest';
+          email = user.email ?? 'Email Id';
+          profilePhoto = user.profilePhoto ?? '';
+          userId = user.id ?? '';
+          joiningDate = _formatDate(user.createdAt ?? '');
+
+        }
+
+        return CustomContainer(
+          backgroundColor: CustomColor.whiteColor,
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              /// TOP ROW
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// 👤 Profile + Name + Email
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                        backgroundImage: profilePhoto.isNotEmpty
+                            ? NetworkImage(profilePhoto)
+                            : AssetImage(CustomImage.nullImage) as ImageProvider,
                       ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.clip,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            email,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  /// 🎯 GP Button (only when userId is present)
+                  if (userId.isNotEmpty)
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PackageScreen(userId: userId),
+                          ),
+                        );
+                      },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                         decoration: BoxDecoration(
-                          border: Border.all(
-                              color: CustomColor.appColor, width: 0.5),
+                          border: Border.all(color: CustomColor.appColor, width: 0.5),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Row(
                           children: [
                             Icon(Icons.leaderboard_outlined, size: 16),
                             SizedBox(width: 5),
-                            Text('GP',
-                                style: TextStyle(fontWeight: FontWeight.w600)),
+                            Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-                const Divider(),
+                ],
+              ),
 
-                /// BOTTOM STATS
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildStatus(
-                      value: _formatDate(user.createdAt ?? ""),
-                      valueType: 'Joining date',
-                    ),
-                    _buildStatus(
-                        value: '00' ?? '0',
-                        valueType: 'Lead Completed'),
-                    _buildStatus(
-                        value: '00' ?? '0',
-                        valueType: 'Total Earning'),
-                  ],
-                )
-              ],
-            ),
-          );
-        } else {
-          return const Center(child: Text("Something went wrong"));
-        }
+              const Divider(),
+
+              /// 📊 Stats Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStatus(value: joiningDate, valueType: 'Joining date'),
+                  _buildStatus(value: '00', valueType: 'Lead Completed'),
+                  _buildStatus(value: '00', valueType: 'Total Earning'),
+                ],
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -145,7 +151,6 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     );
   }
 
-  /// 🔄 Shimmer Loader when userData is null
   Widget _buildShimmerEffect() {
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,

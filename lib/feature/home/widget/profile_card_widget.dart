@@ -48,9 +48,9 @@ class ProfileAppWidget extends StatelessWidget {
                 ? state.user.fullName!
                 : "Guest";
             userId = state.user.id;
-
-            profilePhoto = state.user.profilePhoto!;
+            profilePhoto = state.user.profilePhoto ?? ""; // null को empty string में बदलो
           }
+
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,10 +61,11 @@ class ProfileAppWidget extends StatelessWidget {
                   CircleAvatar(
                     radius: 25,
                     backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                    backgroundImage: profilePhoto != null
-                        ? NetworkImage(profilePhoto!)
-                        : AssetImage(CustomImage.nullImage) as ImageProvider,
+                    backgroundImage: (profilePhoto.isNotEmpty)
+                        ? NetworkImage(profilePhoto)
+                        :  AssetImage(CustomImage.nullImage) as ImageProvider,
                   ),
+
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
