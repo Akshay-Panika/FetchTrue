@@ -61,6 +61,54 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  // void _signIn() async {
+  //   if (!_formKey.currentState!.validate()) return;
+  //
+  //   setState(() => _isLoading = true);
+  //
+  //   final input = _mainController.text.trim();
+  //   final password = _passwordController.text.trim();
+  //
+  //   String email = "";
+  //   String mobileNumber = "";
+  //
+  //   if (RegExp(r'^\d{10}$').hasMatch(input)) {
+  //     mobileNumber = input;
+  //   } else if (input.contains('@')) {
+  //     // email = input;
+  //     email = input.toLowerCase();
+  //   } else {
+  //     showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
+  //     setState(() => _isLoading = false);
+  //     return;
+  //   }
+  //
+  //   try {
+  //     final response = await SignInService.signIn(
+  //       mobileNumber: mobileNumber,
+  //       email: email,
+  //       password: password,
+  //     );
+  //
+  //     setState(() => _isLoading = false);
+  //
+  //     if (response != null) {
+  //       /// ✅ Use centralized UserSession (no SharedPreferences here)
+  //       await Provider.of<UserSession>(context, listen: false).login(
+  //         response.user.id,
+  //         response.token);
+  //
+  //       showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
+  //       Navigator.pop(context, true); // return success
+  //     } else {
+  //       showCustomSnackBar(context, "Login failed. Please check your credentials.");
+  //     }
+  //   } catch (e) {
+  //     setState(() => _isLoading = false);
+  //     showCustomSnackBar(context, "Login Error: ${e.toString()}");
+  //   }
+  // }
+
   void _signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -75,7 +123,6 @@ class _SignInScreenState extends State<SignInScreen> {
     if (RegExp(r'^\d{10}$').hasMatch(input)) {
       mobileNumber = input;
     } else if (input.contains('@')) {
-      // email = input;
       email = input.toLowerCase();
     } else {
       showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
@@ -93,15 +140,12 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() => _isLoading = false);
 
       if (response != null) {
-        /// ✅ Use centralized UserSession (no SharedPreferences here)
-        await Provider.of<UserSession>(context, listen: false).login(
-          response.user.id,
-          response.token,
-          response.user.fullName,
-          response.user.mobileNumber,
-          response.user.email,
-          response.user.createdAt
-        );
+        /// ✅ Save userId & token in session
+        final session = Provider.of<UserSession>(context, listen: false);
+        await session.login(response.user.id, response.token);
+
+        /// ❗️OPTIONAL: If you ever want to trigger manually without relying on onUserIdChanged callback:
+        // BlocProvider.of<UserBloc>(context).add(FetchUserById(response.user.id));
 
         showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
         Navigator.pop(context, true); // return success

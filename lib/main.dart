@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
 import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
+import 'feature/profile/bloc/user_bloc/user_bloc.dart';
+import 'feature/profile/bloc/user_bloc/user_event.dart';
+import 'feature/profile/repository/user_service.dart';
 import 'feature/wallet/bloc/wallet_bloc.dart';
 import 'firebase_options.dart';
 
@@ -16,16 +19,23 @@ void main() async {
   );
 
   final userSession = UserSession();
-  await userSession.loadUserSession();
+  final userService = UserService();
+  final userBloc = UserBloc(userService);
+
+  // 👇 Glue: session triggers bloc when userId is available
+  userSession.onUserIdChanged = (userId) {
+    userBloc.add(FetchUserById(userId));
+  };
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => userSession), // ✅ Provider for UserSession
+        ChangeNotifierProvider(create: (_) => userSession), // ✅ Global UserSession
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<WalletBloc>(create: (_) => WalletBloc()), // ✅ Bloc for Wallet
+          BlocProvider<WalletBloc>(create: (_) => WalletBloc()),       // ✅ Wallet Bloc
+          BlocProvider<UserBloc>.value(value: userBloc),               // ✅ User Bloc (important)
         ],
         child: const MyApp(),
       ),
@@ -38,6 +48,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 👇 Load session on app start (fetches user if session exists)
+    Provider.of<UserSession>(context, listen: false).loadUserSession();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -57,7 +70,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Fetch True',
-      home: const SplashScreen(), // 👈 Your Splash/Login/Home screen
+      home: const SplashScreen(), // 👈 Splash/Login/Home
     );
   }
 }

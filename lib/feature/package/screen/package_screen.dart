@@ -560,9 +560,9 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                               amount: isFullPayment ? grandTotal : grandTotal / 2,
                               orderId: 'package_$formattedOrderId',
                               customerId: userSession.userId!,
-                              customerName: userSession.name!,
-                              customerEmail: userSession.email!,
-                              customerPhone: userSession.phone!,
+                              customerName: '',
+                              customerEmail: '',
+                              customerPhone: '',
                             );
 
                             setState(() {_isLoading = false;});

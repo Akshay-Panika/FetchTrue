@@ -7,7 +7,6 @@ class UserService {
 
   Future<UserModel?> fetchUserById(String userId) async {
     try {
-      // ⚠️ Make sure userId is sent in query params or as part of URL
       final response = await _dio.get('${ApiUrls.user}/$userId');
 
       if (response.statusCode == 200 && response.data['success'] == true) {

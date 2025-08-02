@@ -17,7 +17,7 @@ import '../../service/model/service_model.dart';
 import '../model/checkout_model.dart';
 import '../model/summery_model.dart';
 import '../repository/summery_service.dart';
-import '../screen/add_customer_screen.dart';
+import '../../customer/screen/add_customer_screen.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final String providerId;

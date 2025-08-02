@@ -256,9 +256,9 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             // orderId: bookingId.toString(),
                             amount: paidAmount,
                             customerId: widget.checkoutData.serviceCustomer!,
-                            name: userSession.name!,
-                            email: userSession.email!,
-                            phone: userSession.phone!,
+                            name: '',
+                            email: '',
+                            phone: '',
                             onPaymentSuccess: () async {
                               final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
                               if (!mounted) return;

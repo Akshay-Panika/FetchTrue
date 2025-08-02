@@ -1,18 +1,21 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../auth/user_notifier/user_notifier.dart';
 import '../../package/screen/package_screen.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
 
 class ProfileCardWidget extends StatefulWidget {
-  const ProfileCardWidget({super.key,});
+  const ProfileCardWidget({super.key});
 
   @override
   State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
+}
 
+class _ProfileCardWidgetState extends State<ProfileCardWidget> {
   static String _formatDate(String isoDate) {
     try {
       final date = DateTime.parse(isoDate);
@@ -21,93 +24,105 @@ class ProfileCardWidget extends StatefulWidget {
       return "-";
     }
   }
-}
-
-class _ProfileCardWidgetState extends State<ProfileCardWidget> {
-
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserLoading) {
+          return _buildShimmerEffect();
+        } else if (state is UserLoaded) {
+          final user = state.user;
 
-    final userSession = Provider.of<UserSession>(context);
-
-    return CustomContainer(
-      backgroundColor: CustomColor.whiteColor,
-      padding: const EdgeInsets.all(15),
-      child:  Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// TOP ROW
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                   CircleAvatar(
-                    radius: 30,
-                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                    backgroundImage: AssetImage(CustomImage.nullImage),
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userSession.isLoggedIn
-                            ? "${userSession.name}"
-                            : "Guest",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),overflow: TextOverflow.clip,
+          return CustomContainer(
+            backgroundColor: CustomColor.whiteColor,
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                /// TOP ROW
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                          backgroundImage: user.profilePhoto != null
+                              ? NetworkImage(user.profilePhoto!)
+                              : AssetImage(CustomImage.nullImage) as ImageProvider,
+                        ),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.fullName ?? 'Username',
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.clip,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              user.email ?? 'Email Id',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PackageScreen(userId: user.id!),
+                        ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(userSession.isLoggedIn
-                          ? "${userSession.email}"
-                          :'Email Id',
-                        style: const TextStyle(color: Colors.grey),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 15),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: CustomColor.appColor, width: 0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.leaderboard_outlined, size: 16),
+                            SizedBox(width: 5),
+                            Text('GP',
+                                style: TextStyle(fontWeight: FontWeight.w600)),
+                          ],
+                        ),
                       ),
-                    ],
-                  )
-                ],
-              ),
-              InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) =>  PackageScreen(userId: userSession.userId!,)),
+                    ),
+                  ],
                 ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: CustomColor.appColor, width: 0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.leaderboard_outlined, size: 16),
-                      SizedBox(width: 5),
-                      Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const Divider(),
+                const Divider(),
 
-          /// BOTTOM STATS
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildStatus(
-                value:_formatDate( userSession.isLoggedIn && userSession.loginDate != null
-                    ? userSession.loginDate!
-                    : "",),
-                valueType: 'Joining date',
-              ),
-
-              _buildStatus(value: '00', valueType: 'Lead Completed'),
-              _buildStatus(value: '00', valueType: 'Total Earning'),
-            ],
-          )
-        ],
-      ),
+                /// BOTTOM STATS
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatus(
+                      value: _formatDate(user.createdAt ?? ""),
+                      valueType: 'Joining date',
+                    ),
+                    _buildStatus(
+                        value: '00' ?? '0',
+                        valueType: 'Lead Completed'),
+                    _buildStatus(
+                        value: '00' ?? '0',
+                        valueType: 'Total Earning'),
+                  ],
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Center(child: Text("Something went wrong"));
+        }
+      },
     );
   }
 
@@ -128,16 +143,6 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
         ),
       ],
     );
-  }
-
-
-  static String _formatDate(String isoDate) {
-    try {
-      final date = DateTime.parse(isoDate);
-      return "${date.day}/${date.month}/${date.year}";
-    } catch (_) {
-      return "-";
-    }
   }
 
   /// 🔄 Shimmer Loader when userData is null

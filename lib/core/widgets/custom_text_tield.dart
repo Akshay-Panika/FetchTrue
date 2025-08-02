@@ -118,3 +118,84 @@ Widget CustomFormField(
   );
 }
 
+
+Widget CustomDescriptionField(BuildContext context,
+    String label, {
+      required TextEditingController controller,
+      bool isRequired = false,
+      bool enabled = true,
+      int maxLines = 5,
+      String? hint,
+      Function(String)? onChanged,
+      String? Function(String?)? validator,
+    }) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      RichText(
+        text: TextSpan(
+          text: label,
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          children: isRequired
+              ? const [
+            TextSpan(text: ' *', style: TextStyle(color: Colors.red))
+          ]
+              : [],
+        ),
+      ),
+      const SizedBox(height: 5),
+      TextFormField(
+        controller: controller,
+        enabled: enabled,
+        maxLines: maxLines,
+        style: textStyle14(
+          context,
+          color: CustomColor.descriptionColor,
+          fontWeight: FontWeight.w400,
+        ),
+        decoration: InputDecoration(
+          hintText: hint ?? 'Write a detailed description...',
+          hintStyle: textStyle14(
+            context,
+            color: CustomColor.descriptionColor,
+            fontWeight: FontWeight.w400,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: enabled ? Colors.white : Colors.grey.shade200,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
+        ),
+        onChanged: onChanged,
+        validator: validator ??
+            (isRequired
+                ? (val) {
+              if (val == null || val
+                  .trim()
+                  .isEmpty) {
+                return 'Description is required';
+              }
+              return null;
+            }
+                : null),
+      ),
+    ],
+  );
+}

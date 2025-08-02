@@ -57,6 +57,7 @@ dependencies:
 
   # Device Info
   device_info_plus: ^10.1.0
+  country_state_city_picker: ^1.2.8
 
   # Payment Gateway
 

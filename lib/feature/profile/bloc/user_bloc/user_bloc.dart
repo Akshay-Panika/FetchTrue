@@ -9,6 +9,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(this.userService) : super(UserInitial()) {
     on<FetchUserById>(_onFetchUserById);
+    on<UserReset>((event, emit) {
+      emit(UserInitial()); // ✅ This resets the user state
+    });
   }
 
   Future<void> _onFetchUserById(FetchUserById event, Emitter<UserState> emit) async {

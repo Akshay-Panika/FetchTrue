@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../helper/api_urls.dart';
-import '../model/add_customer_model.dart';
+import '../../checkout/model/add_customer_model.dart';
 import '../../../helper/api_helper.dart';
 
 class AddCustomerService {

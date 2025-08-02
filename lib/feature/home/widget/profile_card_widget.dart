@@ -2,6 +2,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
@@ -10,6 +11,8 @@ import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
 
 
 class ProfileAppWidget extends StatelessWidget {
@@ -24,80 +27,113 @@ class ProfileAppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userSession = Provider.of<UserSession>(context);
 
-    return CustomContainer(
+    return  CustomContainer(
       margin: EdgeInsets.zero,
       backgroundColor: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// 👤 User Info
-          Row(
+      child: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+
+          if(state is UserLoading){
+            return _buildShimmerEffect();
+          }
+
+          String displayName = "Guest";
+          String userId = "";
+          String profilePhoto = "";
+
+          if (state is UserLoaded) {
+            displayName = state.user.fullName?.isNotEmpty == true
+                ? state.user.fullName!
+                : "Guest";
+            userId = state.user.id;
+
+            profilePhoto = state.user.profilePhoto!;
+          }
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-               CircleAvatar(
-                radius: 25,
-                 backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                 backgroundImage: AssetImage(CustomImage.nullImage),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              /// 👤 User Info
+              Row(
                 children: [
-                  Text(
-                    userSession.isLoggedIn
-                        ? "${userSession.name}"
-                        : "Guest",
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                    backgroundImage: profilePhoto != null
+                        ? NetworkImage(profilePhoto!)
+                        : AssetImage(CustomImage.nullImage) as ImageProvider,
                   ),
-                  Text(
-                    getGreeting(),
-                    style: textStyle14(
-                      context,
-                      fontWeight: FontWeight.w400,
-                      color: CustomColor.appColor,
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        displayName,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        getGreeting(),
+                        style: textStyle14(
+                          context,
+                          fontWeight: FontWeight.w400,
+                          color: CustomColor.appColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              /// ⚙️ Actions
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      if (userId.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => PackageScreen(userId: userId)),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 15),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: CustomColor.appColor, width: 0.5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.leaderboard_outlined, size: 16),
+                          SizedBox(width: 5),
+                          Text('GP',
+                              style: TextStyle(fontWeight: FontWeight.w600)),
+                        ],
+                      ),
                     ),
+                  ),
+                  const SizedBox(width: 20),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const NotificationScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.notifications_active_outlined),
                   ),
                 ],
               ),
             ],
-          ),
-
-          /// ⚙️ Actions
-          Row(
-            children: [
-              InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) =>  PackageScreen(userId: userSession.userId!,)),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: CustomColor.appColor, width: 0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.leaderboard_outlined, size: 16),
-                      SizedBox(width: 5),
-                      Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              IconButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const NotificationScreen()),
-                ),
-                icon: const Icon(Icons.notifications_active_outlined),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

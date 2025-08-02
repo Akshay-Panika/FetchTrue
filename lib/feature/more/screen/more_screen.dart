@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
@@ -17,6 +18,9 @@ import '../../help_support/screen/help_support_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../privacy_policy/screen/pryvacy_policy_screen.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
 import '../../profile/screen/profile_screen.dart';
 import '../../provider/screen/provider_screen.dart';
 import '../../refund_policy/screen/refund_policy_screen.dart';
@@ -37,7 +41,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final userSession = Provider.of<UserSession>(context);
+    final userSession = Provider.of<UserSession>(context, listen: false);
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -45,7 +49,9 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         showBackButton: false,
         showNotificationIcon: true,
       ),
-      body: CustomScrollView(
+
+
+      body:CustomScrollView(
         slivers: [
           SliverAppBar(
             floating: true,
@@ -53,16 +59,9 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             backgroundColor: CustomColor.canvasColor,
             flexibleSpace: FlexibleSpaceBar(
               background: ProfileCardWidget(),
-              // background: Center(
-              //   child: Text(
-              //     userSession.isLoggedIn
-              //         ? "Welcome User ID: ${userSession.userId}"
-              //         : "You are not logged in",
-              //     style: textStyle16(context, fontWeight: FontWeight.w600),
-              //   ),
-              // ),
             ),
           ),
+
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -136,8 +135,10 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                         }
                       } else {
                         showLogoutDialog(context, () async {
-                          Navigator.pop(context); // close dialog
-                          await userSession.logout(); // ✅ actual logout
+                          Navigator.pop(context);
+                          /// Reset Bloc if needed
+                          context.read<UserBloc>().add(UserReset());// close dialog
+                          await userSession.logout(); //  actual logout
                           setState(() {}); // Optional: to refresh UI if needed
                         });
                       }
@@ -149,7 +150,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             ),
           )
         ],
-      ),
+      )
     );
   }
 
