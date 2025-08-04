@@ -66,8 +66,13 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             child: Column(
               children: [
                 _buildSection(context, "Account", [
-                  _buildTile(context, Icons.person_outline, "Profile", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId,)));
+                  _buildTile(context, Icons.person_outline, "Profile", () async{
+                    final updated = await Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId,)));
+                    if (updated == true) {
+                      context.read<UserBloc>().add(FetchUserById(userSession.userId!));
+                    }
+
+                    // Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId,)));
                   }),
                   _buildTile(context, Icons.favorite_border, "Favorite", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
@@ -118,9 +123,11 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
                   }),
                 ]),
+
                 _buildSection(context, "Others", [
+
                   _buildTile(context, Icons.delete_outline, "Delete Account", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const DeleteAccountScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  DeleteAccountScreen(userId: userSession.userId ?? '',)));
                   }),
                   _buildTile(
                     context,

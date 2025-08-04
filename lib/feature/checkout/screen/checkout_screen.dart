@@ -24,6 +24,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int _paymentStep = 0;
   CheckOutModel? checkoutData;
   String? _bookingId;
+  String? _dateTime;
+  String? _amount;
 
 
   final steps = [
@@ -83,16 +85,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     else if (_paymentStep == 1)
                       CheckPaymentWidget(
                         checkoutData: checkoutData!,
-                        onPaymentDone: (String bookingIdFromPayment) {
+                        onPaymentDone: (String bookingIdFromPayment, String dateTime, String amount ) {
                           setState(() {
                             _bookingId = bookingIdFromPayment;
+                            _dateTime = dateTime;
+                            _amount = amount;
                             _paymentStep = 2;
                           });
                         },
 
                       )
                     else
-                       CheckoutPaymentDoneWidget(bookingId: _bookingId ??'',),
+                       CheckoutPaymentDoneWidget(bookingId: _bookingId ??'', dateTime: _dateTime ?? '', amount: _amount ??'',),
                   ],
                 ),
               ),

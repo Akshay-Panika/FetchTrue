@@ -6,7 +6,9 @@ import '../../../core/widgets/custom_container.dart';
 
 class CheckoutPaymentDoneWidget extends StatefulWidget {
   final String bookingId;
-  const CheckoutPaymentDoneWidget({super.key, required this.bookingId});
+  final String dateTime;
+  final String amount;
+  const CheckoutPaymentDoneWidget({super.key, required this.bookingId, required this.dateTime, required this.amount});
 
   @override
   State<CheckoutPaymentDoneWidget> createState() => _CheckoutPaymentDoneWidgetState();
@@ -68,7 +70,7 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                         10.height,
                         Center(child: Text('Total Payment')),
                         10.height,
-                        Center(child: Text('₹ 00.00', style: textStyle22(context))),
+                        Center(child: Text('₹ ${widget.amount}', style: textStyle22(context))),
                         50.height,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +84,7 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Date & Time', style: textStyle14(context, color: CustomColor.descriptionColor)),
-                            Text('________', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                            Text('${widget.dateTime}', style: textStyle14(context, color: CustomColor.descriptionColor)),
                           ],
                         ),
                         SizedBox(height: dimensions.screenHeight * 0.05),

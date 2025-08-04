@@ -101,16 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
-  // Future<void> pickImageFromGallery() async {
-  //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (picked != null) {
-  //     setState(() {
-  //       selectedImage = File(picked.path);
-  //     });
-  //   }
-  // }
-
-
   @override
   Widget build(BuildContext context) {
     print('______________user id ${widget.userId}');

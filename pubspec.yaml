@@ -41,6 +41,8 @@ dependencies:
   printing: ^5.14.2
   chewie: ^1.7.0
   video_player: ^2.8.2
+  open_file: ^3.5.10
+  fluttertoast: ^8.2.12
 
 
   # Networking

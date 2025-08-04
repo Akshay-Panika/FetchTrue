@@ -30,12 +30,12 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => userSession), // ✅ Global UserSession
+        ChangeNotifierProvider(create: (_) => userSession),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<WalletBloc>(create: (_) => WalletBloc()),       // ✅ Wallet Bloc
-          BlocProvider<UserBloc>.value(value: userBloc),               // ✅ User Bloc (important)
+          BlocProvider<WalletBloc>(create: (_) => WalletBloc()),
+          BlocProvider<UserBloc>.value(value: userBloc),
         ],
         child: const MyApp(),
       ),

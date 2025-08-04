@@ -194,10 +194,7 @@ Widget _buildPackageCard(BuildContext context, Dimensions dimensions,PackageMode
                 children: [
                   Text('BizBooster', style: textStyle16(context, color: CustomColor.appColor)),
                   Text('Growth Partner (GB)', style: textStyle12(context, color: CustomColor.appColor)),
-                  CustomAmountText(
-                    amount: '7,00,000',
-                    fontWeight: FontWeight.w500,
-                  ),
+                  Text('Assure Earning : ₹ 00', style: textStyle12(context, color: CustomColor.greenColor)),
                 ],
               )
             ],
@@ -293,6 +290,13 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
             child: Column(
             children: [
               Row(
+                children: [
+                  Text('Monthly Earnings :', style: textStyle14(context),),
+                  5.width,
+                  CustomAmountText(amount: '${pkg.monthlyEarnings}', fontSize: 14,fontWeight: FontWeight.w500)
+                ],
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
@@ -353,31 +357,38 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
               Divider(),
 
               _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
-              Divider(),
 
-              // if(user.packageAmountPaid == null)
+
+              if(user.packageAmountPaid !=0)
               CustomContainer(
                 backgroundColor: Colors.blue.withOpacity(0.1),
                 child: Column(
                   children: [
-
-                    _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString()),
-
-                     // if(user.remainingAmount != null)
+                
+                    if(user.packageAmountPaid !=0)
                     Column(
                       children: [
-                        Divider(),
-                        _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString()),
+                        Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
                       ],
                     ),
-
-
-                    // if(user.remainingAmount != null)
+                
+                    if(user.remainingAmount != 0)
+                      Column(
+                        children: [
+                          Divider(),
+                          _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString()),
+                        ],
+                      ),
+                
+                
+                    if(user.remainingAmount != 0)
                       Column(
                         children: [
                           10.height,
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              showCustomSnackBar(context, 'This Logic is pending!');
+                            },
                             child: CustomContainer(
                               backgroundColor: CustomColor.appColor,
                               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
@@ -395,7 +406,7 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
 
 
               ///  Buy Now
-              //  if(user.remainingAmount == null)
+               if(user.packageAmountPaid == 0)
               GestureDetector(
                 onTap: () {
                   double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
@@ -555,14 +566,14 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                           onTap: _isLoading ? null : () async {
                             setState(() {_isLoading = true;});
 
-                            await initiatePayment(
+                            await initiatePackagePayment(
                               context: context,
                               amount: isFullPayment ? grandTotal : grandTotal / 2,
                               orderId: 'package_$formattedOrderId',
                               customerId: userSession.userId!,
-                              customerName: '',
-                              customerEmail: '',
-                              customerPhone: '',
+                              customerName: 'Akshay',
+                              customerEmail: 'Akshay@gmail.com',
+                              customerPhone: '8989207770',
                             );
 
                             setState(() {_isLoading = false;});

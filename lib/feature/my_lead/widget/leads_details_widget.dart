@@ -1,6 +1,7 @@
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
@@ -9,6 +10,7 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
 import '../model/leads_model.dart';
+import '../repository/download_invoice_service.dart';
 
 class LeadsDetailsWidget extends StatefulWidget {
   final LeadsModel lead;
@@ -94,8 +96,21 @@ Widget _buildBookingCard(BuildContext context, { required LeadsModel lead}){
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('OTP: ${lead.otp}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
-            Text('Invoice Download', style:  textStyle14(context,color: CustomColor.appColor),),
-          ],
+            InkWell(
+              onTap: () async {
+                final url = Uri.parse('https://biz-booster.vercel.app/api/invoice/${lead.id}');
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: Text(
+                'Invoice Download',
+                style: textStyle14(context, color: CustomColor.appColor),
+              ),
+            )
+         ],
         ),
 
       ],
@@ -381,6 +396,8 @@ Widget _buildRow(BuildContext context, {required String title, required String a
 }
 
 Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
+  print("Commission => ${lead.service?.franchiseDetails?.commission}");
+
   return CustomContainer(
     border: true,
     width: double.infinity,
@@ -394,7 +411,11 @@ Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
           children: [
             Text('Up To', style: textStyle12(context),),
             10.width,
-            Text('00', style: textStyle14(context, color: Colors.green),),
+            Text(
+              lead.service.franchiseDetails?.commission ?? 'N/A',
+              style: textStyle14(context, color: Colors.green),
+            ),
+
           ],
         )  ,
       ],

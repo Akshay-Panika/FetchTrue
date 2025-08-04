@@ -10,15 +10,17 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../package/repository/package_buy_repository.dart';
 import '../model/checkout_model.dart';
 import '../repository/cashfree_service.dart';
 import '../repository/checkout_service.dart';
+import '../repository/service_buy_repository.dart';
+import '../screen/checkout_payment_screen.dart';
 
 
 class CheckPaymentWidget extends StatefulWidget {
   // final VoidCallback onPaymentDone;
-  final void Function(String bookingId) onPaymentDone;
-
+  final void Function(String bookingId, String dateTime, String amount) onPaymentDone;
   final CheckOutModel checkoutData;
 
   const CheckPaymentWidget({
@@ -198,6 +200,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
               ),
 
 
+
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: CustomButton(
@@ -210,7 +213,17 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       }
 
                       setState(() => _isLoading = true);
+                      String? checkoutId;
                       String? bookingId;
+
+                      final now = DateTime.now();
+                      final formattedOrderId =
+                          "${now.day.toString().padLeft(2, '0')}"
+                          "${now.month.toString().padLeft(2, '0')}"
+                          "${now.year.toString().substring(2)}"
+                          "${now.hour.toString().padLeft(2, '0')}"
+                          "${now.minute.toString().padLeft(2, '0')}"
+                          "${now.second.toString().padLeft(2, '0')}";
 
                       try {
                         final isPartial = selectedCashFreeOption == CashFreeOption.partial;
@@ -236,6 +249,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         );
 
                         if (isPac) {
+
                           final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
                           if (!mounted) return;
                           if (checkoutResult != null) {
@@ -243,7 +257,8 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             showCustomSnackBar(context, '✅ Booking confirmed.\nBooking ID: $bookingId');
                             // widget.onPaymentDone();
                             if (bookingId != null && mounted) {
-                              widget.onPaymentDone(bookingId);
+                              print('CheckoutData before API call: ${checkoutResult.paidAmount}');
+                              widget.onPaymentDone(bookingId, checkoutResult.createdAt.toString(), checkoutResult.paidAmount.toString());
                             }
 
                           } else {
@@ -252,31 +267,31 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         }
 
                         else {
-                          // Cashfree flow
-                          final isSuccess = await cashFreeService(
-                            context,
-                            // orderId: bookingId.toString(),
-                            amount: paidAmount,
-                            customerId: widget.checkoutData.serviceCustomer!,
-                            name: '',
-                            email: '',
-                            phone: '',
-                            onPaymentSuccess: () async {
-                              final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
-                              if (!mounted) return;
-                              if (checkoutResult != null) {
-                                bookingId = checkoutResult.bookingId;
-                                showCustomSnackBar(context, '✅ Payment Success, Booking ID: $bookingId');
-                                // widget.onPaymentDone();
-                                widget.onPaymentDone(bookingId!); // Pass to parent
-                              } else {
-                                print('❌ Checkout failed after payment.');
-                              }
-                            },
-                          );
 
-                          if (!isSuccess && mounted) {
-                            print('❌ Payment failed or cancelled..');
+                          final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
+                          if (!mounted) return;
+                          if (checkoutResult != null) {
+
+                            bookingId = checkoutResult.bookingId;
+                            checkoutId = checkoutResult.id;
+
+                            initiateServicePayment(
+                              context: context,
+                              orderId: 'checkout_$formattedOrderId',
+                              checkoutId: checkoutId!,
+                              amount: paidAmount,
+                              customerId: widget.checkoutData.serviceCustomer!,
+                              name: 'Akshay',
+                              phone: '8989207770',
+                              email: 'akshay@gmail.com',
+                              onPaymentSuccess: () {
+                                widget.onPaymentDone(bookingId!, checkoutResult.createdAt.toString(),serviceAmount.toString());
+                              },
+                            );
+
+                          }
+                          else {
+                            showCustomSnackBar(context, '❌ Something went wrong.');
                           }
                         }
                       } catch (e) {

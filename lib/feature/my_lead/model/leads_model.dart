@@ -155,6 +155,8 @@ class ServiceModel {
   final int price;
   final int discount;
   final double discountedPrice;
+  final FranchiseDetails? franchiseDetails;
+
 
   ServiceModel({
     required this.id,
@@ -162,6 +164,8 @@ class ServiceModel {
     required this.price,
     required this.discount,
     required this.discountedPrice,
+    required this.franchiseDetails,
+
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -179,17 +183,23 @@ class ServiceModel {
       price: price,
       discount: discount,
       discountedPrice: double.parse(discountedPrice.toStringAsFixed(2)),
+      franchiseDetails: json['franchiseDetails'] != null
+          ? FranchiseDetails.fromJson(json['franchiseDetails'])
+          : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'serviceName': serviceName,
-      'price': price,
-      'discount': discount,
-      'discountedPrice': discountedPrice,
-    };
+}
+
+class FranchiseDetails {
+  final String? commission;
+
+  FranchiseDetails({this.commission});
+
+  factory FranchiseDetails.fromJson(Map<String, dynamic> json) {
+    return FranchiseDetails(
+      commission: json['commission'] as String?,
+    );
   }
 }
 

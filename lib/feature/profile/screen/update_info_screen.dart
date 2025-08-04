@@ -3,10 +3,13 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../bloc/user_bloc/user_bloc.dart';
+import '../bloc/user_bloc/user_event.dart';
 import '../model/user_model.dart';
 import '../repository/info_service.dart';
 
@@ -68,6 +71,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
     if (success) {
       showCustomSnackBar(context, 'User info saved');
+      context.read<UserBloc>().add(FetchUserById(widget.user.id));
       Navigator.pop(context, true);
     } else {
       showCustomSnackBar(context, 'User info note saved');

@@ -6,7 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 
 
-Future<void> initiatePayment({
+Future<void> initiatePackagePayment({
   required BuildContext context,
   required double amount,
   required String customerId,
