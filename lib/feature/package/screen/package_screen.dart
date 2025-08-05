@@ -20,7 +20,6 @@ import '../../profile/repository/user_service.dart';
 import '../model/package_model.dart';
 import '../repository/package_buy_repository.dart';
 import '../repository/package_service.dart';
-import '../widget/show_payment_bottom_widget.dart';
 
 class PackageScreen extends StatefulWidget {
   final String userId;
@@ -283,7 +282,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                 child: Text('Buy Now', style: textStyle14(context, color: CustomColor.whiteColor),),
                 onTap: () {
                   double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
-                  showPaymentBottomSheet(context, price, _refreshData);
+                  _showPaymentBottomSheet(context, price, _refreshData);
                 },
               ),
 
@@ -423,7 +422,7 @@ Widget _buildAmountRow({String? label, String? amount}){
 }
 
 
-void showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallback? onPaymentSuccess) {
+void _showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallback? onPaymentSuccess) {
   final userSession = Provider.of<UserSession>(context, listen: false);
 
   bool isFullPayment = true;

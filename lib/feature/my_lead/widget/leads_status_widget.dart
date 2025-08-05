@@ -84,7 +84,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                   children: [
                     Column(
                       children: [
-                        const Icon(Icons.check_circle, color: Colors.green),
+                        const Icon(Icons.check_circle, color: Colors.green, size: 18,),
                         // if (!isLast)
                         if(lead.statusType != 'Lead completed')
                           Expanded(
@@ -103,7 +103,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(lead.statusType, style: textStyle14(context)),
+                          Text(lead.statusType, style: textStyle12(context)),
 
                           Row(
                             children: [
@@ -212,8 +212,8 @@ Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? i
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      Icon(icon!, size: iconSize ?? 14,color: iconColor ?? Colors.grey,),
-      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.descriptionColor, fontWeight: fontWeight ??FontWeight.w400),))
+      Icon(icon!, size: iconSize ?? 16,color: iconColor ?? Colors.grey,),
+      Expanded(child: Text(text!, style: textStyle14(context, color: textColor ?? CustomColor.descriptionColor,fontWeight: FontWeight.w400),))
     ],
   );
 }

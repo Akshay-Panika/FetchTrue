@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void CustomBottomSheet({
@@ -19,7 +20,10 @@ void CustomBottomSheet({
         maxChildSize: 0.9,
         expand: false,
         builder: (context, scrollController) {
-          return Center(child: child,);
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: child,
+          );
         },
       );
     },

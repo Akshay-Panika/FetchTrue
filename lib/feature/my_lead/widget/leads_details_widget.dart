@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,56 +10,104 @@ import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
+import '../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../checkout/repository/service_buy_repository.dart';
 import '../model/leads_model.dart';
+import '../repository/checkout_service_buy_repository.dart';
 import '../repository/download_invoice_service.dart';
+import '../repository/lead_details_service.dart';
 
 class LeadsDetailsWidget extends StatefulWidget {
-  final LeadsModel lead;
-  const LeadsDetailsWidget({super.key, required this.lead});
+  final String userId;
+  final String checkoutId;
+  const LeadsDetailsWidget({super.key, required this.checkoutId, required this.userId});
 
   @override
   State<LeadsDetailsWidget> createState() => _LeadsDetailsWidgetState();
 }
 
 class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
+
+  LeadsModel? lead;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCheckoutData();
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await fetchCheckoutData(); // डेटा दोबारा फेच करें
+  }
+
+  Future<void> fetchCheckoutData() async {
+    final data = await LeadDetailsService.fetchCheckoutById(
+      widget.userId,
+      widget.checkoutId,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      lead = data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return   SingleChildScrollView(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-      child: Column(
-        children: [
-          SizedBox(height: dimensions.screenHeight*0.01,),
+    if (isLoading) {
+      return Align(
+          alignment: Alignment.topCenter,
+          child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
+    }
 
-          /// Booking card
-          _buildBookingCard(context , lead: widget.lead),
-          SizedBox(height: dimensions.screenHeight*0.015,),
+    if (lead == null) {
+      return const Center(child: Text("No lead data available"));
+    }
+    return  RefreshIndicator(
+      onRefresh: _refreshData,
+      child: SingleChildScrollView(
+        padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            SizedBox(height: dimensions.screenHeight*0.01,),
 
-          _buildCommissionCard(context, lead: widget.lead),
-          SizedBox(height: dimensions.screenHeight*0.015,),
+            /// Booking card
+            _buildBookingCard(context , lead: lead!),
+            SizedBox(height: dimensions.screenHeight*0.015,),
 
-          /// Custom details card
-          _customerDetails(context, widget.lead),
-          SizedBox(height: dimensions.screenHeight*0.015,),
+            _buildCommissionCard(context, lead: lead!),
+            SizedBox(height: dimensions.screenHeight*0.015,),
+
+            /// Custom details card
+            _customerDetails(context, lead!),
+            SizedBox(height: dimensions.screenHeight*0.015,),
 
 
-          /// Payment status card
-          _buildPaymentStatus(context, widget.lead),
-          SizedBox(height: dimensions.screenHeight*0.015,),
+            /// Payment status card
+            _buildPaymentStatus(context, lead!, _refreshData),
+            SizedBox(height: dimensions.screenHeight*0.015,),
 
-          /// Booking summary card
-          _buildBookingSummary(context,widget.lead),
-          SizedBox(height: dimensions.screenHeight*0.015,),
+            /// Booking summary card
+            _buildBookingSummary(context,lead!),
+            SizedBox(height: dimensions.screenHeight*0.015,),
 
-          /// Provider Card
-          ProviderCardWidget(lead:widget.lead),
-          50.height
-        ],
+            /// Provider Card
+            ProviderCardWidget(lead:lead!),
+            50.height
+          ],
+        ),
       ),
     );
   }
@@ -208,7 +257,7 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
 }
 
 /// Payment status
-Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
+Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? onPaymentSuccess){
   final status = lead.paidAmount == 0
       ? 'Unpaid'
       : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
@@ -258,13 +307,25 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
               ],
             ),
 
-            if(lead.remainingAmount!=0)
+
+            if(lead.paidAmount ==0)
             Padding(
               padding: EdgeInsetsGeometry.only(top: 10),
               child: InkWell(
                 child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+                onTap: () {
+                  _showPaymentBottomSheet(context,lead, onPaymentSuccess);
+                },
               ),
-            )
+            ),
+
+            /// Remaining Pay
+            if(lead.paidAmount !=0 && lead.remainingAmount!=0)
+            Padding(
+              padding: EdgeInsetsGeometry.only(top: 10),
+              child: RemainingPaymentButton(lead: lead,onPaymentSuccess: onPaymentSuccess,),
+            ),
+
           ],
         ),
       ),
@@ -291,6 +352,292 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
     ],
   );
 }
+
+
+void _showPaymentBottomSheet(BuildContext context, LeadsModel lead, VoidCallback? onPaymentSuccess) {
+
+  double fullAmount = lead.totalAmount.toDouble();
+  double halfAmount = fullAmount / 2;
+  double walletBalance = 100.0;
+
+  ValueNotifier<String> paymentType = ValueNotifier('full');
+  ValueNotifier<double> payableAmount = ValueNotifier(fullAmount);
+  ValueNotifier<bool> isWalletApplied = ValueNotifier(false);
+  bool _isLoading = false;
+  final now = DateTime.now();
+  final formattedOrderId =
+      "${now.day.toString().padLeft(2, '0')}/"
+      "${now.month.toString().padLeft(2, '0')}/"
+      "${now.year.toString().substring(2)}/_"
+      "${now.hour.toString().padLeft(2, '0')}:"
+      "${now.minute.toString().padLeft(2, '0')}:"
+      "${now.second.toString().padLeft(2, '0')}";
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: false,
+    backgroundColor: WidgetStateColor.transparent,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (BuildContext bottomSheetContext) {
+      return DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return CustomContainer(
+                  backgroundColor: CustomColor.whiteColor,
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      Text('Service Amount : ₹ $fullAmount', style: textStyle16(context)),
+                      const SizedBox(height: 10),
+
+                      /// Wallet Container
+                      CustomContainer(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomAmountText(
+                                  amount: '${walletBalance.toStringAsFixed(2)}',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: CustomColor.appColor,
+                                ),
+                                Text('Wallet Balance', style: textStyle12(context)),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  isWalletApplied.value = !isWalletApplied.value;
+                                  if (isWalletApplied.value) {
+                                    payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+                                  } else {
+                                    payableAmount.value = paymentType.value == 'full' ? fullAmount : halfAmount;
+                                  }
+                                });
+                              },
+                              child: Text(isWalletApplied.value ? 'Remove' : 'Apply'),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      /// Payment Type
+                      CustomContainer(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            /// Full Payment
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'full',
+                                  groupValue: paymentType.value,
+                                  activeColor: CustomColor.appColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      paymentType.value = value!;
+                                      payableAmount.value = fullAmount;
+                                      if (isWalletApplied.value) {
+                                        payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+                                      }
+                                    });
+                                  },
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Full Payment', style: textStyle14(context)),
+                                    CustomAmountText(
+                                      amount: fullAmount.toStringAsFixed(2),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: CustomColor.appColor,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            /// Partial Payment
+                            Row(
+                              children: [
+                                Radio<String>(
+                                  value: 'half',
+                                  groupValue: paymentType.value,
+                                  activeColor: CustomColor.appColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      paymentType.value = value!;
+                                      payableAmount.value = halfAmount;
+                                      if (isWalletApplied.value) {
+                                        payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+                                      }
+                                    });
+                                  },
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Partial Payment', style: textStyle14(context)),
+                                    CustomAmountText(
+                                      amount: halfAmount.toStringAsFixed(2),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: CustomColor.appColor,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 100),
+
+                      /// Final Amount and Button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ValueListenableBuilder<double>(
+                            valueListenable: payableAmount,
+                            builder: (context, value, _) {
+                              return Text(
+                                'Pay Amount: ₹ ${value.toStringAsFixed(2)}',
+                                style: textStyle14(context),
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: StatefulBuilder(
+                              builder: (context, innerSetState) {
+                                return CustomButton(
+                                    isLoading: _isLoading,
+                                    label: 'Pay Now',
+                                    onPressed: () async {
+                                      // innerSetState(() => isLoading = true);
+                                      setState(() => _isLoading = true);
+
+                                      final result = await initiateCheckoutServicePayment(
+                                        context: context,
+                                        orderId: 'checkout_$formattedOrderId',
+                                        checkoutId: lead.id,
+                                        amount: payableAmount.value.toInt(),
+                                        customerId: lead.serviceCustomer.id,
+                                        name: 'Akshay',
+                                        phone: '8989207770',
+                                        email: 'akshay@gmail.com',
+                                      );
+
+                                      setState(() => _isLoading = false);
+                                      // innerSetState(() => isLoading = false);
+
+                                      if (result == true) {
+                                        onPaymentSuccess?.call();
+                                        Navigator.pop(bottomSheetContext, true);
+                                      }
+                                    }
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+class RemainingPaymentButton extends StatefulWidget {
+  final LeadsModel lead;
+  final VoidCallback? onPaymentSuccess;
+
+  const RemainingPaymentButton({super.key, this.onPaymentSuccess, required this.lead});
+
+  @override
+  State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
+}
+
+class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+
+    final now = DateTime.now();
+    final formattedOrderId =
+        "${now.day.toString().padLeft(2, '0')}/"
+        "${now.month.toString().padLeft(2, '0')}/"
+        "${now.year.toString().substring(2)}/_"
+        "${now.hour.toString().padLeft(2, '0')}:"
+        "${now.minute.toString().padLeft(2, '0')}:"
+        "${now.second.toString().padLeft(2, '0')}";
+
+    return InkWell(
+      onTap: _isLoading
+          ? null
+          : () async {
+        setState(() {
+          _isLoading = true;
+        });
+
+        final result = await initiateCheckoutServicePayment(
+          context: context,
+          orderId: 'checkout_$formattedOrderId',
+          checkoutId: widget.lead.id,
+          amount: widget.lead.remainingAmount,
+          customerId: widget.lead.serviceCustomer.id,
+          name: 'Akshay',
+          phone: '8989207770',
+          email: 'akshay@gmail.com',
+        );
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result == true) {
+          // print("Payment Success");
+          widget.onPaymentSuccess?.call();
+        }
+      },
+      child: _isLoading
+          ?  SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(
+          color: CustomColor.appColor,
+        ),
+      )
+          :  Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+    );
+  }
+}
+
 
 Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
   String formatPrice(num? value) {
@@ -404,4 +751,3 @@ Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
     ),
   );
 }
-
