@@ -1,12 +1,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_url_launch.dart';
 import '../../../helper/Contact_helper.dart';
 
 class HelpSupportScreen extends StatelessWidget {
@@ -15,6 +17,7 @@ class HelpSupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Help & Support', showBackButton: true,),
@@ -31,7 +34,11 @@ class HelpSupportScreen extends StatelessWidget {
                  50.height,
                  Text('Contact us through email',style: textStyle16(context),),
                  Text('You can send us email though',style: textStyle12(context, color: CustomColor.descriptionColor),),
-                 Text('info@fetchtrue.com',style: textStyle14(context, color: CustomColor.appColor),),
+                 InkWell(
+                     onTap: () {
+                       CustomUrlLaunch('https://www.fetchtrue.com');
+                     },
+                     child: Text('info@fetchtrue.com',style: textStyle14(context, color: CustomColor.appColor),)),
                  Text('Typically the support team send you any feedback in 2 hours', style: textStyle14(context, fontWeight: FontWeight.w400),),
                  20.height,
 
@@ -54,6 +61,7 @@ class HelpSupportScreen extends StatelessWidget {
                              Text('Email', style: textStyle14(context, color: CustomColor.appColor),),
                            ],
                          ),
+
                        ),
                      ),
                      Expanded(
@@ -81,3 +89,5 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 }
+
+

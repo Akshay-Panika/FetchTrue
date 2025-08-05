@@ -77,7 +77,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                         itemBuilder: (context, index) {
               final lead = leadData!.leads[index];
               final isLast = index == leadData!.leads.length - 1;
-              
+
               return IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                       children: [
                         const Icon(Icons.check_circle, color: Colors.green),
                         // if (!isLast)
-                        if(lead.statusType != 'Completed')
+                        if(lead.statusType != 'Lead completed')
                           Expanded(
                             child: Container(
                               width: 3,
@@ -103,25 +103,25 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(lead.statusType, style: textStyle14(context)),
+
                           Row(
                             children: [
-                              Text(lead.statusType, style: textStyle14(context)),
+                              Text(
+                                "Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(lead.createdAt.toLocal())}",
+                                style: textStyle12(context, color: CustomColor.descriptionColor),
+                              ),
                               10.width,
 
-                              Text('( Admin )', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                              Text('( Provider )', style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400)),
                             ],
                           ),
-              
-                          Text(
-                            "Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(lead.createdAt.toLocal())}",
-                            style: textStyle12(context, color: CustomColor.descriptionColor),
-                          ),
                           5.height,
-              
+
                           if (lead.description != null && lead.description!.isNotEmpty)
                             Text(lead.description!, style: const TextStyle(fontSize: 14)),
-              
-              
+
+
                           if (lead.zoomLink.isNotEmpty)
                             InkWell(
                               onTap: () async {
@@ -147,7 +147,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                               ),
                             ),
                           5.height,
-              
+
                           if (lead.paymentLink != null)
                             CustomContainer(
                               width: 300,
@@ -166,7 +166,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                                 ],
                               ),
                             ),
-              
+
                           15.height
                         ],
                       ),
@@ -205,8 +205,6 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
     return DateFormat('dd MMM yyyy').format(date);
   }
 }
-
-
 
 Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? iconColor, String? text, Color? textColor,FontWeight? fontWeight}){
   return Row(

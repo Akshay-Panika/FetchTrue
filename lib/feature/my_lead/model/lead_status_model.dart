@@ -2,16 +2,12 @@
 class LeadStatusModel {
   final String id;
   final String checkout;
-  final int amount;
-  final String newCommission;
   final bool? isAdminApproved;
   final List<LeadStatusItem> leads;
 
   LeadStatusModel({
     required this.id,
     required this.checkout,
-    required this.amount,
-    required this.newCommission,
     required this.isAdminApproved,
     required this.leads,
   });
@@ -20,8 +16,6 @@ class LeadStatusModel {
     return LeadStatusModel(
       id: json['_id'],
       checkout: json['checkout'],
-      amount: json['amount'],
-      newCommission: json['newCommission'],
       isAdminApproved: json['isAdminApproved'],
       leads: (json['leads'] as List)
           .map((e) => LeadStatusItem.fromJson(e))
@@ -53,8 +47,8 @@ class LeadStatusItem {
 
   factory LeadStatusItem.fromJson(Map<String, dynamic> json) {
     return LeadStatusItem(
-      statusType: json['statusType'],
-      description: json['description'],
+      statusType: json['statusType'] ?? '',
+      description: json['description'] ?? '',
       zoomLink: json['zoomLink'] ?? '',
       paymentLink: json['paymentLink'],
       paymentType: json['paymentType'],
@@ -64,3 +58,4 @@ class LeadStatusItem {
     );
   }
 }
+

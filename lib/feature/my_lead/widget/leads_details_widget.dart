@@ -1,6 +1,8 @@
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
@@ -8,7 +10,10 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../../helper/Contact_helper.dart';
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../checkout/repository/service_buy_repository.dart';
 import '../model/leads_model.dart';
 import '../repository/download_invoice_service.dart';
 
@@ -29,7 +34,7 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
       child: Column(
         children: [
           SizedBox(height: dimensions.screenHeight*0.01,),
-      
+
           /// Booking card
           _buildBookingCard(context , lead: widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
@@ -40,16 +45,16 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
           /// Custom details card
           _customerDetails(context, widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
-      
-      
+
+
           /// Payment status card
           _buildPaymentStatus(context, widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
-      
+
           /// Booking summary card
           _buildBookingSummary(context,widget.lead),
           SizedBox(height: dimensions.screenHeight*0.015,),
-      
+
           /// Provider Card
           ProviderCardWidget(lead:widget.lead),
           50.height
@@ -204,109 +209,86 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
 
 /// Payment status
 Widget _buildPaymentStatus(BuildContext context, LeadsModel lead){
+  final status = lead.paidAmount == 0
+      ? 'Unpaid'
+      : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
 
-  String getPaymentStatus(LeadsModel lead) {
-    final paid = lead.paidAmount;
-    final remaining = lead.remainingAmount;
-
-    if ((paid == null || paid == 0) && (remaining == null || remaining == 0)) {
-      return 'Unpaid';
-    } else if (paid != null && paid > 0 && remaining != null && remaining > 0) {
-      return 'Pending';
-    } else if (paid != null && paid > 0 && (remaining == null || remaining == 0)) {
-      return 'Paid';
-    } else {
-      return 'Unpaid';
-    }
-  }
-
-  Color getPaymentStatusColor(String status) {
-    switch (status) {
-      case 'Paid':
-        return Colors.green;
-      case 'Pending':
-        return Colors.orangeAccent;
-      case 'Unpaid':
-        return Colors.redAccent;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  final status = getPaymentStatus(lead);
-  final statusColor = getPaymentStatusColor(status);
-  return CustomContainer(
-    border: true,
-    backgroundColor: Colors.white,
-    margin: EdgeInsets.zero,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+  // final status =  lead.paidAmount !=0 ? 'Paid' : (lead.paidAmount !=0 && lead.remainingAmount !=0) ?'Pending':'Unpaid';
+    return Stack(
+    children: [
+      CustomContainer(
+        border: true,
+        backgroundColor: Colors.white,
+        margin: EdgeInsets.zero,
+        child: Column(
           children: [
-            Text('Payment Status', style: textStyle12(context),),
-            10.width,
-            Text('( $status )', style: textStyle12(context, color: statusColor),),
-          ],
-        ),
-        Text(
-          'Payment Type: ${lead.paymentMethod.map((method) {
-            switch (method) {
-              case 'pac':
-                return 'Pay After Consultation';
-              case 'cashfree':
-                return 'Cashfree';
-              case 'wallet':
-                return 'Wallet';
-              default:
-                return method;
-            }
-          }).join(', ')}',
-          style: textStyle12(context, fontWeight: FontWeight.w400),
-        ),
-        if (!lead.paymentMethod.contains('pac'))
-        Text('Transaction Id : N/A',  style: textStyle12(context, fontWeight: FontWeight.w400),),
-        Divider(thickness: 0.4,),
+            Row(
+              children: [
+                Text('Payment Status', style: textStyle12(context),),
+                10.width,
+                Text('( $status )', style: textStyle12(context, color: status == 'Paid'? CustomColor.appColor:status == 'Unpaid'? CustomColor.redColor : CustomColor.descriptionColor),),
+              ],
+            ),
+            Divider(),
 
-        Column(
-          spacing: 10,
-          children: [
-            if (lead.walletAmount !=0)
-            _buildRow(
-              context,
-              title: 'Wallet Amount',
-              amount: '₹ ${lead.walletAmount}',
+            Column(
+             spacing: 5,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Payment Method: ${lead.paymentMethod.map((method) {
+                    switch (method) {
+                      case 'pac':
+                        return 'Pay After Consultation';
+                      case 'cashfree':
+                        return 'Cashfree';
+                      case 'wallet':
+                        return 'Wallet';
+                      default:
+                        return method;
+                    }
+                  }).join(', ')}',
+                  style: textStyle12(context, fontWeight: FontWeight.w400),
+                ),
+
+                if(lead.paidAmount!=0)
+                 _buildRow(context, title: 'Paid Amount', amount: '₹ ${lead.paidAmount}',),
+                if(lead.remainingAmount !=0)
+                _buildRow(context, title: 'Remaining Amount', amount: '₹ ${lead.remainingAmount}',),
+              ],
             ),
 
-            if (lead.paidAmount !=0)
-            _buildRow(
-              context,
-              title: 'Paid Amount',
-              amount: '₹ ${lead.paidAmount}',
-            ),
-
-            if (lead.remainingAmount !=0)
-            _buildRow(
-              context,
-              title: 'Remaining Amount',
-              amount: '₹ ${lead.remainingAmount}',
-            ),
+            if(lead.remainingAmount!=0)
+            Padding(
+              padding: EdgeInsetsGeometry.only(top: 10),
+              child: InkWell(
+                child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+              ),
+            )
           ],
         ),
-        if(status != 'Paid')
-        10.height,
+      ),
 
-        if(status != 'Paid')
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+      Positioned(
+          top: -5,
+          right: 5,
+          child: IconButton(
+              onPressed: () {
+                final userSession = Provider.of<UserSession>(context, listen: false);
+                final serviceId =lead.service.id;
+                final userId = serviceId.isNotEmpty ?  userSession.userId: null;
 
-            Text('Share Link',style: textStyle14(context, color: CustomColor.appColor),),
-            Text('Pay Now',style: textStyle14(context, color: CustomColor.greenColor),),
-          ],
-        ),
-      ],
-    ),
+                print('-----------serviceId: $serviceId------userId: $userId---------');
+
+                if (userId != null) {
+                  final shareUrl = 'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
+                  Share.share('Check out this service on FetchTrue:\n$shareUrl');
+                } else {
+                  showCustomSnackBar(context,  'Please wait data is loading.');
+                }
+              },
+              icon: Icon(Icons.share,color: CustomColor.appColor,)))
+    ],
   );
 }
 
@@ -360,7 +342,7 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
         ),
         _buildRow(
           context,
-          title: 'Platform Fee (${lead.platformFee}%)',
+          title: 'Platform Fee (₹ ${lead.platformFee})',
           // amount: '+ ₹ ${lead.platformFeePrice}',
           amount: '+ ₹ ${formatPrice(lead.platformFeePrice)}',
 

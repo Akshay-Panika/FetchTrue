@@ -8,6 +8,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_url_launch.dart';
 import '../../auth/screen/auth_screen.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../cancellation_policy/screen/cancellation_policy_screen.dart';
@@ -111,13 +112,16 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
                   }),
                   _buildTile(context, Icons.security, "Privacy & Policy", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
+                    CustomUrlLaunch('https://www.fetchtrue.com/privacypolicy');
+                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
                   }),
                   _buildTile(context, Icons.rule, "Terms And Conditions", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
+                    CustomUrlLaunch('https://www.fetchtrue.com/termsandcondition');
+                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
                   }),
                   _buildTile(context, Icons.receipt_long, "Refund Policy", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
+                    CustomUrlLaunch('https://www.fetchtrue.com/refund&returnpolicy');
+                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
                   }),
                   _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));

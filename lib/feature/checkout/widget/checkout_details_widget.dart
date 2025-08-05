@@ -83,25 +83,22 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
 // ✅ GST, Platform Fee, Assurity Fee Calculate करो
     final double gstPercent = data.gst?.toDouble() ?? 0.0;
-    final double platformFeePercent = _commission?.platformFee?.toDouble() ?? 0.0;
     final double assurityFeePercent = _commission?.assurityFee?.toDouble() ?? 0.0;
 
+// 🔁 platformFee is now a fixed amount
+    final double platformFeeAmount = _commission?.platformFee?.toDouble() ?? 0.0;
+
+// ✅ GST & AssurityFee are still percentage based
     final double gstAmount = afterCouponPrice * gstPercent / 100;
-    final double platformFeeAmount = afterCouponPrice * platformFeePercent / 100;
     final double assurityFeeAmount = afterCouponPrice * assurityFeePercent / 100;
 
+// ✅ Grand Total calculation (platformFeeAmount is fixed now)
     final double grandTotal = afterCouponPrice + gstAmount + platformFeeAmount + assurityFeeAmount;
-
-    // String removeTrailingZero(double value) {
-    //   if (value == value.toInt()) {
-    //     return value.toInt().toString();
-    //   }
-    //   return value.toStringAsFixed(2);
-    // }
 
     String formatPrice(num value) {
       return value.round().toString();
     }
+
 
 
     return Column(
@@ -446,7 +443,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
               ),
               _buildRow(
                 context,
-                title: 'Platform Fee (${platformFeePercent.toStringAsFixed(0)} %)',
+                title: 'Platform Fee (₹ ${platformFeeAmount.toStringAsFixed(0)})',
                 amount: '+ ₹ ${formatPrice(platformFeeAmount)}',
               ),
               _buildRow(

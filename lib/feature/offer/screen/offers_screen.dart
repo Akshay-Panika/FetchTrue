@@ -57,7 +57,7 @@ class _OffersScreenState extends State<OffersScreen> {
                 height: 200,
                 border: true,
                 backgroundColor: CustomColor.whiteColor,
-                networkImg: offer.bannerImage,
+                networkImg: offer.thumbnailImage,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OffersDetailsScreen(offersFuture: offer,),)),
               );
             },

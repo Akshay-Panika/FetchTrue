@@ -8,3 +8,4 @@ void CustomUrlLaunch(String url) async {
     print('Could not launch $url');
   }
 }
+

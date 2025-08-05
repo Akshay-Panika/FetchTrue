@@ -172,7 +172,6 @@ class ServiceModel {
     final int price = json['price'] ?? 0;
     final int discount = json['discount'] ?? 0;
 
-    // अगर discountedPrice नहीं दिया गया है तो खुद से calculate करें
     final double discountedPrice = json.containsKey('discountedPrice')
         ? (json['discountedPrice'] as num).toDouble()
         : price - ((discount / 100) * price);
@@ -198,7 +197,7 @@ class FranchiseDetails {
 
   factory FranchiseDetails.fromJson(Map<String, dynamic> json) {
     return FranchiseDetails(
-      commission: json['commission'] as String?,
+      commission: json['commission'],
     );
   }
 }

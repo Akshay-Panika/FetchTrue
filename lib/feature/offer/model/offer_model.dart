@@ -1,5 +1,6 @@
 class OfferModel {
   final String id;
+  final String thumbnailImage;
   final String bannerImage;
   final DateTime offerStartTime;
   final DateTime offerEndTime;
@@ -12,6 +13,7 @@ class OfferModel {
 
   OfferModel({
     required this.id,
+    required this.thumbnailImage,
     required this.bannerImage,
     required this.offerStartTime,
     required this.offerEndTime,
@@ -26,6 +28,7 @@ class OfferModel {
   factory OfferModel.fromJson(Map<String, dynamic> json) {
     return OfferModel(
       id: json["_id"],
+      thumbnailImage: json["thumbnailImage"] ?? '',
       bannerImage: json["bannerImage"] ?? '',
       offerStartTime: DateTime.tryParse(json["offerStartTime"] ?? '') ?? DateTime.now(),
       offerEndTime: DateTime.tryParse(json["offerEndTime"] ?? '') ?? DateTime.now(),

@@ -153,88 +153,143 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                 ),
               ),
             ),
-
-
-            // FutureBuilder<List<PackageModel>>(
-            //   future: futurePackages,
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return Padding(
-            //         padding: const EdgeInsets.only(top: 250.0),
-            //         child: Center(
-            //           child: CircularProgressIndicator(color: CustomColor.appColor),
-            //         ),
-            //       );
-            //     } else if (snapshot.hasError) {
-            //       return Center(child: Text("Error: ${snapshot.error}"));
-            //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            //       return const Center(child: Text("No packages found"));
-            //     }
-            //
-            //     _packageData = snapshot.data!;
-            //     final PackageModel pkg = _packageData[0];
-            //
-            //     return Expanded(
-            //       child: ListView(
-            //         children: [
-            //           Center(
-            //             child: CarouselSlider.builder(
-            //               itemCount: _packages.length,
-            //               carouselController: _carouselController,
-            //               itemBuilder: (context, index, realIndex) {
-            //                 final descKey = _packages[index].toLowerCase();
-            //                 final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
-            //
-            //                 // ✅ apka original custom card
-            //                 return _buildPackageCard(context, dimensions, pkg, htmlDesc);
-            //               },
-            //               options: CarouselOptions(
-            //                 enlargeCenterPage: true,
-            //                 viewportFraction: 0.80,
-            //                 autoPlay: true,
-            //                 initialPage: _isSelectedTap,
-            //                 height: dimensions.screenHeight * 0.5,
-            //                 onPageChanged: (index, reason) {
-            //                   setState(() {
-            //                     _isSelectedTap = index;
-            //                     _tabController.animateTo(index); // ✅ Tab auto update
-            //                   });
-            //                 },
-            //               ),
-            //             ),
-            //           ),
-            //
-            //           10.height,
-            //           BlocProvider(
-            //             create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId!)),
-            //             child:  BlocBuilder<UserBloc, UserState>(
-            //               builder: (context, state) {
-            //                 if (state is UserLoading) {
-            //                   return const Center(child: CircularProgressIndicator());
-            //                 }
-            //
-            //                 else if (state is UserLoaded) {
-            //                   final user = state.user;
-            //                   return  _buildAssuranceSection(context,pkg, user);
-            //                 }
-            //                 else if (state is UserError) {
-            //                   return Center(child: Text('Error: ${state.message}'));
-            //                 }
-            //                 return const Center(child: Text("No Data"));
-            //               },
-            //             ),
-            //           ),
-            //           50.height
-            //
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // ),
           ],
         ),
       ),
     );
+  }
+  /// Assurance Section
+  Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel user) {
+    return
+      CustomContainer(
+        border: true,
+        borderColor: CustomColor.appColor,
+        backgroundColor: CustomColor.whiteColor,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text('Monthly Earnings :', style: textStyle14(context),),
+                5.width,
+                CustomAmountText(amount: '${pkg.monthlyEarnings}', fontSize: 14,fontWeight: FontWeight.w500)
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      RichText(
+                        text: TextSpan(children: [
+                          TextSpan(
+                              text: 'We assure you  ',
+                              style: textStyle14(context)),
+                          TextSpan(
+                            text: '5X Return ',
+                            style: textStyle16(context,
+                                color: CustomColor.appColor),
+                          ),
+                        ]),
+                      ),
+                      10.height,
+                      Text(
+                        'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
+                        style: textStyle12(context,
+                            color: CustomColor.descriptionColor),
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('Franchise Fees'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                        CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                      ],
+                    ),
+                    CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
+                  ],
+                ),
+              ],
+            ),
+            Divider(),
+
+            _buildAmountRow(label: 'Franchise Deposit', amount: '${pkg.deposit}'),
+            Divider(),
+
+            _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
+
+            if(user.packageAmountPaid !=0 && user.remainingAmount == 0)
+            /// Full Amount
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: CustomContainer(
+                  margin: EdgeInsets.zero,
+                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  child: Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
+                ),
+              ),
+
+            if(user.packageAmountPaid ==0)
+              Divider(),
+
+
+
+            if(user.remainingAmount !=0)
+            /// Half Amount
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: CustomContainer(
+                  margin: EdgeInsets.zero,
+                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  child: Column(
+                    children: [
+                      Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
+                      Divider(),
+                      Center(child:  _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString())),
+                      Divider(),
+
+                      /// Pay now button
+                      RemainingPaymentButton(grandTotal: user.remainingAmount!.toDouble(),onPaymentSuccess: _refreshData,),
+                    ],
+                  ),
+                ),
+              ),
+
+
+
+            /// Pay now button
+            if(user.packageAmountPaid ==0)
+              CustomContainer(
+                backgroundColor: CustomColor.appColor,
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                child: Text('Buy Now', style: textStyle14(context, color: CustomColor.whiteColor),),
+                onTap: () {
+                  double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
+                  showPaymentBottomSheet(context, price, _refreshData);
+                },
+              ),
+
+          ],
+        ),
+      );
   }
 }
 
@@ -356,141 +411,6 @@ Widget _buildDefineText(BuildContext context,
   );
 }
 
-/// Assurance Section
-Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel user) {
-  return
-    CustomContainer(
-            border: true,
-            borderColor: CustomColor.appColor,
-            backgroundColor: CustomColor.whiteColor,
-            child: Column(
-            children: [
-              Row(
-                children: [
-                  Text('Monthly Earnings :', style: textStyle14(context),),
-                  5.width,
-                  CustomAmountText(amount: '${pkg.monthlyEarnings}', fontSize: 14,fontWeight: FontWeight.w500)
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: Image.asset('assets/package/packageBuyImg.png',)),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                                text: 'We assure you  ',
-                                style: textStyle14(context)),
-                            TextSpan(
-                              text: '5X Return ',
-                              style: textStyle16(context,
-                                  color: CustomColor.appColor),
-                            ),
-                          ]),
-                        ),
-                        10.height,
-                        Text(
-                          'If you earn less than our assured earnings, we’ll refund up to 5X your initial amount',
-                          style: textStyle12(context,
-                              color: CustomColor.descriptionColor),
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('Franchise Fees'),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                          CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
-                        ],
-                      ),
-                      CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
-                    ],
-                  ),
-                ],
-              ),
-              Divider(),
-
-              _buildAmountRow(label: 'Franchise Deposit', amount: '${pkg.deposit}'),
-              Divider(),
-
-              _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
-
-              if(user.packageAmountPaid !=0 && user.remainingAmount == 0)
-              /// Full Amount
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: CustomContainer(
-                  margin: EdgeInsets.zero,
-                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
-                  child: Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
-                ),
-              ),
-
-              if(user.packageAmountPaid ==0)
-              Divider(),
-
-
-
-              if(user.remainingAmount !=0)
-              /// Half Amount
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: CustomContainer(
-                  margin: EdgeInsets.zero,
-                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
-                  child: Column(
-                    children: [
-                      Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
-                      Divider(),
-                      Center(child:  _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString())),
-                      Divider(),
-
-                      /// Pay now button
-                      RemainingPaymentButton(grandTotal: user.remainingAmount!.toDouble(),),
-                    ],
-                  ),
-                ),
-              ),
-
-
-
-              /// Pay now button
-              if(user.packageAmountPaid ==0)
-                CustomContainer(
-                  backgroundColor: CustomColor.appColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-                  child: Text('Buy Now', style: textStyle14(context, color: CustomColor.whiteColor),),
-                  onTap: () {
-                    double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
-                    showPaymentBottomSheet(context, price);
-                  },
-                ),
-
-            ],
-            ),
-    );
-}
-
-
 
 Widget _buildAmountRow({String? label, String? amount}){
   return  Row(
@@ -503,7 +423,7 @@ Widget _buildAmountRow({String? label, String? amount}){
 }
 
 
-void showPaymentBottomSheet(BuildContext context, double grandTotal) {
+void showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallback? onPaymentSuccess) {
   final userSession = Provider.of<UserSession>(context, listen: false);
 
   bool isFullPayment = true;
@@ -647,6 +567,7 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                             });
 
                             if (result == true) {
+                              onPaymentSuccess?.call();
                               Navigator.pop(context, true);
                             }
                           },
@@ -676,8 +597,9 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
 
 class RemainingPaymentButton extends StatefulWidget {
   final double grandTotal;
+  final VoidCallback? onPaymentSuccess; // ✅ callback for success
 
-  const RemainingPaymentButton({super.key, required this.grandTotal});
+  const RemainingPaymentButton({super.key, required this.grandTotal, this.onPaymentSuccess});
 
   @override
   State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
@@ -727,8 +649,8 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         });
 
         if (result == true) {
-          // Do nothing or show a success toast/snackbar
           print("Payment Success");
+          widget.onPaymentSuccess?.call();
         }
       },
       child: _isLoading

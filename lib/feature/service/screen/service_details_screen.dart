@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/module_service/module_service_bloc.dart';
 import '../bloc/module_service/module_service_event.dart';
 import '../bloc/module_service/module_service_state.dart';
@@ -166,8 +168,11 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                   height: double.infinity,
                   child: InkWell(
                     onTap: () {
+                      final userSession = Provider.of<UserSession>(context, listen: false);
                       final serviceId = widget.serviceId;
-                      final userId = services.isNotEmpty ? services.first.id : null;
+                      final userId = services.isNotEmpty ?  userSession.userId: null;
+
+                      print('-----------serviceId: $serviceId------userId: $userId---------');
 
                       if (userId != null) {
                         final shareUrl = 'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
@@ -176,7 +181,6 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                         showCustomSnackBar(context,  'Please wait data is loading.');
                       }
                     },
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
