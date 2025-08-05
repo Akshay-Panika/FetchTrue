@@ -2,16 +2,13 @@ import 'package:fetchtrue/core/widgets/no_user_sign_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../auth/screen/auth_screen.dart'; // ✅ import auth screen
 import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../profile/bloc/user_bloc/user_event.dart';
 import '../repository/delete_user_service.dart';

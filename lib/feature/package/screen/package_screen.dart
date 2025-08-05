@@ -47,6 +47,11 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
     _tabController = TabController(length: _packages.length, vsync: this);
   }
 
+  Future<void> _refreshData() async {
+    setState(() {
+      futurePackages = PackageService.fetchPackages();
+    });
+  }
 
   @override
   void dispose() {
@@ -79,82 +84,153 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
             ),
             20.height,
 
-            FutureBuilder<List<PackageModel>>(
-              future: futurePackages,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 250.0),
-                    child: Center(
-                      child: CircularProgressIndicator(color: CustomColor.appColor),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Error: ${snapshot.error}"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No packages found"));
-                }
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshData,
+                child: FutureBuilder<List<PackageModel>>(
+                  future: futurePackages,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(color: CustomColor.appColor),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text("No packages found"));
+                    }
 
-                _packageData = snapshot.data!;
-                final PackageModel pkg = _packageData[0];
+                    final PackageModel pkg = snapshot.data![0];
 
-                return Expanded(
-                  child: ListView(
-                    children: [
-                      Center(
-                        child: CarouselSlider.builder(
-                          itemCount: _packages.length,
-                          carouselController: _carouselController,
-                          itemBuilder: (context, index, realIndex) {
-                            final descKey = _packages[index].toLowerCase();
-                            final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
-
-                            // ✅ apka original custom card
-                            return _buildPackageCard(context, dimensions, pkg, htmlDesc);
-                          },
-                          options: CarouselOptions(
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.80,
-                            autoPlay: true,
-                            initialPage: _isSelectedTap,
-                            height: dimensions.screenHeight * 0.5,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _isSelectedTap = index;
-                                _tabController.animateTo(index); // ✅ Tab auto update
-                              });
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        Center(
+                          child: CarouselSlider.builder(
+                            itemCount: _packages.length,
+                            carouselController: _carouselController,
+                            itemBuilder: (context, index, realIndex) {
+                              final descKey = _packages[index].toLowerCase();
+                              final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
+                              return _buildPackageCard(context, dimensions, pkg, htmlDesc);
+                            },
+                            options: CarouselOptions(
+                              enlargeCenterPage: true,
+                              viewportFraction: 0.80,
+                              autoPlay: true,
+                              initialPage: _isSelectedTap,
+                              height: dimensions.screenHeight * 0.5,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _isSelectedTap = index;
+                                  _tabController.animateTo(index);
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        10.height,
+                        BlocProvider(
+                          create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId)),
+                          child: BlocBuilder<UserBloc, UserState>(
+                            builder: (context, state) {
+                              if (state is UserLoading) {
+                                return const Center(child: CircularProgressIndicator());
+                              } else if (state is UserLoaded) {
+                                final user = state.user;
+                                return _buildAssuranceSection(context, pkg, user);
+                              } else if (state is UserError) {
+                                return Center(child: Text('Error: ${state.message}'));
+                              }
+                              return const Center(child: Text("No Data"));
                             },
                           ),
                         ),
-                      ),
-
-                      10.height,
-                      BlocProvider(
-                        create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId!)),
-                        child:  BlocBuilder<UserBloc, UserState>(
-                          builder: (context, state) {
-                            if (state is UserLoading) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-
-                            else if (state is UserLoaded) {
-                              final user = state.user;
-                              return  _buildAssuranceSection(context,pkg, user);
-                            }
-                            else if (state is UserError) {
-                              return Center(child: Text('Error: ${state.message}'));
-                            }
-                            return const Center(child: Text("No Data"));
-                          },
-                        ),
-                      ),
-                      50.height
-
-                    ],
-                  ),
-                );
-              },
+                        50.height
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
+
+
+            // FutureBuilder<List<PackageModel>>(
+            //   future: futurePackages,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return Padding(
+            //         padding: const EdgeInsets.only(top: 250.0),
+            //         child: Center(
+            //           child: CircularProgressIndicator(color: CustomColor.appColor),
+            //         ),
+            //       );
+            //     } else if (snapshot.hasError) {
+            //       return Center(child: Text("Error: ${snapshot.error}"));
+            //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            //       return const Center(child: Text("No packages found"));
+            //     }
+            //
+            //     _packageData = snapshot.data!;
+            //     final PackageModel pkg = _packageData[0];
+            //
+            //     return Expanded(
+            //       child: ListView(
+            //         children: [
+            //           Center(
+            //             child: CarouselSlider.builder(
+            //               itemCount: _packages.length,
+            //               carouselController: _carouselController,
+            //               itemBuilder: (context, index, realIndex) {
+            //                 final descKey = _packages[index].toLowerCase();
+            //                 final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
+            //
+            //                 // ✅ apka original custom card
+            //                 return _buildPackageCard(context, dimensions, pkg, htmlDesc);
+            //               },
+            //               options: CarouselOptions(
+            //                 enlargeCenterPage: true,
+            //                 viewportFraction: 0.80,
+            //                 autoPlay: true,
+            //                 initialPage: _isSelectedTap,
+            //                 height: dimensions.screenHeight * 0.5,
+            //                 onPageChanged: (index, reason) {
+            //                   setState(() {
+            //                     _isSelectedTap = index;
+            //                     _tabController.animateTo(index); // ✅ Tab auto update
+            //                   });
+            //                 },
+            //               ),
+            //             ),
+            //           ),
+            //
+            //           10.height,
+            //           BlocProvider(
+            //             create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId!)),
+            //             child:  BlocBuilder<UserBloc, UserState>(
+            //               builder: (context, state) {
+            //                 if (state is UserLoading) {
+            //                   return const Center(child: CircularProgressIndicator());
+            //                 }
+            //
+            //                 else if (state is UserLoaded) {
+            //                   final user = state.user;
+            //                   return  _buildAssuranceSection(context,pkg, user);
+            //                 }
+            //                 else if (state is UserError) {
+            //                   return Center(child: Text('Error: ${state.message}'));
+            //                 }
+            //                 return const Center(child: Text("No Data"));
+            //               },
+            //             ),
+            //           ),
+            //           50.height
+            //
+            //         ],
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
@@ -358,69 +434,56 @@ Widget _buildAssuranceSection(BuildContext context,PackageModel pkg, UserModel u
 
               _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
 
-
-              if(user.packageAmountPaid !=0)
-              CustomContainer(
-                backgroundColor: Colors.blue.withOpacity(0.1),
-                child: Column(
-                  children: [
-                
-                    if(user.packageAmountPaid !=0)
-                    Column(
-                      children: [
-                        Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
-                      ],
-                    ),
-                
-                    if(user.remainingAmount != 0)
-                      Column(
-                        children: [
-                          Divider(),
-                          _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString()),
-                        ],
-                      ),
-                
-                
-                    if(user.remainingAmount != 0)
-                      Column(
-                        children: [
-                          10.height,
-                          GestureDetector(
-                            onTap: () {
-                              showCustomSnackBar(context, 'This Logic is pending!');
-                            },
-                            child: CustomContainer(
-                              backgroundColor: CustomColor.appColor,
-                              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-                              child: Text(
-                                'Buy Now',
-                                style: textStyle14(context, color: CustomColor.whiteColor),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                  ],
+              if(user.packageAmountPaid !=0 && user.remainingAmount == 0)
+              /// Full Amount
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: CustomContainer(
+                  margin: EdgeInsets.zero,
+                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  child: Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
                 ),
               ),
 
+              if(user.packageAmountPaid ==0)
+              Divider(),
 
-              ///  Buy Now
-               if(user.packageAmountPaid == 0)
-              GestureDetector(
-                onTap: () {
-                  double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
-                  showPaymentBottomSheet(context, price);
-                },
+
+
+              if(user.remainingAmount !=0)
+              /// Half Amount
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
                 child: CustomContainer(
-                  backgroundColor: CustomColor.appColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-                  child: Text(
-                    'Buy Now',
-                    style: textStyle14(context, color: CustomColor.whiteColor),
+                  margin: EdgeInsets.zero,
+                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  child: Column(
+                    children: [
+                      Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
+                      Divider(),
+                      Center(child:  _buildAmountRow(label: 'Remaining Amount', amount: user.remainingAmount.toString())),
+                      Divider(),
+
+                      /// Pay now button
+                      RemainingPaymentButton(grandTotal: user.remainingAmount!.toDouble(),),
+                    ],
                   ),
                 ),
               ),
+
+
+
+              /// Pay now button
+              if(user.packageAmountPaid ==0)
+                CustomContainer(
+                  backgroundColor: CustomColor.appColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                  child: Text('Buy Now', style: textStyle14(context, color: CustomColor.whiteColor),),
+                  onTap: () {
+                    double price = double.tryParse(pkg.grandtotal.toString()) ?? 0;
+                    showPaymentBottomSheet(context, price);
+                  },
+                ),
 
             ],
             ),
@@ -441,7 +504,6 @@ Widget _buildAmountRow({String? label, String? amount}){
 
 
 void showPaymentBottomSheet(BuildContext context, double grandTotal) {
-  // final userSession = Provider.of<UserSession>(context);
   final userSession = Provider.of<UserSession>(context, listen: false);
 
   bool isFullPayment = true;
@@ -563,10 +625,14 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                         CustomContainer(
                           backgroundColor: CustomColor.appColor,
                           padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 10),
-                          onTap: _isLoading ? null : () async {
-                            setState(() {_isLoading = true;});
+                          onTap: _isLoading
+                              ? null
+                              : () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
 
-                            await initiatePackagePayment(
+                            final result = await initiatePackagePayment(
                               context: context,
                               amount: isFullPayment ? grandTotal : grandTotal / 2,
                               orderId: 'package_$formattedOrderId',
@@ -576,8 +642,15 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
                               customerPhone: '8989207770',
                             );
 
-                            setState(() {_isLoading = false;});
+                            setState(() {
+                              _isLoading = false;
+                            });
+
+                            if (result == true) {
+                              Navigator.pop(context, true);
+                            }
                           },
+
                           child: _isLoading
                               ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),)
                               : Text('Pay Now', style: textStyle16(context, color: CustomColor.whiteColor)),
@@ -598,4 +671,77 @@ void showPaymentBottomSheet(BuildContext context, double grandTotal) {
       );
     },
   );
+}
+
+
+class RemainingPaymentButton extends StatefulWidget {
+  final double grandTotal;
+
+  const RemainingPaymentButton({super.key, required this.grandTotal});
+
+  @override
+  State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
+}
+
+class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
+  bool _isLoading = false;
+  bool isFullPayment = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context, listen: false);
+
+    final now = DateTime.now();
+    final formattedOrderId =
+        "${now.day.toString().padLeft(2, '0')}/"
+        "${now.month.toString().padLeft(2, '0')}/"
+        "${now.year.toString().substring(2)}/_"
+        "${now.hour.toString().padLeft(2, '0')}:"
+        "${now.minute.toString().padLeft(2, '0')}:"
+        "${now.second.toString().padLeft(2, '0')}";
+
+    return CustomContainer(
+      backgroundColor: CustomColor.appColor,
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+      onTap: _isLoading
+          ? null
+          : () async {
+        setState(() {
+          _isLoading = true;
+        });
+
+        final result = await initiatePackagePayment(
+          context: context,
+          amount: isFullPayment
+              ? widget.grandTotal
+              : widget.grandTotal / 2,
+          orderId: 'package_$formattedOrderId',
+          customerId: userSession.userId!,
+          customerName: 'Akshay',
+          customerEmail: 'Akshay@gmail.com',
+          customerPhone: '8989207770',
+        );
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result == true) {
+          // Do nothing or show a success toast/snackbar
+          print("Payment Success");
+        }
+      },
+      child: _isLoading
+          ? const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 2,
+        ),
+      )
+          : Text('Pay Now',
+          style: textStyle14(context, color: CustomColor.whiteColor)),
+    );
+  }
 }

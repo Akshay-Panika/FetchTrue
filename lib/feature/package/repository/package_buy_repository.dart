@@ -6,7 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 
 
-Future<void> initiatePackagePayment({
+Future<bool> initiatePackagePayment({
   required BuildContext context,
   required double amount,
   required String customerId,
@@ -31,58 +31,64 @@ Future<void> initiatePackagePayment({
       }),
     );
 
-    print("Response: ${response.body}");
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200 && data["paymentLink"] != null) {
       final paymentUrl = data["paymentLink"];
-      _openInAppWebView(context, paymentUrl);
+      final result = await _openInAppWebView(context, paymentUrl);
+      return result;
     } else {
       showCustomSnackBar(context, 'Failed to generate payment link');
+      return false;
     }
   } catch (e) {
     showCustomSnackBar(context, 'Error: $e');
+    return false;
   }
 }
 
 
-
-void _openInAppWebView(BuildContext context, String paymentUrl) {
+Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
   final uri = Uri.tryParse(paymentUrl);
-
   if (uri == null) {
     showCustomSnackBar(context, 'Invalid Payment URL');
-    return;
+    return false;
   }
 
-  bool isPaymentHandled = false; // ✅ Flag to prevent multiple calls
+  bool isPaymentHandled = false;
+  bool isPaymentSuccess = false;
 
-  Navigator.of(context).push(
+  final result = await Navigator.of(context).push<bool>(
     MaterialPageRoute(
-      builder: (_) => Scaffold(
-        appBar: CustomAppBar(title: 'Pay Now', showBackButton: true),
-        body: InAppWebView(
-          initialUrlRequest: URLRequest(
-            url: WebUri.uri(uri),
+      builder: (_) => WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, isPaymentSuccess); // Pass result on back
+          return false;
+        },
+        child: Scaffold(
+          appBar: CustomAppBar(title: 'Pay Now', showBackButton: true),
+          body: InAppWebView(
+            initialUrlRequest: URLRequest(url: WebUri.uri(uri)),
+            onLoadStop: (controller, url) {
+              final currentUrl = url?.toString() ?? "";
+
+              if (!isPaymentHandled) {
+                if (currentUrl.contains("response")) {
+                  isPaymentHandled = true;
+                  isPaymentSuccess = true;
+                  showCustomSnackBar(context, 'Payment Successful!');
+                } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
+                  isPaymentHandled = true;
+                  isPaymentSuccess = false;
+                  showCustomSnackBar(context, 'Payment Failed or Cancelled');
+                }
+              }
+            },
           ),
-          onLoadStop: (controller, url) {
-            if (isPaymentHandled) return;
-
-            final currentUrl = url?.toString() ?? "";
-
-            if (currentUrl.contains("response")) {
-              // print("Current URL: $currentUrl");
-              isPaymentHandled = true;
-              showCustomSnackBar(context, 'Payment Successful!');
-              // Navigator.pop(context); // ✅ Optional: Go back
-            } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
-              isPaymentHandled = true;
-              showCustomSnackBar(context, 'Payment Failed or Cancelled');
-              // Navigator.pop(context); // ✅ Optional: Go back
-            }
-          },
         ),
       ),
     ),
   );
+
+  return result ?? false; // Default to false if null
 }
