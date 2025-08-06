@@ -1,13 +1,16 @@
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/lead_status_model.dart';
 import '../model/leads_model.dart';
+import '../repository/checkout_service_buy_repository.dart';
 import '../repository/lead_status_service.dart';
 
 class LeadsStatusWidget extends StatefulWidget {
@@ -148,7 +151,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                             ),
                           5.height,
 
-                          if (lead.paymentLink != null)
+                          if (lead.paymentLink != null && lead.paymentLink!.isNotEmpty)
                             CustomContainer(
                               width: 300,
                               child: Row(
@@ -161,8 +164,19 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                                       Text("Payment: ${lead.paymentType ?? ''}"),
                                     ],
                                   ),
-                                  Text("Pay Now",
-                                      style: textStyle12(context, color: CustomColor.appColor)),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PaymentWebViewScreen(
+                                            url: lead.paymentLink!,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child:  Text("Pay Now", style: textStyle14(context, color: CustomColor.appColor),),
+                                  ),
                                 ],
                               ),
                             ),
@@ -216,4 +230,28 @@ Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? i
       Expanded(child: Text(text!, style: textStyle14(context, color: textColor ?? CustomColor.descriptionColor,fontWeight: FontWeight.w400),))
     ],
   );
+}
+
+
+class PaymentWebViewScreen extends StatelessWidget {
+  final String url;
+
+  const PaymentWebViewScreen({super.key, required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(title: 'Payment Now', showBackButton: true,),
+      body: InAppWebView(
+        initialUrlRequest: URLRequest(
+          url: WebUri(url),  // <-- FIX here
+        ),
+        onLoadError: (controller, url, code, message) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to load payment page')),
+          );
+        },
+      )
+    );
+  }
 }

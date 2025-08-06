@@ -1,37 +1,65 @@
-import 'package:fetchtrue/core/costants/custom_color.dart';
-import 'package:fetchtrue/core/costants/custom_icon.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_appbar.dart';
-import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/feature/advisers/model/advisor_model.dart';
+import 'package:fetchtrue/helper/Contact_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fetchtrue/core/costants/custom_color.dart';
+import 'package:fetchtrue/core/costants/custom_icon.dart';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 
-class AdviserScreen extends StatelessWidget {
+import '../repojetory/advisor_service.dart';
+
+
+class AdviserScreen extends StatefulWidget {
   const AdviserScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final advisers = List.generate(10, (index) => {
-      'name': 'Adviser ${index + 1}',
-      'title': 'Senior Consultant',
-      'bio': 'Experienced adviser with over 10+ years in strategic consulting and client management.',
-      'image': 'https://i.pravatar.cc/150?img=${index + 10}'
-    });
+  State<AdviserScreen> createState() => _AdviserScreenState();
+}
 
+class _AdviserScreenState extends State<AdviserScreen> {
+  late Future<List<AdvisorModel>> advisorsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    advisorsFuture = AdvisorService().fetchAdvisors();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+
       appBar: const CustomAppBar(title: 'Advisers', showBackButton: true),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: advisers.length,
-          padding:EdgeInsets.all(10),
-          itemBuilder: (context, index) {
-            final adviser = advisers[index];
-            return AdviserCard(
-              name: adviser['name']!,
-              title: adviser['title']!,
-              imageUrl: adviser['image']!,
-              bio: adviser['bio']!,
+        child: FutureBuilder<List<AdvisorModel>>(
+          future: advisorsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No advisors available'));
+            }
+
+            final advisers = snapshot.data!;
+            return ListView.builder(
+              itemCount: advisers.length,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              itemBuilder: (context, index) {
+                final adviser = advisers[index];
+                return AdviserCard(
+                  name: adviser.name,
+                  imageUrl: adviser.imageUrl,
+                  rating: adviser.rating.toInt(),
+                  phoneNumber: adviser.phoneNumber,
+                  description: adviser.chat,
+                  language: adviser.language,
+                );
+              },
             );
           },
         ),
@@ -42,37 +70,33 @@ class AdviserScreen extends StatelessWidget {
 
 class AdviserCard extends StatelessWidget {
   final String name;
-  final String title;
   final String imageUrl;
-  final String bio;
-
+  final int rating;
+  final int phoneNumber;
+  final String language;
+  final String description;
   const AdviserCard({
     super.key,
     required this.name,
-    required this.title,
     required this.imageUrl,
-    required this.bio,
+    required this.rating,
+    required this.phoneNumber,
+    required this.language,
+    required this.description,
   });
 
-  void exportBio(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: bio));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bio copied to clipboard')),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
       backgroundColor: Colors.white,
-      margin: EdgeInsets.only(top: 10),
+      margin:  EdgeInsets.only(top: 10),
       child: Column(
         children: [
-          /// Row with image + name/title + actions
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Profile Image
+              /// Profile 
               ClipRRect(
                 borderRadius: BorderRadius.circular(50),
                 child: Image.network(
@@ -82,74 +106,55 @@ class AdviserCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(width: 16),
-
-              /// Name & Title
+              15.width,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
+                    Text(name, style: textStyle14(context,)),
+                    Text(language, style: textStyle14(context,fontWeight: FontWeight.w400)),
                   ],
                 ),
               ),
-
-              /// Call + Msg
               Padding(
                 padding:  EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    InkWell(onTap: () => null,child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,),),
-                    30.width,
-
-                    InkWell(onTap: () => null,child: Image.asset(CustomIcon.whatsappIcon, height: 25,),),
+                    InkWell(
+                      onTap: () => ContactHelper.call(phoneNumber.toString()),
+                      child: Image.asset(
+                        CustomIcon.phoneIcon,
+                        height: 25,
+                        color: CustomColor.appColor,
+                      ),
+                    ),
+                   50.width,
+                    InkWell(
+                      onTap: () => ContactHelper.whatsapp(phoneNumber.toString(), 'Hello!'),
+                      child: Image.asset(
+                        CustomIcon.whatsappIcon,
+                        height: 25,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 12),
           Divider(color: Colors.grey.shade300),
-
-          /// Bio Text & Export
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    bio,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  tooltip: "Export Bio",
-                  icon: const Icon(Icons.share_outlined, color: Colors.black54),
-                  onPressed: () => exportBio(context),
-                ),
-              ],
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text('Description\n$description',style: textStyle14(context, fontWeight: FontWeight.w400),),
+              ),
+              IconButton(
+                tooltip: "Export Bio",
+                icon: const Icon(Icons.share_outlined, color: Colors.black54),
+                onPressed: () => null
+              ),
+            ],
           ),
         ],
       ),

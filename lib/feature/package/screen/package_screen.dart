@@ -207,33 +207,39 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
               ],
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            /// Package
+            if(user.packageActive != true)
+            Column(
               children: [
-                Text('Franchise Fees'),
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    Text('Franchise Fees'),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                        CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('${pkg.discount}%', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                            CustomAmountText(amount: '${pkg.price}', fontSize: 14,fontWeight: FontWeight.w500, isLineThrough: true, color: CustomColor.descriptionColor),
+                          ],
+                        ),
+                        CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
                       ],
                     ),
-                    CustomAmountText(amount: '${pkg.discountedPrice}', fontSize: 14,fontWeight: FontWeight.w500,color: CustomColor.appColor),
                   ],
                 ),
+                Divider(),
+
+                _buildAmountRow(label: 'Franchise Deposit', amount: '${pkg.deposit}'),
+                Divider(),
+
+                _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
               ],
             ),
-            Divider(),
-
-            _buildAmountRow(label: 'Franchise Deposit', amount: '${pkg.deposit}'),
-            Divider(),
-
-            _buildAmountRow(label: 'Grand Total', amount: '${pkg.grandtotal}'),
 
             if(user.packageAmountPaid !=0 && user.remainingAmount == 0)
             /// Full Amount
@@ -242,14 +248,20 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                 child: CustomContainer(
                   margin: EdgeInsets.zero,
                   backgroundColor: CustomColor.appColor.withOpacity(0.1),
-                  child: Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
+                  child: Column(
+                    children: [
+                       Icon(Icons.verified_user, size: 50,color: CustomColor.greenColor,),
+                       Text('Your Package Is Active', style: textStyle16(context, color: CustomColor.appColor),),
+                       10.height,
+                       Text('Congratulations! Your investment package has been successfully activated.', style: textStyle12(context, color: CustomColor.descriptionColor),textAlign: TextAlign.center,),
+                      // Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
+                    ],
+                  ),
                 ),
               ),
 
             if(user.packageAmountPaid ==0)
               Divider(),
-
-
 
             if(user.remainingAmount !=0)
             /// Half Amount
@@ -271,8 +283,6 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                   ),
                 ),
               ),
-
-
 
             /// Pay now button
             if(user.packageAmountPaid ==0)
