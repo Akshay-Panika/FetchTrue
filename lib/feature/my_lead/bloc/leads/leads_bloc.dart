@@ -1,10 +1,10 @@
-import 'package:fetchtrue/feature/my_lead/bloc/module/leads_event.dart';
-import 'package:fetchtrue/feature/my_lead/bloc/module/leads_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../model/leads_model.dart';
+import 'leads_event.dart';
+import 'leads_state.dart';
 
 class LeadsBloc extends Bloc<LeadsEvent, LeadsState> {
   LeadsBloc() : super(CheckoutInitial()) {

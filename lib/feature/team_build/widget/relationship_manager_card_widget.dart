@@ -37,7 +37,7 @@ class FirstRelationshipManagerCardWidget extends StatelessWidget {
                 children: [
                   Text('Name : ${referredUser!.fullName}'),
                   Text('Mobile : ${referredUser!.mobileNumber}'),
-                  Text('Email : ${referredUser!.email}'),
+                  Text('Id : ${referredUser!.userId}'),
                 ],
               ),
             ],
@@ -47,7 +47,7 @@ class FirstRelationshipManagerCardWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(' Self Follow Up', style: textStyle16(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+                Text(' Self Follow Up', style: textStyle14(context, color: CustomColor.appColor),),
                 Row(
                   children: [
                     InkWell(

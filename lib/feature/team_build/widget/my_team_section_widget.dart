@@ -103,17 +103,20 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                                   Row(
                                     children: [
                                       CircleAvatar(
-                                        backgroundImage: AssetImage(CustomImage.nullImage),
                                         radius: 30,
-                                        backgroundColor: Colors.grey[100],
+                                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                        backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
+                                            ? NetworkImage(user.profilePhoto!)
+                                            : AssetImage(CustomImage.nullImage),
                                       ),
+
                                       15.width,
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Name : ${user.fullName}'),
-                                          Text('Mobile : ${user.mobileNumber}'),
-                                          Text('Email : ${user.email}'),
+                                          Text('Name: ${user.fullName}'),
+                                          Text('Mobile: ${user.mobileNumber}'),
+                                          Text('Id: ${user.userId}'),
                                         ],
                                       ),
                                     ],
@@ -122,14 +125,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        ' Self Follow Up',
-                                        style: textStyle16(
-                                          context,
-                                          fontWeight: FontWeight.w400,
-                                          color: CustomColor.appColor,
-                                        ),
-                                      ),
+                                      Text(' Self Follow Up', style: textStyle14(context, color: CustomColor.appColor),),
                                       Row(
                                         children: [
                                           InkWell(
@@ -317,16 +313,10 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                     )),
 
 
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                      return
-                        _tapIndex ==0 ? NonGpWidget() :TeamGpWidget();
-                    },
-                    childCount: 5,
-                  ),
-                ),
-
+                if(_tapIndex ==0)
+                SliverToBoxAdapter(child: NonGpWidget(teamId: users.id,),),
+                if(_tapIndex ==1)
+                SliverToBoxAdapter(child: TeamGpWidget(),),
 
                 SliverToBoxAdapter(child:SizedBox(height:10,)),
 

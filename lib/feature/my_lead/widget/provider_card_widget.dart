@@ -13,7 +13,6 @@ import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/repository/provider_service.dart';
 import '../../provider/screen/provider__details_screen.dart';
-import '../model/lead_model.dart';
 import '../model/leads_model.dart';
 
 class ProviderCardWidget extends StatefulWidget {

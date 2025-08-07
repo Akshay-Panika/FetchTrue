@@ -11,9 +11,9 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../bloc/module/leads_bloc.dart';
-import '../bloc/module/leads_event.dart';
-import '../bloc/module/leads_state.dart';
+import '../bloc/leads/leads_bloc.dart';
+import '../bloc/leads/leads_event.dart';
+import '../bloc/leads/leads_state.dart';
 import 'leads_details_screen.dart';
 
 class LeadsScreen extends StatefulWidget {
