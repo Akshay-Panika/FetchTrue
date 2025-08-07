@@ -100,27 +100,45 @@ class _ProviderScreenState extends State<ProviderScreen> {
                               ),
                               10.height,
 
-                              if(data.subscribedServices.isNotEmpty)
-                                Divider(thickness: 0.3,),
-                              Wrap(
-                                spacing: 10,
-                                runSpacing: 10,
-                                children: List.generate(data.subscribedServices.length, (index) {
-                                  final service = data.subscribedServices[index];
-                                  return CustomContainer(
-                                    margin: EdgeInsets.zero,
-                                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                    child: Text(
-                                      service.category!.name ?? 'Unknown', // <-- यहाँ actual tag value दिखेगी
-                                      style: textStyle12(
-                                        context,
-                                        fontWeight: FontWeight.w400,
-                                        color: CustomColor.descriptionColor,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              )
+                              // 👇 Replace your existing Wrap widget with this updated code
+                              if (data.subscribedServices.isNotEmpty) ...[
+                                Divider(thickness: 0.3),
+
+                                // ✅ Unique Category ID Filter Logic
+                                Builder(
+                                  builder: (context) {
+                                    final seenCategoryIds = <String>{};
+                                    final uniqueServices = data.subscribedServices.where((service) {
+                                      final id = service.category?.id;
+                                      if (id != null && !seenCategoryIds.contains(id)) {
+                                        seenCategoryIds.add(id);
+                                        return true;
+                                      }
+                                      return false;
+                                    }).toList();
+
+                                    return Wrap(
+                                      spacing: 10,
+                                      runSpacing: 10,
+                                      children: uniqueServices.map((service) {
+                                        return CustomContainer(
+                                          margin: EdgeInsets.zero,
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                          child: Text(
+                                            service.category?.name ?? 'Unknown',
+                                            style: textStyle12(
+                                              context,
+                                              fontWeight: FontWeight.w400,
+                                              color: CustomColor.descriptionColor,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                )
+                              ],
+
 
                             ],
                           ),

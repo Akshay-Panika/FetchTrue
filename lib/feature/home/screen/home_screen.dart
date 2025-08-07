@@ -68,11 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Services for you
             SliverToBoxAdapter(child:  RecommendedServicesWidget(headline: 'Recommended Services For You',),),
-
-            /// Highlight service
             SliverToBoxAdapter(child: CustomHighlightService()),
-
-            /// Popular Services
             SliverToBoxAdapter(child:  PopularServicesWidget(headline: 'Popular Services'),),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: ServiceProviderWidget(),),

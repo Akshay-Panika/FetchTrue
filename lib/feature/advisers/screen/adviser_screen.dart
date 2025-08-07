@@ -38,7 +38,11 @@ class _AdviserScreenState extends State<AdviserScreen> {
           future: advisorsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return LinearProgressIndicator(
+                backgroundColor: CustomColor.appColor,
+                color: CustomColor.whiteColor,
+                minHeight: 2.5,
+              );
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -58,6 +62,7 @@ class _AdviserScreenState extends State<AdviserScreen> {
                   phoneNumber: adviser.phoneNumber,
                   description: adviser.chat,
                   language: adviser.language,
+                  tags: adviser.tags,
                 );
               },
             );
@@ -75,6 +80,7 @@ class AdviserCard extends StatelessWidget {
   final int phoneNumber;
   final String language;
   final String description;
+  final List<String> tags;
   const AdviserCard({
     super.key,
     required this.name,
@@ -83,6 +89,7 @@ class AdviserCard extends StatelessWidget {
     required this.phoneNumber,
     required this.language,
     required this.description,
+    required this.tags,
   });
 
 
@@ -96,16 +103,13 @@ class AdviserCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Profile 
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.network(
-                  imageUrl,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
+              /// Profile
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey[100],
+                backgroundImage: NetworkImage(imageUrl),
               ),
+
               15.width,
               Expanded(
                 child: Column(
@@ -141,18 +145,34 @@ class AdviserCard extends StatelessWidget {
               ),
             ],
           ),
+          5.height,
+
+          if (tags.isNotEmpty)
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: tags.map((tag) {
+                  return CustomContainer(
+                    margin: EdgeInsets.zero,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    child: Text(
+                      tag,
+                      style: textStyle12(context, color: CustomColor.blackColor),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
 
           Divider(color: Colors.grey.shade300),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text('Description\n$description',style: textStyle14(context, fontWeight: FontWeight.w400),),
-              ),
-              IconButton(
-                tooltip: "Export Bio",
-                icon: const Icon(Icons.share_outlined, color: Colors.black54),
-                onPressed: () => null
+                child: Text('$description',style: textStyle14(context, fontWeight: FontWeight.w400),),
               ),
             ],
           ),

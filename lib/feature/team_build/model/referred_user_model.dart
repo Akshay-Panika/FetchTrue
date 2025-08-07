@@ -1,11 +1,11 @@
-class ReferralUserModel {
+class ReferredUser {
   final String id;
   final String fullName;
   final String email;
   final String mobileNumber;
   final String referralCode;
 
-  ReferralUserModel({
+  ReferredUser({
     required this.id,
     required this.fullName,
     required this.email,
@@ -13,8 +13,8 @@ class ReferralUserModel {
     required this.referralCode,
   });
 
-  factory ReferralUserModel.fromJson(Map<String, dynamic> json) {
-    return ReferralUserModel(
+  factory ReferredUser.fromJson(Map<String, dynamic> json) {
+    return ReferredUser(
       id: json['_id'],
       fullName: json['fullName'],
       email: json['email'],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../costants/custom_color.dart';
 import '../costants/text_style.dart';
 
@@ -15,5 +16,17 @@ void showCustomSnackBar(BuildContext context, String message) {
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.all(20),
     ),
+  );
+}
+
+
+void showCustomToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.black87,
+    textColor: Colors.white,
+    fontSize: 14.0,
   );
 }

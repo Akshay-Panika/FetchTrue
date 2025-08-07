@@ -22,9 +22,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<IconData> icons = const [
     Icons.home_outlined,
-    Icons.bookmark_outline,
-    Icons.shopping_cart_outlined,
-    Icons.video_collection_outlined,
+    Icons.leaderboard_outlined,
+    Icons.local_offer_outlined,
+    Icons.school_outlined,
     CupertinoIcons.profile_circled,
   ];
 

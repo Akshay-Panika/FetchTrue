@@ -1,358 +1,345 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:fetchtrue/feature/team_build/widget/team_gp_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
-import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/team_build/widget/relationship_manager_card_widget.dart';
+import 'package:fetchtrue/feature/team_build/widget/team_gp_widget.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../../helper/Contact_helper.dart';
+import '../../profile/bloc/user_bloc/user_event.dart';
 import '../../profile/model/user_model.dart';
-import '../../my_admin/model/referral_user_model.dart';
-import '../../my_admin/repository/referral_service.dart';
-import '../model/non_gp_model.dart';
-import '../repository/non_gp_service.dart';
-import '../repository/relationship_manager_service.dart';
-import '../repository/referral_service_conferm.dart';
-import '../model/relationship_manager_model.dart';
+import '../repository/fetch_referred_user_service.dart';
+import '../repository/referral_service.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
+import '../model/referred_user_model.dart';
+import '../repository/referred_user_service_confirm.dart';
 import 'non_gp_widget.dart';
 
 class MyTeamSectionWidget extends StatefulWidget {
-  final UserModel? userData;
-
-  const MyTeamSectionWidget({super.key, this.userData});
+  const MyTeamSectionWidget({super.key});
 
   @override
   State<MyTeamSectionWidget> createState() => _MyTeamSectionWidgetState();
 }
 
 class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
-  final _referralController = TextEditingController();
-  final _referralService = ReferralService();
-  final _confirmService = ReferralServiceConfirm();
-
-  ReferralUserModel? _referralUser;
-  RelationshipManagerModel? relationshipManager;
-
-  bool isLoading = true;
-  bool _verifyReferralCode = false;
-  bool _isCodeEmpty = true;
-  bool _isConfirming = false;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchRelationshipManager();
-    fetchMyLeads();
-  }
-
-  Future<void> fetchRelationshipManager() async {
-    if (widget.userData?.referredBy == null) {
-      setState(() => isLoading = false);
-      return;
-    }
-
-    final result = await RelationshipManagerService()
-        .fetchUserById(widget.userData!.referredBy.toString());
-
-    setState(() {
-      relationshipManager = result;
-      isLoading = false;
-    });
-  }
+  final TextEditingController referralController = TextEditingController();
+  final ReferralServiceConfirm _referralServiceConfirm = ReferralServiceConfirm();
+  ReferredUser? referredUser;
+  bool isVerifying = false;
+  bool isConfirming = false;
 
   int _tapIndex = 0;
 
-  List<NonGpModel> _nonGpList = [];
-  List<NonGpModel> _teamGpList = [];
-  bool isTeamLoading = true;
-
-  Future<void> fetchMyLeads() async {
-    setState(() => isTeamLoading = true); // 🔄 Start loading
-
-    final result = await NonGpService().fetchMyLeads(widget.userData!.id);
-
-    setState(() {
-      _nonGpList = result.where((e) => e.packageActive == false).toList(); // Non-GP
-      _teamGpList = result.where((e) => e.packageActive == true).toList(); // Team-GP
-      isTeamLoading = false; // ✅ Done loading
-    });
+  @override
+  void dispose() {
+    referralController.dispose();
+    super.dispose();
   }
 
+  Future<void> _onRefresh() async {
+    final userState = context.read<UserBloc>().state;
+    if (userState is UserLoaded) {
+      context.read<UserBloc>().add(FetchUserById(userState.user.id));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: isLoading
-              ? LinearProgressIndicator(color: CustomColor.appColor, minHeight: 3)
-              : relationshipManager != null
-              ? RelationshipManagerCardWidget(referralUser: relationshipManager!)
-              : _referralUser == null
-              ? _buildReferralInput(context)
-              : _buildReferralPreview(context),
-        ),
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
+        if (state is UserLoaded) {
+          final users = state.user;
 
-        /// Tabs
-        SliverPersistentHeader(
-            pinned: true,
-            delegate: _StickyHeaderDelegate(
-              child:  Padding(
-                padding: EdgeInsets.symmetric(horizontal:dimensions.screenHeight*0.02,vertical: 10),
-                child: CustomToggleTabs(
-                  labels: ['Non-GP', 'Team-GP'],
-                  selectedIndex: _tapIndex,
-                  onTap: (index) {
-                    setState(() {
-                      _tapIndex = index;
-                    });
-                  },
-                ),
-              ),
-            )),
-
-        /// Non- gp, Team gp
-        SliverToBoxAdapter(
-          child: isTeamLoading
-              ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Center(child: CircularProgressIndicator(color: CustomColor.appColor)),
-          )
-              : (_tapIndex == 0 && _nonGpList.isEmpty) || (_tapIndex == 1 && _teamGpList.isEmpty)
-              ? _buildEmptyIconMessage(context)
-              : null,
-        ),
-
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-                (context, index) {
-              final list = _tapIndex == 0 ? _nonGpList : _teamGpList;
-              return _tapIndex == 0
-                  ? NonGpWidget(data: list[index])
-                  : TeamGpWidget(data: list[index]);
-            },
-            childCount: _tapIndex == 0 ? _nonGpList.length : _teamGpList.length,
-          ),
-        ),
-
-
-        SliverToBoxAdapter(child:SizedBox(height: dimensions.screenHeight*0.02,)),
-
-      ],
-    );
-  }
-
-  Widget _buildReferralInput(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DottedBorder(
-        color: CustomColor.appColor,
-        dashPattern: [10, 5],
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(8),
-        borderPadding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            30.width,
-            Expanded(
-              child: TextField(
-                controller: _referralController,
-                style: textStyle14(context, color: CustomColor.descriptionColor),
-                decoration: InputDecoration(
-                  hintText: "You haven't been referred yet.",
-                  hintStyle: textStyle14(context, color: CustomColor.descriptionColor),
-                  border: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  setState(() => _isCodeEmpty = value.trim().isEmpty);
-                },
-              ),
-            ),
-            CustomContainer(
-              backgroundColor: CustomColor.appColor,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              onTap: _isCodeEmpty
-                  ? () => showCustomSnackBar(context, 'Please enter referral code')
-                  : () async {
-                final referralCode = _referralController.text.trim();
-                setState(() => _verifyReferralCode = true);
-                final user = await _referralService.getUserByReferralCode(referralCode);
-                setState(() => _verifyReferralCode = false);
-                if (user != null) {
-                  setState(() => _referralUser = user);
-                } else {
-                  showCustomSnackBar(context, 'Invalid Referral Code');
-                }
-              },
-              child: _verifyReferralCode
-                  ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-              )
-                  : Text(
-                'Verify',
-                style: TextStyle(
-                  color: CustomColor.whiteColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReferralPreview(BuildContext context) {
-    return Column(
-      children: [
-        CustomContainer(
-          border: true,
-          borderColor: CustomColor.appColor,
-          margin: const EdgeInsets.all(12),
-          padding: const EdgeInsets.all(12),
-          width: double.infinity,
-          backgroundColor: CustomColor.whiteColor,
-          child: Column(
-            children: [
-              5.height,
-              Row(
-                children: [
-                  Stack(
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                        backgroundImage: AssetImage(CustomImage.nullImage),
+
+                      /// Relationship Manager card
+                      FutureBuilder<UserModel?>(
+                        future: users.referredBy != null
+                            ? fetchReferredUser(users.referredBy!)
+                            : Future.value(null),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox.shrink();
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Text("Something went wrong.");
+                          }
+
+                          if (snapshot.hasData && snapshot.data != null) {
+                            final user = snapshot.data!;
+
+                            return CustomContainer(
+                              border: true,
+                              backgroundColor: Colors.white,
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Relationship Manager', style: textStyle14(context)),
+                                  10.height,
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: AssetImage(CustomImage.nullImage),
+                                        radius: 30,
+                                        backgroundColor: Colors.grey[100],
+                                      ),
+                                      15.width,
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Name : ${user.fullName}'),
+                                          Text('Mobile : ${user.mobileNumber}'),
+                                          Text('Email : ${user.email}'),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(thickness: 0.4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ' Self Follow Up',
+                                        style: textStyle16(
+                                          context,
+                                          fontWeight: FontWeight.w400,
+                                          color: CustomColor.appColor,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              ContactHelper.call(user.mobileNumber);
+                                            },
+                                            child: Image.asset(
+                                              CustomIcon.phoneIcon,
+                                              height: 25,
+                                              color: CustomColor.appColor,
+                                            ),
+                                          ),
+                                          50.width,
+                                          InkWell(
+                                            onTap: () {
+                                              ContactHelper.whatsapp(user.mobileNumber, 'Hello, ${user.fullName}');
+                                            },
+                                            child: Image.asset(CustomIcon.whatsappIcon, height: 25),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return SizedBox.shrink();
+                        },
                       ),
 
-                      Positioned(
-                          bottom: 0,right: 0,
-                          child: Icon(Icons.check_circle, color: Colors.grey,)),
-                    ],
-                  ),
-                  10.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Relationship Manager', style: textStyle14(context, fontWeight: FontWeight.w500)),
-                      const SizedBox(height: 5),
-                      Text("Name: ${_referralUser!.fullName}"),
-                      Text("Email: ${_referralUser!.email}"),
-                      Text("Mobile: ${_referralUser!.mobileNumber}"),
-                    ],
-                  ),
-                ],
-              ),
-              10.height,
 
-              CustomContainer(
-                border: true,
-                backgroundColor: CustomColor.whiteColor,
-                borderColor: CustomColor.appColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Teams : 00', style: textStyle14(context,fontWeight: FontWeight.w400, color: CustomColor.appColor),),
-                    Row(
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              ContactHelper.call(_referralUser!.mobileNumber);
-                            },
-                            child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
-                        50.width,
-                        InkWell(
-                            onTap: () {
-                              ContactHelper.whatsapp(_referralUser!.mobileNumber, 'hello ${_referralUser!.fullName}');
-                            },
-                            child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-                      ],
-                    ),
-                  ],
+                      if (users.referredBy == null && referredUser == null)
+                        DottedBorder(
+                          color: Colors.grey,
+                          dashPattern: [10, 5],
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(8),
+                          borderPadding: const EdgeInsets.all(10),
+                          child: SizedBox(
+                            height: 60,
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 25),
+                                Expanded(
+                                  child: TextField(
+                                    controller: referralController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Referral Code Here...',
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 100,
+                                  child: CustomButton(
+                                    buttonColor: referralController.text.isEmpty
+                                        ? Colors.grey
+                                        : CustomColor.appColor,
+                                    isLoading: isVerifying,
+                                    label: 'Verify',
+                                    onPressed: () async {
+                                      final code = referralController.text.trim();
+                                      if (code.isEmpty) {
+                                        showCustomToast('Please enter a referral code.');
+                                        return;
+                                      }
+
+                                      setState(() => isVerifying = true);
+
+                                      final result =
+                                      await ReferralService.verifyReferralCode(code);
+
+                                      setState(() {
+                                        isVerifying = false;
+                                        referredUser = result;
+                                      });
+
+                                      if (result != null) {
+                                        showCustomToast("Referral Code Verified!");
+                                      } else {
+                                        showCustomToast("Invalid Referral Code");
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 10)
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      if (referredUser != null)
+                        Column(
+                          children: [
+                            FirstRelationshipManagerCardWidget(referredUser: referredUser),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        referredUser = null;
+                                        referralController.clear();
+                                      });
+                                    },
+                                    child: Text(
+                                      'Cancel',
+                                      style: textStyle14(context, color: Colors.red),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: CustomContainer(
+                                    onTap: isConfirming
+                                        ? null
+                                        : () async {
+                                      if (referredUser == null) return;
+
+                                      setState(() {
+                                        isConfirming = true;
+                                      });
+
+                                      final success =
+                                      await _referralServiceConfirm.setReferralForUser(
+                                        userId: users.id,
+                                        referralCode: referredUser!.referralCode,
+                                      );
+
+                                      if (success) {
+                                        showCustomToast("Referral confirmed successfully!");
+                                        setState(() {
+                                          referralController.clear();
+                                          referredUser = null;
+                                        });
+                                        context
+                                            .read<UserBloc>()
+                                            .add(FetchUserById(users.id));
+                                      } else {
+                                        showCustomToast("Failed to confirm referral.");
+                                      }
+
+                                      setState(() {
+                                        isConfirming = false;
+                                      });
+                                    },
+                                    child: Center(
+                                      child: isConfirming
+                                          ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      )
+                                          : Text("Confirm", style: textStyle14(context)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildButton(
-              context,
-              label: 'Cancel',
-              textColor: Colors.red,
-              onTap: () => setState(() => _referralUser = null),
+
+                /// Tabs
+                SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _StickyHeaderDelegate(
+                      child:  Padding(
+                        padding: EdgeInsets.symmetric(horizontal:10,vertical: 10),
+                        child: CustomToggleTabs(
+                          labels: ['Non-GP', 'Team-GP'],
+                          selectedIndex: _tapIndex,
+                          onTap: (index) {
+                            setState(() {
+                              _tapIndex = index;
+                            });
+                          },
+                        ),
+                      ),
+                    )),
+
+
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return
+                        _tapIndex ==0 ? NonGpWidget() :TeamGpWidget();
+                    },
+                    childCount: 5,
+                  ),
+                ),
+
+
+                SliverToBoxAdapter(child:SizedBox(height:10,)),
+
+              ],
             ),
-            _buildButton(
-              context,
-              label: _isConfirming ? 'Loading...':'Confirm',
-              textColor: Colors.green,
-              onTap: _isConfirming
-                  ? null
-                  : () async {
-                final userId = widget.userData?.id;
-                final referralCode = _referralController.text.trim();
+          );
+        }
 
-                if (userId == null || userId.isEmpty || referralCode.isEmpty) {
-                  showCustomSnackBar(context, "User ID or Referral Code is missing.");
-                  return;
-                }
-
-                setState(() {_isConfirming = true;});
-                final success = await _confirmService.setReferralForUser(
-                  userId: userId,
-                  referralCode: referralCode,
-                );
-
-                if (success) {
-                  showCustomSnackBar(context, "Referral confirmed!");
-
-                  /// ✅ First, clear preview and show loading
-                  setState(() {
-                    _referralUser = null;
-                    isLoading = true;
-                  });
-
-                  /// ✅ Fetch updated Relationship Manager data
-                  await fetchRelationshipManager();
-                } else {
-                  showCustomSnackBar(context, "Referral failed or already referred.");
-                }
-                setState(() {_isConfirming = false;});
-              },
-            ),
-          ],
-        )
-      ],
-    );
-  }
-
-  Widget _buildButton(BuildContext context, {required String label, required Color textColor, VoidCallback? onTap}) {
-    return CustomContainer(
-      width: 150,
-      border: true,
-      borderColor: CustomColor.appColor,
-      backgroundColor: Colors.transparent,
-      onTap: onTap,
-      child: Center(
-        child: Text(
-          label,
-          style: textStyle16(context, color: textColor),
-        ),
-      ),
+        return const SizedBox(); // fallback
+      },
     );
   }
 }
-
 
 
 
@@ -381,22 +368,4 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
-}
-
-
-Widget _buildEmptyIconMessage(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 50),
-    child: Column(
-      children: [
-        60.height,
-        Icon(Icons.group_off, size: 80, color: Colors.grey.shade400),
-        const SizedBox(height: 10),
-        Text(
-          'No team members found',
-          style: textStyle14(context, color: Colors.grey.shade600),
-        ),
-      ],
-    ),
-  );
 }
