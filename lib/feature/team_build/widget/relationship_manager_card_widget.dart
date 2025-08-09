@@ -18,7 +18,7 @@ class FirstRelationshipManagerCardWidget extends StatelessWidget {
 
     return CustomContainer(
       border: true,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ class FirstRelationshipManagerCardWidget extends StatelessWidget {
                 children: [
                   Text('Name : ${referredUser!.fullName}'),
                   Text('Mobile : ${referredUser!.mobileNumber}'),
-                  Text('Id : ${referredUser!.userId}'),
+                  Text('Id : ${referredUser!.userId.toString()}'),
                 ],
               ),
             ],

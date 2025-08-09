@@ -52,7 +52,7 @@ class HelpSupportScreen extends StatelessWidget {
                    children: [
                      Expanded(
                        child: CustomContainer(
-                         backgroundColor: CustomColor.appColor.withOpacity(0.2),
+                         color: CustomColor.appColor.withOpacity(0.2),
                          child: Row(
                            mainAxisAlignment: MainAxisAlignment.center,
                            children: [
@@ -69,7 +69,7 @@ class HelpSupportScreen extends StatelessWidget {
                          onTap: () {
                            ContactHelper.call('918989207770');
                          },
-                         backgroundColor: CustomColor.appColor.withOpacity(0.2),
+                         color: CustomColor.appColor.withOpacity(0.2),
                          child: Row(
                            mainAxisAlignment: MainAxisAlignment.center,
                            children: [

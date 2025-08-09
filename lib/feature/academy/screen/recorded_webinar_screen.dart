@@ -55,7 +55,7 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
               itemBuilder: (context, index) {
                 final webinar = webinars[index];
                 return  CustomContainer(
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   padding: EdgeInsets.zero,
                   height: dimensions.screenHeight*0.25,
                   margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
@@ -114,7 +114,7 @@ Widget _buildRecordedWebinarShimmer(BuildContext context){
       return CustomContainer(
         margin: EdgeInsets.only(top: 10),
         padding: EdgeInsets.zero,
-        backgroundColor: CustomColor.whiteColor,
+        color: CustomColor.whiteColor,
         child: Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
@@ -125,7 +125,7 @@ Widget _buildRecordedWebinarShimmer(BuildContext context){
               CustomContainer(
                 height: dimensions.screenHeight * 0.18,
                 width: double.infinity,
-               backgroundColor:  Colors.grey.shade300,
+               color:  Colors.grey.shade300,
                 margin: EdgeInsets.zero,
               ),
 
@@ -135,9 +135,9 @@ Widget _buildRecordedWebinarShimmer(BuildContext context){
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomContainer(height: 10, width: dimensions.screenWidth * 0.5, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero,),
+                    CustomContainer(height: 10, width: dimensions.screenWidth * 0.5, color: Colors.grey[300], margin: EdgeInsets.zero,),
                     10.height,
-                    CustomContainer(height: 10, width: dimensions.screenWidth * 0.7, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero,),
+                    CustomContainer(height: 10, width: dimensions.screenWidth * 0.7, color: Colors.grey[300], margin: EdgeInsets.zero,),
                   ],
                 ),
               ),

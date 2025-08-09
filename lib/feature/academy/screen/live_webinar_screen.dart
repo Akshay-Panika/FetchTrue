@@ -20,7 +20,6 @@ class LiveWebinarScreen extends StatefulWidget {
 }
 
 class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
-
   late Future<LiveWebinarModel?> webinarFuture;
 
   @override
@@ -33,150 +32,192 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Live Webinar', showBackButton: true,),
+      appBar: const CustomAppBar(title: 'Live Webinar', showBackButton: true),
 
       body: SafeArea(
-          child: SingleChildScrollView(
-            child:  FutureBuilder<LiveWebinarModel?>(
-              future: webinarFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return _buildLiveWebinarShimmer(context);
-                }
+        child: SingleChildScrollView(
+          child: FutureBuilder<LiveWebinarModel?>(
+            future: webinarFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return _buildLiveWebinarShimmer(context);
+              }
 
-                if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-                  return const Center(child: Text('Failed to load webinars.'));
-                }
+              if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('Failed to load webinars.'));
+              }
 
-                final webinars = snapshot.data!.data;
+              final webinars = snapshot.data!.data;
 
-                return Column(
-                  children: [
-                    ListView.builder(
-                      itemCount:  webinars.length,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03),
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final webinar = webinars[index];
-                        return CustomContainer(
-                          backgroundColor: CustomColor.whiteColor,
-                          padding: EdgeInsets.zero,
-                          height: dimensions.screenHeight*0.25,
-                          margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: CustomContainer(
-                                  margin: EdgeInsets.zero,
-                                  networkImg: webinar.imageUrl,
-                                ),
-                              ),
+              return Column(
+                children: [
+                  ListView.builder(
+                    itemCount: webinars.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final webinar = webinars[index];
 
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('${webinar.name}', style: textStyle14(context),),
-                                            Text('Date: ${webinar.date}', style: textStyle12(context),),
-                                          ],
-                                        ),
-                                        Text('${webinar.description}', style: textStyle12(context,color: CustomColor.descriptionColor),),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Date: ${webinar.startTime}', style: textStyle12(context),),
-                                            SizedBox(width: dimensions.screenWidth*0.03,),
-                                            Text('Time: ${webinar.endTime}', style: textStyle12(context),),
-                                          ],
-                                        ),
-                                        CustomContainer(
-                                          backgroundColor: CustomColor.appColor,
-                                          margin: EdgeInsets.zero,
-                                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                          child: Text('Enroll Now', style: textStyle12(context, color: CustomColor.whiteColor),),)
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => EnrollNowScreen(webinar: webinars[index]),)),
-                        );
-                      },
-                    ),
+                      final List<dynamic> userList = webinar.user;
 
-                    SizedBox(height: dimensions.screenHeight*0.02,),
-                    CustomHeadline(headline: 'Attend at least 3 live webinar to move forward', viewSeeAll: false,),
-                    ListView.builder(
-                      itemCount: 2,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03),
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Stack(
+                      return CustomContainer(
+                        color: CustomColor.whiteColor,
+                        padding: EdgeInsets.zero,
+                        height: dimensions.screenHeight * 0.25,
+                        margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+                        child: Column(
                           children: [
-                            CustomContainer(
-                              border: true,
-                              backgroundColor: CustomColor.whiteColor,
-                              padding: EdgeInsets.zero,
-                              height: dimensions.screenHeight*0.1,
-                              margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
-                              child: Row(
-                                children: [
-                                  CustomContainer(
-                                    width: dimensions.screenWidth*0.35,
-                                    margin: EdgeInsets.zero,
-                                    assetsImg: CustomImage.thumbnailImage,
-                                  ),
-
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Name', style: textStyle14(context),),
-                                          Text('Distribution', style: textStyle12(context,color: CustomColor.descriptionColor),),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
+                            Expanded(
+                              child: CustomContainer(
+                                margin: EdgeInsets.zero,
+                                networkImg: webinar.imageUrl,
                               ),
                             ),
 
-                            Positioned(
-                                top: 20,right: 20,
-                                child: Icon(Icons.library_add_check_outlined, color: CustomColor.appColor,))
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          webinar.name,
+                                          style: textStyle14(context),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Text('Date: ${webinar.date}', style: textStyle12(context)),
+                                    ],
+                                  ),
+                                  Text(webinar.description, style: textStyle12(context, color: CustomColor.descriptionColor)),
+
+                                  const SizedBox(height: 8),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Start: ${webinar.startTime}', style: textStyle12(context)),
+                                          SizedBox(width: dimensions.screenWidth * 0.03),
+                                          Text('End: ${webinar.endTime}', style: textStyle12(context)),
+                                        ],
+                                      ),
+
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => EnrollNowScreen(webinar: webinar),
+                                            ),
+                                          );
+                                        },
+                                        child: CustomContainer(
+                                          color: CustomColor.appColor,
+                                          margin: EdgeInsets.zero,
+                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                          child: Text('Enroll Now', style: textStyle12(context, color: CustomColor.whiteColor)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  // // Optional: Show number of users enrolled or status summary
+                                  // if (userList.isNotEmpty)
+                                  //   Text(
+                                  //     'Users enrolled: ${userList.length}',
+                                  //     style: textStyle12(context, color: Colors.grey),
+                                  //   ),
+                                ],
+                              ),
+                            )
                           ],
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },),
-          )
+                        ),
+                      );
+                    },
+                  ),
+                   30.height,
+
+                   Text('-: Attend at least 3 live webinar to move forward :-', style: textStyle16(context),),
+                  ListView.builder(
+                    itemCount: 3,
+                    // itemCount: webinars.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+
+                      final data = webinars[index];
+
+                      return Stack(
+                        children: [
+                          CustomContainer(
+                            border: false,
+                            color: CustomColor.whiteColor,
+                            padding: EdgeInsets.zero,
+                            height: dimensions.screenHeight * 0.1,
+                            margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+                            child: Row(
+                              children: [
+                                CustomContainer(
+                                  width: dimensions.screenWidth * 0.35,
+                                  margin: EdgeInsets.zero,
+                                  networkImg: data.imageUrl,
+                                ),
+
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('${data.name}', style: textStyle14(context)),
+                                        Text('${data.description}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                    )),
+
+                              ],
+                            ),
+                          ),
+
+                           Positioned(
+                            top: 20,
+                            right: 20,
+                            child: Icon(Icons.library_add_check_outlined, color: CustomColor.appColor),
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                  20.height,
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 }
 
-
-Widget _buildLiveWebinarShimmer(BuildContext context){
+Widget _buildLiveWebinarShimmer(BuildContext context) {
   Dimensions dimensions = Dimensions(context);
   return ListView.builder(
     itemCount: 3,
@@ -185,7 +226,7 @@ Widget _buildLiveWebinarShimmer(BuildContext context){
     padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
     itemBuilder: (context, index) {
       return CustomContainer(
-        backgroundColor: CustomColor.whiteColor,
+        color: CustomColor.whiteColor,
         padding: EdgeInsets.zero,
         margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
         child: Shimmer.fromColors(
@@ -193,42 +234,37 @@ Widget _buildLiveWebinarShimmer(BuildContext context){
           highlightColor: Colors.grey.shade100,
           child: Column(
             children: [
-              // Top image shimmer
               CustomContainer(
-                  height: dimensions.screenHeight * 0.15,
-                  width: double.infinity,
-                  margin: EdgeInsets.zero,
-                  backgroundColor: Colors.grey[300]
+                height: dimensions.screenHeight * 0.15,
+                width: double.infinity,
+                margin: EdgeInsets.zero,
+                color: Colors.grey[300],
               ),
-
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    // Title + Date Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomContainer(height: 10, width: 100, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero,),
-                        CustomContainer(height: 10, width: 80, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                        CustomContainer(height: 10, width: 100, color: Colors.grey[300], margin: EdgeInsets.zero),
+                        CustomContainer(height: 10, width: 80, color: Colors.grey[300], margin: EdgeInsets.zero),
                       ],
                     ),
-                    10.height,
-
-                    CustomContainer(height: 10, width: double.infinity, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
-                    10.height,
-
+                    const SizedBox(height: 10),
+                    CustomContainer(height: 10, width: double.infinity, color: Colors.grey[300], margin: EdgeInsets.zero),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            CustomContainer(height: 10, width: 60, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
-                            10.width,
-                            CustomContainer(height: 10, width: 60, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                            CustomContainer(height: 10, width: 60, color: Colors.grey[300], margin: EdgeInsets.zero),
+                            const SizedBox(width: 10),
+                            CustomContainer(height: 10, width: 60, color: Colors.grey[300], margin: EdgeInsets.zero),
                           ],
                         ),
-                        CustomContainer(height: 25, width: 90, backgroundColor: Colors.grey[300], margin: EdgeInsets.zero),
+                        CustomContainer(height: 25, width: 90, color: Colors.grey[300], margin: EdgeInsets.zero),
                       ],
                     ),
                   ],

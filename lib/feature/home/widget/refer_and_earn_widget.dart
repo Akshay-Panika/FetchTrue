@@ -17,7 +17,7 @@ class ReferAndEarnWidget extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,

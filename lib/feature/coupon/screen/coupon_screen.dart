@@ -92,7 +92,7 @@ class _CouponScreenState extends State<CouponScreen> {
     final isPercentage = coupon.discountAmountType == 'Percentage';
 
     return CustomContainer(
-      backgroundColor: CustomColor.whiteColor,
+      color: CustomColor.whiteColor,
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +146,7 @@ class _CouponScreenState extends State<CouponScreen> {
     final isPercentage = coupon.discountAmountType == 'Percentage';
 
     return CustomContainer(
-      backgroundColor: CustomColor.whiteColor,
+      color: CustomColor.whiteColor,
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

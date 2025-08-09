@@ -14,7 +14,7 @@ class AdviserWidget extends StatelessWidget {
     return CustomContainer(
       height: 200,
       border: true,
-      backgroundColor: Colors.green.shade50,
+      color: Colors.green.shade50,
       width: double.infinity,
       networkImg: 'https://template.canva.com/EAGCux6YcJ8/1/0/1600w-pxaBUxBx9Cg.jpg',
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen())),

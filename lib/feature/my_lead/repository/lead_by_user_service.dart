@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 import '../model/leads_model.dart'; // make sure this is correct
 
-class LeadDetailsService {
+class LeadByUserService {
   static Future<LeadsModel?> fetchCheckoutById(String userId, String checkoutId) async {
     final apiUrl = 'https://biz-booster.vercel.app/api/checkout/lead-by-user/$userId';
 

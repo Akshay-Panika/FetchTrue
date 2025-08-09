@@ -9,8 +9,8 @@ import '../bloc/provider_by_id/provider_by_id_state.dart';
 import '../repository/provider_by_id_service.dart';
 
 class ProviderAboutWidget extends StatelessWidget {
-   final String providerId;
-    ProviderAboutWidget({super.key, required this.providerId});
+  final String providerId;
+  ProviderAboutWidget({super.key, required this.providerId});
 
   @override
   Widget build(BuildContext context) {

@@ -66,7 +66,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
               if (state is ProviderLoading) {
                 return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
               }
-        
+
               else if(state is ProviderLoaded){
 
                 final data = state.provider;
@@ -88,7 +88,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                         ),
                       ),
                     ),
-                
+
                     SliverPersistentHeader(
                       pinned: true,
                       delegate: _StickyHeaderDelegate(
@@ -110,8 +110,8 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                             ],
                           )),
                     ),
-                
-                
+
+
                     SliverToBoxAdapter(
                       child:  SizedBox(
                         height: MediaQuery.of(context).size.height,
@@ -119,11 +119,11 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                           controller: _tabController,
                           children: [
                             ProviderServicesListWidget(data: data,),
-                
+
                             ProviderReviewsWidget(providerId: data.id,),
-                
+
                             ProviderAboutWidget(providerId: data.id,),
-                
+
                             ProviderGalleryWidget(providerId: data.id,)
                           ],
                         ),
@@ -131,9 +131,9 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
 
                   ],
                 );
-        
+
               }
-        
+
               else if (state is ProviderError) {
                 return Center(child: Text(state.message));
               }
@@ -148,7 +148,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
   Widget _profileCard({ ProviderModel? data}) {
     return CustomContainer(
      // border: true,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
       child: Stack(
@@ -168,7 +168,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                       backgroundImage: NetworkImage(data!.storeInfo!.logo.toString()),
                     ),
                     CustomContainer(
-                        backgroundColor: CustomColor.appColor,
+                        color: CustomColor.appColor,
                         margin: EdgeInsets.zero,
                         padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
                         child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))

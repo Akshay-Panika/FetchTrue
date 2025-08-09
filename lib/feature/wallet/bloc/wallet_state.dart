@@ -1,5 +1,3 @@
-// blocs/wallet/wallet_state.dart
-
 import '../model/wallet_model.dart';
 
 abstract class WalletState {}

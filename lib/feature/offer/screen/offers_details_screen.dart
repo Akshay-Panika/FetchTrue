@@ -140,7 +140,7 @@ class OffersDetailsScreen extends StatelessWidget {
               ),
             ),
 
-            CustomContainer(backgroundColor: CustomColor.appColor,
+            CustomContainer(color: CustomColor.appColor,
               borderRadius: false,
               child: Center(child: Text("Share Referral Link", style: TextStyle(color: Colors.white))),
             )

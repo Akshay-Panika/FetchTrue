@@ -25,7 +25,7 @@ class ServiceCardWidget extends StatelessWidget {
           return CustomContainer(
             border: false,
             width: 300,
-            backgroundColor: Colors.white,
+            color: Colors.white,
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(

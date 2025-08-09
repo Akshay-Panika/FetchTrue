@@ -1,18 +1,17 @@
-import 'package:chewie/chewie.dart';
+import 'package:fetchtrue/core/costants/custom_color.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
-import '../../../core/costants/dimension.dart';
-import '../../../core/costants/text_style.dart';
-import '../../../core/widgets/custom_appbar.dart';
-import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_headline.dart';
+import 'package:flutter/services.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../model/training_tutorial_model.dart';
 
 class PlayVideoScreen extends StatefulWidget {
   final String name;
   final List<TutorialVideo> videoList;
+
   const PlayVideoScreen({
     super.key,
     required this.name,
@@ -25,219 +24,175 @@ class PlayVideoScreen extends StatefulWidget {
 
 class _PlayVideoScreenState extends State<PlayVideoScreen> {
   int selectedIndex = 0;
+  YoutubePlayerController? _youtubeController;
+  bool _isFullScreen = false;
 
-  VideoPlayerController? _videoPlayerController;
-  ChewieController? _chewieController;
+  double _currentScale = 1.0;
+  bool _isZoomed = false;
 
   @override
   void initState() {
     super.initState();
-    initializePlayer();
+    loadVideo();
   }
 
-  Future<void> initializePlayer() async {
-    try {
-      final currentVideo = widget.videoList[selectedIndex];
-      _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(currentVideo.videoUrl));
-      await _videoPlayerController!.initialize();
-
-      _videoPlayerController!.addListener(() {
-        if (_videoPlayerController!.value.position >=
-            _videoPlayerController!.value.duration &&
-            selectedIndex < widget.videoList.length - 1) {
-          changeVideo(selectedIndex + 1);
-        }
-      });
-
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController!,
+  void loadVideo() {
+    final currentVideo = widget.videoList[selectedIndex];
+    final videoId = YoutubePlayer.convertUrlToId(currentVideo.videoUrl) ?? '';
+    _youtubeController = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(
         autoPlay: true,
-        looping: false,
-        allowFullScreen: true,
-        allowPlaybackSpeedChanging: false,
-        fullScreenByDefault: false,
-        materialProgressColors: ChewieProgressColors(
-          playedColor: CustomColor.appColor,
-          handleColor: CustomColor.appColor,
-          backgroundColor: Colors.grey.shade300,
-          bufferedColor: Colors.grey,
-        ),
-      );
-
-      setState(() {});
-    } catch (e) {
-      debugPrint('Video initialization error: $e');
-    }
+        mute: false,
+        enableCaption: false,
+      ),
+    )..addListener(_youtubeListener);
   }
 
-  Future<void> changeVideo(int newIndex) async {
-    try {
+  void _youtubeListener() {
+    if (_youtubeController!.value.isFullScreen != _isFullScreen) {
       setState(() {
-        selectedIndex = newIndex;
+        _isFullScreen = _youtubeController!.value.isFullScreen;
       });
-
-      await _chewieController?.pause();
-      await _videoPlayerController?.dispose();
-
-      final newVideo = widget.videoList[selectedIndex];
-      _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(newVideo.videoUrl));
-      await _videoPlayerController!.initialize();
-
-      _videoPlayerController!.addListener(() {
-        if (_videoPlayerController!.value.position >=
-            _videoPlayerController!.value.duration &&
-            selectedIndex < widget.videoList.length - 1) {
-          changeVideo(selectedIndex + 1);
-        }
-      });
-
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController!,
-        autoPlay: true,
-        looping: false,
-        allowFullScreen: true,
-      );
-
-      setState(() {});
-    } catch (e) {
-      debugPrint('Change video error: $e');
+      if (_isFullScreen) {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      } else {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      }
     }
+  }
+
+  void changeVideo(int index) {
+    setState(() {
+      selectedIndex = index;
+      _currentScale = 1.0;
+      _isZoomed = false;
+    });
+    final newVideoId =
+        YoutubePlayer.convertUrlToId(widget.videoList[index].videoUrl) ?? '';
+    _youtubeController?.load(newVideoId);
   }
 
   @override
   void dispose() {
-    _videoPlayerController?.dispose();
-    _chewieController?.dispose();
+    _youtubeController?.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
     final selectedVideo = widget.videoList[selectedIndex];
 
     return Scaffold(
-      appBar: CustomAppBar(title: widget.name, showBackButton: true),
-      body: SafeArea(
-        child: Column(
-          children: [
-            10.height,
+      backgroundColor: Colors.white,
+      appBar: _isFullScreen ? null : CustomAppBar(title: widget.name, showBackButton: true),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_youtubeController != null)
+            Expanded(
+              child: GestureDetector(
+                onScaleStart: (details) {
+                  setState(() {
+                    _isZoomed = true;
+                  });
+                },
+                onScaleUpdate: (details) {
+                  if (details.scale > 1.0) {
+                    setState(() {
+                      _currentScale = details.scale.clamp(1.0, 5.0);
+                    });
+                  } else {
+                    setState(() {
+                      _isZoomed = false;
+                      _currentScale = 1.0;
+                    });
+                  }
+                },
+                onScaleEnd: (details) {
+                  if (_currentScale <= 1.0) {
+                    setState(() {
+                      _isZoomed = false;
+                      _currentScale = 1.0;
+                    });
+                  }
+                },
+                child: FractionallySizedBox(
+                  widthFactor: 1 / _currentScale,
+                  child: Transform.scale(
+                    scale: _currentScale,
+                    alignment: Alignment.center,
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: YoutubePlayer(
+                        controller: _youtubeController!,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: Colors.redAccent,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (!_isFullScreen && !_isZoomed) ...[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight * 0.015),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomContainer(
-                    height: dimensions.screenHeight * 0.22,
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
-                    child: _chewieController != null &&
-                        _videoPlayerController!.value.isInitialized
-                        ? (_videoPlayerController!.value.hasError
-                        ? Center(child: Text('Video error'))
-                        : Chewie(controller: _chewieController!))
-                        : const Center(child: CircularProgressIndicator()),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(selectedVideo.videoName, style: textStyle14(context)),
-                        Text(
-                          selectedVideo.videoDescription,
-                          style: textStyle14(
-                            context,
-                            fontWeight: FontWeight.w400,
-                            color: CustomColor.descriptionColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  Text(selectedVideo.videoName,style: textStyle14(context),),
+                  Text(selectedVideo.videoDescription,style: textStyle14(context, fontWeight: FontWeight.w400),),
+                  Divider()
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: selectedIndex > 0 ? () => changeVideo(selectedIndex - 1) : null,
-                    icon: const Icon(Icons.skip_previous),
-                    label: const Text("Previous"),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: selectedIndex < widget.videoList.length - 1
-                        ? () => changeVideo(selectedIndex + 1)
-                        : null,
-                    icon: const Icon(Icons.skip_next),
-                    label: const Text("Next"),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-            CustomHeadline(headline: 'Video List'),
-            Expanded(
+
+            Expanded(flex: 2,
               child: ListView.builder(
                 itemCount: widget.videoList.length,
-                padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
                 itemBuilder: (context, index) {
                   final video = widget.videoList[index];
-                  return GestureDetector(
-                    onTap: () => changeVideo(index),
-                    child: CustomContainer(
-                      border: true,
-                      backgroundColor: CustomColor.whiteColor,
-                      height: dimensions.screenHeight * 0.12,
-                      margin: EdgeInsets.only(bottom: dimensions.screenHeight * 0.015),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                CustomContainer(
-                                  width: dimensions.screenWidth * 0.35,
-                                  margin: EdgeInsets.zero,
-                                  assetsImg: CustomImage.thumbnailImage,
-                                  child: Center(
-                                      child: Icon(Icons.play_circle,
-                                          color: CustomColor.appColor, size: 30)),
-                                ),
-                                10.width,
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(video.videoName, style: textStyle12(context)),
-                                      SizedBox(height: dimensions.screenHeight * 0.002),
-                                      Text(video.videoDescription,
-                                          style: textStyle12(context,
-                                              color: CustomColor.descriptionColor)),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                  return CustomContainer(
+                    border: true,
+                    color: Colors.white,
+                    margin: EdgeInsetsGeometry.only(bottom: 10, left: 10,right: 10),
+                    padding: EdgeInsets.zero,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                         Row(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             CustomContainer(
+                               border: true,
+                               height: 90,width: 150,
+                               networkImg: video.videoImageUrl,
+                               margin: EdgeInsets.zero,
+                               // child: Center(child: Icon(selectedIndex == index ?Icons.play_circle:Icons.pause_circle,size: 30,),),
+                             ),
+                             10.width,
+                             Column(
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: [
+                                 5.height,
+                                 Text(video.videoName,style: textStyle14(context,),),
+                                 Text(video.videoDescription,style: textStyle14(context,fontWeight: FontWeight.w400,),),
+                               ],
+                             ),
+                           ],
+                         ),
 
-
-                          ),
-                          Text(
-                            selectedIndex == index ? 'Playing' : 'Pending',
-                            style: textStyle12(context, color: CustomColor.appColor),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
+                    onTap: () => changeVideo(index),
                   );
                 },
               ),
-            )
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

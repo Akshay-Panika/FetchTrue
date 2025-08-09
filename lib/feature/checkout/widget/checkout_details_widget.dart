@@ -108,7 +108,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         /// Service
         CustomContainer(
           border: false,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           padding: EdgeInsets.zero,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
@@ -151,7 +151,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         /// Add customer
         CustomContainer(
           border: false,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             children: [
@@ -262,7 +262,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         /// Best Coupon For You
         CustomContainer(
           border: false,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +302,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   border: true,
                   width: double.infinity,
                   borderColor: CustomColor.greenColor,
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   margin: EdgeInsets.zero,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,7 +353,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   border: true,
                   width: double.infinity,
                   borderColor: CustomColor.greenColor,
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   margin: EdgeInsets.zero,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +405,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         /// Summery
         CustomContainer(
           border: false,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             spacing: 10,
@@ -565,7 +565,7 @@ Widget _buildCommissionCard(BuildContext context, {required String commission}){
   return CustomContainer(
     border: false,
     width: double.infinity,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
     child:  Column(
       crossAxisAlignment: CrossAxisAlignment.start,

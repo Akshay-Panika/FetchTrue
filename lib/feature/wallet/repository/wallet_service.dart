@@ -1,22 +1,25 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
+import 'package:dio/dio.dart';
 import '../model/wallet_model.dart';
 
-class WalletService {
-  static Future<WalletModel> fetchWalletByUser(String userId) async {
-    final url = Uri.parse('https://biz-booster.vercel.app/api/wallet/fetch-by-user/$userId');
-    final response = await http.get(url);
+class WalletRepository {
+  final Dio _dio;
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      if (jsonData['success'] == true) {
-        return WalletModel.fromJson(jsonData['data']);
+  WalletRepository([Dio? dio]) : _dio = dio ?? Dio();
+
+  Future<WalletModel?> fetchWalletByUserId(String userId) async {
+    final url = 'https://biz-booster.vercel.app/api/wallet/fetch-by-user/$userId';
+
+    try {
+      final response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return WalletModel.fromJson(data);
       } else {
-        throw Exception('Failed to load wallet');
+        print('Failed to load wallet data: ${response.statusCode}');
       }
-    } else {
-      throw Exception('API Error');
+    } catch (e) {
+      print('Error fetching wallet data: $e');
     }
+    return null;
   }
 }

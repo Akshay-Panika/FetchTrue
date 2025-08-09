@@ -56,7 +56,7 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                   40.height,
                   CustomContainer(
                     width: double.infinity,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                     margin: EdgeInsets.all(20),
                     child: Column(
                       children: [
@@ -103,7 +103,7 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
         100.height,
         CustomContainer(
           width: 200,
-          backgroundColor: CustomColor.appColor,
+          color: CustomColor.appColor,
           child: Center(child: Text("Back", style: textStyle16(context, color: CustomColor.whiteColor))),
           onTap: () => Navigator.pop(context),
         )

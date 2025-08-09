@@ -29,7 +29,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
             CustomContainer(
               border: true,
               borderColor: CustomColor.greyColor,
-              backgroundColor: Colors.white,
+              color: Colors.white,
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               child: Column(
@@ -123,7 +123,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
               var data = services.first.serviceDetails.extraSections[index];
               return CustomContainer(
                 border: true,
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 margin: EdgeInsets.only(top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +168,7 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
       return CustomContainer(
         border: true,
         borderColor: CustomColor.greyColor,
-        backgroundColor: Colors.white,
+        color: Colors.white,
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +225,7 @@ Widget _buildHighlight(BuildContext context,{required List<String> images,}){
   return CustomContainer(
       border: true,
       borderColor: CustomColor.greyColor,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -250,7 +250,7 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
   return CustomContainer(
     border: true,
     borderColor: CustomColor.greyColor,
-    backgroundColor: Colors.white,
+    color: Colors.white,
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     padding: const EdgeInsets.all(12),
     child: Column(
@@ -331,7 +331,7 @@ Widget _buildFAQs(BuildContext context, List<Faq> list) {
   return CustomContainer(
     border: true,
     borderColor: CustomColor.greyColor,
-    backgroundColor: Colors.white,
+    color: Colors.white,
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     padding: const EdgeInsets.all(12),
     child: Column(

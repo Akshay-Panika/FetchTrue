@@ -36,7 +36,7 @@ class _RatingReviewScreenState extends State<RatingReviewScreen> {
                 /// 🚚 Delivery Rating Card
                 CustomContainer(
                   padding: const EdgeInsets.all(20),
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class _RatingReviewScreenState extends State<RatingReviewScreen> {
                 ),
 
                 CustomContainer(
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

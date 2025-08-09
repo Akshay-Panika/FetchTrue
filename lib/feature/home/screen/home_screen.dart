@@ -5,13 +5,10 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_highlight_service.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../partner_review/widget/partner_review_widget.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
-import '../../understandin_bizbooster/widget/understandin_bizbooster_widget.dart';
 import '../widget/all_service_widget.dart';
-import '../widget/popular_services_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/recommended_ervices_widget.dart';
 import '../widget/refer_and_earn_widget.dart';
@@ -69,12 +66,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             /// Services for you
             SliverToBoxAdapter(child:  RecommendedServicesWidget(headline: 'Recommended Services For You',),),
             SliverToBoxAdapter(child: CustomHighlightService()),
-            SliverToBoxAdapter(child:  PopularServicesWidget(headline: 'Popular Services'),),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: ServiceProviderWidget(),),
             SliverToBoxAdapter(child:  AllServiceWidget(headline: 'All Services',),),
-            SliverToBoxAdapter(child: UnderstandingBizBoosterWidget(),),
-            SliverToBoxAdapter(child: PartnerReviewWidget(),),
           ],
         ),
       ),

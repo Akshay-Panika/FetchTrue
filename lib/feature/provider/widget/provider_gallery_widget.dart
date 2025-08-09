@@ -40,7 +40,7 @@ class ProviderGalleryWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
 
                   return CustomContainer(border: true,
-                    backgroundColor: Colors.white,
+                    color: Colors.white,
                     networkImg: gallery[index],
                   );
                 },);

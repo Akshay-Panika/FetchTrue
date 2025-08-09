@@ -61,7 +61,7 @@ class EducationCategoryWidget extends StatelessWidget {
                       final category = modules[index];
                       serviceCount = modules.length;
                       return CustomContainer(
-                        backgroundColor: CustomColor.whiteColor,
+                        color: CustomColor.whiteColor,
                         margin: EdgeInsets.zero,
                         networkImg: category.image,
                         child: Column(
@@ -107,8 +107,8 @@ class _ShimmerGrid extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
             ],
           ),
         ),
@@ -130,7 +130,7 @@ class _ShimmerGrid extends StatelessWidget {
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
                 child: CustomContainer(
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   margin: EdgeInsets.zero,
                 ),
               );

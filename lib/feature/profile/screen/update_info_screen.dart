@@ -126,7 +126,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                   child: CustomContainer(
                     border: true,
                     borderColor: CustomColor.appColor,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                     onTap: isLoading ? null : _onSave,
                     child: Center(
                       child: isLoading

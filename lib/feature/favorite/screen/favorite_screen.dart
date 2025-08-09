@@ -148,7 +148,7 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
 
                 return CustomContainer(
                   border: false,
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
                   padding: EdgeInsets.zero,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   height: 100,
@@ -321,7 +321,7 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
 
                 return CustomContainer(
                   border: false,
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
                   padding: EdgeInsets.zero,
                   margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                   height: 100,
@@ -340,7 +340,7 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
                                 NetworkImage(data.storeInfo!.logo.toString()),
                               ),
                               CustomContainer(
-                                backgroundColor: CustomColor.appColor,
+                                color: CustomColor.appColor,
                                 margin: EdgeInsets.zero,
                                 padding:
                                 const EdgeInsets.symmetric(horizontal: 25),

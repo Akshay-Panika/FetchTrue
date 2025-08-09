@@ -115,8 +115,8 @@ class _ShimmerGrid extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
             ],
           ),
         ),
@@ -155,7 +155,7 @@ class _ShimmerGrid extends StatelessWidget {
                             width: 50,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: CustomColor.whiteColor,
+                            color: CustomColor.whiteColor,
                           ),
                           5.height,
                           CustomContainer(
@@ -163,7 +163,7 @@ class _ShimmerGrid extends StatelessWidget {
                             width: 80,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: CustomColor.whiteColor,
+                            color: CustomColor.whiteColor,
                           ),
                         ],
                       ))

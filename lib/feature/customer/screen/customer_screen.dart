@@ -87,7 +87,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   itemBuilder: (context, index) {
                     final data = customer[index];
                     return CustomContainer(
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       margin: const EdgeInsets.symmetric(
                           vertical: 5, horizontal: 10),
                       child: Theme(
@@ -153,7 +153,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                 ),
                                 CustomContainer(
                                   margin: EdgeInsets.zero,
-                                  backgroundColor: Colors.transparent,
+                                  color: Colors.transparent,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 8),
                                   child: Row(
@@ -260,7 +260,7 @@ Widget chatInputField(
       CustomContainer(
         border: true,
         margin: EdgeInsets.zero,
-        backgroundColor: enabled ? CustomColor.appColor : Colors.transparent,
+        color: enabled ? CustomColor.appColor : Colors.transparent,
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         onTap: enabled ? onSend : null,

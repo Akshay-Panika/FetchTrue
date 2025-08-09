@@ -175,7 +175,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         ),
         CustomContainer(
           border: false,
-          backgroundColor: Colors.white,
+          color: Colors.white,
           padding: EdgeInsets.zero,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(children: children),

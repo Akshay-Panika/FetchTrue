@@ -34,7 +34,7 @@ class ModuleWidget extends StatelessWidget {
           children: [
             15.width,
             Text('🔷 Modules', style: textStyle14(context),),
-            Expanded(child: CustomContainer(padding: EdgeInsets.zero,height: 1,backgroundColor: CustomColor.appColor.withOpacity(0.8),))
+            Expanded(child: CustomContainer(padding: EdgeInsets.zero,height: 1,color: CustomColor.appColor.withOpacity(0.8),))
           ],
         ),
         SizedBox(height: dimensions.screenHeight*0.01,),
@@ -71,7 +71,7 @@ class ModuleWidget extends StatelessWidget {
                       final module = modules[index];
                       return CustomContainer(
                         margin: EdgeInsets.zero,
-                        backgroundColor: Colors.white,
+                        color: Colors.white,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +80,7 @@ class ModuleWidget extends StatelessWidget {
                               child: CustomContainer(
                                 networkImg: module.image,
                                 margin: EdgeInsets.zero,
-                                backgroundColor: Colors.transparent,
+                                color: Colors.transparent,
                               ),
                             ),
                             Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
@@ -165,7 +165,7 @@ class ModuleShimmer extends StatelessWidget {
                 width: 80,
                 margin: EdgeInsets.zero,
                 padding: EdgeInsets.zero,
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
               ),
             ],
           ),

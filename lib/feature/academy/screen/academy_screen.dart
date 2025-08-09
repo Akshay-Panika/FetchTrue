@@ -98,7 +98,7 @@ class AcademyScreen extends StatelessWidget {
 
               return CustomContainer(
                 border: false,
-                backgroundColor: Colors.white,
+                color: Colors.white,
                 padding: EdgeInsets.zero,
                 margin: EdgeInsets.zero,
                 onTap: () async {
@@ -121,7 +121,7 @@ class AcademyScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomContainer(
-                        backgroundColor: Colors.transparent,
+                        color: Colors.transparent,
                         child: Icon(
                           item['icon'] as IconData,
                           size: 30,
@@ -150,7 +150,7 @@ class AcademyScreen extends StatelessWidget {
 
           /// Flexible empty container (can be used for footer or other content)
           CustomContainer(
-            backgroundColor: CustomColor.whiteColor,
+            color: CustomColor.whiteColor,
             padding: const EdgeInsets.all(20.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

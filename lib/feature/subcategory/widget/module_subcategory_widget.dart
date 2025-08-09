@@ -83,7 +83,7 @@ class _ModuleSubcategoryWidgetState extends State<ModuleSubcategoryWidget> {
                           CustomContainer(
                             border: true,
                             height: 80,width: 80,
-                            backgroundColor: CustomColor.whiteColor,
+                            color: CustomColor.whiteColor,
                             networkImg: sub.image,
                             margin: EdgeInsets.all(5),
                             borderColor: isSelected ? CustomColor.appColor : null,
@@ -129,7 +129,7 @@ class SubcategoryShimmerList extends StatelessWidget {
             children: [
               CustomContainer(
                 height: 80,width: 80,
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
               ),
 
               Column(
@@ -140,7 +140,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                     width: 50,
                     margin: EdgeInsets.zero,
                     padding: EdgeInsets.zero,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                   ),
                   5.height,
                   CustomContainer(
@@ -148,7 +148,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                     width: 80,
                     margin: EdgeInsets.zero,
                     padding: EdgeInsets.zero,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                   ),
                 ],
               )

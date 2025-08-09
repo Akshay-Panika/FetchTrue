@@ -1,44 +1,65 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/helper/Contact_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../profile/bloc/all_user_bloc/all_user_bloc.dart';
-import '../../profile/bloc/all_user_bloc/all_user_event.dart';
-import '../../profile/bloc/all_user_bloc/all_user_state.dart';
-import '../../profile/model/user_model.dart';
-import '../../profile/repository/all_user_repository.dart';
-import '../model/non_gp_model.dart';
-import '../repository/fetch_referred_user_service.dart';
+import '../../../helper/Contact_helper.dart';
+import '../../auth/user_notifier/user_notifier.dart';
+import '../bloc/my_team/my_team_bloc.dart';
+import '../bloc/my_team/my_team_event.dart';
+import '../bloc/my_team/my_team_state.dart';
+import '../repository/my_team_repository.dart';
 
-class NonGpWidget extends StatelessWidget {
-  final String teamId;
-  const NonGpWidget({super.key, required this.teamId});
+class MyNonGpTeamSection extends StatelessWidget {
+  const MyNonGpTeamSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context, listen: false);
+
+    String formatPrice(num value) {
+      return value.round().toString();
+    }
     return BlocProvider(
-      create: (_) => AllUserBloc(AllUserRepository())..add(AllFetchUsers()),
-      child: BlocBuilder<AllUserBloc, AllUserState>(
+      create: (context) =>
+      MyTeamBloc(MyTeamRepository())..add(GetMyTeam(userSession.userId!)),
+      child: BlocBuilder<MyTeamBloc, MyTeamState>(
         builder: (context, state) {
-          if (state is AllUserLoading) {
+          if (state is MyTeamLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is AllUserLoaded) {
-            final users = state.users;
+          } else if (state is MyTeamLoaded) {
+            // final team = state.myTeam.team;
+            final team = state.myTeam.team
+                .where((member) => member.user.packageActive == false)
+                .toList();
+            if (team.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children:  [
+                    200.height,
+                    Icon(Icons.group_off, size: 45, color: Colors.grey),
+                    10.height,
+                    Text("No team members.", style: TextStyle(fontSize: 16, color: Colors.grey),),
+                  ],
+                ),
+              );
+            }
+
+
             return ListView.builder(
               physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: users.length,
+              itemCount: team.length,
               itemBuilder: (context, index) {
-                final user = users[index];
+                final user = team[index].user;
                 return CustomContainer(
                   border: true,
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -58,7 +79,7 @@ class NonGpWidget extends StatelessWidget {
                                 backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                                 backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
                                     ? NetworkImage(user.profilePhoto!)
-                                    : AssetImage(CustomImage.nullImage),
+                                    : AssetImage(CustomImage.nullImage) as ImageProvider,
                               ),
 
                               10.width,
@@ -72,7 +93,7 @@ class NonGpWidget extends StatelessWidget {
                             ],
                           ),
 
-                          Text('Earning\nOpportunity ₹ 500', style: textStyle12(context, color: CustomColor.appColor), textAlign: TextAlign.end,),
+                          Text('Earning\nOpportunity ₹ ${formatPrice(team[index].totalEarningsFromShare2)}', style: textStyle12(context, color: CustomColor.appColor), textAlign: TextAlign.end,),
 
                         ],
                       ),
@@ -96,12 +117,12 @@ class NonGpWidget extends StatelessWidget {
                                       Text('Registration', style: textStyle12(context, fontWeight: FontWeight.w400)),
                                     ],
                                   ),
-                              
+
                                   Row(
                                     children: [
-                                       Icon(Icons.check_circle,size: 20, color: user.packageActive == true ? CustomColor.greenColor : Colors.grey.shade500),
-                                       5.width,
-                                       Text('Active GP', style: textStyle12(context, fontWeight: FontWeight.w400)),
+                                      Icon(Icons.check_circle,size: 20, color: user.packageActive == true ? CustomColor.greenColor : Colors.grey.shade500),
+                                      5.width,
+                                      Text('Active GP', style: textStyle12(context, fontWeight: FontWeight.w400)),
                                       30.width,
                                     ],
                                   )
@@ -143,10 +164,10 @@ class NonGpWidget extends StatelessWidget {
                 );
               },
             );
-          } else if (state is AllUserError) {
-            return Center(child: Text(state.message));
+          } else if (state is MyTeamError) {
+            return Text('Error: ${state.message}');
           }
-          return const SizedBox.shrink();
+          return const SizedBox();
         },
       ),
     );

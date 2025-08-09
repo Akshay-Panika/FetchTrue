@@ -55,7 +55,7 @@ class _TrainingTutorialScreenState extends State<TrainingTutorialScreen> {
                   final tutorial = tutorialCard[index];
 
                   return CustomContainer(
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
                     child: Column(
@@ -126,7 +126,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
     padding: const EdgeInsets.symmetric(horizontal: 10),
     children: List.generate(4, (index) =>
         CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           padding: EdgeInsets.zero,
           margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
           // Shimmer effect
@@ -141,7 +141,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
                   height: dimensions.screenHeight * 0.18,
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
-                  backgroundColor: Colors.grey[300]!, // Match baseColor
+                  color: Colors.grey[300]!, // Match baseColor
                 ),
                 const SizedBox(height: 8),
                 // Text rows
@@ -159,7 +159,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
                             height: 10,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.grey[300]!,
+                            color: Colors.grey[300]!,
                           ),
                           const SizedBox(height: 10),
                           CustomContainer(
@@ -167,7 +167,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
                             height: 10,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.grey[300]!,
+                            color: Colors.grey[300]!,
                           ),
                         ],
                       ),
@@ -180,7 +180,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
                             height: 10,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.grey[300]!,
+                            color: Colors.grey[300]!,
                           ),
                           const SizedBox(height: 10),
                           CustomContainer(
@@ -188,7 +188,7 @@ Widget _buildSmearEffect(Dimensions dimensions) {
                             height: 10,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.grey[300]!,
+                            color: Colors.grey[300]!,
                           ),
                         ],
                       ),

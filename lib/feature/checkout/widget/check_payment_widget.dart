@@ -77,7 +77,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
 
               /// CashFree Pay
               CustomContainer(
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
                 child: Row(
                   children: [
@@ -97,7 +97,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
 
               if (selectedPayment == PaymentMethod.cashFree)
                 CustomContainer(
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   margin: const EdgeInsets.only(bottom: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -146,7 +146,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
 
               /// After Consultation
               CustomContainer(
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

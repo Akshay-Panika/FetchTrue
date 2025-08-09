@@ -20,7 +20,7 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
   @override
   Widget build(BuildContext context) {
     return  CustomContainer(
-      backgroundColor: CustomColor.whiteColor,
+      color: CustomColor.whiteColor,
       margin: EdgeInsets.zero,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

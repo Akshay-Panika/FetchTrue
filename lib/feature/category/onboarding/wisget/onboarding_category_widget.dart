@@ -63,7 +63,7 @@ class OnboardingCategoryWidget extends StatelessWidget {
                       return CustomContainer(
                         padding: EdgeInsets.zero,
                         margin: EdgeInsets.zero,
-                        backgroundColor: Colors.white,
+                        color: Colors.white,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -124,8 +124,8 @@ class CategoryShimmerGrid extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
             ],
           ),
         ),
@@ -145,7 +145,7 @@ class CategoryShimmerGrid extends StatelessWidget {
             itemBuilder: (_, __) => CustomContainer(
               padding: EdgeInsets.zero,
               margin: EdgeInsets.zero,
-              backgroundColor: Colors.transparent,
+              color: Colors.transparent,
               child: Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
@@ -155,7 +155,7 @@ class CategoryShimmerGrid extends StatelessWidget {
                   children: [
                     CustomContainer(
                       width: 80,
-                      backgroundColor: Colors.white,
+                      color: Colors.white,
                       margin: EdgeInsets.zero,),
 
                     10.width,
@@ -167,13 +167,13 @@ class CategoryShimmerGrid extends StatelessWidget {
                           CustomContainer(width: 50,height: 5,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.white,
+                            color: Colors.white,
                           ),
                           5.height,
                           CustomContainer(width: 80,height: 5,
                             margin: EdgeInsets.zero,
                             padding: EdgeInsets.zero,
-                            backgroundColor: Colors.white,
+                            color: Colors.white,
                           ),
                           15.height,
                         ],

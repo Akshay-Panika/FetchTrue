@@ -31,7 +31,7 @@ class LiveWebinar {
   final DateTime? updatedAt;
   final int version;
   final List<String> users;
-  final List<String> user;
+  final List<UserStatus> user;  // Changed here
 
   LiveWebinar({
     required this.id,
@@ -67,7 +67,30 @@ class LiveWebinar {
           : null,
       version: json['__v'] ?? 0,
       users: List<String>.from(json['users'] ?? []),
-      user: List<String>.from(json['user'] ?? []),
+      user: (json['user'] as List<dynamic>?)
+          ?.map((e) => UserStatus.fromJson(e))
+          .toList() ??
+          [],
+    );
+  }
+}
+
+class UserStatus {
+  final String userId;
+  final bool status;
+  final String id;
+
+  UserStatus({
+    required this.userId,
+    required this.status,
+    required this.id,
+  });
+
+  factory UserStatus.fromJson(Map<String, dynamic> json) {
+    return UserStatus(
+      userId: json['user'] ?? '',
+      status: json['status'] ?? false,
+      id: json['_id'] ?? '',
     );
   }
 }

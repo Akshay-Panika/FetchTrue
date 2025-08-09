@@ -61,7 +61,7 @@ class FranchiseCategoryWidget extends StatelessWidget {
                        serviceCount = modules.length;
                        return CustomContainer(
                          margin: EdgeInsets.zero,
-                         backgroundColor: CustomColor.whiteColor,
+                         color: CustomColor.whiteColor,
                          networkImg: category.image,
                          child: Column(
                            crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,8 +113,8 @@ class _ShimmerGrid extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
             ],
           ),
         ),
@@ -137,7 +137,7 @@ class _ShimmerGrid extends StatelessWidget {
                 highlightColor: Colors.grey.shade100,
                 child: CustomContainer(
                   margin: EdgeInsets.zero,
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                 ),
               );
             },),

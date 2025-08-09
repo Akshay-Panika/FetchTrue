@@ -29,7 +29,7 @@ class AllServiceScreen extends StatelessWidget {
             final data = services[index];
             return CustomContainer(
               border: false,
-              backgroundColor: Colors.white,
+              color: Colors.white,
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(

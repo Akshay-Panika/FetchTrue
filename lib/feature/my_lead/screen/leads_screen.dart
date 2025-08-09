@@ -143,7 +143,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
 
 
                         return CustomContainer(
-                          backgroundColor: Colors.white,
+                          color: Colors.white,
                           margin: EdgeInsets.only(top: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +280,7 @@ Widget _buildShimmer() {
             6, (index) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: CustomContainer(
-              backgroundColor: CustomColor.whiteColor,
+              color: CustomColor.whiteColor,
               margin: EdgeInsetsGeometry.only(top: 10),
               child: Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,

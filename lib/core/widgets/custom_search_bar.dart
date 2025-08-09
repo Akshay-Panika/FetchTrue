@@ -11,7 +11,7 @@ class CustomSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomContainer(
       onTap: onTap,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       border: true,
       padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
       child: Row(

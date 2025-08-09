@@ -25,7 +25,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
         CustomContainer(
           border: true,
           borderColor: CustomColor.greyColor,
-          backgroundColor: Colors.white,
+          color: Colors.white,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           // padding: EdgeInsets.zero,
@@ -83,7 +83,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
             var data = services.first.franchiseDetails.extraSections[index];
           return CustomContainer(
             border: true,
-            backgroundColor: CustomColor.whiteColor,
+            color: CustomColor.whiteColor,
             margin: EdgeInsets.only(top: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ Widget _buildFranchiseCard({
       return CustomContainer(
           border: true,
           borderColor: CustomColor.greyColor,
-          backgroundColor: Colors.white,
+          color: Colors.white,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

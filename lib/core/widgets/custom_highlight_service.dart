@@ -80,7 +80,7 @@ class _CustomHighlightServiceState extends State<CustomHighlightService> {
                   return CustomContainer(
                     border: true,
                     padding: EdgeInsets.zero,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

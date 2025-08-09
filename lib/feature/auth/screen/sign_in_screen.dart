@@ -238,9 +238,9 @@ class _SignInScreenState extends State<SignInScreen> {
             
             Row(
               children: [
-                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), backgroundColor: CustomColor.appColor,)),
+                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
                 Text('Or Continue with'),
-                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), backgroundColor: CustomColor.appColor,)),
+                Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
               ],
             ),
             30.height,

@@ -96,7 +96,7 @@ class AdviserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-      backgroundColor: Colors.white,
+      color: Colors.white,
       margin:  EdgeInsets.only(top: 10),
       child: Column(
         children: [

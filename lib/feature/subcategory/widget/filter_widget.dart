@@ -35,7 +35,7 @@ class FilterWidget extends StatelessWidget {
             height: 40,
             border: true,
             borderRadius: false,
-            backgroundColor: Colors.white,
+            color: Colors.white,
             margin: EdgeInsets.zero,
             // padding: EdgeInsets.zero,
             onTap: () => CustomBottomSheet(context: context, height: 0.7,

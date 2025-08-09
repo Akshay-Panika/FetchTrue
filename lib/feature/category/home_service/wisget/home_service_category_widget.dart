@@ -70,7 +70,7 @@ class HomeServiceCategoryWidget extends StatelessWidget {
                             // width:80,
                              networkImg: category.image,
                              margin: EdgeInsets.zero,
-                             backgroundColor: CustomColor.whiteColor,
+                             color: CustomColor.whiteColor,
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -120,8 +120,8 @@ class SubcategoryShimmerList extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomContainer(width: 80,backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, backgroundColor: Colors.white,padding: EdgeInsets.zero,height: 5,),
+              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
+              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
             ],
           ),
         ),
@@ -147,7 +147,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                       height: 80,
                       // width: 80,
                       margin: EdgeInsets.zero,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                     ),
                     5.height,
 
@@ -159,7 +159,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                           width: 50,
                           margin: EdgeInsets.zero,
                           padding: EdgeInsets.zero,
-                          backgroundColor: CustomColor.whiteColor,
+                          color: CustomColor.whiteColor,
                         ),
                         5.height,
                         CustomContainer(
@@ -167,7 +167,7 @@ class SubcategoryShimmerList extends StatelessWidget {
                           width: 80,
                           margin: EdgeInsets.zero,
                           padding: EdgeInsets.zero,
-                          backgroundColor: CustomColor.whiteColor,
+                          color: CustomColor.whiteColor,
                         ),
                       ],
                     )

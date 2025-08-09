@@ -46,7 +46,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             CustomContainer(
               margin: EdgeInsets.zero,
               borderRadius: false,
-              backgroundColor: CustomColor.whiteColor,
+              color: CustomColor.whiteColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(steps.length, (index) {

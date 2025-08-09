@@ -51,12 +51,12 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 
             return  CustomContainer(
               border: true,
-              backgroundColor: CustomColor.whiteColor,
+              color: CustomColor.whiteColor,
               margin: EdgeInsets.zero,
               child: Column(
                 children: [
                   InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
+                    // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -178,7 +178,7 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 Widget _buildFTProviderCard(){
   return  CustomContainer(
     border: true,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

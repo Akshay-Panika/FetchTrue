@@ -163,7 +163,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
       CustomContainer(
         border: true,
         borderColor: CustomColor.appColor,
-        backgroundColor: CustomColor.whiteColor,
+        color: CustomColor.whiteColor,
         child: Column(
           children: [
             Row(
@@ -247,7 +247,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                 padding: const EdgeInsets.only(top: 15),
                 child: CustomContainer(
                   margin: EdgeInsets.zero,
-                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  color: CustomColor.appColor.withOpacity(0.1),
                   child: Column(
                     children: [
                        Icon(Icons.verified_user, size: 50,color: CustomColor.greenColor,),
@@ -269,7 +269,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                 padding: const EdgeInsets.only(top: 15.0),
                 child: CustomContainer(
                   margin: EdgeInsets.zero,
-                  backgroundColor: CustomColor.appColor.withOpacity(0.1),
+                  color: CustomColor.appColor.withOpacity(0.1),
                   child: Column(
                     children: [
                       Center(child: _buildAmountRow(label: 'Paid Amount', amount: user.packageAmountPaid.toString())),
@@ -287,7 +287,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
             /// Pay now button
             if(user.packageAmountPaid ==0)
               CustomContainer(
-                backgroundColor: CustomColor.appColor,
+                color: CustomColor.appColor,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
                 child: Text('Buy Now', style: textStyle14(context, color: CustomColor.whiteColor),),
                 onTap: () {
@@ -308,7 +308,7 @@ Widget _buildPackageCard(BuildContext context, Dimensions dimensions,PackageMode
   return CustomContainer(
     padding: EdgeInsets.zero,
     margin: EdgeInsets.zero,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     border: true,
     borderColor: CustomColor.appColor,
     child: Column(
@@ -374,7 +374,7 @@ Widget _buildPackageCard(BuildContext context, Dimensions dimensions,PackageMode
               CustomContainer(
                 border: true,
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(htmlDesc:htmlDesc,),)),
                 child: Text(
                   'Know Benefits',
@@ -460,7 +460,7 @@ void _showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallba
       return StatefulBuilder(
         builder: (context, setState) {
           return CustomContainer(
-            backgroundColor: CustomColor.whiteColor,
+            color: CustomColor.whiteColor,
             padding: EdgeInsets.all(20),
             child: Stack(
               children: [
@@ -479,7 +479,7 @@ void _showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallba
                     CustomContainer(
                       border: true,
                       margin: EdgeInsets.zero,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -552,7 +552,7 @@ void _showPaymentBottomSheet(BuildContext context, double grandTotal, VoidCallba
                         ),
                         const SizedBox(width: 30),
                         CustomContainer(
-                          backgroundColor: CustomColor.appColor,
+                          color: CustomColor.appColor,
                           padding: EdgeInsetsGeometry.symmetric(horizontal: 25, vertical: 10),
                           onTap: _isLoading
                               ? null
@@ -632,7 +632,7 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         "${now.second.toString().padLeft(2, '0')}";
 
     return CustomContainer(
-      backgroundColor: CustomColor.appColor,
+      color: CustomColor.appColor,
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
       onTap: _isLoading
           ? null

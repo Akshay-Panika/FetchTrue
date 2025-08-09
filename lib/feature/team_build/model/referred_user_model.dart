@@ -17,12 +17,12 @@ class ReferredUser {
 
   factory ReferredUser.fromJson(Map<String, dynamic> json) {
     return ReferredUser(
-      id: json['_id'],
-      userId: json['userId'],
-      fullName: json['fullName'],
-      email: json['email'],
-      mobileNumber: json['mobileNumber'],
-      referralCode: json['referralCode'],
+      id: json['_id'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      fullName: json['fullName'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      mobileNumber: json['mobileNumber'] as String? ?? '',
+      referralCode: json['referralCode'] as String? ?? '',
     );
   }
 }

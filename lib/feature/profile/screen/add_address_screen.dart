@@ -226,7 +226,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
 
                     return CustomContainer(
                       border: true,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       borderColor: selectedIndex == index
                           ? CustomColor.appColor
                           : Colors.grey.shade400,
@@ -272,7 +272,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     child: CustomContainer(
                       border: true,
                       borderColor: CustomColor.appColor,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       onTap: isLoading ? null : _handleSave,
                       child: Center(
                         child: isLoading

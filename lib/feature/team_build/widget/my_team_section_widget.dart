@@ -5,7 +5,6 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/team_build/widget/relationship_manager_card_widget.dart';
-import 'package:fetchtrue/feature/team_build/widget/team_gp_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,8 @@ import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../profile/bloc/user_bloc/user_state.dart';
 import '../model/referred_user_model.dart';
 import '../repository/referred_user_service_confirm.dart';
-import 'non_gp_widget.dart';
+import 'my_gp_team_section.dart';
+import 'my_non_gp_team_section.dart';
 
 class MyTeamSectionWidget extends StatefulWidget {
   const MyTeamSectionWidget({super.key});
@@ -93,7 +93,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
 
                             return CustomContainer(
                               border: true,
-                              backgroundColor: Colors.white,
+                              color: Colors.white,
                               padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +102,27 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                                   10.height,
                                   Row(
                                     children: [
-                                      CircleAvatar(
-                                        radius: 30,
-                                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                        backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
-                                            ? NetworkImage(user.profilePhoto!)
-                                            : AssetImage(CustomImage.nullImage),
+                                      Stack(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                            backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
+                                                ? NetworkImage(user.profilePhoto!)
+                                                : AssetImage(CustomImage.nullImage) as ImageProvider,
+                                          ),
+                                          Positioned(
+                                            bottom: -2,
+                                            right: -2,
+                                            child: Icon(
+                                              Icons.check_circle,
+                                              size: 20,
+                                              color: user.packageActive == true
+                                                  ? CustomColor.greenColor
+                                                  : Colors.grey.shade500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
 
                                       15.width,
@@ -159,7 +174,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                       ),
 
 
-                      if (users.referredBy == null && referredUser == null)
+                       if (users.referredBy == null && referredUser == null)
                         DottedBorder(
                           color: Colors.grey,
                           dashPattern: [10, 5],
@@ -197,8 +212,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
 
                                       setState(() => isVerifying = true);
 
-                                      final result =
-                                      await ReferralService.verifyReferralCode(code);
+                                      final result = await ReferralService.verifyReferralCode(code);
 
                                       setState(() {
                                         isVerifying = false;
@@ -219,7 +233,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                           ),
                         ),
 
-                      if (referredUser != null)
+                       if (referredUser != null)
                         Column(
                           children: [
                             FirstRelationshipManagerCardWidget(referredUser: referredUser),
@@ -314,9 +328,9 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
 
 
                 if(_tapIndex ==0)
-                SliverToBoxAdapter(child: NonGpWidget(teamId: users.id,),),
+                  SliverToBoxAdapter(child: MyNonGpTeamSection(),),
                 if(_tapIndex ==1)
-                SliverToBoxAdapter(child: TeamGpWidget(),),
+                  SliverToBoxAdapter(child: MyGpTeamSection(),),
 
                 SliverToBoxAdapter(child:SizedBox(height:10,)),
 

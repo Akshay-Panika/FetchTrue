@@ -152,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   250.height,
                   CustomContainer(
                     border: false,
-                    backgroundColor: Colors.white,
+                    color: Colors.white,
                     margin: EdgeInsets.zero,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               
                             CustomContainer(
                               border: true,
-                              backgroundColor: CustomColor.whiteColor,
+                              color: CustomColor.whiteColor,
                               margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),
                               child: Row(
                                 children: [
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   /// Additional Details
                   CustomContainer(
                       border: false,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       margin: EdgeInsets.zero,
                       child: ListTile(
                         minVerticalPadding: 0,
@@ -254,7 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   /// Add Address
                   CustomContainer(
                       border: false,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                       margin: EdgeInsets.zero,
                       child: ListTile(
                         minVerticalPadding: 0,
@@ -290,7 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (user?.homeAddress != null || user?.workAddress != null || user?.otherAddress != null)
                   CustomContainer(
                     margin: EdgeInsets.zero,
-                    backgroundColor: CustomColor.whiteColor,
+                    color: CustomColor.whiteColor,
                     child: Column(
                       spacing: 20,
                       crossAxisAlignment: CrossAxisAlignment.start,

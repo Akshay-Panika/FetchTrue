@@ -252,7 +252,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                     child: CustomContainer(
                       border: true,
                       borderColor: CustomColor.appColor,
-                      backgroundColor: CustomColor.whiteColor,
+                      color: CustomColor.whiteColor,
                         child: Center(
                           child: isSaving
                               ? SizedBox(

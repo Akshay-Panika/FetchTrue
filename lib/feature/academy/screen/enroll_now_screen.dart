@@ -54,7 +54,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
             children: [
               CustomContainer(
                 border: true,
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 padding: EdgeInsets.zero,
                 height: dimensions.screenHeight * 0.25,
                 margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
@@ -127,7 +127,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                 border: true,
                 width: double.infinity,
                 margin: EdgeInsets.zero,
-                backgroundColor: CustomColor.whiteColor,
+                color: CustomColor.whiteColor,
                 onTap: () {
                   setState(() {
                     _itEnroll = !_itEnroll;
@@ -235,7 +235,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                                 ],
                               ),
                             ),
-                            50.width,
+                            10.width,
                             RichText(
                               text: TextSpan(
                                 children: [
@@ -269,7 +269,7 @@ Widget _card(BuildContext context,
       required IconData icon}) {
   return CustomContainer(
     border: true,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     onTap: onTap,
     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),

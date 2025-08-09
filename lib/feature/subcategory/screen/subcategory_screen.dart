@@ -96,7 +96,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                         final data = services[index];
                         return CustomContainer(
                           border: false,
-                          backgroundColor: Colors.white,
+                          color: Colors.white,
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.only(top: 15, left: 10,right: 10),
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
@@ -112,7 +112,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                 margin: EdgeInsets.zero,
                                 padding: EdgeInsets.zero,
                                 networkImg: data.thumbnailImage,
-                                backgroundColor: CustomColor.whiteColor,
+                                color: CustomColor.whiteColor,
                                 child: Align(
                                   alignment: Alignment.topRight,
                                   child: Column(

@@ -67,7 +67,7 @@ class _IDCardScreenState extends State<IDCardScreen> {
           RepaintBoundary(
             key: _globalKey,
             child: CustomContainer(
-              backgroundColor: CustomColor.whiteColor,
+              color: CustomColor.whiteColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -5,7 +5,7 @@ import '../costants/dimension.dart';
 
 class CustomContainer extends StatelessWidget {
   final VoidCallback? onTap;
-  final Color? backgroundColor;
+  final Color? color;
   final double? height;
   final double? width;
   final EdgeInsetsGeometry? margin;
@@ -20,7 +20,7 @@ class CustomContainer extends StatelessWidget {
 
   const CustomContainer({super.key,
     this.onTap,
-    this.backgroundColor,
+    this.color,
     this.height,
     this.width,
     this.margin,
@@ -47,7 +47,7 @@ class CustomContainer extends StatelessWidget {
         margin: margin ?? EdgeInsets.all(10),
         padding: padding ?? EdgeInsets.all(10),
         decoration: BoxDecoration(
-         color:  (gradient == null)  ? backgroundColor ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
+         color:  (gradient == null)  ? color ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
           borderRadius: borderRadius ? BorderRadius.circular(dimensions.screenHeight*0.01) :null,
 
           border: border ? Border.all(color: borderColor ?? CustomColor.strokeColor, width: 0.2):null,

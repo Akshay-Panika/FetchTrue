@@ -35,7 +35,7 @@ class OfferDialogWidget extends StatelessWidget {
         10.height,
 
         CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           margin: EdgeInsets.zero,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -62,7 +62,7 @@ Widget _buildAssuranceSection(BuildContext context) {
   final userSession = Provider.of<UserSession>(context);
   return CustomContainer(
     border: true,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
       children: [
@@ -101,7 +101,7 @@ Widget _buildAssuranceSection(BuildContext context) {
                       CustomAmountText(amount: '7,00,000', fontSize: 16,fontWeight: FontWeight.w500,),
                       10.width,
                       CustomContainer(
-                        backgroundColor: CustomColor.appColor,
+                        color: CustomColor.appColor,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 5),
                         child: Text(

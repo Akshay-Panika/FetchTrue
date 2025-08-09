@@ -3,15 +3,15 @@ import '../../profile/model/user_model.dart';
 class WalletModel {
   final String id;
   final UserModel user;
-  final int balance;
-  final int selfEarnings;
-  final int referralEarnings;
-  final int totalCredits;
-  final int totalDebits;
+  final double balance;
+  final double selfEarnings;
+  final double referralEarnings;
+  final double totalCredits;
+  final double totalDebits;
   final bool isActive;
-  final DateTime lastTransactionAt;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? lastTransactionAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final List<TransactionModel> transactions;
 
   WalletModel({
@@ -23,26 +23,42 @@ class WalletModel {
     required this.totalCredits,
     required this.totalDebits,
     required this.isActive,
-    required this.lastTransactionAt,
-    required this.createdAt,
-    required this.updatedAt,
+    this.lastTransactionAt,
+    this.createdAt,
+    this.updatedAt,
     required this.transactions,
   });
 
   factory WalletModel.fromJson(Map<String, dynamic> json) {
+    // Parse nested "data" object:
+    final data = json['data'] ?? {};
+
+    DateTime? parseDate(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) return null;
+      return DateTime.tryParse(dateStr);
+    }
+
+    double parseDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is int) return value.toDouble();
+      if (value is double) return value;
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return WalletModel(
-      id: json['_id'] ?? '',
-      user: UserModel.fromJson(json['userId']),
-      balance: json['balance'] ?? 0,
-      selfEarnings: json['selfEarnings'] ?? 0,
-      referralEarnings: json['referralEarnings'] ?? 0,
-      totalCredits: json['totalCredits'] ?? 0,
-      totalDebits: json['totalDebits'] ?? 0,
-      isActive: json['isActive'] ?? false,
-      lastTransactionAt: DateTime.parse(json['lastTransactionAt']),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      transactions: (json['transactions'] as List<dynamic>?)
+      id: data['_id'] ?? '',
+      user: UserModel.fromJson(data['userId'] ?? {}),
+      balance: parseDouble(data['balance']),
+      selfEarnings: parseDouble(data['selfEarnings']),
+      referralEarnings: parseDouble(data['referralEarnings']),
+      totalCredits: parseDouble(data['totalCredits']),
+      totalDebits: parseDouble(data['totalDebits']),
+      isActive: data['isActive'] ?? false,
+      lastTransactionAt: parseDate(data['lastTransactionAt']),
+      createdAt: parseDate(data['createdAt']),
+      updatedAt: parseDate(data['updatedAt']),
+      transactions: (data['transactions'] as List<dynamic>?)
           ?.map((e) => TransactionModel.fromJson(e))
           .toList() ??
           [],
@@ -54,14 +70,14 @@ class TransactionModel {
   final String type;
   final String leadId;
   final String commissionFrom;
-  final int amount;
+  final double amount;
   final String description;
   final String referenceId;
   final String method;
   final String source;
   final String status;
-  final int balanceAfterTransaction;
-  final DateTime createdAt;
+  final double balanceAfterTransaction;
+  final DateTime? createdAt;
 
   TransactionModel({
     required this.type,
@@ -74,22 +90,35 @@ class TransactionModel {
     required this.source,
     required this.status,
     required this.balanceAfterTransaction,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    double parseDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is int) return value.toDouble();
+      if (value is double) return value;
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
+    DateTime? parseDate(String? dateStr) {
+      if (dateStr == null || dateStr.isEmpty) return null;
+      return DateTime.tryParse(dateStr);
+    }
+
     return TransactionModel(
       type: json['type'] ?? '',
       leadId: json['leadId'] ?? '',
       commissionFrom: json['commissionFrom'] ?? '',
-      amount: json['amount'] ?? 0,
+      amount: parseDouble(json['amount']),
       description: json['description'] ?? '',
       referenceId: json['referenceId'] ?? '',
       method: json['method'] ?? '',
       source: json['source'] ?? '',
       status: json['status'] ?? '',
-      balanceAfterTransaction: json['balanceAfterTransaction'] ?? 0,
-      createdAt: DateTime.parse(json['createdAt']),
+      balanceAfterTransaction: parseDouble(json['balanceAfterTransaction']),
+      createdAt: parseDate(json['createdAt']),
     );
   }
 }

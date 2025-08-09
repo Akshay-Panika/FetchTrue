@@ -106,7 +106,7 @@ class _InviteFranchiseSectionWidgetState
                         CustomContainer(
                           border: true,
                           height: 100,
-                          backgroundColor: CustomColor.whiteColor,
+                          color: CustomColor.whiteColor,
                           margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,7 +125,7 @@ class _InviteFranchiseSectionWidgetState
                         50.height,
                         CustomContainer(
                           width: 200,
-                          backgroundColor: CustomColor.appColor,
+                          color: CustomColor.appColor,
                           child: Center(
                             child: Text(
                               'Upgrade Now',
@@ -171,7 +171,7 @@ class _InviteFranchiseSectionWidgetState
                               Expanded(
                                 flex: 1,
                                 child: CustomContainer(
-                                  backgroundColor:
+                                  color:
                                   CustomColor.appColor.withOpacity(0.8),
                                   child: IconButton(
                                     icon: const Icon(Icons.copy,

@@ -73,7 +73,7 @@ class _ProviderReviewsWidgetState extends State<ProviderReviewsWidget> {
     };
 
     return CustomContainer(
-      backgroundColor: Colors.transparent,
+      color: Colors.transparent,
       child: Column(
         children: [
           Row(
@@ -116,7 +116,7 @@ class _ProviderReviewsWidgetState extends State<ProviderReviewsWidget> {
 
   Widget reviewCard(Review review) {
     return CustomContainer(
-      backgroundColor: Colors.transparent,
+      color: Colors.transparent,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

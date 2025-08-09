@@ -19,7 +19,7 @@ import '../../checkout/repository/service_buy_repository.dart';
 import '../model/leads_model.dart';
 import '../repository/checkout_service_buy_repository.dart';
 import '../repository/download_invoice_service.dart';
-import '../repository/lead_details_service.dart';
+import '../repository/lead_by_user_service.dart';
 
 class LeadsDetailsWidget extends StatefulWidget {
   final String userId;
@@ -50,7 +50,7 @@ class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
   }
 
   Future<void> fetchCheckoutData() async {
-    final data = await LeadDetailsService.fetchCheckoutById(
+    final data = await LeadByUserService.fetchCheckoutById(
       widget.userId,
       widget.checkoutId,
     );
@@ -126,7 +126,7 @@ Widget _buildBookingCard(BuildContext context, { required LeadsModel lead}){
 
   return CustomContainer(
     border: true,
-    backgroundColor: Colors.white,
+    color: Colors.white,
     margin: EdgeInsets.zero,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +212,7 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
 
   return CustomContainer(
     border: true,
-    backgroundColor: Colors.white,
+    color: Colors.white,
     margin: EdgeInsets.zero,
     width: double.infinity,
     child: Stack(
@@ -267,7 +267,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
     children: [
       CustomContainer(
         border: true,
-        backgroundColor: Colors.white,
+        color: Colors.white,
         margin: EdgeInsets.zero,
         child: Column(
           children: [
@@ -393,7 +393,7 @@ void _showPaymentBottomSheet(BuildContext context, LeadsModel lead, VoidCallback
             child: StatefulBuilder(
               builder: (context, setState) {
                 return CustomContainer(
-                  backgroundColor: CustomColor.whiteColor,
+                  color: CustomColor.whiteColor,
                   padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,7 +648,7 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
 
   return CustomContainer(
     border: true,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child: Column(
       spacing: 10,
@@ -730,7 +730,7 @@ Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
   return CustomContainer(
     border: true,
     width: double.infinity,
-    backgroundColor: CustomColor.whiteColor,
+    color: CustomColor.whiteColor,
     margin: EdgeInsets.zero,
     child:  Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -6,11 +6,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../auth/firebase_uth/PhoneNumberScreen.dart';
-import '../../team_build/bloc/non_gp/non_gp_bloc.dart';
-import '../../team_build/bloc/non_gp/non_gp_event.dart';
-import '../../team_build/bloc/non_gp/non_gp_state.dart';
-import '../../team_build/repository/non_gp_service.dart';
 import '../../team_build/screen/team_build_screen.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
 import '../../wallet/bloc/wallet_event.dart';
@@ -60,20 +55,6 @@ class WalletWidget extends StatefulWidget {
 }
 
 class _WalletWidgetState extends State<WalletWidget> {
-  bool _isWalletFetched = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isWalletFetched && widget.userId != null) {
-      _fetchWallet();
-      _isWalletFetched = true;
-    }
-  }
-
-  void _fetchWallet() {
-    context.read<WalletBloc>().add(FetchWalletByUser(widget.userId!));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +79,7 @@ class _WalletWidgetState extends State<WalletWidget> {
           height: double.infinity,
           margin: const EdgeInsets.only(left: 10),
           border: true,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           onTap: () {
             Navigator.push(
               context,
@@ -108,7 +89,6 @@ class _WalletWidgetState extends State<WalletWidget> {
             ).then((_) {
               // अगर userId null नहीं है तब ही fetch करो
               if (widget.userId != null) {
-                _fetchWallet();
               }
             });
           },
@@ -155,7 +135,7 @@ class _WalletWidgetState extends State<WalletWidget> {
         height: double.infinity,
         margin: const EdgeInsets.only(left: 10),
         border: true,
-        backgroundColor: CustomColor.whiteColor,
+        color: CustomColor.whiteColor,
       ),
     );
   }
@@ -172,7 +152,7 @@ class ExtraEarningWidget extends StatelessWidget {
       width: double.infinity,
       margin: EdgeInsets.only(right: 10),
       border: true,
-      backgroundColor: CustomColor.whiteColor,
+      color: CustomColor.whiteColor,
       // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ExtraEarningScreen(),)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -204,77 +184,45 @@ class TeamBuildWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NonGpBloc(NonGpService())..add(FetchNonGpLeads(userId ?? '')),
-      child: BlocBuilder<NonGpBloc, NonGpState>(
-        builder: (context, state) {
-          if (state is NonGpLoading) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-                height: 70,
-                margin: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            );
-          }
-
-          if (state is NonGpLoaded) {
-            final totalCount = state.totalCount;
-
-            return CustomContainer(
-              assetsImg: 'assets/image/teamLeadBackImg.jpg',
-              width: double.infinity,
-              margin: const EdgeInsets.only(right: 10),
-              border: true,
-              backgroundColor: CustomColor.whiteColor,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TeamBuildScreen(userId: userId ?? ''),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'Team Build : ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '${totalCount ?? 0}'.padLeft(2, '0'),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: CustomColor.appColor,
-                          ),
-                        ),
-                      ],
-                    ),
+    return CustomContainer(
+      assetsImg: 'assets/image/teamLeadBackImg.jpg',
+      width: double.infinity,
+      margin: const EdgeInsets.only(right: 10),
+      border: true,
+      color: CustomColor.whiteColor,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TeamBuildScreen(userId: userId ?? ''),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                const TextSpan(
+                  text: 'Team Build : ',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
                   ),
-                  Image.asset('assets/lead/team_lead_icon.png'),
-                ],
-              ),
-            );
-          }
-
-          if (state is NonGpError) {
-            return Center(child: Text(state.message));
-          }
-
-          return SizedBox.shrink(); // fallback
-        },
+                ),
+                TextSpan(
+                  text: '${0}'.padLeft(2, '0'),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: CustomColor.appColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Image.asset('assets/lead/team_lead_icon.png'),
+        ],
       ),
     );
   }

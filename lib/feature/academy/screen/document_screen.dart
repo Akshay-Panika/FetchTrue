@@ -64,7 +64,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         
                 return CustomContainer(
                   border: true,
-                  backgroundColor: Colors.white,
+                  color: Colors.white,
                   padding: EdgeInsets.zero,
                   margin: EdgeInsets.zero,
                   onTap: () {
@@ -82,7 +82,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
                     children: [
                       Expanded(
                         child: CustomContainer(
-                          backgroundColor: Colors.transparent,
+                          color: Colors.transparent,
                           child: Icon(
                             item['icon'],
                             size: 30,
@@ -107,7 +107,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
         
             Expanded(child: CustomContainer(
               border: true,
-              backgroundColor: CustomColor.whiteColor,
+              color: CustomColor.whiteColor,
             ))
           ],
         ),

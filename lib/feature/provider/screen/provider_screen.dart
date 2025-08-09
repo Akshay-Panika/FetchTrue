@@ -55,7 +55,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
 
                     return CustomContainer(
                       width: double.infinity,
-                      backgroundColor: Colors.white,
+                      color: Colors.white,
                       margin: EdgeInsets.only(top: 10),
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName,),)),
                       child: Stack(
@@ -76,7 +76,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                         backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
                                       ),
                                       CustomContainer(
-                                          backgroundColor: CustomColor.appColor,
+                                          color: CustomColor.appColor,
                                           margin: EdgeInsets.zero,
                                           padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
                                           child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))

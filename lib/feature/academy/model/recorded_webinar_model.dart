@@ -34,8 +34,8 @@ class RecordedWebinar {
     required this.imageUrl,
     required this.description,
     required this.video,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.version,
   });
 
@@ -65,12 +65,14 @@ class RecordedVideo {
   final String videoName;
   final String videoUrl;
   final String videoDescription;
+  final String? videoImageUrl; // Optional field for video thumbnail
 
   RecordedVideo({
     required this.id,
     required this.videoName,
     required this.videoUrl,
     required this.videoDescription,
+    this.videoImageUrl,
   });
 
   factory RecordedVideo.fromJson(Map<String, dynamic> json) {
@@ -79,6 +81,7 @@ class RecordedVideo {
       videoName: json['videoName'] ?? '',
       videoUrl: json['videoUrl'] ?? '',
       videoDescription: json['videoDescription'] ?? '',
+      videoImageUrl: json['videoImageUrl'],
     );
   }
 }

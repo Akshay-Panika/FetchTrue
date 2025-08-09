@@ -33,7 +33,7 @@ class ServiceWidget extends StatelessWidget {
               return CustomContainer(
                 border: false,
                 width: 300,
-                backgroundColor: Colors.white,
+                color: Colors.white,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id,),)),
                 padding: EdgeInsets.all(0),
                 margin: EdgeInsets.only(right: 0, left: 10,bottom: 10,top: 10),

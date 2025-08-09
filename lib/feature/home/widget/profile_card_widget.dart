@@ -30,7 +30,7 @@ class ProfileAppWidget extends StatelessWidget {
 
     return  CustomContainer(
       margin: EdgeInsets.zero,
-      backgroundColor: Colors.white,
+      color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
@@ -39,7 +39,7 @@ class ProfileAppWidget extends StatelessWidget {
             return _buildShimmerEffect();
           }
 
-          String displayName = "Guest";
+          String displayName = "User Name";
           String userId = "";
           String profilePhoto = "";
 
@@ -155,7 +155,7 @@ Widget _buildShimmerEffect() {
               CustomContainer(
                 height: 10,
                 width: 60,
-                backgroundColor: Colors.grey.shade300,
+                color: Colors.grey.shade300,
                 padding: EdgeInsets.zero,
                 margin: EdgeInsets.zero,
               ),
@@ -163,7 +163,7 @@ Widget _buildShimmerEffect() {
               CustomContainer(
                 height: 12,
                 width: 100,
-                backgroundColor: Colors.grey.shade300,
+                color: Colors.grey.shade300,
                 padding: EdgeInsets.zero,
                 margin: EdgeInsets.zero,
               ),
@@ -176,7 +176,7 @@ Widget _buildShimmerEffect() {
           CustomContainer(
             height: 25,
             width: 60,
-            backgroundColor: Colors.grey.shade300,
+            color: Colors.grey.shade300,
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
           ),

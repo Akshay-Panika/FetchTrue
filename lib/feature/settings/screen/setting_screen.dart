@@ -40,7 +40,7 @@ class _SettingScreenState extends State<SettingScreen> {
       body: SafeArea(
         child: CustomContainer(
           margin: EdgeInsets.zero,
-          backgroundColor: CustomColor.whiteColor,
+          color: CustomColor.whiteColor,
           child: Column(
             children: [
               Expanded(

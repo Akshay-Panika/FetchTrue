@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../model/live_webinar_model.dart'; // Adjust the import path
 
 class LiveWebinarService {
-  final String baseUrl = 'https://biz-booster.vercel.app/api/academy/livewebinars'; // Replace with your actual endpoint
+  final String baseUrl = 'https://biz-booster.vercel.app/api/academy/livewebinars';
 
   Future<LiveWebinarModel?> fetchLiveWebinars() async {
     try {

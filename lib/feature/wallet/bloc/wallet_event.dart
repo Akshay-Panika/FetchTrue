@@ -1,7 +1,6 @@
-// wallet_event.dart
 abstract class WalletEvent {}
 
-class FetchWalletByUser extends WalletEvent {
+class FetchWallet extends WalletEvent {
   final String userId;
-  FetchWalletByUser(this.userId);
+  FetchWallet(this.userId);
 }

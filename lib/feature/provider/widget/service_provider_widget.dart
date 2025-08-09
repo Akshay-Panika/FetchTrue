@@ -22,7 +22,6 @@ class ServiceProviderWidget extends StatefulWidget {
 }
 
 class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
-  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,6 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
             // final provider = state.providerModel;
             final provider = state.providerModel.where((e) => e.kycCompleted == true).toList();
 
-
             if (provider.isEmpty) {
               return const Center(child: Text('No provider found.'));
             }
@@ -53,147 +51,146 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const CustomHeadline(headline: 'Service Provider'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, bottom: 20),
-                    child: CarouselSlider.builder(
-                      itemCount: provider.length,
-                      itemBuilder: (context, index, realIndex) {
-                        final data = provider[index];
+                  10.height,
 
-                        return CustomContainer(
-                          width: double.infinity,
-                          backgroundColor: Colors.white,
-                          margin: EdgeInsets.zero,
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProviderDetailsScreen(
-                                providerId: data.id,
-                                storeName: data.storeInfo!.storeName,
-                              ),
+                  CarouselSlider.builder(
+                    itemCount: provider.length,
+                    itemBuilder: (context, index, realIndex) {
+                      final data = provider[index];
+                      return CustomContainer(
+                        width: double.infinity,
+                        color: Colors.white,
+                        margin: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProviderDetailsScreen(
+                              providerId: data.id,
+                              storeName: data.storeInfo!.storeName,
                             ),
                           ),
-                          child: Stack(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  15.height,
-                                  Row(
-                                    children: [
-                                      Stack(
-                                        alignment: AlignmentDirectional.bottomEnd,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 30,
-                                            backgroundColor: const Color(0xFFF2F2F2),
-                                            backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
+                        ),
+                        child: Stack(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                15.height,
+                                Row(
+                                  children: [
+                                    Stack(
+                                      alignment: AlignmentDirectional.bottomEnd,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor: const Color(0xFFF2F2F2),
+                                          backgroundImage: NetworkImage(data.storeInfo!.logo.toString()),
+                                        ),
+                                        CustomContainer(
+                                          color: CustomColor.appColor,
+                                            margin: EdgeInsets.zero,
+                                            padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                            child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                      ],
+                                    ),
+                                    10.width,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          data.storeInfo!.storeName,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
                                           ),
-                                          CustomContainer(
-                                            backgroundColor: CustomColor.appColor,
-                                              margin: EdgeInsets.zero,
-                                              padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                                              child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
-                                        ],
-                                      ),
-                                      10.width,
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data.storeInfo!.storeName,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                        ),
+                                        Text(
+                                          'Module Name',
+                                          style: textStyle14(
+                                            context,
+                                            fontWeight: FontWeight.w400,
+                                            color: CustomColor.descriptionColor,
                                           ),
-                                          Text(
-                                            'Module Name',
-                                            style: textStyle14(
-                                              context,
-                                              fontWeight: FontWeight.w400,
-                                              color: CustomColor.descriptionColor,
-                                            ),
-                                          ),
-                                          5.height,
-                                          Text(
-                                            '⭐ ${data.averageRating} (${data.totalReviews} Review)',
-                                            style: TextStyle(fontSize: 12, color: Colors.black),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-
-
-                                  // 👇 Replace your existing Wrap widget with this updated code
-                                  if (data.subscribedServices.isNotEmpty) ...[
-                                    Divider(thickness: 0.3),
-
-                                    // ✅ Unique Category ID Filter Logic
-                                    Builder(
-                                      builder: (context) {
-                                        final seenCategoryIds = <String>{};
-                                        final uniqueServices = data.subscribedServices.where((service) {
-                                          final id = service.category?.id;
-                                          if (id != null && !seenCategoryIds.contains(id)) {
-                                            seenCategoryIds.add(id);
-                                            return true;
-                                          }
-                                          return false;
-                                        }).toList();
-
-                                        return Wrap(
-                                          spacing: 10,
-                                          runSpacing: 10,
-                                          children: uniqueServices.map((service) {
-                                            return CustomContainer(
-                                              margin: EdgeInsets.zero,
-                                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                              child: Text(
-                                                service.category?.name ?? 'Unknown',
-                                                style: textStyle12(
-                                                  context,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: CustomColor.descriptionColor,
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
-                                        );
-                                      },
-                                    )
+                                        ),
+                                        5.height,
+                                        Text(
+                                          '⭐ ${data.averageRating} (${data.totalReviews} Review)',
+                                          style: TextStyle(fontSize: 12, color: Colors.black),
+                                        )
+                                      ],
+                                    ),
                                   ],
-                                ],
-                              ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: FavoriteProviderButtonWidget(
-                                  userId: '',
-                                  providerId: data.id,
-                                  isInitiallyFavorite: true,
                                 ),
+
+
+                                // 👇 Replace your existing Wrap widget with this updated code
+                                if (data.subscribedServices.isNotEmpty) ...[
+                                  Divider(thickness: 0.3),
+
+                                  // ✅ Unique Category ID Filter Logic
+                                  Builder(
+                                    builder: (context) {
+                                      final seenCategoryIds = <String>{};
+                                      final uniqueServices = data.subscribedServices.where((service) {
+                                        final id = service.category?.id;
+                                        if (id != null && !seenCategoryIds.contains(id)) {
+                                          seenCategoryIds.add(id);
+                                          return true;
+                                        }
+                                        return false;
+                                      }).toList();
+
+                                      return Wrap(
+                                        spacing: 10,
+                                        runSpacing: 10,
+                                        children: uniqueServices.map((service) {
+                                          return CustomContainer(
+                                            margin: EdgeInsets.zero,
+                                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                            child: Text(
+                                              service.category?.name ?? 'Unknown',
+                                              style: textStyle12(
+                                                context,
+                                                fontWeight: FontWeight.w400,
+                                                color: CustomColor.descriptionColor,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ],
+                            ),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: FavoriteProviderButtonWidget(
+                                userId: '',
+                                providerId: data.id,
+                                isInitiallyFavorite: true,
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                      options: CarouselOptions(
-                        height: 180,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        viewportFraction: 0.80,
-                        padEnds: true,
-                        autoPlayInterval: const Duration(seconds: 5),
-                      ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    options: CarouselOptions(
+                      height: 180,
+                      enlargeCenterPage: false,
+                      viewportFraction: 1,
+                      autoPlayInterval: const Duration(seconds: 4),
+                      autoPlayCurve: Curves.easeOut,
+                      autoPlay: true,
+                      padEnds: true,
                     ),
                   ),
+                  10.height,
                 ],
               ),
             );

@@ -22,33 +22,33 @@ class ProfileCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        if (state is UserLoading) {
-          return _buildShimmerEffect();
-        }
+    return CustomContainer(
+      color: CustomColor.whiteColor,
+      padding: const EdgeInsets.all(15),
+      child: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state is UserLoading) {
+            return _buildShimmerEffect();
+          }
 
-        // ✅ Default values
-        String displayName = 'Guest';
-        String email = 'Email Id';
-        String profilePhoto = '';
-        String userId = '';
-        String joiningDate = '-';
+          // ✅ Default values
+          String displayName = 'User Name';
+          String email = 'Email Id';
+          String profilePhoto = '';
+          String userId = '';
+          String joiningDate = '-';
 
-        if (state is UserLoaded) {
-          final user = state.user;
-          displayName = user.fullName?.isNotEmpty == true ? user.fullName! : 'Guest';
-          email = user.email ?? 'Email Id';
-          profilePhoto = user.profilePhoto ?? '';
-          userId = user.id ?? '';
-          joiningDate = _formatDate(user.createdAt ?? '');
+          if (state is UserLoaded) {
+            final user = state.user;
+            displayName = user.fullName?.isNotEmpty == true ? user.fullName! : 'Guest';
+            email = user.email ?? 'Email Id';
+            profilePhoto = user.profilePhoto ?? '';
+            userId = user.id ?? '';
+            joiningDate = _formatDate(user.createdAt ?? '');
 
-        }
+          }
 
-        return CustomContainer(
-          backgroundColor: CustomColor.whiteColor,
-          padding: const EdgeInsets.all(15),
-          child: Column(
+          return Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               /// TOP ROW
@@ -126,9 +126,9 @@ class ProfileCardWidget extends StatelessWidget {
                 ],
               )
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
