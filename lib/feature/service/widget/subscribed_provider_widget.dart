@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,99 +38,101 @@ class SubscribedProviderWidget extends StatefulWidget {
 
 class _SubscribedProviderWidgetState extends State<SubscribedProviderWidget> {
   int selectedProviderIndex = -1; // -1 for "Fetch Ture"
-  List providerList = [];
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
-      child: BlocBuilder<ProviderBloc, ProviderState>(
-        builder: (context, state) {
-          if (state is ProviderLoading) {
-            return LinearProgressIndicator(
-              backgroundColor: CustomColor.appColor,
-              color: CustomColor.whiteColor,
-              minHeight: 2.5,
-            );
-          } else if (state is ProviderLoaded) {
-
-
-            providerList = state.providerModel.where((moduleService) =>
-                moduleService.subscribedServices.any(
-                (service) => service.id == widget.serviceId,
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            /// Default: Fetch Ture
+            Center(
+              child: _buildProviderCard(
+                context,
+                name: 'Fetch Ture',
+                price: widget.price,
+                newPrice: widget.discountedPrice,
+                discount: '00',
+                commission: widget.commission,
+                checkBox: Checkbox(
+                  activeColor: CustomColor.greenColor,
+                  value: selectedProviderIndex == -1,
+                  onChanged: (value) {
+                    if (value == true) {
+                      setState(() => selectedProviderIndex = -1);
+                      widget.onProviderSelected?.call("fetchTure");
+                    }
+                  },
+                ),
               ),
-            ).toList();
+            ),
 
-            return Expanded(
-              child: ListView(
-                children: [
-                  /// Default: Fetch Ture
-                  Center(
-                    child: _buildProviderCard(
-                      context,
-                      name: 'Fetch Ture',
-                      price: widget.price,
-                      newPrice: widget.discountedPrice,
-                      discount: '00',
-                      commission: widget.commission,
-                      checkBox: Checkbox(
-                        activeColor: CustomColor.greenColor,
-                        value: selectedProviderIndex == -1,
-                        onChanged: (value) {
-                          if (value == true) {
-                            setState(() => selectedProviderIndex = -1);
-                            widget.onProviderSelected?.call("fetchTure");
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-
-                  /// Provider List
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: providerList.length,
-                    itemBuilder: (context, index) {
-                      final data = providerList[index];
-                      final isSelected = selectedProviderIndex == index;
-
-                      return _buildProviderCard(
-                        context,
-                        name: data.fullName,
-                        price: data.subscribedServices.first.price.toString(),
-                        newPrice: data.subscribedServices.first.discountedPrice.toString(),
-                        discount: '00',
-                        commission: '00',
-                        checkBox: Checkbox(
-                          activeColor: CustomColor.greenColor,
-                          value: isSelected,
-                          onChanged: (value) {
-                            if (value == true) {
-                              setState(() => selectedProviderIndex = index);
-                              widget.onProviderSelected?.call(data.id);
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
+            /// provider
+            BlocProvider(
+              create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
+              child:  BlocBuilder<ProviderBloc, ProviderState>(
+                builder: (context, state) {
+                  if (state is ProviderLoading) {
+                    return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+                  }
+        
+                  else if(state is ProviderLoaded){
+        
+                    // final provider = state.providerModel;
+                    final provider = state.providerModel.where((e) => e.kycCompleted == true).toList();
+        
+        
+                    if (provider.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+        
+                    return Column(
+                      children: List.generate(provider.length, (index) {
+                        final isProvider = provider[index];
+                        final price = isProvider.subscribedServices.isNotEmpty
+                            ? isProvider.subscribedServices![index].price.toString()
+                            : 'N/A';
+                        final discountedPrice = isProvider.subscribedServices.isNotEmpty
+                            ? isProvider.subscribedServices![index].discountedPrice.toString()
+                            : 'N/A';
+                        return _buildProviderCard(context,
+                            checkBox: Checkbox(
+                              activeColor: CustomColor.greenColor,
+                              value: false, onChanged: (value) => null,),
+                               
+                               name: isProvider.fullName,
+                               backgroundImage: NetworkImage(isProvider.storeInfo!.logo!),
+                              price: price,
+                              newPrice: discountedPrice,
+                             );
+                      },),
+                    );
+        
+                  }
+        
+                  else if (state is ProviderError) {
+                    return Center(child: Text(state.errorMessage));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
-            );
-          } else if (state is ProviderError) {
-            return Center(child: Text(state.errorMessage));
-          }
-          return const SizedBox.shrink();
-        },
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
+
+
+
+
+/// Card
 Widget _buildProviderCard(
     BuildContext context, {
       String? name,
+      ImageProvider<Object>? backgroundImage,
       String? price,
       String? newPrice,
       String? discount,
@@ -143,7 +146,9 @@ Widget _buildProviderCard(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(backgroundImage: AssetImage(CustomImage.nullImage)),
+            CircleAvatar(radius: 25,
+              backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+              backgroundImage: backgroundImage ?? AssetImage(CustomImage.nullImage)),
             10.width,
             Expanded(
               child: Column(

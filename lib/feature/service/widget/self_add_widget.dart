@@ -79,20 +79,24 @@ void showCustomBottomSheet(BuildContext context,{required List<ServiceModel> ser
                           /// Proceed To Check Out
                           Padding(
                             padding: const EdgeInsets.only(left: 10.0,right: 10, bottom: 30),
-                            child: CustomButton(
-                              label: 'Proceed To Checkout',
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CheckoutScreen(
-                                      services: services,
-                                      providerId: provider,
-                                    ),
-                                  ),
-                                );
-                              },
+                            child: Column(
+                              children: [
+                                CustomButton(
+                                  label: 'Proceed To Checkout',
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CheckoutScreen(
+                                          services: services,
+                                          providerId: provider,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ],

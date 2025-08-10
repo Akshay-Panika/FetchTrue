@@ -71,12 +71,15 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
     _disposeControllers();
 
     final video = widget.videoList[index];
-    final url = video.videoUrl;
-
+    final url = video.videoUrl.trim();
     _isYoutube = _isYoutubeUrl(url);
 
     if (_isYoutube) {
       final videoId = YoutubePlayer.convertUrlToId(url) ?? '';
+      if (videoId.isEmpty) {
+        debugPrint("Invalid YouTube URL: $url");
+        return;
+      }
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
         flags: const YoutubePlayerFlags(
@@ -85,11 +88,16 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
           enableCaption: false,
         ),
       )..addListener(_youtubeListener);
-    } else {
-      _videoController = VideoPlayerController.network(url);
-      await _videoController!.initialize();
-      _videoController!.play();
       setState(() {});
+    } else {
+      try {
+        _videoController = VideoPlayerController.network(url);
+        await _videoController!.initialize();
+        _videoController!.play();
+        setState(() {});
+      } catch (e) {
+        debugPrint("Video load failed: $e");
+      }
     }
 
     setState(() {
@@ -125,96 +133,92 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
 
   Widget _buildVideoPlayer(RecordedVideo video) {
     if (_isYoutube && _youtubeController != null) {
-      return Center(
-        child: GestureDetector(
-          onScaleStart: (_) => setState(() => _isZoomed = true),
-          onScaleUpdate: (details) {
-            setState(() {
-              _currentScale = details.scale.clamp(1.0, 5.0);
-              _currentRotation = details.rotation;
-            });
-          },
-          onScaleEnd: (_) {
-            if (_currentScale <= 1.0) {
-              setState(() {
-                _isZoomed = false;
-                _currentScale = 1.0;
-                _currentRotation = 0.0;
-              });
-            }
-          },
-          child: Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..scale(_currentScale)
-              ..rotateZ(_currentRotation),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: YoutubePlayer(
-                controller: _youtubeController!,
-                showVideoProgressIndicator: true,
-                progressIndicatorColor: Colors.redAccent,
-              ),
-            ),
+      return _zoomablePlayer(
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: YoutubePlayer(
+            controller: _youtubeController!,
+            showVideoProgressIndicator: true,
+            progressIndicatorColor: Colors.redAccent,
           ),
         ),
       );
     } else if (_videoController != null && _videoController!.value.isInitialized) {
-      return Center(
-        child: GestureDetector(
-          onScaleStart: (_) => setState(() => _isZoomed = true),
-          onScaleUpdate: (details) {
-            setState(() {
-              _currentScale = details.scale.clamp(1.0, 5.0);
-              _currentRotation = details.rotation;
-            });
-          },
-          onScaleEnd: (_) {
-            if (_currentScale <= 1.0) {
-              setState(() {
-                _isZoomed = false;
-                _currentScale = 1.0;
-                _currentRotation = 0.0;
-              });
-            }
-          },
-          child: Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..scale(_currentScale)
-              ..rotateZ(_currentRotation),
-            child: AspectRatio(
-              aspectRatio: _videoController!.value.aspectRatio,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: VideoPlayer(_videoController!),
-              ),
-            ),
+      return _zoomablePlayer(
+        AspectRatio(
+          aspectRatio: _videoController!.value.aspectRatio,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: VideoPlayer(_videoController!),
           ),
         ),
       );
     } else {
-      if (video.videoImageUrl != null && video.videoImageUrl!.isNotEmpty) {
-        return Container(
+      return _thumbnailPlaceholder(video);
+    }
+  }
+
+  Widget _zoomablePlayer(Widget child) {
+    return Center(
+      child: GestureDetector(
+        onScaleStart: (_) => setState(() => _isZoomed = true),
+        onScaleUpdate: (details) {
+          setState(() {
+            _currentScale = details.scale.clamp(1.0, 5.0);
+            _currentRotation = details.rotation;
+          });
+        },
+        onScaleEnd: (_) {
+          if (_currentScale <= 1.0) {
+            setState(() {
+              _isZoomed = false;
+              _currentScale = 1.0;
+              _currentRotation = 0.0;
+            });
+          }
+        },
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..scale(_currentScale)
+            ..rotateZ(_currentRotation),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  Widget _thumbnailPlaceholder(RecordedVideo video) {
+    if (video.videoImageUrl != null && video.videoImageUrl!.isNotEmpty) {
+      return GestureDetector(
+        onTap: () => _loadVideo(widget.videoList.indexOf(video)),
+        child: Container(
           height: 180,
-          color: Colors.black,
-          child: Image.network(
-            video.videoImageUrl!,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Center(
-              child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
-            ),
+          color: Colors.black12,
+          child: Stack(
+            children: [
+              Image.network(
+                video.videoImageUrl!,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 180,
+                errorBuilder: (_, __, ___) => const SizedBox(),
+              ),
+              Center(
+                child: Icon(Icons.play_circle_fill, size: 50, color: CustomColor.appColor),
+              ),
+            ],
           ),
-        );
-      } else {
-        return Container(
-          height: 180,
-          color: Colors.black,
-          child: Center(
-            child: Icon(Icons.videocam_off, size: 50, color: Colors.grey),
-          ),
-        );
-      }
+        ),
+      );
+    } else {
+      return Container(
+        height: 180,
+        color: Colors.black,
+        child: Center(
+          child: Icon(Icons.videocam_off, size: 50, color: Colors.grey),
+        ),
+      );
     }
   }
 
@@ -247,25 +251,7 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
                 if (isSelected)
                   _buildVideoPlayer(video)
                 else
-                  Container(
-                    height: 180,
-                    color: Colors.black12,
-                    child: Stack(
-                      children: [
-                        if (video.videoImageUrl != null && video.videoImageUrl!.isNotEmpty)
-                          Image.network(
-                            video.videoImageUrl!,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 180,
-                            errorBuilder: (_, __, ___) => SizedBox(),
-                          ),
-                        Center(
-                          child: Icon(Icons.play_circle_fill, size: 50, color: CustomColor.appColor),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _thumbnailPlaceholder(video),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -277,15 +263,6 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
                         style: textStyle14(context, color: CustomColor.descriptionColor),
                       ),
                     ],
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      _loadVideo(index);
-                    },
-                    child: Container(height: 0),
                   ),
                 ),
               ],

@@ -270,9 +270,9 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
 
                             Text(
                               (user.commissionEarned == 0 || user.commissionEarned == null)
-                                  ? 'Commission Earned: ₹ ___'
+                                  ? 'Expected Earning: ₹ ${formatPrice(user.commissionEarned)}'
                                   : 'Commission Earned: ₹ ${formatPrice(user.commissionEarned)}',
-                              style: textStyle12(context, color: CustomColor.descriptionColor),
+                              style: textStyle12(context, color: CustomColor.appColor),
                             ),
 
                           ],
@@ -408,10 +408,16 @@ Widget _buildTotalTeam(BuildContext context, TeamData member) {
                   ],
                 ),
                 Text(
-                  'My Earning ₹ ${formatPrice(data.totalEarningsFromShare3)}',
-                  // 'My Earning ₹ ${data.totalEarningsFromShare3}',
-                  style: textStyle12(context, color: CustomColor.appColor),
+                  (data.totalEarningsFromShare3 == 0 || data.totalEarningsFromShare3 == null)
+                      ? 'Expected\nEarning: ₹ ${formatPrice(data.totalEarningsFromShare3)}'
+                      : 'My Earning: ₹ ${formatPrice(data.totalEarningsFromShare3)}',
+                  style: textStyle12(context, color: CustomColor.appColor,),textAlign: TextAlign.end,
                 ),
+                // Text(
+                //   'My Earning ₹ ${formatPrice(data.totalEarningsFromShare3)}',
+                //   // 'My Earning ₹ ${data.totalEarningsFromShare3}',
+                //   style: textStyle12(context, color: CustomColor.appColor),
+                // ),
               ],
             ),
             10.height,

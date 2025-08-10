@@ -125,13 +125,11 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                     ),
                                   ],
                                 ),
+                                Divider(thickness: 0.3),
 
 
                                 // 👇 Replace your existing Wrap widget with this updated code
                                 if (data.subscribedServices.isNotEmpty) ...[
-                                  Divider(thickness: 0.3),
-
-                                  // ✅ Unique Category ID Filter Logic
                                   Builder(
                                     builder: (context) {
                                       final seenCategoryIds = <String>{};
@@ -147,24 +145,36 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                       return Wrap(
                                         spacing: 10,
                                         runSpacing: 10,
-                                        children: uniqueServices.map((service) {
-                                          return CustomContainer(
-                                            margin: EdgeInsets.zero,
-                                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                            child: Text(
-                                              service.category?.name ?? 'Unknown',
-                                              style: textStyle12(
-                                                context,
-                                                fontWeight: FontWeight.w400,
-                                                color: CustomColor.descriptionColor,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
+                                        children: [
+                                          for (int i = 0; i < uniqueServices.length; i++)
+                                            if (i < 4)
+                                              CustomContainer(
+                                                margin: EdgeInsets.zero,
+                                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                                child: Text(
+                                                  uniqueServices[i].category?.name ?? 'Unknown',
+                                                  style: textStyle12(
+                                                    context,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: CustomColor.descriptionColor,
+                                                  ),
+                                                ),
+                                              )
+                                            else if (i == 4)
+                                              CustomContainer(
+                                                margin: EdgeInsets.zero,
+                                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                                                child:  Text("Other...",    style: textStyle12(
+                                                  context,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: CustomColor.descriptionColor,),
+                                              ),)
+                                        ],
                                       );
                                     },
                                   )
                                 ],
+
                               ],
                             ),
                             Positioned(

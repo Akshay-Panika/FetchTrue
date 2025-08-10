@@ -6,6 +6,7 @@ class PackageModel {
   final int deposit;
   final int grandtotal;
   final int monthlyEarnings;
+  final int? lockInPeriod;
   final Map<String, String> description;
 
   PackageModel({
@@ -16,6 +17,7 @@ class PackageModel {
     required this.deposit,
     required this.description,
     required this.grandtotal,
+    this.lockInPeriod,
     required this.monthlyEarnings,
   });
 
@@ -28,6 +30,7 @@ class PackageModel {
       deposit: json['deposit'],
       monthlyEarnings: json['monthlyEarnings'],
       grandtotal: json['grandtotal'],
+      lockInPeriod: json['lockInPeriod'],
       description: Map<String, String>.from(json['description']),
     );
   }

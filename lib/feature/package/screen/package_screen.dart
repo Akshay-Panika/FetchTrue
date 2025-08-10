@@ -10,7 +10,6 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../profile/bloc/user_bloc/user_event.dart';

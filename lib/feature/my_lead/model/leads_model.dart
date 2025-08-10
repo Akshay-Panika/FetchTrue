@@ -134,9 +134,6 @@ class LeadsModel {
       serviceMan: json['serviceMan'],
       coupon: json['coupon'],
       paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
-      // paymentMethod: (json['paymentMethod'] != null && json['paymentMethod'] is List)
-      //     ? List<String>.from(json['paymentMethod'].map((e) => e.toString()))
-      //     : [],
 
       listingPrice: json['listingPrice'],
       serviceDiscountPrice: json['serviceDiscountPrice'],

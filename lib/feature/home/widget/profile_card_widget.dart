@@ -39,7 +39,7 @@ class ProfileAppWidget extends StatelessWidget {
             return _buildShimmerEffect();
           }
 
-          String displayName = "User Name";
+          String displayName = "Guest";
           String userId = "";
           String profilePhoto = "";
 

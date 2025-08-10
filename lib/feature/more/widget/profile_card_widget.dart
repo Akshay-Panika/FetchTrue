@@ -32,7 +32,7 @@ class ProfileCardWidget extends StatelessWidget {
           }
 
           // ✅ Default values
-          String displayName = 'User Name';
+          String displayName = 'Guest';
           String email = 'Email Id';
           String profilePhoto = '';
           String userId = '';

@@ -11,7 +11,6 @@ import '../../../core/widgets/custom_headline.dart';
 import '../../advisers/screen/adviser_screen.dart';
 import '../widget/academy_banner_widget.dart';
 import 'training_tutorial_screen.dart';
-import 'document_screen.dart';
 import 'live_webinar_screen.dart';
 
 class AcademyScreen extends StatelessWidget {
@@ -58,11 +57,11 @@ class AcademyScreen extends StatelessWidget {
         'icon': Icons.video_library,
         'screenBuilder': () => RecordedWebinarScreen(),
       },
-      {
-        'title': 'Documents',
-        'icon': Icons.insert_drive_file,
-        'screenBuilder': () => DocumentScreen(),
-      },
+      // {
+      //   'title': 'Documents',
+      //   'icon': Icons.insert_drive_file,
+      //   'screenBuilder': () => DocumentScreen(),
+      // },
       {
         'title': 'Podcast',
         'icon': Icons.podcasts,
