@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
 import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
+import 'feature/favorite/repository/FavoriteServicesProvider.dart';
 import 'feature/profile/bloc/user_bloc/user_bloc.dart';
 import 'feature/profile/bloc/user_bloc/user_event.dart';
 import 'feature/profile/repository/user_service.dart';
@@ -31,10 +32,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => userSession),
-      ],
+  ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<WalletBloc>(create: (_) => WalletBloc()),
           BlocProvider<UserBloc>.value(value: userBloc),
         ],
         child: const MyApp(),

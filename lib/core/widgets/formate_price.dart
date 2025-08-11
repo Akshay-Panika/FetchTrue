@@ -14,7 +14,6 @@ String formatDateTime(dynamic date) {
   } else {
     return '';
   }
-
   return DateFormat("dd MMM yyyy, hh:mm a").format(dt);
 }
 

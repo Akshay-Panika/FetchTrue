@@ -136,7 +136,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                         CustomAmountText(amount: '${data.discountedPrice}'??'00.00', isLineThrough: false, fontSize: 14, color: CustomColor.appColor),
                         10.width,
 
-                        Text('${data.discount} % Discount'??'00 Discount', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),)
+                        Text('${data.discount} % Off'??'00 Discount', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),)
                       ],
                     )
                   ],

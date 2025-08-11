@@ -298,7 +298,7 @@ Widget _buildTeamBuildEarning(BuildContext context) {
                 color: isCredit ? CustomColor.appColor : CustomColor.redColor,
               ),
             ),
-            title: Text('Lead Id: ${tx.leadId}', style: textStyle12(context)),
+            title: Text('Franchise Id: ${tx.commissionFrom}', style: textStyle12(context)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

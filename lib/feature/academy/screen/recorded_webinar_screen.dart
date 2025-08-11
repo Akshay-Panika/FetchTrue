@@ -2,12 +2,10 @@ import 'package:fetchtrue/feature/academy/screen/recorded_playlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_headline.dart';
 import '../model/recorded_webinar_model.dart';
 import '../repository/recorded_webinar_service.dart';
 
@@ -74,16 +72,22 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(webinar.name, style: textStyle14(context),),
-                                Text(webinar.description, style: textStyle12(context,color: CustomColor.descriptionColor),),
-                              ],
+                            Text(
+                              webinar.name,
+                              style: textStyle14(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              webinar.description,
+                              style: textStyle12(context, color: CustomColor.descriptionColor),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       )
+
                     ],
                   ),
                   onTap: () => Navigator.push(

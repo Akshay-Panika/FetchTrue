@@ -30,20 +30,17 @@ class WalletModel {
   });
 
   factory WalletModel.fromJson(Map<String, dynamic> json) {
-    // Parse nested "data" object:
     final data = json['data'] ?? {};
 
-    DateTime? parseDate(String? dateStr) {
-      if (dateStr == null || dateStr.isEmpty) return null;
-      return DateTime.tryParse(dateStr);
+    DateTime? parseDate(dynamic dateStr) {
+      if (dateStr == null) return null;
+      return DateTime.tryParse(dateStr.toString());
     }
 
     double parseDouble(dynamic value) {
       if (value == null) return 0.0;
-      if (value is int) return value.toDouble();
-      if (value is double) return value;
-      if (value is String) return double.tryParse(value) ?? 0.0;
-      return 0.0;
+      if (value is num) return value.toDouble();
+      return double.tryParse(value.toString()) ?? 0.0;
     }
 
     return WalletModel(
@@ -58,10 +55,9 @@ class WalletModel {
       lastTransactionAt: parseDate(data['lastTransactionAt']),
       createdAt: parseDate(data['createdAt']),
       updatedAt: parseDate(data['updatedAt']),
-      transactions: (data['transactions'] as List<dynamic>?)
-          ?.map((e) => TransactionModel.fromJson(e))
-          .toList() ??
-          [],
+      transactions: (data['transactions'] as List? ?? [])
+          .map((e) => TransactionModel.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -96,15 +92,13 @@ class TransactionModel {
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     double parseDouble(dynamic value) {
       if (value == null) return 0.0;
-      if (value is int) return value.toDouble();
-      if (value is double) return value;
-      if (value is String) return double.tryParse(value) ?? 0.0;
-      return 0.0;
+      if (value is num) return value.toDouble();
+      return double.tryParse(value.toString()) ?? 0.0;
     }
 
-    DateTime? parseDate(String? dateStr) {
-      if (dateStr == null || dateStr.isEmpty) return null;
-      return DateTime.tryParse(dateStr);
+    DateTime? parseDate(dynamic dateStr) {
+      if (dateStr == null) return null;
+      return DateTime.tryParse(dateStr.toString());
     }
 
     return TransactionModel(

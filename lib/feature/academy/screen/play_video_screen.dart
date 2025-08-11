@@ -141,49 +141,77 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(selectedVideo.videoName,style: textStyle14(context),),
-                  Text(selectedVideo.videoDescription,style: textStyle14(context, fontWeight: FontWeight.w400),),
-                  Divider()
+                  Text(
+                    selectedVideo.videoName,
+                    style: textStyle14(context),
+                  ),
+                  Text(
+                    selectedVideo.videoDescription,
+                    style: textStyle14(context, fontWeight: FontWeight.w400),
+                  ),
+                  const Divider(),
                 ],
               ),
             ),
 
-            Expanded(flex: 2,
+            Expanded(
+              flex: 2,
               child: ListView.builder(
                 itemCount: widget.videoList.length,
                 itemBuilder: (context, index) {
                   final video = widget.videoList[index];
+                  final isSelected = selectedIndex == index;
+
                   return CustomContainer(
                     border: true,
                     color: Colors.white,
-                    margin: EdgeInsetsGeometry.only(bottom: 10, left: 10,right: 10),
+                    margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
                     padding: EdgeInsets.zero,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                         Row(
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                           children: [
-                             CustomContainer(
-                               border: true,
-                               height: 90,width: 150,
-                               networkImg: video.videoImageUrl,
-                               margin: EdgeInsets.zero,
-                               // child: Center(child: Icon(selectedIndex == index ?Icons.play_circle:Icons.pause_circle,size: 30,),),
-                             ),
-                             10.width,
-                             Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               children: [
-                                 5.height,
-                                 Text(video.videoName,style: textStyle14(context,),),
-                                 Text(video.videoDescription,style: textStyle14(context,fontWeight: FontWeight.w400,),),
-                               ],
-                             ),
-                           ],
-                         ),
-
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomContainer(
+                                border: true,
+                                height: 90,
+                                width: 150,
+                                networkImg: video.videoImageUrl,
+                                margin: EdgeInsets.zero,
+                              ),
+                              10.width,
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    5.height,
+                                    Text(video.videoName, style: textStyle14(context)),
+                                    Text(
+                                      video.videoDescription,
+                                      style: textStyle14(
+                                        context,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsGeometry.only(right: 20),
+                          child: Icon(
+                            isSelected ? Icons.pause_circle : Icons.play_circle,
+                            size: 30,
+                            color: isSelected ? CustomColor.descriptionColor.withOpacity(0.5) : CustomColor.appColor,
+                          ),
+                        ),
                       ],
                     ),
                     onTap: () => changeVideo(index),
@@ -191,7 +219,7 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
                 },
               ),
             ),
-          ],
+          ]
         ],
       ),
     );

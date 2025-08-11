@@ -262,7 +262,7 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
                               children: [
                                 Text('Amount: ', style: textStyle12(context)),
                                 10.width,
-                                CustomAmountText(amount: '${lead.service.price}}', isLineThrough: true),
+                                CustomAmountText(amount: '${lead.service.price}', isLineThrough: true),
                                 10.width,
                                 CustomAmountText(amount: '${formatPrice(lead.service.discountedPrice)}'),
                               ],
@@ -413,11 +413,6 @@ Widget _buildTotalTeam(BuildContext context, TeamData member) {
                       : 'My Earning: ₹ ${formatPrice(data.totalEarningsFromShare3)}',
                   style: textStyle12(context, color: CustomColor.appColor,),textAlign: TextAlign.end,
                 ),
-                // Text(
-                //   'My Earning ₹ ${formatPrice(data.totalEarningsFromShare3)}',
-                //   // 'My Earning ₹ ${data.totalEarningsFromShare3}',
-                //   style: textStyle12(context, color: CustomColor.appColor),
-                // ),
               ],
             ),
             10.height,
@@ -435,11 +430,12 @@ Widget _buildTotalTeam(BuildContext context, TeamData member) {
                 Text('${data.completeLeadCount}\nCompleted Lead',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: CustomColor.greenColor)),
+
               ],
             ),
           ],
         ),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(userId: user.id,leadsData: data.leads,),)),
       );
     },
   );

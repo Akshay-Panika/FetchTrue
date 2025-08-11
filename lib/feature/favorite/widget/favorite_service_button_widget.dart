@@ -54,34 +54,27 @@ class _FavoriteServiceButtonWidgetState extends State<FavoriteServiceButtonWidge
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,width: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withOpacity(0.5),
-              spreadRadius: 0.5,
-              blurRadius: 15,
-              offset: Offset(0, 1),
-            ),
-          ],
-        ),
-      child: _isLoading
-          ? Center(
-            child: const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 3, color: Colors.red,),
-                  ),
-          )
-          : IconButton(
-        onPressed: _toggleFavorite,
-        icon: Icon(
-          _isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: Colors.red,
-        ),
-      )
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: CircleAvatar(
+            radius: 20,
+        backgroundColor: Colors.white.withOpacity(0.3),
+        child: _isLoading
+            ? Center(
+              child: const SizedBox(height: 20, width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 3, color: Colors.red,),
+                    ),
+            )
+            : Center(
+              child: IconButton(
+                      onPressed: _toggleFavorite,
+                      icon: Icon(
+              _isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: Colors.red,
+                      ),
+                    ),
+            )
+      ),
     );
   }
 }

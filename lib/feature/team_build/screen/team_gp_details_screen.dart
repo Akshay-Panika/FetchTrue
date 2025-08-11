@@ -511,7 +511,7 @@ Widget _buildTotalTeam(BuildContext context, String teamId){
 
                   ],
                 ),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
+                // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
               ),
             );
           },

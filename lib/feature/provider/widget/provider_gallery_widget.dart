@@ -1,3 +1,5 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,43 +17,179 @@ class ProviderGalleryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return SafeArea(
       child: BlocProvider(
         create: (_) => ProviderByIdBloc(ProviderByIdService())..add(GetProviderByIdEvent(providerId.toString())),
-        child:  BlocBuilder<ProviderByIdBloc, ProviderByIdState>(
+        child: BlocBuilder<ProviderByIdBloc, ProviderByIdState>(
           builder: (context, state) {
             if (state is ProviderLoading) {
               return Padding(
                 padding: const EdgeInsets.only(top: 150.0),
-                child: Center(child: CircularProgressIndicator(color: CustomColor.appColor,),),
+                child: Center(child: CircularProgressIndicator(color: CustomColor.appColor)),
               );
-            }
-
-            else if(state is ProviderLoaded){
-
+            } else if (state is ProviderLoaded) {
               final gallery = state.provider.galleryImages;
 
-              return  GridView.builder(
+              if (gallery.isEmpty) {
+                return Center(child: Text('No images found.'));
+              }
+
+              return GridView.builder(
                 itemCount: gallery.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                // shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                // physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
                 itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FullSizeImage(
+                            galleryImages: gallery,
+                            initialSelectedImage: gallery[index],
+                          ),
+                        ),
+                      );
 
-                  return CustomContainer(border: true,
-                    color: Colors.white,
-                    networkImg: gallery[index],
+                    },
+                    child: CustomContainer(
+                      border: true,
+                      color: Colors.white,
+                      networkImg: gallery[index],
+                    ),
                   );
-                },);
-            }
-
-            else if (state is ProviderError) {
+                },
+              );
+            } else if (state is ProviderError) {
               return Center(child: Text(state.message));
             }
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+}
+
+
+class FullSizeImage extends StatefulWidget {
+  final List<String> galleryImages;
+  final String initialSelectedImage;
+
+  const FullSizeImage({
+    super.key,
+    required this.galleryImages,
+    required this.initialSelectedImage,
+  });
+
+  @override
+  State<FullSizeImage> createState() => _FullSizeImageState();
+}
+
+class _FullSizeImageState extends State<FullSizeImage> {
+  late String selectedImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedImageUrl = widget.initialSelectedImage;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
+      appBar: CustomAppBar(title: 'Gallery', showBackButton: true,),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: InteractiveViewer(
+                panEnabled: true,
+                minScale: 1,
+                maxScale: 4,
+                child: Image.network(
+                  selectedImageUrl,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(
+                        child:
+                        Icon(Icons.broken_image, size: 60, color: Colors.grey));
+                  },
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.galleryImages.length,
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              itemBuilder: (context, index) {
+                final imageUrl = widget.galleryImages[index];
+                final isSelected = imageUrl == selectedImageUrl;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedImageUrl = imageUrl;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 6),
+                    padding: isSelected ? EdgeInsets.all(3) : EdgeInsets.all(0),
+                    decoration: isSelected
+                        ? BoxDecoration(
+                      border: Border.all(color: CustomColor.appColor, width: 3),
+                      borderRadius: BorderRadius.circular(8),
+                    )
+                        : null,
+                    child: Image.network(
+                      imageUrl,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.broken_image, size: 40);
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          50.height,
+        ],
       ),
     );
   }

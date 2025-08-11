@@ -27,10 +27,10 @@ class TETWidget extends StatelessWidget {
       margin: EdgeInsetsGeometry.only(top: 20),
       child: Row(
         children: [
-          
+
           Expanded(
             child: WalletWidget(userId: userId,),),
-           10.width,
+          10.width,
 
           Expanded(
             child: Column(
@@ -129,7 +129,7 @@ class _WalletWidgetState extends State<WalletWidget> {
                       ),
                     );
                   } else if (state is WalletError) {
-                     return SizedBox.shrink();
+                    return SizedBox.shrink();
                     // return Center(child: Text(state.message));
                   }
                   return const SizedBox();

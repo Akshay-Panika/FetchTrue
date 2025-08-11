@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
 import '../../service/model/service_model.dart';
 import '../../service/screen/service_details_screen.dart';
 
@@ -14,7 +20,6 @@ class ServiceCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       height: 220,
       child: ListView.builder(
@@ -27,11 +32,7 @@ class ServiceCardWidget extends StatelessWidget {
             width: 300,
             color: Colors.white,
             onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ServiceDetailsScreen(serviceId: data.id),
-              ),
-            ),
+              context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id),),),
             padding: EdgeInsets.zero,
             margin: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
             child: Column(
@@ -49,11 +50,41 @@ class ServiceCardWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FavoriteServiceButtonWidget(
-                            userId:'',
-                            serviceId: '',
-                            isInitiallyFavorite: false,
+
+
+                          BlocBuilder<UserBloc, UserState>(
+                            builder: (context, state) {
+                              if (state is UserLoading) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+
+                              if (state is UserLoaded) {
+                                final favorites = state.user.favoriteServices ?? [];
+                                final isFavorite = favorites.contains(data.id);
+                                final userId = state.user.id;
+
+                                return FavoriteServiceButtonWidget(
+                                  userId: userId,
+                                  serviceId: data.id,
+                                  isInitiallyFavorite: isFavorite,
+                                  onChanged: (newFavoriteStatus) {
+                                    context.read<UserBloc>().add(UserFavoriteChangedEvent(
+                                      serviceId: data.id,
+                                      isFavorite: newFavoriteStatus,
+                                    ));
+                                  },
+                                );
+                              }
+
+                              if (state is UserError) {
+                                return const Icon(Icons.favorite_border, color: Colors.grey);
+                              }
+
+                              return const SizedBox.shrink();
+                            },
                           ),
+
+
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                             decoration: BoxDecoration(
@@ -63,8 +94,7 @@ class ServiceCardWidget extends StatelessWidget {
                               ),
                               color: CustomColor.blackColor.withOpacity(0.3),
                             ),
-                            child: Text(
-                              '⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
+                            child: Text('⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
                               style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
                             ),
                           ),
@@ -93,10 +123,7 @@ class ServiceCardWidget extends StatelessWidget {
                                 isLineThrough: true,
                               ),
                               10.width,
-                              // CustomAmountText(
-                              //   amount: '${data.discountedPrice}',
-                              //   color: CustomColor.descriptionColor,
-                              // ),
+
                               CustomAmountText(
                                 amount: '${(data.discountedPrice ?? 0).toInt()}',
                                 color: CustomColor.descriptionColor,

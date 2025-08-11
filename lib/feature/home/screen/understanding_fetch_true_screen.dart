@@ -1,3 +1,6 @@
+import 'package:fetchtrue/core/costants/custom_color.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +30,6 @@ class _UnderstandingFetchTrueScreenState
       BuildContext context,
       String url,
       String fullName,
-      String fileName,
-      List<Map<String, String>> allVideos,
       ) {
     final videoId = YoutubePlayer.convertUrlToId(url);
     if (videoId != null) {
@@ -37,14 +38,16 @@ class _UnderstandingFetchTrueScreenState
         MaterialPageRoute(
           builder: (_) => YoutubePlayerScreen(
             videoId: videoId,
-            videoName: fileName,
+            videoName: fullName,
             uploaderName: fullName,
-            allVideos: allVideos,
+            allVideos: dataListVideos, // यह नीचे परिभाषित किया गया है
           ),
         ),
       );
     }
   }
+
+  late List<Map<String, String>> dataListVideos;
 
   @override
   Widget build(BuildContext context) {
@@ -72,16 +75,14 @@ class _UnderstandingFetchTrueScreenState
           );
         }
 
-        // Parse all videos
-        final allVideos = dataList
-            .expand(
-              (item) => item.videos.map(
-                (v) => {
-              "url": v.filePath,
-              "fullName": item.fullName,
-              "fileName": v.fileName,
-            },
-          ),
+        // सभी वीडियो urls की लिस्ट बनाएं
+        dataListVideos = dataList
+            .map(
+              (item) => {
+            "url": item.videoUrl,
+            "fullName": item.fullName,
+            "fileName": item.fullName,
+          },
         )
             .toList();
 
@@ -92,6 +93,8 @@ class _UnderstandingFetchTrueScreenState
             itemCount: dataList.length,
             itemBuilder: (context, index) {
               final item = dataList[index];
+              final videoId = YoutubePlayer.convertUrlToId(item.videoUrl) ?? '';
+
               return CustomContainer(
                 width: 250,
                 border: true,
@@ -102,10 +105,10 @@ class _UnderstandingFetchTrueScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: item.videos.isNotEmpty
+                      child: videoId.isNotEmpty
                           ? CustomContainer(
                         networkImg:
-                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(item.videos.first.filePath)}/0.jpg",
+                        "https://img.youtube.com/vi/$videoId/0.jpg",
                         margin: EdgeInsets.zero,
                         padding: EdgeInsets.zero,
                       )
@@ -121,14 +124,8 @@ class _UnderstandingFetchTrueScreenState
                   ],
                 ),
                 onTap: () {
-                  if (item.videos.isNotEmpty) {
-                    playVideo(
-                      context,
-                      item.videos.first.filePath,
-                      item.fullName,
-                      item.videos.first.fileName,
-                      allVideos,
-                    );
+                  if (videoId.isNotEmpty) {
+                    playVideo(context, item.videoUrl, item.fullName);
                   }
                 },
               );
@@ -139,6 +136,8 @@ class _UnderstandingFetchTrueScreenState
     );
   }
 }
+
+
 
 class YoutubePlayerScreen extends StatefulWidget {
   final String videoId;
@@ -216,10 +215,16 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(8),
               color: Colors.white,
-              child: Text(
-                "$currentUploader - $currentVideoName",
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.bold),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "$currentUploader",
+                    style: textStyle14(context)),
+                  Text(
+                    "$currentVideoName",
+                    style: textStyle14(context, color: CustomColor.descriptionColor)),
+                ],
               ),
             ),
           if (!_isFullScreen) const Divider(),
@@ -234,23 +239,62 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
                     YoutubePlayer.convertUrlToId(video["url"]!) ?? "";
                 final isPlaying = vidId == currentVideoId;
 
-                return ListTile(
-                  tileColor: isPlaying ? Colors.blue.shade50 : null,
-                  leading: Image.network(
-                    "https://img.youtube.com/vi/$vidId/0.jpg",
-                    width: 80,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(video["fileName"] ?? "No Name"),
-                  subtitle: Text(video["fullName"] ?? ""),
-                  trailing: Icon(
-                    isPlaying
-                        ? Icons.play_circle_fill
-                        : Icons.pause_circle,
-                    color: isPlaying ? Colors.blue : Colors.black54,
-                  ),
+                return CustomContainer(
+                  border: true,
+                  color: Colors.white,
+                  margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  padding: EdgeInsets.zero,
                   onTap: () => playAnotherVideo(video),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(  // <-- यहाँ Expanded लगाएं
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomContainer(
+                              margin: EdgeInsets.zero,
+                              height: 100,
+                              width: 150,
+                              networkImg: "https://img.youtube.com/vi/$vidId/0.jpg",
+                            ),
+                            10.width,
+                            Flexible(  // <-- यहाँ Flexible भी लगाना अच्छा रहता है
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  10.height,
+                                  Text(
+                                    video["fileName"] ?? "No Name",
+                                    style: textStyle14(context),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                  Text(
+                                    video["fullName"] ?? "",
+                                    style: textStyle14(context, color: CustomColor.descriptionColor),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: Icon(
+                          size: 30,
+                          isPlaying ? Icons.play_circle_fill : Icons.pause_circle,
+                          color: isPlaying ? Colors.blue : Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
+
               },
             ),
           ),
