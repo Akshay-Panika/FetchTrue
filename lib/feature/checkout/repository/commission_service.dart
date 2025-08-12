@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import '../model/commission_model.dart';
-import '../model/summery_model.dart';
 
 class CommissionService {
   static Future<CommissionModel?> fetchCommission() async {
@@ -17,10 +15,10 @@ class CommissionService {
           return CommissionModel.fromJson(jsonList[0]);
         }
       } else {
-        print('Status code error: ${response.statusCode}');
+        throw Exception('Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in fetchCommission: $e');
+      throw Exception('Exception in fetchCommission: $e');
     }
     return null;
   }

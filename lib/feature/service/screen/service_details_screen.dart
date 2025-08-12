@@ -140,7 +140,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                   onTap: () {
                     final userId = services.isNotEmpty ? services.first.id : null;
                     if (userId != null) {
-                      showCustomBottomSheet(context, services: services );
+                      showCustomBottomSheet(context, serviceId: services.first.id );
                     } else {
                       showCustomSnackBar(context, 'Please wait data is loading.');
                     }

@@ -17,7 +17,7 @@ class HomeServiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Home Service',showBackButton: true,),
+      appBar: CustomAppBar(title: 'On-Demand Services',showBackButton: true,),
 
       body: SafeArea(
         child: CustomScrollView(

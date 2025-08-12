@@ -105,9 +105,11 @@ class Category {
   }
 }
 class ProviderPrice {
-  final dynamic provider;
+  final ServiceProvider? provider;
   final int? providerPrice;
-  final int? providerCommission;
+  final String? providerCommission;  // changed to String? to accept "10%"
+  final String? providerDiscount;    // new field
+  final String? providerMRP;         // new field
   final String status;
   final String id;
 
@@ -115,24 +117,44 @@ class ProviderPrice {
     this.provider,
     this.providerPrice,
     this.providerCommission,
+    this.providerDiscount,
+    this.providerMRP,
     required this.status,
     required this.id,
   });
 
   factory ProviderPrice.fromJson(Map<String, dynamic> json) {
     return ProviderPrice(
-      provider: json['provider'],
+      provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
       providerPrice: json['providerPrice'] is int
           ? json['providerPrice']
           : int.tryParse(json['providerPrice']?.toString() ?? ''),
-      providerCommission: json['providerCommission'] is int
-          ? json['providerCommission']
-          : int.tryParse(json['providerCommission']?.toString() ?? ''),
-      status: json['status'],
-      id: json['_id'],
+      providerCommission: json['providerCommission']?.toString(),
+      providerDiscount: json['providerDiscount']?.toString(),
+      providerMRP: json['providerMRP']?.toString(),
+      status: json['status'] ?? '',
+      id: json['_id'] ?? '',
     );
   }
 }
+
+class ServiceProvider {
+  final String id;
+  final String fullName;
+
+  ServiceProvider({
+    required this.id,
+    required this.fullName,
+  });
+
+  factory ServiceProvider.fromJson(Map<String, dynamic> json) {
+    return ServiceProvider(
+      id: json['_id'] ?? '',
+      fullName: json['fullName'] ?? '',
+    );
+  }
+}
+
 
 class ServiceDetails {
   final String overview;

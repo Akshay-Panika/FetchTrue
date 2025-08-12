@@ -12,9 +12,10 @@ import '../widget/checkout_details_widget.dart';
 import '../widget/checkout_payment_done_widget.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final String serviceId;
   final String providerId;
-  final List<ServiceModel> services;
-  const CheckoutScreen({super.key, required this.services, required this.providerId});
+  final String status;
+  const CheckoutScreen({super.key, required this.serviceId, required this.providerId, required this.status});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -36,6 +37,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: CustomAppBar(title: 'Check Out', showBackButton: true),
       body: SafeArea(
@@ -65,40 +67,39 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 }),
               ),
             ),
-            
+
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    if (_paymentStep == 0)
-                      CheckoutDetailsWidget(
-                        providerId: widget.providerId,
-                        services: widget.services,
-                        onPaymentDone: (CheckOutModel model) {
-                          setState(() {
-                            checkoutData = model;
-                            _paymentStep = 1;
-                          });
-                        },
-                      )
+              child: Column(
+                children: [
+                  if (_paymentStep == 0)
+                    CheckoutDetailsWidget(
+                     serviceId: widget.serviceId,
+                      providerId: widget.providerId,
+                      status: widget.status,
+                      onPaymentDone: (CheckOutModel model) {
+                        setState(() {
+                          checkoutData = model;
+                          _paymentStep = 1;
+                        });
+                      },
+                    )
 
-                    else if (_paymentStep == 1)
-                      CheckPaymentWidget(
-                        checkoutData: checkoutData!,
-                        onPaymentDone: (String bookingIdFromPayment, String dateTime, String amount ) {
-                          setState(() {
-                            _bookingId = bookingIdFromPayment;
-                            _dateTime = dateTime;
-                            _amount = amount;
-                            _paymentStep = 2;
-                          });
-                        },
+                  else if (_paymentStep == 1)
+                    CheckPaymentWidget(
+                      checkoutData: checkoutData!,
+                      onPaymentDone: (String bookingIdFromPayment, String dateTime, String amount ) {
+                        setState(() {
+                          _bookingId = bookingIdFromPayment;
+                          _dateTime = dateTime;
+                          _amount = amount;
+                          _paymentStep = 2;
+                        });
+                      },
 
-                      )
-                    else
-                       CheckoutPaymentDoneWidget(bookingId: _bookingId ??'', dateTime: _dateTime ?? '', amount: _amount ??'',),
-                  ],
-                ),
+                    )
+                  else
+                     CheckoutPaymentDoneWidget(bookingId: _bookingId ??'', dateTime: _dateTime ?? '', amount: _amount ??'',),
+                ],
               ),
             ),
           ],

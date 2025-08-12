@@ -13,22 +13,18 @@ import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/repository/provider_service.dart';
+import '../bloc/module_service/module_service_bloc.dart';
+import '../bloc/module_service/module_service_event.dart';
+import '../bloc/module_service/module_service_state.dart';
+import '../repository/api_service.dart';
 
 class SubscribedProviderWidget extends StatefulWidget {
   final String serviceId;
-  final String serviceName;
-  final String price;
-  final String discountedPrice;
-  final String commission;
-  final Function(String providerName)? onProviderSelected;
+  final Function(String providerId)? onProviderSelected;
 
   const SubscribedProviderWidget({
     super.key,
     required this.serviceId,
-    required this.serviceName,
-    required this.price,
-    required this.discountedPrice,
-    required this.commission,
     this.onProviderSelected,
   });
 
@@ -37,99 +33,132 @@ class SubscribedProviderWidget extends StatefulWidget {
 }
 
 class _SubscribedProviderWidgetState extends State<SubscribedProviderWidget> {
-  int selectedProviderIndex = -1; // -1 for "Fetch Ture"
+  String? selectedProviderId;
+  bool fetchTrueSelected = true;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            /// Default: Fetch Ture
-            Center(
-              child: _buildProviderCard(
-                context,
-                name: 'Fetch Ture',
-                price: widget.price,
-                newPrice: widget.discountedPrice,
-                discount: '00',
-                commission: widget.commission,
-                checkBox: Checkbox(
-                  activeColor: CustomColor.greenColor,
-                  value: selectedProviderIndex == -1,
-                  onChanged: (value) {
-                    if (value == true) {
-                      setState(() => selectedProviderIndex = -1);
-                      widget.onProviderSelected?.call("fetchTure");
-                    }
+    return BlocProvider(
+      create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
+      child: BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
+        builder: (context, state) {
+          if (state is ModuleServiceLoading) {
+            return Column(
+              children: [
+                SizedBox(height: 150),
+                Center(child: CircularProgressIndicator()),
+              ],
+            );
+          } else if (state is ModuleServiceLoaded) {
+            final services = state.serviceModel;
+            final matchedServices = services.where((data) => data.id == widget.serviceId).toList();
+
+            if (matchedServices.isEmpty) {
+              return const Center(child: Text('No Service found.'));
+            }
+
+            final data = matchedServices.first;
+            final approvedProviders = data.providerPrices;
+            // final approvedProviders = data.providerPrices.where((p) => p.status == "approved").toList();
+
+            // Initial state fix on data load
+            if (selectedProviderId == null && !fetchTrueSelected) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  fetchTrueSelected = true;
+                  selectedProviderId = null;
+                  if (widget.onProviderSelected != null) {
+                    widget.onProviderSelected!('fetch_true');
+                  }
+                });
+              });
+            }
+
+            return Column(
+              children: [
+                Center(
+                  child: buildProviderCard(
+                    context,
+                    name: 'Fetch True',
+                    price: data.price.toString(),
+                    newPrice: data.discountedPrice.toString(),
+                    discount: data.discount.toString(),
+                    commission: data.franchiseDetails.commission.toString(),
+                    checkBox: Checkbox(
+                      activeColor: CustomColor.greenColor,
+                      value: fetchTrueSelected,
+                      onChanged: (value) {
+                        if (value == true) {
+                          setState(() {
+                            fetchTrueSelected = true;
+                            selectedProviderId = null;
+                          });
+                          if (widget.onProviderSelected != null) {
+                            widget.onProviderSelected!('fetch_true');
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: approvedProviders.length,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final provider = approvedProviders[index];
+                    final isSelected = (selectedProviderId != null && provider.id != null && selectedProviderId == provider.id);
+
+                    return Center(
+                      child: buildProviderCard(
+                        context,
+                        name: provider.provider?.fullName ?? '',
+                        price: provider.providerPrice?.toString() ?? '',
+                        newPrice: provider.providerMRP ?? '',
+                        discount: provider.providerDiscount ?? '',
+                        commission: provider.providerCommission ?? '',
+                        checkBox: Checkbox(
+                          activeColor: CustomColor.greenColor,
+                          value: isSelected,
+                          onChanged: (value) {
+                            if (value == true) {
+                              setState(() {
+                                selectedProviderId = provider.id;
+                                fetchTrueSelected = false;
+                              });
+                              if (widget.onProviderSelected != null) {
+                                widget.onProviderSelected!(provider.provider!.id ?? '');
+                              }
+                            } else {
+                              setState(() {
+                                selectedProviderId = null;
+                                fetchTrueSelected = true;
+                              });
+                              if (widget.onProviderSelected != null) {
+                                widget.onProviderSelected!('fetch_true');
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    );
                   },
                 ),
-              ),
-            ),
-
-            /// provider
-            BlocProvider(
-              create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
-              child:  BlocBuilder<ProviderBloc, ProviderState>(
-                builder: (context, state) {
-                  if (state is ProviderLoading) {
-                    return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-                  }
-        
-                  else if(state is ProviderLoaded){
-        
-                    // final provider = state.providerModel;
-                    final provider = state.providerModel.where((e) => e.kycCompleted == true).toList();
-        
-        
-                    if (provider.isEmpty) {
-                      return SizedBox.shrink();
-                    }
-        
-                    return Column(
-                      children: List.generate(provider.length, (index) {
-                        final isProvider = provider[index];
-                        final price = isProvider.subscribedServices.isNotEmpty
-                            ? isProvider.subscribedServices![index].price.toString()
-                            : 'N/A';
-                        final discountedPrice = isProvider.subscribedServices.isNotEmpty
-                            ? isProvider.subscribedServices![index].discountedPrice.toString()
-                            : 'N/A';
-                        return _buildProviderCard(context,
-                            checkBox: Checkbox(
-                              activeColor: CustomColor.greenColor,
-                              value: false, onChanged: (value) => null,),
-                               
-                               name: isProvider.fullName,
-                               backgroundImage: NetworkImage(isProvider.storeInfo!.logo!),
-                              price: price,
-                              newPrice: discountedPrice,
-                             );
-                      },),
-                    );
-        
-                  }
-        
-                  else if (state is ProviderError) {
-                    return Center(child: Text(state.errorMessage));
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            )
-          ],
-        ),
+              ],
+            );
+          } else if (state is ModuleServiceError) {
+            return Center(child: Text(state.errorMessage));
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 }
 
-
-
-
-
 /// Card
-Widget _buildProviderCard(
+Widget buildProviderCard(
     BuildContext context, {
       String? name,
       ImageProvider<Object>? backgroundImage,
@@ -138,50 +167,71 @@ Widget _buildProviderCard(
       String? discount,
       String? commission,
       Widget? checkBox,
+      String? averageRating,
+      String? totalReviews,
     }) {
   return Stack(
     children: [
       CustomContainer(
-        margin: const EdgeInsets.only(bottom: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        margin: const EdgeInsets.only(top: 10),
+        child: Column(
           children: [
-            CircleAvatar(radius: 25,
-              backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-              backgroundImage: backgroundImage ?? AssetImage(CustomImage.nullImage)),
-            10.width,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name ?? '', style: textStyle14(context, color: CustomColor.appColor)),
-                  10.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomAmountText(
-                        amount: price ?? '',
-                        fontSize: 14,
-                        color: Colors.grey,
-                        isLineThrough: true,
-                      ),
-                      CustomAmountText(
-                        amount: newPrice ?? '',
-                        fontSize: 14,
-                      ),
-                      Text('$discount %', style: textStyle14(context, color: CustomColor.greenColor)),
-                      Text('Commission $commission', style: textStyle14(context, color: CustomColor.greenColor)),
-                      10.width,
-                    ],
-                  ),
-                ],
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    CircleAvatar(radius: 25,
+                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                      backgroundImage: backgroundImage ?? AssetImage(CustomImage.nullImage)),
+                  ],
+                ),
+                10.width,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name ?? '', style: textStyle14(context,)),
+                    10.height,
+                    Row(
+                      children: [
+                        CustomContainer(
+                            color: CustomColor.appColor.withOpacity(0.5),
+                            margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 10),child: Text('Open',style: textStyle12(context, color: CustomColor.whiteColor),)),
+                        10.width,
+                        Text(
+                          '⭐ ${averageRating} (${totalReviews} Review)',
+                          style: TextStyle(fontSize: 12, color: Colors.black),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+            10.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomAmountText(
+                  amount: price ?? '',
+                  fontSize: 14,
+                  color: Colors.grey,
+                  isLineThrough: true,
+                ),
+                CustomAmountText(
+                  amount: newPrice ?? '',
+                  fontSize: 14,
+                ),
+                Text('$discount %', style: textStyle14(context, color: CustomColor.greenColor)),
+                Text('Commission $commission', style: textStyle14(context, color: CustomColor.greenColor)),
+                10.width,
+              ],
             ),
           ],
         ),
       ),
-      Align(
-        alignment: Alignment.topRight,
+      Positioned(
+        top: 10,right: 10,
         child: checkBox ?? const SizedBox.shrink(),
       ),
     ],
