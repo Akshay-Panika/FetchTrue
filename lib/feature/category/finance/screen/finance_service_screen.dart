@@ -2,13 +2,15 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/widgets/custom_appbar.dart';
-import '../../../../core/widgets/custom_highlight_service.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
 import '../../../banner/widget/category_banner_widget.dart';
 import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
 import '../widget/finance_category_widget.dart';
+import '../widget/finance_all_service_widget.dart';
+import '../widget/finance_recommended_service_widget.dart';
 
 
 class FinanceServiceScreen extends StatelessWidget {
@@ -45,22 +47,18 @@ class FinanceServiceScreen extends StatelessWidget {
                 children: [
                   10.height,
 
-                  /// Services for you
-                  CustomServiceList(headline: 'Services for you',),
+                  /// Recommended Service
+                  FinanceRecommendedServiceWidget(headline: 'Recommended Service',moduleIndexId: moduleId,),
 
                   /// Highlight service
-                  CustomHighlightService(),
-
-                  /// Popular Services
-                  CustomServiceList(headline: 'Popular Services',),
-
+                  HighlightServiceWidget(),
                   ///  Service Provider
                   ServiceProviderWidget(),
 
                   /// Popular Services
                   Container(
                       color: CustomColor.appColor.withOpacity(0.1),
-                      child: CustomServiceList(headline: 'All Services',)),
+                      child: FinanceAllServiceWidget(headline: 'All Services',moduleIndexId: moduleId,)),
                 ],
               ),
             )

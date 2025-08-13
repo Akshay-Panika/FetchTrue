@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
-import '../../../core/widgets/custom_highlight_service.dart';
+import '../../highlight_serive/highlight_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../provider/widget/service_provider_widget.dart';
@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               pinned: true,
               backgroundColor: CustomColor.canvasColor,
               flexibleSpace: CustomSearchBar(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen())),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  SearchScreen())),
               ),
             ),
 
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Services for you
             SliverToBoxAdapter(child:  RecommendedServicesWidget(headline: 'Recommended Services For You',),),
-            SliverToBoxAdapter(child: CustomHighlightService()),
+            SliverToBoxAdapter(child: HighlightServiceWidget()),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: ServiceProviderWidget(),),
             SliverToBoxAdapter(child:  AllServiceWidget(headline: 'All Services',),),

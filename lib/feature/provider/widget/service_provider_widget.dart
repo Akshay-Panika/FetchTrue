@@ -151,7 +151,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                         runSpacing: 10,
                                         children: [
                                           for (int i = 0; i < uniqueServices.length; i++)
-                                            if (i < 4)
+                                            if (i < 6)
                                               CustomContainer(
                                                 margin: EdgeInsets.zero,
                                                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -164,7 +164,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                                                   ),
                                                 ),
                                               )
-                                            else if (i == 4)
+                                            else if (i == 6)
                                               CustomContainer(
                                                 margin: EdgeInsets.zero,
                                                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -224,7 +224,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
                       );
                     },
                     options: CarouselOptions(
-                      height: 180,
+                      height: 220,
                       enlargeCenterPage: false,
                       viewportFraction: 1,
                       autoPlayInterval: const Duration(seconds: 4),

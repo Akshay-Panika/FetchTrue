@@ -42,6 +42,9 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    // final status = lead.paidAmount == 0 ? 'Unpaid' : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
+
     return Column(
       children: [
 

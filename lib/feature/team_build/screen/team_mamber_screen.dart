@@ -16,7 +16,11 @@ import '../../../helper/Contact_helper.dart';
 import '../../my_lead/bloc/leads/leads_bloc.dart';
 import '../../my_lead/bloc/leads/leads_event.dart';
 import '../../my_lead/bloc/leads/leads_state.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_bloc.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_event.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_state.dart';
 import '../model/my_team_model.dart';
+import '../repository/upcoming_lead_commission_repository.dart';
 
 class TeamMemberScreen extends StatelessWidget {
   final TeamData member;
@@ -231,7 +235,7 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
               final lead = leads[index];
 
               final user = member.leads[index];
-
+               print('________________________${lead.id}');
               return CustomContainer(
                 border: true,
                 margin: const EdgeInsets.only(top: 10),
@@ -268,12 +272,38 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
                               ],
                             ),
 
-                            Text(
-                              (user.commissionEarned == 0 || user.commissionEarned == null)
-                                  ? 'Expected Earning: ₹ ${formatPrice(user.commissionEarned)}'
-                                  : 'Commission Earned: ₹ ${formatPrice(user.commissionEarned)}',
-                              style: textStyle12(context, color: CustomColor.appColor),
-                            ),
+                            // Text('Commission Earned: ₹ ${formatPrice(user.commissionEarned)}', style: textStyle12(context),),
+
+                            BlocProvider(
+                              create: (_) => UpcomingLeadCommissionBloc(
+                                repository: UpcomingLeadCommissionRepository(),
+                              )..add(FetchUpcomingLeadCommission(lead.id)),
+                              child: BlocBuilder<UpcomingLeadCommissionBloc, UpcomingLeadCommissionState>(
+                                builder: (context, state) {
+                                  if (state is UpcomingLeadCommissionLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (state is UpcomingLeadCommissionLoaded) {
+                                    final data = state.commission.data;
+                                    return Column(
+                                      children: [
+
+                                        if(user.commissionEarned == 0)
+                                        Text("Expected Earning: ₹ ${formatPrice(data.share1)}", style: textStyle12(context),),
+
+                                        if(user.commissionEarned != 0)
+                                        Text('Commission Earned: ₹ ${formatPrice(user.commissionEarned)}', style: textStyle12(context),),
+                                      ],
+                                    );
+                                  } else if (state is UpcomingLeadCommissionError) {
+                                     return Text('After Accepted Lead: ₹ __', style: textStyle12(context),);
+
+                                    // return Center(child: Text("Error: ${state.message}"));
+                                  }
+                                  return const SizedBox();
+                                },
+                              ),
+                            )
+
 
                           ],
                         ),

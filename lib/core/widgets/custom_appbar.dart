@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../feature/auth/user_notifier/user_notifier.dart';
 import '../../feature/favorite/screen/favorite_screen.dart';
 import '../../feature/notification/screen/notification_screen.dart';
 import '../../feature/search/screen/search_screen.dart';
@@ -31,6 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
     return AppBar(
       backgroundColor: bColor,
       elevation: 1,
@@ -52,7 +55,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
         if(showFavoriteIcon)
         IconButton(
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(),)),
+          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId,),)),
           icon: const Icon(Icons.favorite_border),
         ),
 

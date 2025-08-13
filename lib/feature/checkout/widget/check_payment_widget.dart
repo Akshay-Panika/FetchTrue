@@ -59,7 +59,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
         }
 
         if (state is UserLoaded) {
-         final  userId = state.user.id;
+         final  user = state.user;
           return Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
@@ -251,7 +251,8 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                 paymentMethod: [isCashFree ? 'cashfree' : 'pac'],
                                 walletAmount: 0,
                                 otherAmount: 0,
-                                paidAmount: paidAmount,
+                                paidAmount: 0,
+                                // paidAmount: paidAmount,
                                 remainingAmount: remainingAmount,
                                 paymentStatus: isPac ? 'unpaid' : 'pending',
                                 orderStatus: 'processing',
@@ -290,10 +291,10 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                     orderId: 'checkout_$formattedOrderId',
                                     checkoutId: checkoutId!,
                                     amount: paidAmount,
-                                    customerId: widget.checkoutData.serviceCustomer!,
-                                    name: 'Akshay',
-                                    phone: '8989207770',
-                                    email: 'akshay@gmail.com',
+                                    customerId: user.id,
+                                    name: user.fullName,
+                                    phone: user.mobileNumber,
+                                    email: user.email,
                                     onPaymentSuccess: () {
                                       widget.onPaymentDone(bookingId!, checkoutResult.createdAt.toString(),serviceAmount.toString());
                                     },

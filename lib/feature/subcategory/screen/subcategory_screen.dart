@@ -7,6 +7,10 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../favorite/widget/favorite_service_button_widget.dart';
+import '../../profile/bloc/user_bloc/user_bloc.dart';
+import '../../profile/bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user_bloc/user_state.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
@@ -119,15 +123,49 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      CustomFavoriteButton(),
+                                      BlocBuilder<UserBloc, UserState>(
+                                        builder: (context, state) {
+                                          if (state is UserLoading) {
+                                            return const Center(child: CircularProgressIndicator());
+                                          }
+
+                                          if (state is UserLoaded) {
+                                            final favorites = state.user.favoriteServices ?? [];
+                                            final isFavorite = favorites.contains(data.id);
+                                            final userId = state.user.id;
+
+                                            return FavoriteServiceButtonWidget(
+                                              userId: userId,
+                                              serviceId: data.id,
+                                              isInitiallyFavorite: isFavorite,
+                                              onChanged: (newFavoriteStatus) {
+                                                context.read<UserBloc>().add(UserFavoriteChangedEvent(
+                                                  serviceId: data.id,
+                                                  isFavorite: newFavoriteStatus,
+                                                ));
+                                              },
+                                            );
+                                          }
+
+                                          if (state is UserError) {
+                                            return const Icon(Icons.favorite_border, color: Colors.grey);
+                                          }
+
+                                          return const SizedBox.shrink();
+                                        },
+                                      ),
+
                                       Container(
-                                        padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
+                                          borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(10),
                                             bottomRight: Radius.circular(10),
                                           ),
                                           color: CustomColor.blackColor.withOpacity(0.3),
+                                        ),
+                                        child: Text('⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
+                                          style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
                                         ),
                                       ),
                                     ],

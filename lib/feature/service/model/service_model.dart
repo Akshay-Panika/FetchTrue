@@ -107,9 +107,9 @@ class Category {
 class ProviderPrice {
   final ServiceProvider? provider;
   final int? providerPrice;
-  final String? providerCommission;  // changed to String? to accept "10%"
-  final String? providerDiscount;    // new field
-  final String? providerMRP;         // new field
+  final String? providerCommission; // e.g. "10%"
+  final String? providerDiscount;   // e.g. "5"
+  final String? providerMRP;        // e.g. "3000"
   final String status;
   final String id;
 
@@ -125,7 +125,9 @@ class ProviderPrice {
 
   factory ProviderPrice.fromJson(Map<String, dynamic> json) {
     return ProviderPrice(
-      provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
+      provider: json['provider'] != null
+          ? ServiceProvider.fromJson(json['provider'])
+          : null,
       providerPrice: json['providerPrice'] is int
           ? json['providerPrice']
           : int.tryParse(json['providerPrice']?.toString() ?? ''),
@@ -141,19 +143,42 @@ class ProviderPrice {
 class ServiceProvider {
   final String id;
   final String fullName;
+  final StoreInfo? storeInfo;
 
   ServiceProvider({
     required this.id,
     required this.fullName,
+    this.storeInfo,
   });
 
   factory ServiceProvider.fromJson(Map<String, dynamic> json) {
     return ServiceProvider(
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
+      storeInfo: json['storeInfo'] != null
+          ? StoreInfo.fromJson(json['storeInfo'])
+          : null,
     );
   }
 }
+
+class StoreInfo {
+  final String storeName;
+  final String logo;
+
+  StoreInfo({
+    required this.storeName,
+    required this.logo,
+  });
+
+  factory StoreInfo.fromJson(Map<String, dynamic> json) {
+    return StoreInfo(
+      storeName: json['storeName'] ?? '',
+      logo: json['logo'] ?? '',
+    );
+  }
+}
+
 
 
 class ServiceDetails {

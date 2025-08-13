@@ -104,27 +104,26 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                   double price;
                   double discountedPrice;
                   double discountPercent;
+                  String commissionPrice;
 
                   if (widget.status == "default" || widget.status == "outService") {
                     price = _toDoubleSafe(service.price);
                     discountedPrice = _toDoubleSafe(service.discountedPrice);
                     discountPercent = _toDoubleSafe(service.discount);
+                    commissionPrice = service.franchiseDetails.commission;
                   } else if (widget.status == "inService") {
-                    final providerPriceData = service.providerPrices.firstWhere(
-                          (p) => p.provider?.id == widget.providerId,
-                      orElse: () => service.providerPrices.isNotEmpty
-                          ? service.providerPrices.first
-                          : throw Exception('No provider price found'),
+                    final providerPriceData = service.providerPrices.firstWhere((p) => p.provider?.id == widget.providerId,
+                      orElse: () => service.providerPrices.isNotEmpty ? service.providerPrices.first : throw Exception('No provider price found'),
                     );
                     price = _toDoubleSafe(providerPriceData.providerMRP);
-                    discountedPrice =
-                        _toDoubleSafe(providerPriceData.providerPrice);
-                    discountPercent =
-                        _toDoubleSafe(providerPriceData.providerDiscount);
+                    discountedPrice = _toDoubleSafe(providerPriceData.providerPrice);
+                    discountPercent = _toDoubleSafe(providerPriceData.providerDiscount);
+                    commissionPrice =   providerPriceData.providerCommission.toString();
                   } else {
                     price = 0.0;
                     discountedPrice = 0.0;
                     discountPercent = 0.0;
+                    commissionPrice = '00';
                   }
 
                   return BlocBuilder<CommissionBloc, CommissionState>(
@@ -244,7 +243,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                             children: [
                                               Text('Up To', style: textStyle14(context),),
                                               10.width,
-                                              Text('__ %', style: textStyle14(context, color: CustomColor.greenColor),),
+                                              // Text(widget.status == "default" ? '${service.franchiseDetails.commission}': commissionPrice, style: textStyle14(context, color: CustomColor.greenColor),),
+                                              Text(commissionPrice, style: textStyle14(context, color: CustomColor.greenColor),),
                                             ],
                                           )
                                         ],
@@ -597,6 +597,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                         serviceDiscount: discountPercent.toInt(),
                                         couponDiscount: selectedCoupon?.amount ?? 0,
                                         champaignDiscount: 0,
+                                        commission: commissionPrice.toString(),
                                         gst:  service.gst,
                                         platformFee: platformFee,
                                         assurityfee: assurityFee.toInt(),

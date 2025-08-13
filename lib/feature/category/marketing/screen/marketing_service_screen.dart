@@ -2,14 +2,16 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/widgets/custom_appbar.dart';
-import '../../../../core/widgets/custom_highlight_service.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
 import '../../../banner/widget/category_banner_widget.dart';
 import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
 import '../../franchise/wisget/franchise_category_widget.dart';
+import '../wisget/marketing_all_service_widget.dart';
 import '../wisget/marketing_category_widget.dart';
+import '../wisget/marketing_recommended_service_widget.dart';
 
 class MarketingServiceScreen extends StatelessWidget {
   final String moduleId;
@@ -45,13 +47,11 @@ class MarketingServiceScreen extends StatelessWidget {
                   10.height,
         
                   /// Services for you
-                  CustomServiceList(headline: 'Services for you',),
+                  MarketingRecommendedServiceWidget(headline: 'Recommended Service', moduleIndexId: moduleId,),
         
                   /// Highlight service
-                  CustomHighlightService(),
-        
-                  /// Popular Services
-                  CustomServiceList(headline: 'Popular Services',),
+                  HighlightServiceWidget(),
+
         
                   ///  Service Provider
                   ServiceProviderWidget(),
@@ -59,7 +59,7 @@ class MarketingServiceScreen extends StatelessWidget {
                   /// Popular Services
                   Container(
                       color: CustomColor.appColor.withOpacity(0.1),
-                      child: CustomServiceList(headline: 'All Services',)),
+                      child: MarketingAllServiceWidget(headline: 'All Services', moduleIndexId: moduleId,)),
                 ],
               ),
             )

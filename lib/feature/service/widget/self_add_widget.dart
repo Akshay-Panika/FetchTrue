@@ -1,3 +1,5 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/service/widget/subscribed_provider_widget.dart';
@@ -107,6 +109,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                     /// Default Provider
                                                     buildProviderCard(
                                                       context,
+                                                      backgroundImage: AssetImage(CustomLogo.fetchTrueLogo),
                                                       name: 'Fetch true',
                                                       price: service.price.toString(),
                                                       newPrice: service.discountedPrice.toString(),
@@ -129,7 +132,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                       return buildProviderCard(
                                                         context,
                                                         backgroundImage: NetworkImage(provider.storeInfo!.logo.toString()),
-                                                        name: provider.fullName,
+                                                        name: provider.storeInfo!.storeName.toString(),
                                                         price: service.price.toString(),
                                                         newPrice: service.discountedPrice.toString(),
                                                         discount: service.discount.toString(),
@@ -154,7 +157,8 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                     ...service.providerPrices.map((inService) {
                                                       return buildProviderCard(
                                                         context,
-                                                        name: inService.provider?.fullName ?? '',
+                                                        backgroundImage: NetworkImage(inService.provider!.storeInfo!.logo),
+                                                        name: inService.provider!.storeInfo!.storeName.toString(),
                                                         price: inService.providerPrice.toString(),
                                                         newPrice: inService.providerMRP.toString(),
                                                         discount: inService.providerDiscount.toString(),

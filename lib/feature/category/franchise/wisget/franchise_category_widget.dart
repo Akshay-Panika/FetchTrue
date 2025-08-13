@@ -31,9 +31,7 @@ class FranchiseCategoryWidget extends StatelessWidget {
 
              // final modules = state.moduleCategoryModel;
              final modules = state.moduleCategoryModel.where((moduleCategory) =>
-             moduleCategory.module.id == moduleIndexId
-               //&& moduleCategory.subcategoryCount !=0
-             ).toList();
+             moduleCategory.module.id == moduleIndexId).toList();
 
              if (modules.isEmpty) {
                return const Center(child: Text('No Category found.'));

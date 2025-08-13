@@ -47,7 +47,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     children: [
 
                       _buildStatsCard(context, wallet),
-                      _BuildDevitCredit(context),
+                      // _BuildDevitCredit(context),
 
                       Container(
                         color: CustomColor.whiteColor,
@@ -153,40 +153,40 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
   );
 }
 
-Widget _BuildDevitCredit(BuildContext context){
-  return  Row(
-    children: [
-      Expanded(
-        child: CustomContainer(
-          border: true,
-          color: CustomColor.whiteColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(CupertinoIcons.arrow_turn_left_down),
-              10.width,
-              Text('Add Amount', style: textStyle14(context)),
-            ],
-          ),
-        ),
-      ),
-      Expanded(
-        child: CustomContainer(
-          border: true,
-          color: CustomColor.whiteColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(CupertinoIcons.arrow_turn_up_right),
-              10.width,
-              Text('Withdraw Amount', style: textStyle14(context)),
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
-}
+// Widget _BuildDevitCredit(BuildContext context){
+//   return  Row(
+//     children: [
+//       Expanded(
+//         child: CustomContainer(
+//           border: true,
+//           color: CustomColor.whiteColor,
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Icon(CupertinoIcons.arrow_turn_left_down),
+//               10.width,
+//               Text('Add Amount', style: textStyle14(context)),
+//             ],
+//           ),
+//         ),
+//       ),
+//       Expanded(
+//         child: CustomContainer(
+//           border: true,
+//           color: CustomColor.whiteColor,
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               const Icon(CupertinoIcons.arrow_turn_up_right),
+//               10.width,
+//               Text('Withdraw Amount', style: textStyle14(context)),
+//             ],
+//           ),
+//         ),
+//       ),
+//     ],
+//   );
+// }
 
 Widget _buildSelfEarning(BuildContext context) {
   final state = context.watch<WalletBloc>().state;

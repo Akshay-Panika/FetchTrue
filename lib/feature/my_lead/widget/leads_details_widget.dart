@@ -275,7 +275,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
               children: [
                 Text('Payment Status', style: textStyle12(context),),
                 10.width,
-                Text('( $status )', style: textStyle12(context, color: status == 'Paid'? CustomColor.appColor:status == 'Unpaid'? CustomColor.redColor : CustomColor.descriptionColor),),
+                Text('( $status )', style: textStyle12(context, color: status == 'Paid'? CustomColor.appColor:status == 'Unpaid'? CustomColor.redColor : CustomColor.amberColor),),
               ],
             ),
             Divider(),
@@ -284,21 +284,21 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
              spacing: 5,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Payment Method: ${lead.paymentMethod.map((method) {
-                    switch (method) {
-                      case 'pac':
-                        return 'Pay After Consultation';
-                      case 'cashfree':
-                        return 'Cashfree';
-                      case 'wallet':
-                        return 'Wallet';
-                      default:
-                        return method;
-                    }
-                  }).join(', ')}',
-                  style: textStyle12(context, fontWeight: FontWeight.w400),
-                ),
+                // Text(
+                //   'Payment Method: ${lead.paymentMethod.map((method) {
+                //     switch (method) {
+                //       case 'pac':
+                //         return 'Pay After Consultation';
+                //       case 'cashfree':
+                //         return 'Cashfree';
+                //       case 'wallet':
+                //         return 'Wallet';
+                //       default:
+                //         return method;
+                //     }
+                //   }).join(', ')}',
+                //   style: textStyle12(context, fontWeight: FontWeight.w400),
+                // ),
 
                 if(lead.paidAmount!=0)
                  _buildRow(context, title: 'Paid Amount', amount: '₹ ${lead.paidAmount}',),

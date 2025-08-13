@@ -12,7 +12,11 @@ import '../../my_lead/bloc/leads/leads_bloc.dart';
 import '../../my_lead/bloc/leads/leads_event.dart';
 import '../../my_lead/bloc/leads/leads_state.dart';
 import '../../my_lead/widget/leads_details_widget.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_bloc.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_event.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_state.dart';
 import '../model/my_team_model.dart';
+import '../repository/upcoming_lead_commission_repository.dart';
 
 class TeamLeadScreen extends StatelessWidget {
   final String userId;
@@ -65,13 +69,10 @@ class TeamLeadScreen extends StatelessWidget {
               }
 
               return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
                 itemCount: leads.length,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemBuilder: (context, index) {
                   final lead = leads[index];
-
                   final data = leadsData.length > index ? leadsData[index] : null;
                   return CustomContainer(
                     border: true,
@@ -109,12 +110,41 @@ class TeamLeadScreen extends StatelessWidget {
                                   ],
                                 ),
 
-                                Text(
-                                  (data.commissionEarned == 0 || data.commissionEarned == null)
-                                      ? 'Expected Earning: ₹ ${formatPrice(data.commissionEarned)}'
-                                      : 'Commission Earned: ₹ ${formatPrice(data.commissionEarned)}',
-                                  style: textStyle12(context, color: CustomColor.appColor),
-                                ),
+                                // Text(
+                                //   (data.commissionEarned == 0 || data.commissionEarned == null)
+                                //       ? 'Expected Earning: ₹ ${formatPrice(data.commissionEarned)}'
+                                //       : 'Commission Earned: ₹ ${formatPrice(data.commissionEarned)}',
+                                //   style: textStyle12(context, color: CustomColor.appColor),
+                                // ),
+                                BlocProvider(
+                                  create: (_) => UpcomingLeadCommissionBloc(
+                                    repository: UpcomingLeadCommissionRepository(),
+                                  )..add(FetchUpcomingLeadCommission(lead.id)),
+                                  child: BlocBuilder<UpcomingLeadCommissionBloc, UpcomingLeadCommissionState>(
+                                    builder: (context, state) {
+                                      if (state is UpcomingLeadCommissionLoading) {
+                                        return const Center(child: CircularProgressIndicator());
+                                      } else if (state is UpcomingLeadCommissionLoaded) {
+                                        final commission = state.commission.data;
+                                        return Column(
+                                          children: [
+
+                                            if(data.commissionEarned == 0)
+                                              Text("Expected Earning: ₹ ${formatPrice(commission.share1)}", style: textStyle12(context),),
+
+                                            if(data.commissionEarned != 0)
+                                              Text('Commission Earned: ₹ ${formatPrice(data.commissionEarned)}', style: textStyle12(context),),
+                                          ],
+                                        );
+                                      } else if (state is UpcomingLeadCommissionError) {
+                                        return Text('After Accepted Lead: ₹ __', style: textStyle12(context),);
+
+                                        // return Center(child: Text("Error: ${state.message}"));
+                                      }
+                                      return const SizedBox();
+                                    },
+                                  ),
+                                )
 
                               ],
                             ),

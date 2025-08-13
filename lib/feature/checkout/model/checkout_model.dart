@@ -7,6 +7,7 @@ class CheckOutModel {
   final String? provider;
   final String? serviceMan;
   final String? coupon;
+  final String? commission;
   final int? subtotal;
   final int? serviceDiscount;
   final int? couponDiscount;
@@ -54,6 +55,7 @@ class CheckOutModel {
     this.provider,
     this.serviceMan,
     this.coupon,
+    this.commission,
     this.subtotal,
     this.serviceDiscount,
     this.couponDiscount,
@@ -101,6 +103,7 @@ class CheckOutModel {
       provider: json['provider'],
       serviceMan: json['serviceMan'],
       coupon: json['coupon'],
+      commission: json['commission'],
       subtotal: json['subtotal'],
       serviceDiscount: json['serviceDiscount'],
       couponDiscount: json['couponDiscount'],
@@ -149,6 +152,7 @@ class CheckOutModel {
       'provider': provider,
       'serviceMan': serviceMan,
       'coupon': coupon,
+      'commission': commission,
       'subtotal': subtotal,
       'serviceDiscount': serviceDiscount,
       'couponDiscount': couponDiscount,
@@ -196,6 +200,7 @@ class CheckOutModel {
     String? provider,
     String? serviceMan,
     String? coupon,
+    String? commission,
     int? subtotal,
     int? serviceDiscount,
     int? couponDiscount,
@@ -241,6 +246,7 @@ class CheckOutModel {
       provider: provider ?? this.provider,
       serviceMan: serviceMan ?? this.serviceMan,
       coupon: coupon ?? this.coupon,
+      commission: commission ?? this.commission,
       subtotal: subtotal ?? this.subtotal,
       serviceDiscount: serviceDiscount ?? this.serviceDiscount,
       couponDiscount: couponDiscount ?? this.couponDiscount,
