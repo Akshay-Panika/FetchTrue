@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1041578063290",
+    "project_id": "fetchtrue-2025",
+    "storage_bucket": "fetchtrue-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041578063290:android:e001eebb354a634e529983",
+        "android_client_info": {
+          "package_name": "com.example.bizbooster2x"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4P_Pf34I0keVooS6gsFeMvY-1kycK68c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
