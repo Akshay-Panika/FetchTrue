@@ -259,8 +259,7 @@ Widget _customerDetails(BuildContext context, LeadsModel lead){
 /// Payment status
 Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? onPaymentSuccess){
   final status = lead.paidAmount == 0
-      ? 'Unpaid'
-      : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
+      ? 'Unpaid' : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
 
   // final status =  lead.paidAmount !=0 ? 'Paid' : (lead.paidAmount !=0 && lead.remainingAmount !=0) ?'Pending':'Unpaid';
     return Stack(
@@ -279,6 +278,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
               ],
             ),
             Divider(),
+
 
             Column(
              spacing: 5,
@@ -308,16 +308,21 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
             ),
 
 
-            if(lead.paidAmount ==0)
-            Padding(
-              padding: EdgeInsetsGeometry.only(top: 10),
-              child: InkWell(
-                child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
-                onTap: () {
-                  _showPaymentBottomSheet(context,lead, onPaymentSuccess);
-                },
-              ),
+            Column(
+              children: [
+                if(lead.paidAmount ==0 && '${getLeadStatus(lead)}' != 'Cancel')
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(top: 10),
+                    child: InkWell(
+                      child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+                      onTap: () {
+                        _showPaymentBottomSheet(context,lead, onPaymentSuccess);
+                      },
+                    ),
+                  ),
+              ],
             ),
+
 
             /// Remaining Pay
             if(lead.paidAmount !=0 && lead.remainingAmount!=0)
@@ -725,7 +730,6 @@ Widget _buildRow(BuildContext context, {required String title, required String a
 }
 
 Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
-  print("Commission => ${lead.service?.franchiseDetails?.commission}");
 
   return CustomContainer(
     border: true,
@@ -741,7 +745,7 @@ Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
             Text('Up To', style: textStyle12(context),),
             10.width,
             Text(
-              lead.service.franchiseDetails?.commission ?? 'N/A',
+              lead.commission,
               style: textStyle14(context, color: Colors.green),
             ),
 

@@ -100,21 +100,21 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
                         },
                       ),
                       5.height,
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: List.generate(ads.length, (index) {
-                      //     return AnimatedContainer(
-                      //       duration: const Duration(milliseconds: 300),
-                      //       margin: const EdgeInsets.symmetric(horizontal: 3),
-                      //       height: 5,
-                      //       width: _current == index ? 24 : 10,
-                      //       decoration: BoxDecoration(
-                      //         color: _current == index ? Colors.blueAccent : Colors.grey,
-                      //         borderRadius: BorderRadius.circular(2),
-                      //       ),
-                      //     );
-                      //   }),
-                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(adsList.length, (index) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            height: 5,
+                            width: _current == index ? 24 : 10,
+                            decoration: BoxDecoration(
+                              color: _current == index ? Colors.blueAccent : Colors.grey,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          );
+                        }),
+                      ),
                     ],
                   )
                 ],

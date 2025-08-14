@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,16 +72,20 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CircleAvatar(radius: 25,
-                                  backgroundImage: AssetImage(CustomImage.nullImage),),
+                                CircleAvatar(
+                                  backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                  backgroundImage: NetworkImage(provider.first.storeInfo!.logo.toString()),
+                                ),
                                 10.width,
 
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(provider.first.fullName, style: textStyle14(context),),
-                                    Text('Store: ${provider.first.storeInfo!.storeName}'),
-                                    Text('Contact: +91 ${provider.first.phoneNo}'),
+                                    Text(provider.first.storeInfo!.storeName.toString(), style: textStyle14(context),),
+                                    Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                    5.height,
+
+                                    // Text('Contact: +91 ${provider.first.phoneNo}'),
                                   ],
                                 )
                               ],
@@ -100,8 +105,13 @@ class _ProviderCardWidgetState extends State<ProviderCardWidget> {
 
                                 ],
                               ),
-                            )
+                            ),
                           ],
+                        ),
+                        5.height,
+                        Text(
+                          '⭐ ${provider.first.averageRating} (${provider.first.totalReviews} Review)',
+                          style: TextStyle(fontSize: 12, color: Colors.black),
                         ),
                       ],
                     ),
@@ -184,7 +194,6 @@ Widget _buildFTProviderCard(){
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text('Service Provider', style: TextStyle(),),
         10.height,
 
         Row(
@@ -194,10 +203,13 @@ Widget _buildFTProviderCard(){
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(radius: 25,
-                  backgroundImage: AssetImage(CustomImage.nullImage),),
+                CircleAvatar(radius: 30,
+                  child: CircleAvatar(radius: 25,
+                    backgroundImage: AssetImage(CustomLogo.fetchTrueLogo),),
+                ),
                 10.height,
                 Text('This Service Provided By Fetch True', style: TextStyle(),),
+
               ],
             ),
 

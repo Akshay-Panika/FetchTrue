@@ -169,6 +169,7 @@ Widget buildProviderCard(
       Widget? checkBox,
       String? averageRating,
       String? totalReviews,
+      Widget? childRetting,
     }) {
   return Stack(
     children: [
@@ -198,7 +199,7 @@ Widget buildProviderCard(
                             color: CustomColor.appColor.withOpacity(0.5),
                             margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 10),child: Text('Open',style: textStyle12(context, color: CustomColor.whiteColor),)),
                         10.width,
-                        Text(
+                        childRetting ?? Text(
                           '⭐ ${averageRating} (${totalReviews} Review)',
                           style: TextStyle(fontSize: 12, color: Colors.black),
                         ),

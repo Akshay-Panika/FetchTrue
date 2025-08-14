@@ -281,7 +281,11 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
                               child: BlocBuilder<UpcomingLeadCommissionBloc, UpcomingLeadCommissionState>(
                                 builder: (context, state) {
                                   if (state is UpcomingLeadCommissionLoading) {
-                                    return const Center(child: CircularProgressIndicator());
+                                    return const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    );
                                   } else if (state is UpcomingLeadCommissionLoaded) {
                                     final data = state.commission.data;
                                     return Column(

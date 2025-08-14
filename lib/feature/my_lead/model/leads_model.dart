@@ -4,6 +4,7 @@ class LeadsModel {
   final String userId;
   final String paymentStatus;
   final String orderStatus;
+  final String commission;
   final int totalAmount;
   final int subtotal;
   final int serviceDiscount;
@@ -53,6 +54,7 @@ class LeadsModel {
     required this.userId,
     required this.paymentStatus,
     required this.orderStatus,
+    required this.commission,
     required this.totalAmount,
     required this.subtotal,
     required this.serviceDiscount,
@@ -102,6 +104,7 @@ class LeadsModel {
       userId: json['user'] ?? '',
       paymentStatus: json['paymentStatus'] ?? '',
       orderStatus: json['orderStatus'] ?? '',
+      commission: json['commission'] ?? '',
       totalAmount: json['totalAmount'] ?? 0,
       subtotal: json['subtotal'] ?? 0,
       serviceDiscount: json['serviceDiscount'] ?? 0,
