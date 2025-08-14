@@ -5,18 +5,18 @@ class LeadsModel {
   final String paymentStatus;
   final String orderStatus;
   final String commission;
-  final int totalAmount;
-  final int subtotal;
+  final double totalAmount;
+  final double subtotal;
   final int serviceDiscount;
   final int couponDiscount;
   final int champaignDiscount;
   final int gst;
   final int platformFee;
   final int assurityFee;
-  final int walletAmount;
-  final int otherAmount;
-  final int paidAmount;
-  final int remainingAmount;
+  final double walletAmount; // changed to double
+  final double otherAmount;  // changed to double
+  final double paidAmount;   // changed to double
+  final double remainingAmount; // changed to double
   final bool isPartialPayment;
   final bool isVerified;
   final bool isAccepted;
@@ -32,15 +32,14 @@ class LeadsModel {
   final String createdAt;
   final String updatedAt;
 
-  final int? listingPrice;
-  final int? serviceDiscountPrice;
-  final int? priceAfterDiscount;
-  final int? couponDiscountPrice;
-  final int? serviceGSTPrice;
-  final int? platformFeePrice;
-  final int? assurityChargesPrice;
+  final double? listingPrice; // changed to double
+  final double? serviceDiscountPrice; // changed to double
+  final double? priceAfterDiscount; // changed to double
+  final double? couponDiscountPrice; // changed to double
+  final double? serviceGSTPrice; // changed to double
+  final double? platformFeePrice; // changed to double
+  final double? assurityChargesPrice; // changed to double
 
-  // Nested objects
   final ServiceModel service;
   final ServiceCustomerModel serviceCustomer;
   final String? provider;
@@ -87,7 +86,6 @@ class LeadsModel {
     this.serviceMan,
     this.coupon,
     required this.paymentMethod,
-
     this.listingPrice,
     this.serviceDiscountPrice,
     this.priceAfterDiscount,
@@ -105,18 +103,18 @@ class LeadsModel {
       paymentStatus: json['paymentStatus'] ?? '',
       orderStatus: json['orderStatus'] ?? '',
       commission: json['commission'] ?? '',
-      totalAmount: json['totalAmount'] ?? 0,
-      subtotal: json['subtotal'] ?? 0,
+      totalAmount: (json['totalAmount'] as num?)?.toDouble() ?? 0.0,
+      subtotal: (json['subtotal'] as num?)?.toDouble() ?? 0.0,
       serviceDiscount: json['serviceDiscount'] ?? 0,
       couponDiscount: json['couponDiscount'] ?? 0,
       champaignDiscount: json['champaignDiscount'] ?? 0,
       gst: json['gst'] ?? 0,
       platformFee: json['platformFee'] ?? 0,
       assurityFee: json['assurityfee'] ?? 0,
-      walletAmount: json['walletAmount'] ?? 0,
-      otherAmount: json['otherAmount'] ?? 0,
-      paidAmount: json['paidAmount'] ?? 0,
-      remainingAmount: json['remainingAmount'] ?? 0,
+      walletAmount: (json['walletAmount'] as num?)?.toDouble() ?? 0.0,
+      otherAmount: (json['otherAmount'] as num?)?.toDouble() ?? 0.0,
+      paidAmount: (json['paidAmount'] as num?)?.toDouble() ?? 0.0,
+      remainingAmount: (json['remainingAmount'] as num?)?.toDouble() ?? 0.0,
       isPartialPayment: json['isPartialPayment'] ?? false,
       isVerified: json['isVerified'] ?? false,
       isAccepted: json['isAccepted'] ?? false,
@@ -137,14 +135,13 @@ class LeadsModel {
       serviceMan: json['serviceMan'],
       coupon: json['coupon'],
       paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
-
-      listingPrice: json['listingPrice'],
-      serviceDiscountPrice: json['serviceDiscountPrice'],
-      priceAfterDiscount: json['priceAfterDiscount'],
-      couponDiscountPrice: json['couponDiscountPrice'],
-      serviceGSTPrice: json['serviceGSTPrice'],
-      platformFeePrice: json['platformFeePrice'],
-      assurityChargesPrice: json['assurityChargesPrice'],
+      listingPrice: (json['listingPrice'] as num?)?.toDouble(),
+      serviceDiscountPrice: (json['serviceDiscountPrice'] as num?)?.toDouble(),
+      priceAfterDiscount: (json['priceAfterDiscount'] as num?)?.toDouble(),
+      couponDiscountPrice: (json['couponDiscountPrice'] as num?)?.toDouble(),
+      serviceGSTPrice: (json['serviceGSTPrice'] as num?)?.toDouble(),
+      platformFeePrice: (json['platformFeePrice'] as num?)?.toDouble(),
+      assurityChargesPrice: (json['assurityChargesPrice'] as num?)?.toDouble(),
     );
   }
 }

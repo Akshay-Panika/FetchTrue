@@ -52,48 +52,48 @@ class SearchScreen extends StatelessWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            /// Recent Searches
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Recent Searches',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Clear',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 8,
-                      children: List.generate(5, (index) {
-                        return Chip(
-                          backgroundColor: Colors.white,
-                          label: Text('Search $index'),
-                          deleteIcon: const Icon(Icons.close, size: 16),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // /// Recent Searches
+            // SliverToBoxAdapter(
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(15.0),
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Row(
+            //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //           children: const [
+            //             Text(
+            //               'Recent Searches',
+            //               style: TextStyle(
+            //                 fontSize: 14,
+            //                 fontWeight: FontWeight.w600,
+            //               ),
+            //             ),
+            //             Text(
+            //               'Clear',
+            //               style: TextStyle(
+            //                 fontSize: 14,
+            //                 fontWeight: FontWeight.w500,
+            //                 color: Colors.blueAccent,
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //         const SizedBox(height: 10),
+            //         Wrap(
+            //           spacing: 8,
+            //           children: List.generate(5, (index) {
+            //             return Chip(
+            //               backgroundColor: Colors.white,
+            //               label: Text('Search $index'),
+            //               deleteIcon: const Icon(Icons.close, size: 16),
+            //             );
+            //           }),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
             /// Non-search UI
             if (!_isSearch)

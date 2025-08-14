@@ -1,9 +1,12 @@
-import 'package:fetchtrue/core/costants/custom_icon.dart';
-import 'package:fetchtrue/core/costants/custom_image.dart';
-import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:flutter/material.dart';
+
+// Core widgets
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
-import 'package:flutter/material.dart';
+
+// Core constants (अगर custom icon चाहिए तो यहां से इम्पोर्ट करें)
+import 'package:fetchtrue/core/costants/custom_icon.dart';
+import 'package:fetchtrue/core/costants/custom_image.dart';
 
 class ExtraEarningScreen extends StatelessWidget {
   const ExtraEarningScreen({super.key});
@@ -11,46 +14,30 @@ class ExtraEarningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Extra Earning', showBackButton: true,),
-
+      appBar: const CustomAppBar(
+        title: 'Extra Earning',
+        showBackButton: true,
+      ),
       body: SafeArea(
-        child: Column(
-          children: [
-            10.height,
-
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                itemCount: 5,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                itemBuilder: (context, index) {
-                  return CustomContainer(
-                    width: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    assetsImg: CustomImage.nullImage,
-                  );
-                },),
-            ),
-            10.height,
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                  return CustomContainer(
-                    height: 200,
-                    margin: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                    assetsImg: CustomImage.thumbnailImage,
-                  );
-                },),
-            ),
-
-
-
-            
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.assignment_turned_in_outlined, // अगर आपके पास custom icon है तो replace करें
+                size: 64,
+                color: Colors.grey.shade400,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'No Task Available',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

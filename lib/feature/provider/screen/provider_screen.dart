@@ -29,7 +29,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Provider', showBackButton: true, showSearchIcon: true,),
+      appBar: const CustomAppBar(title: 'Provider', showBackButton: true, showSearchIcon: false,),
 
       body:  BlocProvider(
         create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),

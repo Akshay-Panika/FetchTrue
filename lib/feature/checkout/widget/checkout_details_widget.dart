@@ -158,12 +158,34 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                       double assurityCharge =
                           discountedPrice * assurityFee / 100;
 
-                      // Grand total calculation
-                      double grandTotal = discountedPrice -
-                          couponDiscount +
-                          gstAmount +
-                          assurityCharge +
-                          platformFee;
+                      // // Grand total calculation
+                      // double grandTotal = discountedPrice -
+                      //     couponDiscount +
+                      //     gstAmount +
+                      //     assurityCharge +
+                      //     platformFee;
+
+                      double calculateGrandTotal({
+                        required double discountedPrice,
+                        required double couponDiscount,
+                        required double gstAmount,
+                        required double assurityCharge,
+                        required int platformFee,
+                      }) {
+                        double total = discountedPrice - couponDiscount + gstAmount + assurityCharge + platformFee;
+
+                        // Agar decimal hai to ceil karo, warna floor karo
+                        return total % 1 == 0 ? total.floorToDouble() : total.ceilToDouble();
+                      }
+
+                      double grandTotal = calculateGrandTotal(
+                        discountedPrice: discountedPrice,
+                        couponDiscount: couponDiscount,
+                        gstAmount: gstAmount,
+                        assurityCharge: assurityCharge,
+                        platformFee: platformFee,
+                      );
+
 
                       return Expanded(
                         child: Column(
@@ -593,15 +615,16 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                         serviceCustomer: customer_Id.toString(),
                                         provider: widget.status == "default" ? null : widget.providerId,
                                         coupon: selectedCoupon?.id,
-                                        subtotal: discountedPrice.toInt(),
-                                        serviceDiscount: discountPercent.toInt(),
-                                        couponDiscount: selectedCoupon?.amount ?? 0,
+                                        subtotal: discountedPrice,
+                                        serviceDiscount: discountPercent,
+                                        couponDiscount: (selectedCoupon?.amount ?? 0).toDouble(),
+                                        gst: (service.gst ?? 0).toDouble(),
+                                        platformFee: platformFee.toDouble(),
+                                        platformFeePrice: platformFee.toDouble(),
                                         champaignDiscount: 0,
                                         commission: commissionPrice.toString(),
-                                        gst:  service.gst,
-                                        platformFee: platformFee,
-                                        assurityfee: assurityFee.toInt(),
-                                        totalAmount: grandTotal.toInt(),
+                                        assurityfee: assurityFee,
+                                        totalAmount: grandTotal,
                                         paymentMethod: [],
                                         walletAmount: 0,
                                         otherAmount: 0,
@@ -612,13 +635,12 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                                         orderStatus: '',
                                         notes: message ?? '',
                                         termsCondition: _isAgree,
-                                        listingPrice: price.toInt(),
-                                        serviceDiscountPrice: discountAmount.toInt(),
-                                        priceAfterDiscount: discountedPrice.toInt(),
-                                        couponDiscountPrice: couponDiscount.toInt(),
-                                        serviceGSTPrice: gstAmount.toInt(),
-                                        platformFeePrice: platformFee.toInt(),
-                                        assurityChargesPrice: assurityCharge.toInt(),
+                                        listingPrice: price,
+                                        serviceDiscountPrice: discountAmount,
+                                        priceAfterDiscount: discountedPrice,
+                                        couponDiscountPrice: couponDiscount,
+                                        serviceGSTPrice: gstAmount,
+                                        assurityChargesPrice: assurityCharge,
                                       );
                                       widget.onPaymentDone(checkoutData);
                                     },

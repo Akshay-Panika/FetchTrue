@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +49,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions(context);
-    final int serviceAmount = widget.checkoutData.totalAmount ?? 0;
+    final double serviceAmount = widget.checkoutData.totalAmount ??0.0;
     final int partialAmount = (serviceAmount / 2).round();
 
     return BlocBuilder<UserBloc, UserState>(
@@ -72,7 +73,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       text: TextSpan(
                         children: [
                           TextSpan(text: 'Service amount: ', style: textStyle14(context)),
-                          TextSpan(text: '₹ $serviceAmount', style: textStyle14(context)),
+                          TextSpan(text: '₹ ${formatPrice(serviceAmount)}', style: textStyle14(context)),
                         ],
                       ),
                     ),
@@ -126,7 +127,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Full Payment', style: textStyle12(context)),
-                                    CustomAmountText(amount: '$serviceAmount'),
+                                    CustomAmountText(amount: '${formatPrice(serviceAmount)}'),
                                   ],
                                 ),
                               ],
@@ -145,7 +146,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Partial Payment', style: textStyle12(context)),
-                                    CustomAmountText(amount: '$partialAmount'),
+                                    CustomAmountText(amount: '${formatPrice(partialAmount)}'),
                                   ],
                                 ),
                               ],
@@ -194,14 +195,28 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       children: [
                         Text('Total Price', style: textStyle16(context)),
                         10.width,
+                        // CustomAmountText(
+                        //   amount: '${formatPrice(selectedPayment == null
+                        //       ? '0'
+                        //       : selectedPayment == PaymentMethod.afterConsultation
+                        //       ? '$serviceAmount'
+                        //       : selectedCashFreeOption == CashFreeOption.full
+                        //       ? '$serviceAmount'
+                        //       : '$partialAmount',)}',
+                        //   fontSize: 16,
+                        //   fontWeight: FontWeight.w500,
+                        //   color: CustomColor.greenColor,
+                        // ),
                         CustomAmountText(
-                          amount: selectedPayment == null
-                              ? '0'
-                              : selectedPayment == PaymentMethod.afterConsultation
-                              ? '$serviceAmount'
-                              : selectedCashFreeOption == CashFreeOption.full
-                              ? '$serviceAmount'
-                              : '$partialAmount',
+                          amount: formatPrice(
+                            selectedPayment == null
+                                ? 0
+                                : selectedPayment == PaymentMethod.afterConsultation
+                                ? serviceAmount
+                                : selectedCashFreeOption == CashFreeOption.full
+                                ? serviceAmount
+                                : partialAmount,
+                          ),
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: CustomColor.greenColor,
@@ -241,6 +256,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                               final isPac = selectedPayment == PaymentMethod.afterConsultation;
 
                               final paidAmount = isPac ? 0 : isPartial ? partialAmount : serviceAmount;
+                              final roundedAmount = paidAmount.round();
                               final remainingAmount = isPac
                                   ? serviceAmount
                                   : isPartial
@@ -252,8 +268,8 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                 walletAmount: 0,
                                 otherAmount: 0,
                                 paidAmount: 0,
-                                // paidAmount: paidAmount,
-                                remainingAmount: remainingAmount,
+                                // paidAmount: paidAmount.toDouble(),
+                                remainingAmount: remainingAmount.toDouble(),
                                 paymentStatus: isPac ? 'unpaid' : 'pending',
                                 orderStatus: 'processing',
                                 isPartialPayment: isCashFree ? isPartial : false,
@@ -290,7 +306,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                     context: context,
                                     orderId: 'checkout_$formattedOrderId',
                                     checkoutId: checkoutId!,
-                                    amount: paidAmount,
+                                    amount: roundedAmount,
                                     customerId: user.id,
                                     name: user.fullName,
                                     phone: user.mobileNumber,

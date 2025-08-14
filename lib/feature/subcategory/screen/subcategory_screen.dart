@@ -55,10 +55,10 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
               },
             ),),
         
-            /// Filter
-            SliverPersistentHeader(
-              pinned: true,
-                delegate: _StickyHeaderDelegate(child:  FilterWidget(dimensions: dimensions))),
+            // /// Filter
+            // SliverPersistentHeader(
+            //   pinned: true,
+            //     delegate: _StickyHeaderDelegate(child:  FilterWidget(dimensions: dimensions))),
         
         
             /// Service
@@ -102,7 +102,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                           border: false,
                           color: Colors.white,
                           padding: EdgeInsets.zero,
-                          margin: EdgeInsets.only(top: 15, left: 10,right: 10),
+                          margin: EdgeInsets.only(left: 10,right: 10),
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
                             serviceId: data.id,
                           ),

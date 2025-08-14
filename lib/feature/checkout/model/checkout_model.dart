@@ -1,5 +1,3 @@
-
-
 class CheckOutModel {
   final String? user;
   final String? service;
@@ -8,20 +6,23 @@ class CheckOutModel {
   final String? serviceMan;
   final String? coupon;
   final String? commission;
-  final int? subtotal;
-  final int? serviceDiscount;
-  final int? couponDiscount;
-  final int? champaignDiscount;
-  final int? gst;
-  final int? platformFee;
-  final int? assurityfee;
-  final int? totalAmount;
+
+  final double? subtotal;
+  final double? serviceDiscount;
+  final double? couponDiscount;
+  final double? champaignDiscount;
+  final double? gst;
+  final double? platformFee;
+  final double? assurityfee;
+
+  final double? totalAmount;
   final List<String>? paymentMethod;
-  final int? walletAmount;
-  final int? otherAmount;
-  final int? paidAmount;
+  final double? walletAmount;
+  final double? otherAmount;
+  final double? paidAmount;
   final bool? isPartialPayment;
-  final int? remainingAmount;
+  final double? remainingAmount;
+
   final String? paymentStatus;
   final String? orderStatus;
   final String? notes;
@@ -33,6 +34,7 @@ class CheckOutModel {
   final bool? commissionDistributed;
   final bool? isCanceled;
   final bool? isDeleted;
+
   final String? id;
   final String? createdAt;
   final String? updatedAt;
@@ -40,13 +42,13 @@ class CheckOutModel {
   final String? otp;
 
   // ✅ Extra calculated fields
-  final int? listingPrice;
-  final int? serviceDiscountPrice;
-  final int? priceAfterDiscount;
-  final int? couponDiscountPrice;
-  final int? serviceGSTPrice;
-  final int? platformFeePrice;
-  final int? assurityChargesPrice;
+  final double? listingPrice;
+  final double? serviceDiscountPrice;
+  final double? priceAfterDiscount;
+  final double? couponDiscountPrice;
+  final double? serviceGSTPrice;
+  final double? platformFeePrice;
+  final double? assurityChargesPrice;
 
   CheckOutModel({
     this.user,
@@ -104,20 +106,20 @@ class CheckOutModel {
       serviceMan: json['serviceMan'],
       coupon: json['coupon'],
       commission: json['commission'],
-      subtotal: json['subtotal'],
-      serviceDiscount: json['serviceDiscount'],
-      couponDiscount: json['couponDiscount'],
-      champaignDiscount: json['champaignDiscount'],
-      gst: json['gst'],
-      platformFee: json['platformFee'],
-      assurityfee: json['assurityfee'],
-      totalAmount: json['totalAmount'],
+      subtotal: (json['subtotal'] as num?)?.toDouble(),
+      serviceDiscount: (json['serviceDiscount'] as num?)?.toDouble(),
+      couponDiscount: (json['couponDiscount'] as num?)?.toDouble(),
+      champaignDiscount: (json['champaignDiscount'] as num?)?.toDouble(),
+      gst: (json['gst'] as num?)?.toDouble(),
+      platformFee: (json['platformFee'] as num?)?.toDouble(),
+      assurityfee: (json['assurityfee'] as num?)?.toDouble(),
+      totalAmount: (json['totalAmount'] as num?)?.toDouble(),
       paymentMethod: List<String>.from(json['paymentMethod'] ?? []),
-      walletAmount: json['walletAmount'],
-      otherAmount: json['otherAmount'],
-      paidAmount: json['paidAmount'],
+      walletAmount: (json['walletAmount'] as num?)?.toDouble(),
+      otherAmount: (json['otherAmount'] as num?)?.toDouble(),
+      paidAmount: (json['paidAmount'] as num?)?.toDouble(),
       isPartialPayment: json['isPartialPayment'],
-      remainingAmount: json['remainingAmount'],
+      remainingAmount: (json['remainingAmount'] as num?)?.toDouble(),
       paymentStatus: json['paymentStatus'],
       orderStatus: json['orderStatus'],
       notes: json['notes'],
@@ -134,13 +136,13 @@ class CheckOutModel {
       updatedAt: json['updatedAt'],
       bookingId: json['bookingId'],
       otp: json['otp'],
-      listingPrice: json['listingPrice'],
-      serviceDiscountPrice: json['serviceDiscountPrice'],
-      priceAfterDiscount: json['priceAfterDiscount'],
-      couponDiscountPrice: json['couponDiscountPrice'],
-      serviceGSTPrice: json['serviceGSTPrice'],
-      platformFeePrice: json['platformFeePrice'],
-      assurityChargesPrice: json['assurityChargesPrice'],
+      listingPrice: (json['listingPrice'] as num?)?.toDouble(),
+      serviceDiscountPrice: (json['serviceDiscountPrice'] as num?)?.toDouble(),
+      priceAfterDiscount: (json['priceAfterDiscount'] as num?)?.toDouble(),
+      couponDiscountPrice: (json['couponDiscountPrice'] as num?)?.toDouble(),
+      serviceGSTPrice: (json['serviceGSTPrice'] as num?)?.toDouble(),
+      platformFeePrice: (json['platformFeePrice'] as num?)?.toDouble(),
+      assurityChargesPrice: (json['assurityChargesPrice'] as num?)?.toDouble(),
     );
   }
 
@@ -201,20 +203,20 @@ class CheckOutModel {
     String? serviceMan,
     String? coupon,
     String? commission,
-    int? subtotal,
-    int? serviceDiscount,
-    int? couponDiscount,
-    int? champaignDiscount,
-    int? gst,
-    int? platformFee,
-    int? assurityfee,
-    int? totalAmount,
+    double? subtotal,
+    double? serviceDiscount,
+    double? couponDiscount,
+    double? champaignDiscount,
+    double? gst,
+    double? platformFee,
+    double? assurityfee,
+    double? totalAmount,
     List<String>? paymentMethod,
-    int? walletAmount,
-    int? otherAmount,
-    int? paidAmount,
+    double? walletAmount,
+    double? otherAmount,
+    double? paidAmount,
     bool? isPartialPayment,
-    int? remainingAmount,
+    double? remainingAmount,
     String? paymentStatus,
     String? orderStatus,
     String? notes,
@@ -231,13 +233,13 @@ class CheckOutModel {
     String? updatedAt,
     String? bookingId,
     String? otp,
-    int? listingPrice,
-    int? serviceDiscountPrice,
-    int? priceAfterDiscount,
-    int? couponDiscountPrice,
-    int? serviceGSTPrice,
-    int? platformFeePrice,
-    int? assurityChargesPrice,
+    double? listingPrice,
+    double? serviceDiscountPrice,
+    double? priceAfterDiscount,
+    double? couponDiscountPrice,
+    double? serviceGSTPrice,
+    double? platformFeePrice,
+    double? assurityChargesPrice,
   }) {
     return CheckOutModel(
       user: user ?? this.user,

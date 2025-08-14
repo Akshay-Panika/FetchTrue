@@ -28,6 +28,7 @@ dependencies:
   screenshot: ^3.0.0
   share_plus: ^11.0.0
   shared_preferences: ^2.5.3
+  flutter_email_sender: ^7.0.0
 
 
   # File & PDF Handling

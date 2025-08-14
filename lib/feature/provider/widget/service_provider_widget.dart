@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/provider/screen/provider_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
@@ -54,7 +55,7 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomHeadline(headline: 'Service Provider'),
+                  CustomHeadline(headline: 'Service Provider', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderScreen(),)),),
                   10.height,
 
                   CarouselSlider.builder(

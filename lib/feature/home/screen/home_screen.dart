@@ -10,6 +10,7 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../provider/widget/service_provider_widget.dart';
 import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
+import '../../search/screen/search_service_screen.dart';
 import '../widget/all_service_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/recommended_ervices_widget.dart';
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               pinned: true,
               backgroundColor: CustomColor.canvasColor,
               flexibleSpace: CustomSearchBar(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  SearchScreen())),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  ServiceSearchScreen())),
               ),
             ),
 

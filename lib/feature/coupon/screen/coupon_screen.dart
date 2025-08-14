@@ -22,70 +22,73 @@ class _CouponScreenState extends State<CouponScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Coupons'),
-        leading: IconButton(
-          onPressed: () {
-            if (appliedCoupon != null) {
-              Navigator.pop(context, appliedCoupon); // ✅ coupon भेजें अगर select हुआ हो
-            } else {
-              Navigator.pop(context); // ❌ कोई coupon नहीं select किया, तो खाली back
-            }
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
-      ),
-
-      // appBar: CustomAppBar(title: 'Coupons', showBackButton: true),
-      body: SafeArea(
-        child: BlocProvider(
-          create: (context) => CouponBloc()..add(FetchCouponsEvent()),
-          child: BlocBuilder<CouponBloc, CouponState>(
-            builder: (context, state) {
-              if (state is CouponLoading) {
-                return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-              } else if (state is CouponLoaded) {
-                final coupons = state.coupons;
-
-                if (coupons.isEmpty) {
-                  return const Center(child: Text("No coupons found."));
-                }
-
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      20.height,
-
-                      // ✅ Applied Coupon section
-                      if (appliedCoupon != null) ...[
-                        Text("Applied Coupon", style: textStyle14(context, color: CustomColor.descriptionColor)),
-                        _buildCouponAppliedCard(context, appliedCoupon!),
-                        20.height,
-                      ],
-
-                      Text("Available Coupons", style: textStyle14(context, color: CustomColor.descriptionColor)),
-                      Column(
-                        children: List.generate(
-                          coupons.length,
-                              (index) => _buildCouponCard(context, coupons[index]),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (state is CouponError) {
-                return Center(child: Text(state.message));
-              }
-              return const SizedBox.shrink();
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, appliedCoupon); // ✅ coupon send karo (null ho to bhi chalega)
+        return false; // ❌ default back action disable
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Coupons'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context, appliedCoupon); // ✅ same logic yaha bhi
             },
+            icon: Icon(Icons.arrow_back_ios),
+          ),
+        ),
+
+        body: SafeArea(
+          child: BlocProvider(
+            create: (context) => CouponBloc()..add(FetchCouponsEvent()),
+            child: BlocBuilder<CouponBloc, CouponState>(
+              builder: (context, state) {
+                if (state is CouponLoading) {
+                  return LinearProgressIndicator(
+                    backgroundColor: CustomColor.appColor,
+                    color: CustomColor.whiteColor,
+                    minHeight: 2.5,
+                  );
+                } else if (state is CouponLoaded) {
+                  final coupons = state.coupons;
+
+                  if (coupons.isEmpty) {
+                    return const Center(child: Text("No coupons found."));
+                  }
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        20.height,
+                        if (appliedCoupon != null) ...[
+                          Text("Applied Coupon", style: textStyle14(context, color: CustomColor.descriptionColor)),
+                          _buildCouponAppliedCard(context, appliedCoupon!),
+                          20.height,
+                        ],
+                        Text("Available Coupons", style: textStyle14(context, color: CustomColor.descriptionColor)),
+                        Column(
+                          children: List.generate(
+                            coupons.length,
+                                (index) => _buildCouponCard(context, coupons[index]),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is CouponError) {
+                  return Center(child: Text(state.message));
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ),
       ),
     );
   }
+
 
   /// ✅ Available Coupon Card
   Widget _buildCouponCard(BuildContext context, CouponModel coupon) {

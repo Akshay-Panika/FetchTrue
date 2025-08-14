@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/widgets/custom_button.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -301,9 +302,9 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
                 // ),
 
                 if(lead.paidAmount!=0)
-                 _buildRow(context, title: 'Paid Amount', amount: '₹ ${lead.paidAmount}',),
+                 _buildRow(context, title: 'Paid Amount', amount: '₹ ${formatPrice(lead.paidAmount)}',),
                 if(lead.remainingAmount !=0)
-                _buildRow(context, title: 'Remaining Amount', amount: '₹ ${lead.remainingAmount}',),
+                _buildRow(context, title: 'Remaining Amount', amount: '₹ ${formatPrice(lead.remainingAmount)}',),
               ],
             ),
 
@@ -587,19 +588,76 @@ class RemainingPaymentButton extends StatefulWidget {
   State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
 }
 
+// class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
+//   bool _isLoading = false;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     final now = DateTime.now();
+//     final formattedOrderId =
+//         "${now.day.toString().padLeft(2, '0')}/"
+//         "${now.month.toString().padLeft(2, '0')}/"
+//         "${now.year.toString().substring(2)}/_"
+//         "${now.hour.toString().padLeft(2, '0')}:"
+//         "${now.minute.toString().padLeft(2, '0')}:"
+//         "${now.second.toString().padLeft(2, '0')}";
+//
+//     return InkWell(
+//       onTap: _isLoading
+//           ? null
+//           : () async {
+//         setState(() {
+//           _isLoading = true;
+//         });
+//
+//         final result = await initiateCheckoutServicePayment(
+//           context: context,
+//           orderId: 'checkout_$formattedOrderId',
+//           checkoutId: widget.lead.id,
+//           amount: widget.lead.remainingAmount.toDouble(),
+//           customerId: widget.lead.serviceCustomer.id,
+//           name: 'Akshay',
+//           phone: '8989207770',
+//           email: 'akshay@gmail.com',
+//         );
+//
+//         setState(() {
+//           _isLoading = false;
+//         });
+//
+//         if (result == true) {
+//           // print("Payment Success");
+//           widget.onPaymentSuccess?.call();
+//         }
+//       },
+//       child: _isLoading
+//           ?  SizedBox(
+//         height: 20,
+//         width: 20,
+//         child: CircularProgressIndicator(
+//           color: CustomColor.appColor,
+//         ),
+//       )
+//           :  Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+//     );
+//   }
+// }
+
 class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-
     final now = DateTime.now();
+
+    // Safe Order ID for Payment Gateway
     final formattedOrderId =
-        "${now.day.toString().padLeft(2, '0')}/"
-        "${now.month.toString().padLeft(2, '0')}/"
-        "${now.year.toString().substring(2)}/_"
-        "${now.hour.toString().padLeft(2, '0')}:"
-        "${now.minute.toString().padLeft(2, '0')}:"
+        "${now.day.toString().padLeft(2, '0')}_"
+        "${now.month.toString().padLeft(2, '0')}_"
+        "${now.year.toString().substring(2)}_"
+        "${now.hour.toString().padLeft(2, '0')}-"
+        "${now.minute.toString().padLeft(2, '0')}-"
         "${now.second.toString().padLeft(2, '0')}";
 
     return InkWell(
@@ -610,11 +668,16 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
           _isLoading = true;
         });
 
+        // Round the remaining amount to avoid float issues
+        final roundedAmount = double.parse(
+          widget.lead.remainingAmount.toStringAsFixed(2),
+        );
+
         final result = await initiateCheckoutServicePayment(
           context: context,
           orderId: 'checkout_$formattedOrderId',
           checkoutId: widget.lead.id,
-          amount: widget.lead.remainingAmount,
+          amount: roundedAmount.round(),
           customerId: widget.lead.serviceCustomer.id,
           name: 'Akshay',
           phone: '8989207770',
@@ -626,19 +689,22 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         });
 
         if (result == true) {
-          // print("Payment Success");
           widget.onPaymentSuccess?.call();
         }
       },
       child: _isLoading
-          ?  SizedBox(
+          ? SizedBox(
         height: 20,
         width: 20,
         child: CircularProgressIndicator(
           color: CustomColor.appColor,
+          strokeWidth: 2.0,
         ),
       )
-          :  Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+          : Text(
+        'Pay Now',
+        style: textStyle14(context, color: CustomColor.appColor),
+      ),
     );
   }
 }

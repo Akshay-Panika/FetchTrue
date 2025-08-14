@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../extra_earning/screen/extra_earning_screen.dart';
 import '../../team_build/bloc/my_team/my_team_bloc.dart';
 import '../../team_build/bloc/my_team/my_team_event.dart';
 import '../../team_build/bloc/my_team/my_team_state.dart';
@@ -163,12 +164,14 @@ class ExtraEarningWidget extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(text:'Extra Earning : ', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: Colors.black),),
-                TextSpan(text:'₹ 00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: CustomColor.appColor),),
+                TextSpan(text:'00', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500, color: CustomColor.appColor),),
               ],
             ),
           )
         ],
       ),
+      
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ExtraEarningScreen(),)),
     );
   }
 }

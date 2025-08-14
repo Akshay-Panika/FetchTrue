@@ -1,184 +1,212 @@
-import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/costants/custom_color.dart';
+import '../../service/model/service_model.dart';
+import '../repsitory/search_service.dart';
+import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
+import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../favorite/widget/favorite_service_button_widget.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
-import '../../service/model/service_model.dart';
+import '../../../core/widgets/custom_search_icon.dart';
 
+class ServiceSearchScreen extends StatefulWidget {
+  const ServiceSearchScreen({super.key});
 
-class SearchServiceScreen extends StatelessWidget {
-  final String headline;
-  final List<ServiceModel> services;
-  const SearchServiceScreen({super.key, required this.headline, required this.services});
+  @override
+  State<ServiceSearchScreen> createState() => _ServiceSearchScreenState();
+}
+
+class _ServiceSearchScreenState extends State<ServiceSearchScreen> {
+  List<ServiceModel> originalServices = []; // <-- original list
+  List<ServiceModel> displayedServices = [];
+  TextEditingController searchController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
+  ScrollController scrollController = ScrollController();
+
+  bool isLoading = true;
+  bool isLoadingMore = false;
+  int perPage = 10;
+  int currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadServices();
+    scrollController.addListener(_scrollListener);
+
+    searchFocusNode.addListener(() {
+      if (!searchFocusNode.hasFocus) {
+        onSearch();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    searchController.dispose();
+    searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  void loadServices() async {
+    try {
+      originalServices = await fetchServices();
+      _loadNextPage(originalServices);
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("Error fetching services: $e");
+    }
+  }
+
+  void _loadNextPage(List<ServiceModel> source) {
+    final start = currentPage * perPage;
+    final end = start + perPage;
+    if (start >= source.length) return;
+
+    setState(() {
+      displayedServices.addAll(
+          source.sublist(start, end > source.length ? source.length : end));
+      currentPage++;
+      isLoadingMore = false;
+    });
+  }
+
+  void _scrollListener() {
+    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
+      if (!isLoadingMore) {
+        final query = searchController.text.trim().toLowerCase();
+        List<ServiceModel> source = query.isEmpty ? originalServices : filterServicesByTag(originalServices, query);
+        if (displayedServices.length < source.length) {
+          setState(() {
+            isLoadingMore = true;
+          });
+          _loadNextPage(source);
+        }
+      }
+    }
+  }
+
+  void onSearch([String? query]) {
+    final searchQuery = (query ?? searchController.text).trim().toLowerCase();
+
+    // reset pagination & displayed list
+    currentPage = 0;
+    displayedServices.clear();
+
+    List<ServiceModel> filteredList = searchQuery.isEmpty
+        ? originalServices
+        : filterServicesByTag(originalServices, searchQuery);
+
+    _loadNextPage(filteredList);
+  }
+
+  List<ServiceModel> filterServicesByTag(List<ServiceModel> services, String query) {
+    if (query.trim().isEmpty) return services;
+
+    final lowerQuery = query.trim().toLowerCase();
+
+    return services.where((service) {
+      return service.tags.any((tag) => tag.trim().toLowerCase().contains(lowerQuery));
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: services.length,
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      itemBuilder: (context, index) {
-        final data = services[index];
-        return CustomContainer(
-          border: false,
-          color: Colors.white,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ServiceDetailsScreen(serviceId: data.id),
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: CustomContainer(
+          margin: EdgeInsets.zero,
           padding: EdgeInsets.zero,
-          margin:  EdgeInsets.only(top: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomContainer(
-                height: 200,
-                networkImg: '${data.thumbnailImage}',
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BlocBuilder<UserBloc, UserState>(
-                        builder: (context, state) {
-                          if (state is UserLoading) {
-                            return const Center(child: CircularProgressIndicator());
-                          }
-
-                          if (state is UserLoaded) {
-                            final favorites = state.user.favoriteServices ?? [];
-                            final isFavorite = favorites.contains(data.id);
-                            final userId = state.user.id;
-
-                            return FavoriteServiceButtonWidget(
-                              userId: userId,
-                              serviceId: data.id,
-                              isInitiallyFavorite: isFavorite,
-                              onChanged: (newFavoriteStatus) {
-                                context.read<UserBloc>().add(UserFavoriteChangedEvent(
-                                  serviceId: data.id,
-                                  isFavorite: newFavoriteStatus,
-                                ));
-                              },
-                            );
-                          }
-
-                          if (state is UserError) {
-                            return const Icon(Icons.favorite_border, color: Colors.grey);
-                          }
-
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
-                          color: CustomColor.blackColor.withOpacity(0.3),
-                        ),
-                        child: Text(
-                          '⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
-                          style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
-                        ),
-                      ),
-                    ],
+          height: 40,
+          child: TextField(
+            controller: searchController,
+            focusNode: searchFocusNode,
+            decoration: InputDecoration(
+              hintText: 'Search here...',
+              hintStyle: const TextStyle(fontSize: 16),
+              prefixIcon: CustomSearchIcon(),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            ),
+            onSubmitted: onSearch,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.black87),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 10),
+        ],
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : displayedServices.isEmpty
+          ? const Center(child: Text("No services found"))
+          : SafeArea(
+            child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    itemCount: displayedServices.length + 1,
+                    itemBuilder: (context, index) {
+            if (index == displayedServices.length) {
+              return isLoadingMore
+                  ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
+              )
+                  : const SizedBox.shrink();
+            }
+            
+            final service = displayedServices[index];
+            return CustomContainer(
+              margin: const EdgeInsets.only(bottom: 10),
+              color: CustomColor.whiteColor,
+              padding: EdgeInsets.zero,
+              child: Row(
+                children: [
+                  CustomContainer(
+                    height: 80,
+                    width: 150,
+                    networkImg: service.thumbnailImage,
+                    margin: EdgeInsets.zero,
                   ),
-                ),
-              ),
-
-              10.height,
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${data.serviceName}', style: textStyle12(context)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  10.width,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(service.serviceName),
+                        Text(
+                          '⭐ ${service.averageRating} (${service.totalReviews} Reviews)',
+                          style: textStyle12(context),
+                        ),
+                        5.height,
                         Row(
                           children: [
                             CustomAmountText(
-                              amount: '${data.price}',
-                              color: CustomColor.descriptionColor,
-                              isLineThrough: true,
-                            ),
+                                amount: '${service.price}', isLineThrough: true),
                             10.width,
-                            CustomAmountText(
-                              amount: '${(data.discountedPrice ?? 0).toInt()}',
-                              color: CustomColor.descriptionColor,
-                            ),
+                            CustomAmountText(amount: '${service.discountedPrice}'),
                           ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Earn up to ',
-                              style: textStyle12(
-                                context,
-                                color: CustomColor.descriptionColor,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            CustomAmountText(
-                              amount: '${data.franchiseDetails.commission}',
-                              color: CustomColor.descriptionColor,
-                            ),
-                          ],
-                        ),
+                        )
                       ],
                     ),
-                    5.height,
-                    if (data.keyValues.isNotEmpty)
-                      ...data.keyValues.map(
-                            (entry) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                              5.width,
-                              Expanded(
-                                child: Text(
-                                  entry.value,
-                                  style: textStyle12(
-                                    context,
-                                    fontWeight: FontWeight.w400,
-                                    color: CustomColor.descriptionColor,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: service.id),)),
+            );
+                    },
+                  ),
           ),
-        );
-      },
     );
   }
 }

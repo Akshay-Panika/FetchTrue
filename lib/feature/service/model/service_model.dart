@@ -10,7 +10,7 @@ class ServiceModel {
   final List<String> bannerImages;
   final List<String> tags;
   final Category category;
-  final Subcategory? subcategory; // <-- made optional
+  final Subcategory? subcategory;
   final ServiceDetails serviceDetails;
   final FranchiseDetails franchiseDetails;
   final List<KeyValue> keyValues;

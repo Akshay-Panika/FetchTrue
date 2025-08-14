@@ -16,7 +16,8 @@ import 'live_webinar_screen.dart';
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
 
-  final String channelId = 'UCKpwgpO9-c_ISAJzNxgHkUw';
+  // final String channelId = 'UCKpwgpO9-c_ISAJzNxgHkUw';
+  final String channelId = 'UCfpNGM6ncGt-ozIEL0uM7Rg';
 
   Future<void> _openShorts() async {
     final Uri youtubeAppUrl = Uri.parse('youtube://www.youtube.com/channel/$channelId/shorts');

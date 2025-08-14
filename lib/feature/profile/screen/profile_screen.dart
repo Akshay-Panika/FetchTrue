@@ -212,16 +212,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
               
-                            CustomContainer(
-                              border: true,
-                              color: CustomColor.whiteColor,
-                              margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.verified, size: 20,color: Colors.grey,),10.width,
-                                  Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),
-                                ],
-                              ),)
+                            // CustomContainer(
+                            //   border: true,
+                            //   color: CustomColor.whiteColor,
+                            //   margin: EdgeInsets.zero,padding: EdgeInsetsGeometry.symmetric(horizontal: 30,vertical: 5),
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.verified, size: 20,color: Colors.grey,),10.width,
+                            //       Text('KYC', style: textStyle14(context,color: CustomColor.greyColor),),
+                            //     ],
+                            //   ),)
                           ],
                         )
                       ],

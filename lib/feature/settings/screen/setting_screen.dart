@@ -52,7 +52,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       value: isDarkMode,
                       onChanged: (val) => setState(() => isDarkMode = val),
                     ),
-                    _buildLanguageTile(),
+                    // _buildLanguageTile(),
                     _buildSwitchTile(
                       icon: Icons.notifications,
                       title: "Notifications",

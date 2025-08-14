@@ -1,6 +1,7 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -175,7 +176,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
-                                      CustomAmountText(amount: '${lead.totalAmount}'),
+                                      CustomAmountText(amount: '${formatPrice(lead.totalAmount)}'),
                                     ],
                                   ),
                                 ],

@@ -220,7 +220,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
 
               CustomLabelFormField(
                 context,
-                'professional',
+                'Professional',
                 hint: 'Enter here...',
                 controller: professionController,
                 keyboardType: TextInputType.text,
