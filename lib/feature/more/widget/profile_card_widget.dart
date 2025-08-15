@@ -7,6 +7,9 @@ import '../../../core/widgets/custom_container.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../profile/bloc/user_bloc/user_state.dart';
+import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_event.dart';
+import '../../wallet/bloc/wallet_state.dart';
 
 class ProfileCardWidget extends StatelessWidget {
   const ProfileCardWidget({super.key});
@@ -122,9 +125,30 @@ class ProfileCardWidget extends StatelessWidget {
                 children: [
                   _buildStatus(value: joiningDate, valueType: 'Joining date'),
                   _buildStatus(value: '00', valueType: 'Lead Completed'),
-                  _buildStatus(value: '00', valueType: 'Total Earning'),
+                  BlocProvider(
+                    create: (_) => WalletBloc()..add(FetchWallet(userId)),
+                    child: BlocBuilder<WalletBloc, WalletState>(
+                      builder: (context, state) {
+                        if (state is WalletLoading) {
+                          return _buildStatus(value: '00', valueType: 'Total Earning');
+                        } else if (state is WalletLoaded) {
+                          final wallet = state.wallet;
+                          final balance = wallet.balance ?? '00'; // null-safe
+                          return _buildStatus(
+                            value: balance.toString(),
+                            valueType: 'Total Earning',
+                          );
+                        } else if (state is WalletError) {
+                          print(state.message);
+                           return _buildStatus(value: '00', valueType: 'Total Earning');
+                          // return Center(child: Text(state.message));
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           );
         },

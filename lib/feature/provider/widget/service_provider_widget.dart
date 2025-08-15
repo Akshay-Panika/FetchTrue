@@ -239,7 +239,9 @@ class _ServiceProviderWidgetState extends State<ServiceProviderWidget> {
               ),
             );
           } else if (state is ProviderError) {
-            return Center(child: Text(state.errorMessage));
+            print('Provide rerror : ${state.errorMessage}');
+            return SizedBox.shrink();
+            // return Center(child: Text(state.errorMessage));
           }
 
           return const SizedBox.shrink();

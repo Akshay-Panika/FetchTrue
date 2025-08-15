@@ -70,7 +70,8 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
           }
 
           else if (state is ModuleBannerError) {
-            return Center(child: Text(state.errorMessage));
+            print('Banner error : ${state.errorMessage}');
+            return SizedBox.shrink();
           }
           return const SizedBox.shrink();
         },

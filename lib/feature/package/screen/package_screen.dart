@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,7 +99,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                       return const Center(child: Text("No packages found"));
                     }
 
-                    final PackageModel pkg = snapshot.data![0];
+                    final pkg = snapshot.data![0];
 
                     return ListView(
                       padding: EdgeInsets.zero,
@@ -110,14 +111,64 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                             itemBuilder: (context, index, realIndex) {
                               final descKey = _packages[index].toLowerCase();
                               final htmlDesc = pkg.description[descKey] ?? "<p>No description available</p>";
-                              return _buildPackageCard(context, dimensions, pkg, htmlDesc);
+
+                              switch (index) {
+                                case 0: // GP
+                                  return _buildPackageCard(
+                                    context: context,
+                                    dimensions: dimensions,
+                                    pkg: pkg,
+                                    htmlDesc: htmlDesc,
+                                    title: 'Growth Partner (GP)',
+                                    earning: '₹30,000 - ₹50,000/Month',
+                                    promotionDesc: 'Recruit 10 Growth Partner to become a Super Growth Partner (SGP)',
+                                    sections: [
+                                      {'REVENUE': ['Earn 5% to 15% revenue share.']},
+                                      {'TEAM BUILDING INCOME': ['Earn 5% to 15% revenue share.', 'Get ₹3,000 when your onboarded GP brings another.']},
+                                      {'MARKETING SUPPORT': ['Support within 3-6 hours.', 'Full support system.', 'Expert help, anytime you need it.']},
+                                    ],
+                                  );
+                                case 1: // SGP
+                                  return _buildPackageCard(
+                                    context: context,
+                                    dimensions: dimensions,
+                                    pkg: pkg,
+                                    htmlDesc: htmlDesc,
+                                    title: 'Super Growth Partner (SGP)',
+                                    earning: '₹50,000 - ₹70,000/Month',
+                                    promotionDesc: 'Support 3 Super Growth Partners (SGPs) in your team to qualify as a Premium Growth Partner (PGP).',
+                                    sections: [
+                                      {'REVENUE': ['Earn up to 15% revenue share on all successful leads you generate.']},
+                                      {'TEAM BUILDING INCOME': ['Earn ₹5,000 for every GP you onboard.', 'Get ₹3,000 when your onboarded GP brings another.']},
+                                      {'MARKETING SUPPORT': ['Support within 3-6 hours.', 'Full support system.', 'Expert help, anytime you need it.']},
+                                    ],
+                                  );
+                                case 2: // PGP
+                                  return _buildPackageCard(
+                                    context: context,
+                                    dimensions: dimensions,
+                                    pkg: pkg,
+                                    htmlDesc: htmlDesc,
+                                    title: 'Premium Growth Partner (PGP)',
+                                    earning: '₹70,000 - ₹1,00,000/Month',
+                                    promotionDesc: 'You are a Premium Growth Partner (PGP) and eligible for unlimited earnings.',
+                                    sections: [
+                                      {'REVENUE': ['Earn up to 15% revenue share on all successful leads you generate.']},
+                                      {'TEAM BUILDING INCOME': ['Earn ₹5,000 for every GP you onboard.', 'Get ₹3,000 when your onboarded GP brings another.']},
+                                      {'TEAM REVENUE INCOME': ['Extra earn 5% to 8% for direct team revenue.', 'Extra earn 3% to 7% for indirect team revenue.']},
+                                      {'MARKETING SUPPORT': ['Support within 3-6 hours.', 'Full support system.', 'Expert help, anytime you need it.']},
+                                    ],
+                                  );
+                                default:
+                                  return SizedBox.shrink();
+                              }
                             },
                             options: CarouselOptions(
                               enlargeCenterPage: true,
-                              viewportFraction: 0.80,
-                              autoPlay: true,
+                              viewportFraction: 0.85,
+                              autoPlay: false,
                               initialPage: _isSelectedTap,
-                              height: dimensions.screenHeight * 0.5,
+                              height: dimensions.screenHeight * 0.7,
                               onPageChanged: (index, reason) {
                                 setState(() {
                                   _isSelectedTap = index;
@@ -153,6 +204,92 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
             ),
           ],
         ),
+      ),
+    );
+  }
+
+// Reusable package card method
+  Widget _buildPackageCard({
+    required BuildContext context,
+    required Dimensions dimensions,
+    required PackageModel pkg,
+    required String htmlDesc,
+    required String title,
+    required String earning,
+    required String promotionDesc,
+    required List<Map<String, List<String>>> sections,
+  }) {
+    return CustomContainer(
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
+      color: CustomColor.whiteColor,
+      border: true,
+      borderColor: CustomColor.appColor,
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: EdgeInsets.all(dimensions.screenWidth * 0.02),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(dimensions.screenHeight * 0.01),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: AssetImage(CustomLogo.fetchTrueLogo),
+                  backgroundColor: CustomColor.whiteColor,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('Fetch True', style: textStyle16(context, color: CustomColor.appColor)),
+                    Text(title, style: textStyle12(context, color: CustomColor.appColor)),
+                    Text('Assure Earning', style: textStyle12(context, color: CustomColor.greenColor, fontWeight: FontWeight.bold)),
+                    Text(earning, style: textStyle12(context, color: CustomColor.greenColor)),
+                  ],
+                )
+              ],
+            ),
+          ),
+
+          // Body
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('How to promoted?', style: textStyle14(context)),
+                      Text(promotionDesc, style: textStyle14(context, color: CustomColor.descriptionColor)),
+                      5.height,
+                      Divider(height: 0),
+                      ...sections.map((section) => _buildDefineText(
+                        context,
+                        headline: section.keys.first,
+                        define: section.values.first.map((e) => _buildDotText(e)).toList(),
+                      )),
+                    ],
+                  ),
+                ),
+                CustomContainer(
+                  border: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  color: CustomColor.whiteColor,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(htmlDesc: htmlDesc))),
+                  child: Text('Know Benefits', style: textStyle14(context, color: CustomColor.appColor)),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -301,124 +438,35 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
   }
 }
 
-
-/// Package card
-Widget _buildPackageCard(BuildContext context, Dimensions dimensions,PackageModel pkg, String htmlDesc) {
-  return CustomContainer(
-    padding: EdgeInsets.zero,
-    margin: EdgeInsets.zero,
-    color: CustomColor.whiteColor,
-    border: true,
-    borderColor: CustomColor.appColor,
-    child: Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(dimensions.screenWidth * 0.02),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(dimensions.screenHeight * 0.01),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage(CustomImage.nullImage),
-                backgroundColor: CustomColor.whiteColor,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('BizBooster', style: textStyle16(context, color: CustomColor.appColor)),
-                  Text('Growth Partner (GB)', style: textStyle12(context, color: CustomColor.appColor)),
-                  Text('Assure Earning : ₹ 00', style: textStyle12(context, color: CustomColor.greenColor)),
-                ],
-              )
-            ],
-          ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    Text(
-                      'Priority Access: Gain early access to franchise opportunities in all categories',
-                      style: textStyle14(context, color: CustomColor.descriptionColor),
-                    ),
-                    _buildDefineText(
-                      context,
-                      headline: 'REVENUE',
-                      define: 'Earn 5%-15% revenue share.',
-                    ),
-                    _buildDefineText(
-                      context,
-                      headline: 'REFERRAL BENEFIT',
-                      define: 'Get up to ₹5,000 per team member.',
-                    ),
-                    _buildDefineText(
-                      context,
-                      headline: 'MARKETING SUPPORT',
-                      define:
-                      'Commission: 5% to 15% per successful lead\nOnboarding Bonus: ₹5000 per direct GP, ₹3000 per indirect',
-                    ),
-                  ],
-                ),
-              ),
-              CustomContainer(
-                border: true,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                color: CustomColor.whiteColor,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(htmlDesc:htmlDesc,),)),
-                child: Text(
-                  'Know Benefits',
-                  style: textStyle14(context, color: CustomColor.appColor),
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
 /// DefineText
 Widget _buildDefineText(BuildContext context,
-    {String? headline, String? define}) {
+    {String? headline, List<Widget>? define}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(headline ?? '', style: textStyle14(context, color: CustomColor.appColor)),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 4.0, right: 5),
-              child: Icon(Icons.circle, size: 8, color: CustomColor.iconColor),
-            ),
-            Expanded(
-              child: Text(
-                define ?? '',
-                style: textStyle14(context,
-                    color: CustomColor.descriptionColor,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
-          ],
-        ),
+        Column(
+          children: define!,
+        )
       ],
     ),
   );
 }
 
+Widget _buildDotText(String? label){
+  return  Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: EdgeInsets.only(top: 4.0, right: 5),
+        child: Icon(Icons.circle, size: 8, color: CustomColor.iconColor),
+      ),
+      Expanded(child: Text(label!)),
+    ],
+  );
+}
 
 Widget _buildAmountRow({String? label, String? amount}){
   return  Row(

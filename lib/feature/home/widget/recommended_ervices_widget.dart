@@ -40,7 +40,9 @@ class RecommendedServicesWidget extends StatelessWidget {
               ],
             );
           } else if (state is ModuleServiceError) {
-            return Center(child: Text(state.errorMessage));
+            print('Service error : ${state.errorMessage}');
+            return SizedBox.shrink();
+            // return Center(child: Text(state.errorMessage));
           }
 
           return const SizedBox.shrink();

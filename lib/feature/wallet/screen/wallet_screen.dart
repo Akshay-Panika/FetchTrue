@@ -111,7 +111,7 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 CustomAmountText(
-                  amount: formatPrice(wallet.balance),
+                  amount: '${wallet.balance}',
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
                 ),
@@ -248,7 +248,7 @@ Widget _buildSelfEarning(BuildContext context) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('₹ ${formatPrice(tx.amount)}',
+                  Text('₹ ${tx.amount}',
                       style: textStyle12(context, fontWeight: FontWeight.w500)),
                   Text('${tx.type}',
                       style: textStyle12(context, fontWeight: FontWeight.w400)),
@@ -323,7 +323,7 @@ Widget _buildTeamBuildEarning(BuildContext context) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('₹ ${formatPrice(tx.amount)}',
+                  Text('₹ ${tx.amount}',
                       style: textStyle12(context, fontWeight: FontWeight.w500)),
                   Text('${tx.type}',
                       style: textStyle12(context, fontWeight: FontWeight.w400)),
@@ -398,7 +398,7 @@ Widget _buildTeamRevenueEarning(BuildContext context) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('₹ ${formatPrice(tx.amount)}',
+                  Text('₹ ${tx.amount}',
                       style: textStyle12(context, fontWeight: FontWeight.w500)),
                   Text('${tx.type}',
                       style: textStyle12(context, fontWeight: FontWeight.w400)),

@@ -121,7 +121,9 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
               ),
             );
           } else if (state is AdsError) {
-            return Center(child: Text('Error: ${state.message}'));
+            print('error : ${state.message}');
+            return SizedBox.shrink();
+            // return Center(child: Text('Error: ${state.message}'));
           }
           return Center(child: Text('Press button to load ads'));
         },

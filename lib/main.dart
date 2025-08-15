@@ -23,7 +23,6 @@ void main() async {
   final userService = UserService();
   final userBloc = UserBloc(userService);
 
-  // 👇 Glue: session triggers bloc when userId is available
   userSession.onUserIdChanged = (userId) {
     userBloc.add(FetchUserById(userId));
   };
@@ -48,7 +47,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 👇 Load session on app start (fetches user if session exists)
     Provider.of<UserSession>(context, listen: false).loadUserSession();
 
     return MaterialApp(
@@ -71,7 +69,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Fetch True',
-      home: const SplashScreen(), // 👈 Splash/Login/Home
+      home: const SplashScreen(),
     );
   }
 }

@@ -114,7 +114,9 @@ class ModuleWidget extends StatelessWidget {
               }
 
               else if (state is ModuleError) {
-                return Center(child: Text(state.errorMessage));
+                print('Module error : ${state.errorMessage}');
+                return SizedBox.shrink();
+                // return Center(child: Text(state.errorMessage));
               }
               return const SizedBox.shrink();
             },

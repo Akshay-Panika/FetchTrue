@@ -122,7 +122,7 @@ class _WalletWidgetState extends State<WalletWidget> {
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
                             ),
                             TextSpan(
-                              text: '${formatPrice(wallet.balance)}',
+                              text: '${wallet.balance}',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: CustomColor.appColor),
                             ),
                           ],
@@ -283,7 +283,8 @@ class TeamBuildWidget extends StatelessWidget {
                     ),
                   );
                 } else if (state is MyTeamError) {
-                  return Text('Error: ${state.message}');
+                  print('team Build error : ${state.message}');
+                  return SizedBox.shrink();
                 }
                 return const SizedBox();
               },

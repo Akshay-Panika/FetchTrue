@@ -35,7 +35,16 @@ class _OffersScreenState extends State<OffersScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            print('Offer error : ${snapshot.hasError}');
+            return  Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.remove_shopping_cart,  size: 50,color: CustomColor.iconColor,),
+                Text('No offers available.'),
+              ],
+            ));
+            // return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return  Center(child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
