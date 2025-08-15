@@ -1,4 +1,4 @@
-package com.example.bizbooster2x
+package com.example.fetchtrue
 
 import io.flutter.embedding.android.FlutterActivity
 
