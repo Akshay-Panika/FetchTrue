@@ -180,8 +180,8 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                         ),
                         10.height,
                         BlocProvider(
-                          create: (_) => UserBloc(UserService())..add(FetchUserById(widget.userId)),
-                          child: BlocBuilder<UserBloc, UserState>(
+                          create: (_) => UsersBloc(UserService())..add(FetchUserById(widget.userId)),
+                          child: BlocBuilder<UsersBloc, UserState>(
                             builder: (context, state) {
                               if (state is UserLoading) {
                                 return const Center(child: CircularProgressIndicator());

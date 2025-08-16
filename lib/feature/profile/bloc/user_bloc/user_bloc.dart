@@ -4,10 +4,10 @@ import 'user_event.dart';
 import 'user_state.dart';
 
 
-class UserBloc extends Bloc<UserEvent, UserState> {
+class UsersBloc extends Bloc<UserEvent, UserState> {
   final UserService userService;
 
-  UserBloc(this.userService) : super(UserInitial()) {
+  UsersBloc(this.userService) : super(UserInitial()) {
     on<FetchUserById>(_onFetchUserById);
     on<UserReset>((event, emit) {
       emit(UserInitial()); // ✅ This resets the user state

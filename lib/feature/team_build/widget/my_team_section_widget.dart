@@ -48,15 +48,15 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
   }
 
   Future<void> _onRefresh() async {
-    final userState = context.read<UserBloc>().state;
+    final userState = context.read<UsersBloc>().state;
     if (userState is UserLoaded) {
-      context.read<UserBloc>().add(FetchUserById(userState.user.id));
+      context.read<UsersBloc>().add(FetchUserById(userState.user.id));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
+    return BlocBuilder<UsersBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -278,7 +278,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                                           referredUser = null;
                                         });
                                         context
-                                            .read<UserBloc>()
+                                            .read<UsersBloc>()
                                             .add(FetchUserById(users.id));
                                       } else {
                                         showCustomToast("Failed to confirm referral.");

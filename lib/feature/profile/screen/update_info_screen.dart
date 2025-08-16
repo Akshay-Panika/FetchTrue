@@ -1,17 +1,15 @@
-import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../bloc/user_bloc/user_bloc.dart';
-import '../bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_state.dart';
+import '../../profile/bloc/user/user_event.dart';
 import '../model/user_model.dart';
-import '../repository/info_service.dart';
 
 class UpdateInfoScreen extends StatefulWidget {
   final UserModel user;
@@ -26,7 +24,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
 
-  bool isLoading = false; // 🔄 Loader control
 
   @override
   void initState() {
@@ -44,38 +41,32 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     super.dispose();
   }
 
-  void _onSave() async {
+
+  void _onSave() {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
 
-    if (name.isEmpty || email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Name और Email खाली नहीं हो सकते")),
-      );
+    if (name.isEmpty || name.length < 3) {
+      showCustomToast("Please enter a valid name (min 3 characters)");
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
-
-    final success = await InfoService().updateUserInfo(
-      userId: widget.user.id,
-      fullName: name,
-      email: email,
-    );
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (success) {
-      showCustomSnackBar(context, 'User info saved');
-      context.read<UserBloc>().add(FetchUserById(widget.user.id));
-      Navigator.pop(context, true);
-    } else {
-      showCustomSnackBar(context, 'User info note saved');
+    if (email.isEmpty) {
+      showCustomToast( "Email cannot be empty");
+      return;
     }
+
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(email)) {
+      showCustomToast( "Please enter a valid email address");
+      return;
+    }
+
+    final updatedData = {
+      "fullName": name,
+      "email": email,
+    };
+    context.read<UserBloc>().add(UpdateUser(widget.user.id, updatedData));
   }
 
   @override
@@ -83,6 +74,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Update Info', showBackButton: true),
+
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -95,7 +87,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
               keyboardType: TextInputType.text,
               controller: _nameController,
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             CustomLabelFormField(
               context,
               'Phone',
@@ -104,7 +96,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
               controller: _phoneController,
               enabled: false,
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             CustomLabelFormField(
               context,
               'Email Id',
@@ -112,7 +104,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
               keyboardType: TextInputType.emailAddress,
               controller: _emailController,
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Row(
               children: [
                 Expanded(
@@ -121,28 +113,42 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                     child: const Text("CANCEL", style: TextStyle(color: Colors.red)),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: CustomContainer(
-                    border: true,
-                    borderColor: CustomColor.appColor,
-                    color: CustomColor.whiteColor,
-                    onTap: isLoading ? null : _onSave,
-                    child: Center(
-                      child: isLoading
-                          ? SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(color: CustomColor.appColor))
-                          : Text("SAVE", style: textStyle16(context)),
-                    ),
+                  child: BlocConsumer<UserBloc, UserState>(
+                    listener: (context, state) {
+                      if (state is UserUpdated) {
+                        context.read<UserBloc>().add(GetUserById(state.user.id));
+                        Navigator.pop(context, true);
+                      }
+                      if (state is UserError) {
+                        print('${state.massage}');
+                      }
+                    },
+                    builder: (context, state) {
+                      final isLoading = state is UserLoading;
+                      return CustomContainer(
+                        border: true,
+                        borderColor: CustomColor.appColor,
+                        color: CustomColor.whiteColor,
+                        onTap: isLoading ? null : _onSave,
+                        child: Center(
+                          child: isLoading
+                              ? const SizedBox(
+                            height: 20, width: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                              : Text("SAVE", style: textStyle16(context)),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
           ],
         ),
-      ),
+      )
     );
   }
 }

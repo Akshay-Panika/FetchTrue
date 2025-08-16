@@ -34,7 +34,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       await deleteUser(widget.userId);
 
       /// Reset state
-      context.read<UserBloc>().add(UserReset());
+      context.read<UsersBloc>().add(UserReset());
       await userSession.logout();
 
       if (context.mounted) {

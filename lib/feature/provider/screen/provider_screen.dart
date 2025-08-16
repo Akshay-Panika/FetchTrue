@@ -149,7 +149,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                            Positioned(
                             top: 0,
                             right: 0,
-                            child: BlocBuilder<UserBloc, UserState>(
+                            child: BlocBuilder<UsersBloc, UserState>(
                               builder: (context, state) {
                                 if (state is UserLoading) {
                                   return const Center(child: CircularProgressIndicator());
@@ -165,7 +165,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                     providerId: data.id,
                                     isInitiallyFavorite: isFavorite,
                                     onChanged: (newFavoriteStatus) {
-                                      context.read<UserBloc>().add(
+                                      context.read<UsersBloc>().add(
                                         UserFavoriteProviderChangedEvent(
                                           providerId: data.id,
                                           isFavorite: newFavoriteStatus,

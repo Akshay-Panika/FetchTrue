@@ -51,15 +51,9 @@ class TETWidget extends StatelessWidget {
 
 
 /// wallet
-class WalletWidget extends StatefulWidget {
+class WalletWidget extends StatelessWidget {
   final String? userId;
   const WalletWidget({super.key, this.userId});
-
-  @override
-  State<WalletWidget> createState() => _WalletWidgetState();
-}
-
-class _WalletWidgetState extends State<WalletWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +67,7 @@ class _WalletWidgetState extends State<WalletWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => WalletScreen(userId: widget.userId ?? ''),
+            builder: (context) => WalletScreen(userId: userId ?? ''),
           ),
         );
       },
@@ -88,8 +82,8 @@ class _WalletWidgetState extends State<WalletWidget> {
             ),
           ),
           const SizedBox(height: 10),
-          BlocProvider(
-              create: (_) => WalletBloc()..add(FetchWallet(widget.userId!)),
+            BlocProvider(
+              create: (_) => WalletBloc()..add(FetchWallet(userId!)),
               child: BlocBuilder<WalletBloc, WalletState>(
                 builder: (context, state) {
                   if (state is WalletLoading) {
@@ -199,7 +193,6 @@ class TeamBuildWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-
           BlocProvider(
             create: (context) =>
             MyTeamBloc(MyTeamRepository())..add(GetMyTeam(userId!)),

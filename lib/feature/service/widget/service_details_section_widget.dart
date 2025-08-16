@@ -111,7 +111,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
             ),
             Positioned(
                 top: 0,right: 10,
-                child:  BlocBuilder<UserBloc, UserState>(
+                child:  BlocBuilder<UsersBloc, UserState>(
                   builder: (context, state) {
                     if (state is UserLoading) {
                       return const Center(child: CircularProgressIndicator());
@@ -127,7 +127,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                         serviceId: data.id,
                         isInitiallyFavorite: isFavorite,
                         onChanged: (newFavoriteStatus) {
-                          context.read<UserBloc>().add(UserFavoriteChangedEvent(
+                          context.read<UsersBloc>().add(UserFavoriteChangedEvent(
                             serviceId: data.id,
                             isFavorite: newFavoriteStatus,
                           ));

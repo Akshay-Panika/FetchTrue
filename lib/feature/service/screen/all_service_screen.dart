@@ -57,7 +57,7 @@ class AllServiceScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          BlocBuilder<UserBloc, UserState>(
+                          BlocBuilder<UsersBloc, UserState>(
                             builder: (context, state) {
                               if (state is UserLoading) {
                                 return const Center(child: CircularProgressIndicator());
@@ -73,7 +73,7 @@ class AllServiceScreen extends StatelessWidget {
                                   serviceId: data.id,
                                   isInitiallyFavorite: isFavorite,
                                   onChanged: (newFavoriteStatus) {
-                                    context.read<UserBloc>().add(UserFavoriteChangedEvent(
+                                    context.read<UsersBloc>().add(UserFavoriteChangedEvent(
                                       serviceId: data.id,
                                       isFavorite: newFavoriteStatus,
                                     ));

@@ -1,156 +1,188 @@
-import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../package/screen/package_screen.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
 
-class ProfileCardWidget extends StatelessWidget {
-  const ProfileCardWidget({super.key});
+class ProfileCardWidget extends StatefulWidget {
+  const ProfileCardWidget({super.key,});
 
-  static String _formatDate(String isoDate) {
-    try {
-      final date = DateTime.parse(isoDate);
-      return "${date.day}/${date.month}/${date.year}";
-    } catch (_) {
-      return "-";
-    }
-  }
+
+  @override
+  State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
+}
+
+class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
+
+    if(!userSession.isLoggedIn){
+      return CustomContainer(
+        color: CustomColor.whiteColor,
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                      backgroundImage: AssetImage(CustomImage.nullImage) as ImageProvider,
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Guest',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.clip,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'guest@test.com',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: CustomColor.appColor, width: 0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.leaderboard_outlined, size: 16),
+                      SizedBox(width: 5),
+                      Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                )
+              ],
+            ),
+
+            const Divider(),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildStatus(value: '00', valueType: 'Joining date'),
+                _buildStatus(value: '00', valueType: 'Lead Completed'),
+                _buildStatus(value: '00', valueType: 'Total Earning'),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     return CustomContainer(
       color: CustomColor.whiteColor,
       padding: const EdgeInsets.all(15),
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          if (state is UserLoading) {
-            return _buildShimmerEffect();
+
+          if (state is UserInitial) {
+            context.read<UserBloc>().add(GetUserById(userSession.userId!));
+            return   _buildShimmerEffect();
           }
-
-          // ✅ Default values
-          String displayName = 'Guest';
-          String email = 'Email Id';
-          String profilePhoto = '';
-          String userId = '';
-          String joiningDate = '-';
-
-          if (state is UserLoaded) {
+          else if(state is UserLoading){
+            return   _buildShimmerEffect();
+          }
+          else if (state is UserLoaded) {
             final user = state.user;
-            displayName = user.fullName?.isNotEmpty == true ? user.fullName! : 'Guest';
-            email = user.email ?? 'Email Id';
-            profilePhoto = user.profilePhoto ?? '';
-            userId = user.id ?? '';
-            joiningDate = _formatDate(user.createdAt ?? '');
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
 
-          }
-
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              /// TOP ROW
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  /// 👤 Profile + Name + Email
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                        backgroundImage: profilePhoto.isNotEmpty
-                            ? NetworkImage(profilePhoto)
-                            : AssetImage(CustomImage.nullImage) as ImageProvider,
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            displayName,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.clip,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            email,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  /// 🎯 GP Button (only when userId is present)
-                  if (userId.isNotEmpty)
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PackageScreen(userId: userId),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: CustomColor.appColor, width: 0.5),
-                          borderRadius: BorderRadius.circular(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                          backgroundImage: user.profilePhoto != null
+                              ? NetworkImage(user.profilePhoto.toString())
+                              : AssetImage(CustomImage.nullImage) as ImageProvider,
                         ),
-                        child: const Row(
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.leaderboard_outlined, size: 16),
-                            SizedBox(width: 5),
-                            Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
+                            Text(
+                              '${user.fullName}',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis,),
+
+                            Text('${user.email}', style: const TextStyle(color: Colors.grey),),
+                            Text('ID: ${user.userId}', style: const TextStyle(color: Colors.grey),),
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                ],
-              ),
 
-              const Divider(),
-
-              /// 📊 Stats Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildStatus(value: joiningDate, valueType: 'Joining date'),
-                  _buildStatus(value: '00', valueType: 'Lead Completed'),
-                  BlocProvider(
-                    create: (_) => WalletBloc()..add(FetchWallet(userId)),
-                    child: BlocBuilder<WalletBloc, WalletState>(
-                      builder: (context, state) {
-                        if (state is WalletLoading) {
-                          return _buildStatus(value: '00', valueType: 'Total Earning');
-                        } else if (state is WalletLoaded) {
-                          final wallet = state.wallet;
-                          final balance = wallet.balance ?? '00'; // null-safe
-                          return _buildStatus(
-                            value: balance.toString(),
-                            valueType: 'Total Earning',
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PackageScreen(userId: userSession.userId!),
+                            ),
                           );
-                        } else if (state is WalletError) {
-                          print(state.message);
-                           return _buildStatus(value: '00', valueType: 'Total Earning');
-                          // return Center(child: Text(state.message));
-                        }
-                        return const SizedBox();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: CustomColor.appColor, width: 0.5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.leaderboard_outlined, size: 16),
+                              SizedBox(width: 5),
+                              Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+
+                const Divider(),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatus(value: '00', valueType: 'Joining date'),
+                    _buildStatus(value: '00', valueType: 'Lead Completed'),
+                  ],
+                ),
+              ],
+            );
+          } else if (state is UserError) {
+            return Center(child: Text("Error: ${state.massage}"));
+          }
+          return const SizedBox();
         },
       ),
     );

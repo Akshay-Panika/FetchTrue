@@ -52,7 +52,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
     final double serviceAmount = widget.checkoutData.totalAmount ??0.0;
     final int partialAmount = (serviceAmount / 2).round();
 
-    return BlocBuilder<UserBloc, UserState>(
+    return BlocBuilder<UsersBloc, UserState>(
       builder: (context, state) {
 
         if(state is UserLoading){

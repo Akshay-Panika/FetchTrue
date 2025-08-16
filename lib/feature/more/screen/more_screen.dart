@@ -1,5 +1,6 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:fetchtrue/feature/about_us/screen/aboutus_screen.dart';
 import 'package:fetchtrue/feature/customer/screen/customer_screen.dart';
@@ -18,16 +19,10 @@ import '../../favorite/screen/favorite_screen.dart';
 import '../../help_support/screen/help_support_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
-import '../../privacy_policy/screen/pryvacy_policy_screen.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
 import '../../profile/screen/profile_screen.dart';
 import '../../provider/screen/provider_screen.dart';
-import '../../refund_policy/screen/refund_policy_screen.dart';
 import '../../settings/screen/setting_screen.dart';
 import '../../team_build/screen/team_build_screen.dart';
-import '../../terms_conditions/screen/term_condition_screen.dart';
 import '../../wallet/screen/wallet_screen.dart';
 
 
@@ -42,7 +37,9 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final userSession = Provider.of<UserSession>(context, listen: false);
+    // final userSession = Provider.of<UserSession>(context, listen: false);
+    final userSession = Provider.of<UserSession>(context);
+    final isLoggedIn = userSession.isLoggedIn;
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -57,7 +54,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
           SliverAppBar(
             floating: true,
             toolbarHeight: 200,
-            backgroundColor: WidgetStateColor.transparent,
+            backgroundColor: Colors.grey[100],
             flexibleSpace: FlexibleSpaceBar(
               background: ProfileCardWidget(),
             ),
@@ -67,62 +64,86 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             child: Column(
               children: [
                 _buildSection(context, "Account", [
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.person_outline, "Profile", () async{
-                    final updated = await Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId,)));
-                    if (updated == true) {
-                      context.read<UserBloc>().add(FetchUserById(userSession.userId!));
-                    }
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId!,)));
+                   }),
 
-                    // Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId,)));
-                  }),
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.favorite_border, "Favorite", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>
                         FavoriteScreen(userId: userSession.userId)));
                   }),
+
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.wallet_outlined, "Wallet", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>  WalletScreen(userId: userSession.userId ?? '',)));
                   }),
+
+
                   _buildTile(context, Icons.card_giftcard, "Package", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen(userId: userSession.userId!,)));
                   }),
+
+
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen( userId: userSession.userId!,)));
                   }),
+
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
                   }),
+
+
                   _buildTile(context, Icons.person_4_outlined, "Provider", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const ProviderScreen()));
                   }),
+
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.person_4, "Customer", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>  CustomerScreen(userId: userSession.userId.toString(), isMenu: true)));
                   }),
                 ]),
+
+
                 _buildSection(context, "Preferences", [
                   _buildTile(context, Icons.description_outlined, "About Us", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutUsScreen()));
                   }),
+
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
                   }),
+
+
                   _buildTile(context, Icons.settings_outlined, "Settings", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingScreen()));
                   }),
+
+
                   _buildTile(context, Icons.support_agent, "Help & Support", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
                   }),
+
+
                   _buildTile(context, Icons.security, "Privacy & Policy", () {
                     CustomUrlLaunch('https://www.fetchtrue.com/privacypolicy');
                     // Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
                   }),
+
+
                   _buildTile(context, Icons.rule, "Terms And Conditions", () {
                     CustomUrlLaunch('https://www.fetchtrue.com/termsandcondition');
                     // Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
                   }),
+
                   _buildTile(context, Icons.receipt_long, "Refund Policy", () {
                     CustomUrlLaunch('https://www.fetchtrue.com/refund&returnpolicy');
                     // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
                   }),
+
                   _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
                   }),
@@ -130,33 +151,41 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
                 _buildSection(context, "Others", [
 
+                  if(userSession.isLoggedIn)
                   _buildTile(context, Icons.delete_outline, "Delete Account", () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) =>  DeleteAccountScreen(userId: userSession.userId ?? '',)));
                   }),
-                  _buildTile(
-                    context,
-                    userSession.isLoggedIn ? Icons.logout : Icons.login,
-                    userSession.isLoggedIn ? 'Sign Out' : 'Sign In',
-                        () async {
-                      if (!userSession.isLoggedIn) {
-                        final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AuthScreen()),
-                        );
-                        if (result == true) {
-                          setState(() {}); // Optional, Provider will rebuild
-                        }
-                      } else {
-                        showLogoutDialog(context, () async {
-                          Navigator.pop(context);
-                          /// Reset Bloc if needed
-                          context.read<UserBloc>().add(UserReset());// close dialog
-                          await userSession.logout(); //  actual logout
-                          setState(() {}); // Optional: to refresh UI if needed
-                        });
-                      }
-                    },
-                  )
 
-                ])
+
+                  _buildTile(context, isLoggedIn ? Icons.logout : Icons.login,
+                      isLoggedIn ? 'Sign Out' : 'Sign In', () {
+                        if (isLoggedIn) {
+                          showLogoutDialog(context, () async {
+                            await userSession.logout();
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const AuthScreen()),
+                          );
+                        }
+                      }),
+
+                ]),
+
+                10.height,
+                FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final version = snapshot.data!.version;
+                      return Text('Version $version');
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+                30.height
               ],
             ),
           )

@@ -5,6 +5,8 @@ class ApiUrls{
 
   /// Auth api
   static const String user = '${baseUrl}users';
+  static const String userUpdateInfo = '${baseUrl}users/update-info';
+  static const String userUpdateProfile = '${baseUrl}users/update-profile-photo';
   static const String signUp = '${baseUrl}auth/register';
   static const String signIn = '${baseUrl}auth/login';
   static const String verifyOtp = '${baseUrl}auth/verify-otp';

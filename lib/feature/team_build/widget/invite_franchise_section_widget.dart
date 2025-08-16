@@ -28,14 +28,14 @@ class InviteFranchiseSectionWidget extends StatefulWidget {
 
 class _InviteFranchiseSectionWidgetState
     extends State<InviteFranchiseSectionWidget> {
-  late UserBloc _userBloc;
+  late UsersBloc _userBloc;
   late UserSession userSession;
 
   @override
   void initState() {
     super.initState();
     userSession = Provider.of<UserSession>(context, listen: false);
-    _userBloc = BlocProvider.of<UserBloc>(context);
+    _userBloc = BlocProvider.of<UsersBloc>(context);
     _fetchUserData(); // initial load
   }
 
@@ -83,7 +83,7 @@ class _InviteFranchiseSectionWidgetState
               ],
             ),
 
-            BlocBuilder<UserBloc, UserState>(
+            BlocBuilder<UsersBloc, UserState>(
               builder: (context, state) {
                 if (state is UserLoading) {
                   return Column(

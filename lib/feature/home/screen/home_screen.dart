@@ -1,22 +1,17 @@
-import 'package:fetchtrue/feature/home/screen/partner_review_screen.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/home/screen/understanding_fetch_true_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/dimension.dart';
-import '../../highlight_serive/highlight_widget.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../provider/widget/service_provider_widget.dart';
-import '../../search/screen/search_screen.dart';
 import '../../banner/widget/home_banner_widget.dart';
 import '../../search/screen/search_service_screen.dart';
-import '../widget/all_service_widget.dart';
+import '../widget/module_widget.dart';
 import '../widget/profile_card_widget.dart';
-import '../widget/recommended_ervices_widget.dart';
 import '../widget/refer_and_earn_widget.dart';
 import '../widget/tet_widget.dart';
-import '../widget/module_widget.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key,});
@@ -29,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0,),
@@ -58,24 +52,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SliverToBoxAdapter(child: HomeBannerWidget(),),
 
             /// Futures
-            if(userSession.userId != null)
+            if(userSession.isLoggedIn)
             SliverToBoxAdapter(child: TETWidget(userId: userSession.userId,),),
-            SliverToBoxAdapter(child: 15.height,),
 
             /// Modules
-            SliverToBoxAdapter(child: ModuleWidget(dimensions: dimensions,),),
+            SliverToBoxAdapter(child: ModuleWidget(),),
+            SliverToBoxAdapter(child: 15.height,),
+            SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: 15.height,),
 
-            /// Services for you
-            SliverToBoxAdapter(child:  RecommendedServicesWidget(headline: 'Recommended Services For You',),),
-            SliverToBoxAdapter(child: HighlightServiceWidget()),
-            SliverToBoxAdapter(child: ReferAndEarnWidget()),
-            SliverToBoxAdapter(child: ServiceProviderWidget(),),
-            SliverToBoxAdapter(child:  AllServiceWidget(headline: 'All Services',),),
-            // SliverToBoxAdapter(child: PartnerReviewVideoScreen()),
-            SliverToBoxAdapter(child: 15.height,),
             SliverToBoxAdapter(child: UnderstandingFetchTrueScreen()),
-            SliverToBoxAdapter(child: 15.height,),
+
+
+
           ],
         ),
       ),

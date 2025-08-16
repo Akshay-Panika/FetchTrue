@@ -21,11 +21,11 @@ import '../bloc/module/module_state.dart';
 import '../repository/module_service.dart';
 
 class ModuleWidget extends StatelessWidget {
-  final Dimensions dimensions;
-  const ModuleWidget({super.key, required this.dimensions});
+  const ModuleWidget({super.key,});
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Column(
       children: [
         Row(
