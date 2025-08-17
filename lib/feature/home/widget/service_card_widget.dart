@@ -6,6 +6,7 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_favorite_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../profile/bloc/user_bloc/user_bloc.dart';
@@ -52,38 +53,7 @@ class ServiceCardWidget extends StatelessWidget {
                         children: [
 
 
-                          BlocBuilder<UsersBloc, UserState>(
-                            builder: (context, state) {
-                              if (state is UserLoading) {
-                                return const Center(child: CircularProgressIndicator());
-                              }
-
-                              if (state is UserLoaded) {
-                                final favorites = state.user.favoriteServices ?? [];
-                                final isFavorite = favorites.contains(data.id);
-                                final userId = state.user.id;
-
-                                return FavoriteServiceButtonWidget(
-                                  userId: userId,
-                                  serviceId: data.id,
-                                  isInitiallyFavorite: isFavorite,
-                                  onChanged: (newFavoriteStatus) {
-                                    context.read<UsersBloc>().add(UserFavoriteChangedEvent(
-                                      serviceId: data.id,
-                                      isFavorite: newFavoriteStatus,
-                                    ));
-                                  },
-                                );
-                              }
-
-                              if (state is UserError) {
-                                return const Icon(Icons.favorite_border, color: Colors.grey);
-                              }
-
-                              return const SizedBox.shrink();
-                            },
-                          ),
-
+                          CustomFavoriteButton(),
 
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),

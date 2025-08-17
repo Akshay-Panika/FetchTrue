@@ -111,37 +111,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
             ),
             Positioned(
                 top: 0,right: 10,
-                child:  BlocBuilder<UsersBloc, UserState>(
-                  builder: (context, state) {
-                    if (state is UserLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (state is UserLoaded) {
-                      final favorites = state.user.favoriteServices ?? [];
-                      final isFavorite = favorites.contains(data.id);
-                      final userId = state.user.id;
-
-                      return FavoriteServiceButtonWidget(
-                        userId: userId,
-                        serviceId: data.id,
-                        isInitiallyFavorite: isFavorite,
-                        onChanged: (newFavoriteStatus) {
-                          context.read<UsersBloc>().add(UserFavoriteChangedEvent(
-                            serviceId: data.id,
-                            isFavorite: newFavoriteStatus,
-                          ));
-                        },
-                      );
-                    }
-
-                    if (state is UserError) {
-                      return const Icon(Icons.favorite_border, color: Colors.grey);
-                    }
-
-                    return const SizedBox.shrink();
-                  },
-                ),)
+                child:  CustomFavoriteButton(),)
           ],
         ),
 

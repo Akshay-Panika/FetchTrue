@@ -11,6 +11,9 @@ import 'feature/auth/user_notifier/user_notifier.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
+import 'feature/service/bloc/module_service/module_service_bloc.dart';
+import 'feature/service/bloc/module_service/module_service_event.dart';
+import 'feature/service/repository/api_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -30,12 +33,8 @@ void main() async {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => UserBloc(UserRepository())),
-            // BlocProvider<UserBloc>(
-            //   create: (_) => UserBloc(UserRepository())..add(GetUserEvent()),
-            // ),
-            BlocProvider<ProviderBloc>(
-              create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
-            )
+            BlocProvider<ProviderBloc>(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),),
+            BlocProvider(create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),),
           ],
           child: const MyApp(),
         ),

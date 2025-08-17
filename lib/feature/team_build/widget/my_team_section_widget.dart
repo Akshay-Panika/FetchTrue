@@ -14,12 +14,15 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_toggle_taps.dart';
 import '../../../helper/Contact_helper.dart';
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
 import '../../profile/bloc/user_bloc/user_event.dart';
 import '../../profile/model/user_model.dart';
 import '../repository/fetch_referred_user_service.dart';
 import '../repository/referral_service.dart';
 import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
 import '../model/referred_user_model.dart';
 import '../repository/referred_user_service_confirm.dart';
 import 'my_gp_team_section.dart';
@@ -48,23 +51,28 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
   }
 
   Future<void> _onRefresh() async {
-    final userState = context.read<UsersBloc>().state;
-    if (userState is UserLoaded) {
-      context.read<UsersBloc>().add(FetchUserById(userState.user.id));
+    final userSession = Provider.of<UserSession>(context);
+    if (userSession is UserLoaded) {
+      context.read<UserBloc>().add(GetUserById(userSession.userId!));
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UsersBloc, UserState>(
+    final userSession = Provider.of<UserSession>(context);
+    return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        if (state is UserLoading) {
-          return const Center(child: CircularProgressIndicator());
+
+        if (state is UserInitial) {
+          context.read<UserBloc>().add(GetUserById(userSession.userId!));
+           return CircularProgressIndicator();
         }
-
-        if (state is UserLoaded) {
+        else if(state is UserLoading){
+          return CircularProgressIndicator();
+        }
+        else if (state is UserLoaded) {
           final users = state.user;
-
           return RefreshIndicator(
             onRefresh: _onRefresh,
             child: CustomScrollView(
@@ -174,7 +182,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                       ),
 
 
-                       if (users.referredBy == null && referredUser == null)
+                      if (users.referredBy == null && referredUser == null)
                         DottedBorder(
                           color: Colors.grey,
                           dashPattern: [10, 5],
@@ -233,7 +241,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                           ),
                         ),
 
-                       if (referredUser != null)
+                      if (referredUser != null)
                         Column(
                           children: [
                             FirstRelationshipManagerCardWidget(referredUser: referredUser),
@@ -338,8 +346,10 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
             ),
           );
         }
-
-        return const SizedBox(); // fallback
+        else if (state is UserError) {
+          return Center(child: Text("Error: ${state.massage}"));
+        }
+        return const SizedBox();
       },
     );
   }

@@ -71,6 +71,7 @@ class ModuleWidget extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final module = modules[index];
                     return CustomContainer(
+                      border: true,
                       margin: EdgeInsets.zero,
                       color: Colors.white,
                       child: Column(

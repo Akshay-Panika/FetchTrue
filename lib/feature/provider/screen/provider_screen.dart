@@ -135,9 +135,9 @@ class _ProviderScreenState extends State<ProviderScreen> {
             );
           }
           else if (state is ProviderError) {
-            return Center(child: Text(state.message));
+            print(state.message);
           }
-          return Container();
+          return const SizedBox.shrink();
         },
       ),
     );

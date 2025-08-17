@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/home/screen/understanding_fetch_true_screen.dart';
+import 'package:fetchtrue/feature/search/screen/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
@@ -24,7 +25,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
     final double searchBarHeight = 10;
+
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       body: CustomScrollView(
         slivers: [
 
@@ -51,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                        CustomColor.appColor.withOpacity(0.2),
+                        CustomColor.appColor.withOpacity(0.3),
                         CustomColor.whiteColor.withOpacity(01),
                       ])
                     ),
@@ -70,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(searchBarHeight),
-              child: CustomSearchBar(),
+              child: CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
             ),
           ),
 

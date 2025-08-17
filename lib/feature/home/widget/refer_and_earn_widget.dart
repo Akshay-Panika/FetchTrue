@@ -14,6 +14,7 @@ class ReferAndEarnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return  CustomContainer(
+      border: true,
       width: double.infinity,
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
