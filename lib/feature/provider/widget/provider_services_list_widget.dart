@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/widgets/custom_service_list.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';
@@ -33,15 +32,9 @@ class ProviderServicesListWidget extends StatelessWidget {
 
               else if(state is ModuleServiceLoaded){
 
-                // // final services = state.serviceModel;
-                // final services = state.serviceModel.where((moduleService) =>
-                // moduleService.id == data.subscribedServices.first.id
-                // ).toList();
-                // Collect all subscribed service ids
 
                 final subscribedIds = data.subscribedServices.map((s) => s.id).toSet();
 
-                // Filter only those services whose id matches subscribed ones
                 final services = state.serviceModel.where((service) =>
                     subscribedIds.contains(service.id)).toList();
 

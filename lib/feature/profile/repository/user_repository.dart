@@ -71,29 +71,3 @@ class UserRepository {
     }
   }
 }
-
-
-// class UserRepository {
-//   final Dio _dio = Dio();
-//
-//   Future<UserModel?> getUser(String userId)async{
-//     try{
-//       final response = await _dio.get('${ApiUrls.user}/$userId');
-//
-//       if(response.statusCode == 200 && response.data['success'] == true){
-//        return UserModel.fromJson(response.data['data']);
-//      }
-//      else{
-//        return null;
-//      }
-//
-//     }  on DioException catch (error){
-//       throw Exception('Dio error: ${error.message}');
-//     }
-//
-//     catch (error){
-//       throw Exception('Unexpected error: $error');
-//     }
-//
-//   }
-// }

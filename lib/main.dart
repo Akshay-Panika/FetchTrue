@@ -1,3 +1,5 @@
+import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
+import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
+import 'feature/provider/bloc/provider/provider_event.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,13 +23,23 @@ void main() async {
   await userSession.loadUserSession();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UserSession>.value(value: userSession),
-        BlocProvider(create: (_) => UserBloc(UserRepository())),
-      ],
-      child: const MyApp(),
-    ),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserSession>.value(value: userSession),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => UserBloc(UserRepository())),
+            // BlocProvider<UserBloc>(
+            //   create: (_) => UserBloc(UserRepository())..add(GetUserEvent()),
+            // ),
+            BlocProvider<ProviderBloc>(
+              create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
+            )
+          ],
+          child: const MyApp(),
+        ),
+      )
   );
 
 }
@@ -37,12 +50,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final userSession = Provider.of<UserSession>(context, listen: false).loadUserSession();
-    final userSession = Provider.of<UserSession>(context);
+    // final userSession = Provider.of<UserSession>(context);
 
     return MaterialApp(
       title: 'Fetch True',
       debugShowCheckedModeBanner: false,
-      home: userSession.isLoggedIn ? const SplashScreen() : const SplashScreen(),
+      home:  SplashScreen(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: AppBarTheme(

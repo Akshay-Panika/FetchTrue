@@ -3,13 +3,13 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../bloc/provider_by_id/provider_by_id_bloc.dart';
-import '../bloc/provider_by_id/provider_by_id_event.dart';
-import '../bloc/provider_by_id/provider_by_id_state.dart';
+import '../bloc/provider/provider_bloc.dart';
+import '../bloc/provider/provider_event.dart';
+import '../bloc/provider/provider_state.dart';
 import '../repository/provider_by_id_service.dart';
+import '../repository/provider_repository.dart';
 
 class ProviderGalleryWidget extends StatelessWidget {
   final String providerId;
@@ -19,23 +19,16 @@ class ProviderGalleryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocProvider(
-        create: (_) => ProviderByIdBloc(ProviderByIdService())..add(GetProviderByIdEvent(providerId.toString())),
-        child: BlocBuilder<ProviderByIdBloc, ProviderByIdState>(
+        create: (_) => ProviderBloc(ProviderRepository())..add(GetProviderById(providerId!)),
+        child: BlocBuilder<ProviderBloc, ProviderState>(
           builder: (context, state) {
             if (state is ProviderLoading) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 150.0),
-                child: Center(child: CircularProgressIndicator(color: CustomColor.appColor)),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is ProviderLoaded) {
-              final gallery = state.provider.galleryImages;
-
-              if (gallery.isEmpty) {
-                return Center(child: Text('No images found.'));
-              }
+              final provider = state.provider.galleryImages;
 
               return GridView.builder(
-                itemCount: gallery.length,
+                itemCount: provider.length,
                 // shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 // physics: NeverScrollableScrollPhysics(),
@@ -51,8 +44,8 @@ class ProviderGalleryWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => FullSizeImage(
-                            galleryImages: gallery,
-                            initialSelectedImage: gallery[index],
+                            galleryImages: provider,
+                            initialSelectedImage: provider[index],
                           ),
                         ),
                       );
@@ -61,11 +54,12 @@ class ProviderGalleryWidget extends StatelessWidget {
                     child: CustomContainer(
                       border: true,
                       color: Colors.white,
-                      networkImg: gallery[index],
+                      networkImg: provider[index],
                     ),
                   );
                 },
               );
+
             } else if (state is ProviderError) {
               return Center(child: Text(state.message));
             }
