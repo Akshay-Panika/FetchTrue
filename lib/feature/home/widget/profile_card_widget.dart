@@ -59,9 +59,9 @@ class ProfileAppWidget extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 5, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   decoration: BoxDecoration(
+                    color: CustomColor.whiteColor,
                     border: Border.all(
                         color: CustomColor.appColor, width: 0.5),
                     borderRadius: BorderRadius.circular(10),
@@ -188,7 +188,7 @@ Widget _buildShimmerEffect() {
     children: [
       Row(
         children: [
-          CircleAvatar(radius: 25, backgroundColor: Colors.grey.shade300),
+          CircleAvatar(radius: 20, backgroundColor: Colors.grey.shade300),
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -43,7 +43,7 @@ class FranchiseCategoryWidget extends StatelessWidget {
                children: [
                  CustomHeadline(headline: 'Service',),
                  SizedBox(
-                   height: serviceCount > 4 ? 280 :140,
+                   height: serviceCount > 4 ? 220 :110,
                    child: GridView.builder(
                      itemCount:serviceCount,
                      scrollDirection: Axis.horizontal,
@@ -118,7 +118,7 @@ class _ShimmerGrid extends StatelessWidget {
         ),
 
         SizedBox(
-          height: 280,
+          height: 220,
           child: GridView.builder(
             itemCount: 8,
             scrollDirection: Axis.horizontal,
