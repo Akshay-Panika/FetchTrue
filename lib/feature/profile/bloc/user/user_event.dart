@@ -32,3 +32,6 @@ class UpdateProfilePhoto extends UserEvent {
   @override
   List<Object?> get props => [userId, filePath];
 }
+
+class ResetUser extends UserEvent {}
+

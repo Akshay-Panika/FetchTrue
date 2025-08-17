@@ -41,5 +41,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
     });
 
+    on<ResetUser>((event, emit) {
+      emit(UserInitial());
+    });
   }
 }

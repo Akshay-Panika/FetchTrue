@@ -11,6 +11,8 @@ import '../../../core/widgets/custom_alert_dialog.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/custom_text_tield.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
 import '../repository/sign_in_service.dart';
 import '../user_notifier/user_notifier.dart';
 import 'forgot_password_screen.dart';
@@ -26,7 +28,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
 
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _mainController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -61,53 +62,6 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  // void _signIn() async {
-  //   if (!_formKey.currentState!.validate()) return;
-  //
-  //   setState(() => _isLoading = true);
-  //
-  //   final input = _mainController.text.trim();
-  //   final password = _passwordController.text.trim();
-  //
-  //   String email = "";
-  //   String mobileNumber = "";
-  //
-  //   if (RegExp(r'^\d{10}$').hasMatch(input)) {
-  //     mobileNumber = input;
-  //   } else if (input.contains('@')) {
-  //     // email = input;
-  //     email = input.toLowerCase();
-  //   } else {
-  //     showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
-  //     setState(() => _isLoading = false);
-  //     return;
-  //   }
-  //
-  //   try {
-  //     final response = await SignInService.signIn(
-  //       mobileNumber: mobileNumber,
-  //       email: email,
-  //       password: password,
-  //     );
-  //
-  //     setState(() => _isLoading = false);
-  //
-  //     if (response != null) {
-  //       /// ✅ Use centralized UserSession (no SharedPreferences here)
-  //       await Provider.of<UserSession>(context, listen: false).login(
-  //         response.user.id,
-  //         response.token);
-  //
-  //       showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
-  //       Navigator.pop(context, true); // return success
-  //     } else {
-  //       showCustomSnackBar(context, "Login failed. Please check your credentials.");
-  //     }
-  //   } catch (e) {
-  //     setState(() => _isLoading = false);
-  //     showCustomSnackBar(context, "Login Error: ${e.toString()}");
-  //   }
-  // }
 
   void _signIn() async {
     if (!_formKey.currentState!.validate()) return;
@@ -125,7 +79,7 @@ class _SignInScreenState extends State<SignInScreen> {
     } else if (input.contains('@')) {
       email = input.toLowerCase();
     } else {
-      showCustomSnackBar(context, "Please enter a valid email or 10-digit phone number.");
+      showCustomToast("Please enter a valid email or 10-digit phone number.");
       setState(() => _isLoading = false);
       return;
     }
@@ -140,23 +94,25 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() => _isLoading = false);
 
       if (response != null) {
-        /// ✅ Save userId & token in session
-        final session = Provider.of<UserSession>(context, listen: false);
-        await session.login(response.user.id, response.token);
+        final userSession = Provider.of<UserSession>(context, listen: false);
+        await userSession.login(response.user.id, response.token);
 
-        /// ❗️OPTIONAL: If you ever want to trigger manually without relying on onUserIdChanged callback:
-        // BlocProvider.of<UserBloc>(context).add(FetchUserById(response.user.id));
+        /// Reset UserBloc and get new user
+        final userBloc = context.read<UserBloc>();
+        userBloc.add(ResetUser());
+        userBloc.add(GetUserById(response.user.id));
 
-        showCustomSnackBar(context, "Login Success: ${response.user.fullName}");
-        Navigator.pop(context, true); // return success
+        showCustomToast("Login Success: ${response.user.fullName}");
+        Navigator.pop(context, true);
       } else {
-        showCustomSnackBar(context, "Login failed. Please check your credentials.");
+        showCustomToast("Login failed. Please check your credentials.");
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      showCustomSnackBar(context, "Login Error: ${e.toString()}");
+      showCustomToast( "Login Error: ${e.toString()}");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

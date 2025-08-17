@@ -36,13 +36,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserSession>(context, listen: false).loadUserSession();
+    // final userSession = Provider.of<UserSession>(context, listen: false).loadUserSession();
+    final userSession = Provider.of<UserSession>(context);
 
     return MaterialApp(
+      title: 'Fetch True',
       debugShowCheckedModeBanner: false,
+      home: userSession.isLoggedIn ? const SplashScreen() : const SplashScreen(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.grey[100],
-        // scaffoldBackgroundColor: CustomColor.canvasColor,
         appBarTheme: AppBarTheme(
           color: Colors.white,
           foregroundColor: Colors.white,
@@ -57,8 +59,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      title: 'Fetch True',
-      home: const SplashScreen(),
     );
   }
 }

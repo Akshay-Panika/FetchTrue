@@ -27,14 +27,13 @@ class ReferAndEarnWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Your Fetch True', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: CustomColor.appColor),),
-              5.height,
               Text('Your friend are going to love us tool', style: TextStyle(fontSize: 14),),
               5.height,
               Text('Refer And Win up to ____', style: TextStyle(fontSize: 16, color: CustomColor.iconColor, fontWeight: FontWeight.w600),),
             ],
           ),
 
-          Image.asset('assets/image/inviteFrnd.png', height: 200, width: double.infinity,)
+          Image.asset('assets/image/inviteFrnd.png', height: 180, width: double.infinity,)
         ],
       ),
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(userId: '',),)),

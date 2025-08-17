@@ -41,13 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _screens = _generateScreens(); // initialize screens list
+    _screens = _generateScreens();
   }
 
   List<Widget> _generateScreens() {
     return [
       const HomeScreen(),
-      LeadsScreen(key: UniqueKey()), // Always create a new key
+      LeadsScreen(key: UniqueKey()),
       const OffersScreen(),
       const AcademyScreen(),
       const MoreScreen(),
@@ -60,7 +60,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _history.add(index);
       }
 
-      // If user navigates to My Lead, regenerate LeadsScreen with new key
       if (index == 1) {
         setState(() {
           _screens[1] = LeadsScreen(key: UniqueKey()); // force rebuild My Lead

@@ -19,6 +19,8 @@ import '../../favorite/screen/favorite_screen.dart';
 import '../../help_support/screen/help_support_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
 import '../../profile/screen/profile_screen.dart';
 import '../../provider/screen/provider_screen.dart';
 import '../../settings/screen/setting_screen.dart';
@@ -162,6 +164,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                         if (isLoggedIn) {
                           showLogoutDialog(context, () async {
                             await userSession.logout();
+                            context.read<UserBloc>().add(ResetUser());
                             Navigator.pop(context);
                           });
                         } else {
