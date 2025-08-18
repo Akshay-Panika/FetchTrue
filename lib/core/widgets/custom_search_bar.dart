@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_container.dart';
@@ -13,6 +14,7 @@ class CustomSearchBar extends StatelessWidget {
       onTap: onTap,
       color: Colors.white,
       border: true,
+      borderColor: CustomColor.appColor,
       padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

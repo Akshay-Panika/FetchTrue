@@ -3,6 +3,7 @@ class BannerModel {
   final String page;
   final String file;
   final String selectionType;
+  final String referralUrl;
   final String? screenCategory;
   final String? service;
   final ModuleModel? module;
@@ -16,6 +17,7 @@ class BannerModel {
     required this.page,
     required this.file,
     required this.selectionType,
+    required this.referralUrl,
     this.screenCategory,
     this.service,
     this.module,
@@ -31,6 +33,7 @@ class BannerModel {
       page: json['page'] ?? '',
       file: json['file'] ?? '',
       selectionType: json['selectionType'] ?? '',
+      referralUrl: json['referralUrl'] ?? '',
       screenCategory: json['screenCategory'],
       service: json['service'],
       module: json['module'] != null ? ModuleModel.fromJson(json['module']) : null,

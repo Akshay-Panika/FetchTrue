@@ -1,3 +1,4 @@
+import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,10 +16,10 @@ import '../../category/it_service/screen/it_service_screen.dart';
 import '../../category/legal_service/screen/legal_service_screen.dart';
 import '../../category/marketing/screen/marketing_service_screen.dart';
 import '../../category/onboarding/screen/onboarding_service_screen.dart';
-import '../bloc/module/module_bloc.dart';
-import '../bloc/module/module_event.dart';
-import '../bloc/module/module_state.dart';
-import '../repository/module_service.dart';
+import '../bloc/module_bloc.dart';
+import '../bloc/module_event.dart';
+import '../bloc/module_state.dart';
+import '../repository/module_repository.dart';
 
 class ModuleWidget extends StatelessWidget {
   const ModuleWidget({super.key,});
@@ -27,7 +28,7 @@ class ModuleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        20.height,
+        10.height,
 
         Padding(
           padding:  EdgeInsets.symmetric(horizontal: 15.0),
@@ -35,28 +36,23 @@ class ModuleWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
               Text('Modules', style: textStyle14(context, color: CustomColor.appColor),),
               10.width,
-              Expanded(child: Divider(color: Colors.green,))
+              Expanded(child: Divider(color: CustomColor.appColor,))
             ],
           ),
         ),
         15.height,
         BlocProvider(
-          create: (_) => ModuleBloc(ModuleService())..add(GetModule()),
-          child:  BlocBuilder<ModuleBloc, ModuleState>(
+          create: (_) => ModuleBloc(ModuleRepository())..add(FetchModules()),
+          child: BlocBuilder<ModuleBloc, ModuleState>(
             builder: (context, state) {
               if (state is ModuleLoading) {
                 return ModuleShimmer();
-              }
-              else if(state is ModuleLoaded){
-                // final modules = state.moduleModel;
-                final modules = state.moduleModel .where((module) => module.categoryCount != 0).toList();
-
-                if (modules.isEmpty) {
-                  return const Center(child: Text('No modules found.'));
-                }
-
+              } else if (state is ModuleLoaded) {
+                final modules = state.modules;
+                // final modules = state.modules.where((module) => module.categoryCount != 0).toList();
                 return  GridView.builder(
                   itemCount: modules.length,
                   shrinkWrap: true,
@@ -106,23 +102,19 @@ class ModuleWidget extends StatelessWidget {
                         if (screen != null) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => screen),);
                         } else {
-                          showCustomSnackBar(context, 'Module "${module.name}" not found');
+                          showCustomToast('Module "${module.name}" not found');
                         }
                       },
                     );
                   },
                 );
+              } else if (state is ModuleError) {
+                print("Modules : ${state.message}");
               }
-
-              else if (state is ModuleError) {
-                print('Module error : ${state.errorMessage}');
-                return SizedBox.shrink();
-                // return Center(child: Text(state.errorMessage));
-              }
-              return const SizedBox.shrink();
+              return Container();
             },
           ),
-        ),
+        )
       ],
     );
   }
@@ -148,26 +140,15 @@ class ModuleShimmer extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemBuilder: (_, __) => Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
+      itemBuilder: (_, __) => CustomContainer(
+        margin: EdgeInsets.zero,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            5.height,
-            CustomContainer(
-              height: 6,
-              width: 80,
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              color: CustomColor.whiteColor,
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: ShimmerBox(height: 6, width: 80,),
             ),
           ],
         ),

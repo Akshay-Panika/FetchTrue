@@ -1,11 +1,14 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/favorite/screen/favorite_screen.dart';
+import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
-import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
@@ -16,80 +19,14 @@ import '../../profile/bloc/user/user_state.dart';
 class ProfileAppWidget extends StatelessWidget {
   const ProfileAppWidget({super.key,});
 
-  String getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
-  }
 
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
     if(!userSession.isLoggedIn){
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: CustomColor.whiteColor,
-                backgroundImage:AssetImage(CustomImage.nullImage) as ImageProvider,
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Guest',style: textStyle16(context),),
-                  Text(getGreeting(), style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.whiteColor,),),
-                ],
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => PackageScreen(userId: userSession.userId!)),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: CustomColor.whiteColor,
-                    border: Border.all(
-                        color: CustomColor.appColor, width: 0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.leaderboard_outlined, size: 16),
-                      SizedBox(width: 5),
-                      Text('GP',
-                          style: TextStyle(fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const NotificationScreen()),
-                  );
-                },
-                icon: const Icon(Icons.notifications_active_outlined),
-              ),
-            ],
-          ),
-        ],
+      return _userCard(context,
+        gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: userSession.userId!),)),
+        favOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),
       );
     }
     return BlocBuilder<UserBloc, UserState>(
@@ -101,80 +38,16 @@ class ProfileAppWidget extends StatelessWidget {
           return _buildShimmerEffect();
         } else if (state is UserLoaded) {
             final user = state.user;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                    backgroundImage: (user.profilePhoto) != null
-                        ? NetworkImage(user.profilePhoto.toString())
-                        : AssetImage(CustomImage.nullImage) as ImageProvider,
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(user.fullName,style: textStyle14(context),),
-                       
-                      Text(
-                        getGreeting(),
-                        style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.whiteColor,),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => PackageScreen(userId: user.id)),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 15),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: CustomColor.appColor, width: 0.5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.leaderboard_outlined, size: 16),
-                          SizedBox(width: 5),
-                          Text('GP',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const NotificationScreen()),
-                      );
-                    },
-                    icon: const Icon(Icons.notifications_active_outlined),
-                  ),
-                ],
-              ),
-            ],
+          return _userCard(context,
+            profileImage: NetworkImage(user.profilePhoto.toString()),
+            name: user.fullName,
+            des: 'Pune pin- 411028, Maharashtra',
+            pgColor: user.packageActive == true ? CustomColor.whiteColor:  CustomColor.whiteColor,
+            gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: user.id),)),
+            favOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),
           );
         } else if (state is UserError) {
-          return Center(child: Text("Error: ${state.massage}"));
+          print("Error: ${state.massage}");
         }
         return const SizedBox();
       },
@@ -182,50 +55,100 @@ class ProfileAppWidget extends StatelessWidget {
   }
 }
 
-Widget _buildShimmerEffect() {
+Widget _userCard(BuildContext context, {ImageProvider<Object>? profileImage, String? name, String? des, VoidCallback? gpOnTap, VoidCallback? favOnTap, Color? pgColor}){
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Row(
-        children: [
-          CircleAvatar(radius: 20, backgroundColor: Colors.grey.shade300),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomContainer(
-                height: 10,
-                width: 60,
-                color: Colors.grey.shade300,
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
+      Expanded(
+        child: Row(
+          children: [
+            CircleAvatar(radius: 20.5,
+              backgroundColor: CustomColor.appColor,
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: CustomColor.whiteColor,
+                backgroundImage: profileImage ?? AssetImage(CustomImage.nullImage),
               ),
-              const SizedBox(height: 5),
-              CustomContainer(
-                height: 12,
-                width: 100,
-                color: Colors.grey.shade300,
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
+            ),
+            10.width,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name ?? 'Guest',style: textStyle14(context, color: CustomColor.whiteColor),),
+                  Text(des ?? getGreeting(), style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.blackColor,), overflow: TextOverflow.ellipsis,),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
+
       Row(
         children: [
-          CustomContainer(
-            height: 25,
-            width: 60,
-            color: Colors.grey.shade300,
-            padding: EdgeInsets.zero,
-            margin: EdgeInsets.zero,
+          InkWell(
+            onTap: gpOnTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              decoration: BoxDecoration(border: Border.all(color: CustomColor.appColor, width: 0.5), borderRadius: BorderRadius.circular(10),),
+              child:  Row(
+                children: [
+                  Icon(Icons.verified_outlined, size: 16, color: pgColor ?? Colors.white,),
+                  10.width,
+                  Text('GP',
+                      style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(width: 20),
-          Icon(Icons.notifications, color: Colors.grey.shade300),
-          const SizedBox(width: 20),
+          10.width,
+          IconButton(
+            onPressed: favOnTap,
+            icon: const Icon(Icons.notifications_active_outlined, color: Colors.white, ),
+          ),
         ],
       ),
     ],
   );
 }
+
+Widget _buildShimmerEffect() {
+  return   Shimmer.fromColors(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            CircleAvatar(radius: 20, backgroundColor: Colors.grey.shade300),
+           10.width,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShimmerBox(height: 10, width: 60,),
+                5.height,
+                ShimmerBox(height: 12, width: 100,),
+              ],
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            ShimmerBox(height: 25, width: 60,),
+            20.width,
+            Icon(Icons.notifications, color: Colors.grey.shade300),
+           20.width,
+          ],
+        ),
+      ],
+    ),
+  );
+}
+

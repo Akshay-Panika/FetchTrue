@@ -49,7 +49,6 @@ class CustomContainer extends StatelessWidget {
         decoration: BoxDecoration(
          color:  (gradient == null)  ? color ?? Theme.of(context).shadowColor.withOpacity(0.05):null,
           borderRadius: borderRadius ? BorderRadius.circular(dimensions.screenHeight*0.01) :null,
-
           border: border ? Border.all(color: borderColor ?? CustomColor.strokeColor, width: 0.2):null,
           gradient: gradient,
           image: (networkImg != null)

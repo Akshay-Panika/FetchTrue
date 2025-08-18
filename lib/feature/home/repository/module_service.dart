@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../helper/api_urls.dart';
-import '../model/module_model.dart';
+import '../../module/model/module_model.dart';
 import '../../../helper/api_helper.dart';
 
 class ModuleService {

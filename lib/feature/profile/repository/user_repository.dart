@@ -61,13 +61,13 @@ class UserRepository {
 
   String _handleDioError(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout) {
-      return "Connection timeout. Please try again.";
+      return "Connection timeout. Please try again:";
     } else if (e.type == DioExceptionType.receiveTimeout) {
-      return "Server is not responding.";
+      return "Server is not responding:";
     } else if (e.response != null) {
       return e.response?.data["message"] ?? "Something went wrong!";
     } else {
-      return "Unexpected error occurred.";
+      return "Unexpected error:";
     }
   }
 }

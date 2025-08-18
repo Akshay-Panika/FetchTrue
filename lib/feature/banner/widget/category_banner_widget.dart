@@ -6,7 +6,7 @@ import '../bloc/module_banner/module_banner_bloc.dart';
 import '../bloc/module_banner/module_banner_event.dart';
 import '../bloc/module_banner/module_banner_state.dart';
 import '../repository/banner_service.dart';
-import 'home_banner_widget.dart';
+import 'old_home_banner_widget.dart';
 import '../../service/screen/service_details_screen.dart';
 
 class CategoryBannerWidget extends StatefulWidget {
