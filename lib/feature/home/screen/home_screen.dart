@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     color: CustomColor.whiteColor,
                     padding: EdgeInsets.all(8),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
-                    child: Icon(Icons.favorite_border, color: Colors.red,),)
+                    child: Icon(Icons.favorite, color: Colors.red,),)
                 ],
               ),
             ),

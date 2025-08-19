@@ -41,7 +41,7 @@ class ProfileAppWidget extends StatelessWidget {
           return _userCard(context,
             profileImage: NetworkImage(user.profilePhoto.toString()),
             name: user.fullName,
-            des: 'Pune pin- 411028, Maharashtra',
+            des: 'Pune 411028, Maharashtra',
             pgColor: user.packageActive == true ? CustomColor.whiteColor:  CustomColor.whiteColor,
             gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: user.id),)),
             favOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),

@@ -10,7 +10,6 @@ import '../../../core/widgets/custom_search_icon.dart';
 import '../../../core/widgets/custom_service_list.dart';
 import '../../home/widget/all_service_widget.dart';
 import '../../home/widget/recommended_ervices_widget.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../../service/bloc/module_service/module_service_bloc.dart';
 import '../../service/bloc/module_service/module_service_event.dart';
 import '../../service/bloc/module_service/module_service_state.dart';

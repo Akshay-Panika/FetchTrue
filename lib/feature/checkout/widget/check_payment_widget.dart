@@ -4,22 +4,17 @@ import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../auth/user_notifier/user_notifier.dart';
-import '../../package/repository/package_buy_repository.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_state.dart';
 import '../model/checkout_model.dart';
-import '../repository/cashfree_service.dart';
 import '../repository/checkout_service.dart';
 import '../repository/service_buy_repository.dart';
-import '../screen/checkout_payment_screen.dart';
 
 
 class CheckPaymentWidget extends StatefulWidget {
@@ -52,7 +47,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
     final double serviceAmount = widget.checkoutData.totalAmount ??0.0;
     final int partialAmount = (serviceAmount / 2).round();
 
-    return BlocBuilder<UsersBloc, UserState>(
+    return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
 
         if(state is UserLoading){
@@ -348,7 +343,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
         }
 
         if(state is UserError){
-          return Text(state.message);
+          return Text(state.massage);
         }
 
         return SizedBox.shrink();

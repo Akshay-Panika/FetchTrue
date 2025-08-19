@@ -137,6 +137,7 @@ Widget _buildShimmer(){
           CircleAvatar(backgroundColor: Colors.white,radius: 25,),
           10.width,
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ShimmerBox(height: 10, width: 100),
               10.height,

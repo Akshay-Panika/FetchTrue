@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/dimension.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
-import '../../../../core/widgets/custom_headline.dart';
+import '../../../my_lead/screen/leads_screen.dart';
 import '../../../subcategory/screen/subcategory_screen.dart';
-import '../../bloc/module_category/module_category_bloc.dart';
-import '../../bloc/module_category/module_category_event.dart';
-import '../../bloc/module_category/module_category_state.dart';
-import '../../repository/module_category_service.dart';
+import '../../bloc/category_bloc.dart';
+import '../../bloc/category_state.dart';
+
 
 class OnboardingCategoryWidget extends StatelessWidget {
   final String moduleId;
@@ -18,101 +18,94 @@ class OnboardingCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return BlocProvider(
-      create: (_) => ModuleCategoryBloc(ModuleCategoryService())..add(GetModuleCategory()),
-      child:  BlocBuilder<ModuleCategoryBloc, ModuleCategoryState>(
-        builder: (context, state) {
-          if (state is ModuleCategoryLoading) {
-            return CategoryShimmerGrid();
-          }
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder: (context, state) {
+        if (state is CategoryLoading) {
+          return _ShimmerGrid();
+        } else if (state is CategoryLoaded) {
+          // final categories = state.categories;
+          final categories = state.categories.where((moduleCategory) =>
+          moduleCategory.module.id == moduleId).toList();
 
-          else if(state is ModuleCategoryLoaded){
-
-            // final modules = state.moduleCategoryModel;
-            final modules = state.moduleCategoryModel.where((moduleCategory) =>
-            moduleCategory.module.id == moduleId
-              //&& moduleCategory.subcategoryCount !=0
-            ).toList();
-
-            if (modules.isEmpty) {
-              return const Center(child: Text('No Category found.'));
-            }
-
-            int serviceCount = modules.length;
-            return Column(
-              children: [
-                /// Headline
-                CustomHeadline(headline: "Services"),
-
-                /// Category
-                Container(
-                  height: serviceCount > 3 ? 150 : 70,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: serviceCount,
-                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: serviceCount > 3 ? 2 :1,
-                      childAspectRatio: 1 / 2.5,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemBuilder: (context, index) {
-                      final category = modules[index];
-                      serviceCount = modules.length;
-                      return CustomContainer(
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.zero,
-                        color: Colors.white,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SubcategoryScreen(
-                                categoryName: category.name,
-                                categoryId: category.id,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            CustomContainer(
-                              width: 80,
-                              networkImg: category.image ?? '',margin: EdgeInsets.zero,),
-
-                            Expanded(
-                              child: Text(
-                                category.name ?? '',
-                                style: textStyle12(context),
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                            10.width,
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+          return  Column(
+            children: [
+              10.height,
+              Padding(
+                padding:  EdgeInsets.symmetric(horizontal: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
+                    Text('Category', style: textStyle14(context, color: CustomColor.appColor),),
+                    10.width,
+                    Expanded(child: Divider(color: CustomColor.appColor,))
+                  ],
                 ),
+              ),
+              15.height,
+              Container(
+                height: 150,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1 / 2.5,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    return CustomContainer(
+                      padding: EdgeInsets.zero,
+                      margin: EdgeInsets.zero,
+                      color: Colors.white,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SubcategoryScreen(
+                              categoryName: category.name,
+                              categoryId: category.id,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          CustomContainer(
+                            width: 80,
+                            networkImg: category.image ?? '',margin: EdgeInsets.zero,),
 
-              ],
-            );
-
-          }
-
-          else if (state is ModuleCategoryError) {
-            return Center(child: Text(state.errorMessage));
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+                          Expanded(
+                            child: Text(
+                              category.name ?? '',
+                              style: textStyle12(context),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          10.width,
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        } else if (state is CategoryError) {
+          print("Error: ${state.message}");
+        }
+        return const SizedBox();
+      },
     );
   }
 }
 
-class CategoryShimmerGrid extends StatelessWidget {
-  const CategoryShimmerGrid({super.key});
+class _ShimmerGrid extends StatelessWidget {
+  const _ShimmerGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -121,12 +114,15 @@ class CategoryShimmerGrid extends StatelessWidget {
         Shimmer.fromColors(
           baseColor: Colors.grey.shade300,
           highlightColor: Colors.grey.shade100,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomContainer(width: 80,color: Colors.white,padding: EdgeInsets.zero,height: 8,),
-              CustomContainer(width: 50, color: Colors.white,padding: EdgeInsets.zero,height: 5,),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ShimmerBox(width: 80,height: 10,),
+                ShimmerBox(width: 20,height: 10,),
+              ],
+            ),
           ),
         ),
 
@@ -142,21 +138,17 @@ class CategoryShimmerGrid extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemBuilder: (_, __) => CustomContainer(
+            itemBuilder: (_, __) =>  CustomContainer(
               padding: EdgeInsets.zero,
               margin: EdgeInsets.zero,
-              color: Colors.transparent,
-              child: Shimmer.fromColors(
+              child:  Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    CustomContainer(
-                      width: 80,
-                      color: Colors.white,
-                      margin: EdgeInsets.zero,),
+                    ShimmerBox(width: 80, height: 80,),
 
                     10.width,
                     Expanded(
@@ -164,17 +156,9 @@ class CategoryShimmerGrid extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          CustomContainer(width: 50,height: 5,
-                            margin: EdgeInsets.zero,
-                            padding: EdgeInsets.zero,
-                            color: Colors.white,
-                          ),
+                          ShimmerBox(width: 50,height: 5,),
                           5.height,
-                          CustomContainer(width: 80,height: 5,
-                            margin: EdgeInsets.zero,
-                            padding: EdgeInsets.zero,
-                            color: Colors.white,
-                          ),
+                          ShimmerBox(width: 60,height: 5,),
                           15.height,
                         ],
                       ),

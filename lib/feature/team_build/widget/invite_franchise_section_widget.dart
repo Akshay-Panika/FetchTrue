@@ -15,7 +15,6 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../../profile/bloc/user_bloc/user_state.dart' hide UserState, UserInitial, UserLoading, UserLoaded, UserError;
 
 class InviteFranchiseSectionWidget extends StatefulWidget {
   const InviteFranchiseSectionWidget({super.key});

@@ -22,7 +22,7 @@ class CustomHeadline extends StatelessWidget {
               child: Row(
                 spacing: 5,
                 children: [
-                  Text('See All', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
+                  Text('', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500),),
                   Icon(Icons.arrow_forward_ios, size: 12,)
                 ],
               )),

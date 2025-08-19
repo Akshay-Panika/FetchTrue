@@ -1,3 +1,4 @@
+import 'package:fetchtrue/feature/category/ondemand_service/screen/ondemand_service_screen.dart';
 import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,11 +8,10 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../category/business/screen/business_service_screen.dart';
+import '../../category/business/screen/business_screen.dart';
 import '../../category/education_service/screen/education_service_screen.dart';
 import '../../category/finance/screen/finance_service_screen.dart';
-import '../../category/franchise/screen/franchise_service_screen.dart';
-import '../../category/home_service/screen/home_service_screen.dart';
+import '../../category/franchise/screen/franchise_screen.dart';
 import '../../category/it_service/screen/it_service_screen.dart';
 import '../../category/legal_service/screen/legal_service_screen.dart';
 import '../../category/marketing/screen/marketing_service_screen.dart';
@@ -86,14 +86,14 @@ class ModuleWidget extends StatelessWidget {
                       ),
                       onTap: () {
                         final Map<String, Widget> categoryWidgets = {
-                          'Franchise': FranchiseServiceScreen(moduleId: module.id),
-                          'Business': BusinessServiceScreen(moduleId: module.id),
+                          'Franchise': FranchiseScreen(moduleId: module.id),
+                          'Business': BusinessScreen(moduleId: module.id),
                           'Marketing': MarketingServiceScreen(moduleId: module.id),
                           'Legal Services': LegalServiceScreen(moduleId: module.id),
                           'Finance': FinanceServiceScreen(moduleId: module.id),
                           'It Services': ItServiceScreen(moduleId: module.id),
                           'Education': EducationServiceScreen(moduleId: module.id),
-                          'On-Demand Services': HomeServiceScreen(moduleId: module.id),
+                          'On-Demand Services': OnDemandServiceScreen(moduleId: module.id),
                           'Onboarding': OnboardingServiceScreen(moduleId:module.id),
                         };
 
@@ -148,7 +148,7 @@ class ModuleShimmer extends StatelessWidget {
             Shimmer.fromColors(
               baseColor: Colors.grey.shade300,
               highlightColor: Colors.grey.shade100,
-              child: ShimmerBox(height: 6, width: 80,),
+              child: ShimmerBox(height: 10, width: 80,),
             ),
           ],
         ),

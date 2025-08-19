@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
+import 'package:fetchtrue/feature/profile/bloc/user/user_event.dart';
+import 'package:fetchtrue/feature/profile/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +14,8 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_state.dart';
 import '../../profile/model/user_model.dart';
 import '../../profile/repository/user_service.dart';
 import '../model/package_model.dart';
@@ -180,8 +181,8 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                         ),
                         10.height,
                         BlocProvider(
-                          create: (_) => UsersBloc(UserService())..add(FetchUserById(widget.userId)),
-                          child: BlocBuilder<UsersBloc, UserState>(
+                          create: (_) => UserBloc(UserRepository())..add(GetUserById(widget.userId)),
+                          child: BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               if (state is UserLoading) {
                                 return const Center(child: CircularProgressIndicator());
@@ -189,7 +190,7 @@ class _PackageScreenState extends State<PackageScreen> with SingleTickerProvider
                                 final user = state.user;
                                 return _buildAssuranceSection(context, pkg, user);
                               } else if (state is UserError) {
-                                return Center(child: Text('Error: ${state.message}'));
+                                return Center(child: Text('Error: ${state.massage}'));
                               }
                               return const Center(child: Text("No Data"));
                             },

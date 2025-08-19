@@ -17,14 +17,6 @@ import '../../my_lead/bloc/leads/leads_bloc.dart';
 import '../../my_lead/bloc/leads/leads_event.dart';
 import '../../my_lead/bloc/leads/leads_state.dart';
 import '../../my_lead/screen/leads_screen.dart';
-import '../../profile/bloc/all_user_bloc/all_user_bloc.dart';
-import '../../profile/bloc/all_user_bloc/all_user_event.dart';
-import '../../profile/bloc/all_user_bloc/all_user_state.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_by_id_bloc/user_by_id_bloc.dart';
-import '../../profile/bloc/user_by_id_bloc/user_by_id_event.dart';
-import '../../profile/bloc/user_by_id_bloc/user_by_id_state.dart';
 import '../../profile/model/user_model.dart';
 import '../../profile/repository/all_user_repository.dart';
 import '../../profile/repository/user_by_id_repojetory.dart';
@@ -40,83 +32,83 @@ class TeamGPDetailsScreen extends StatelessWidget {
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Team Member', showBackButton: true,),
 
-      body: SafeArea(
-        child: BlocProvider(
-            create: (_) => UserByIdBloc(UserByIdRepository())..add(GetUserById(teamId)),
-            child: BlocBuilder<UserByIdBloc, UserByIdState>(
-              builder: (context, state) {
-                if (state is UserByIdLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is UserByIdLoaded) {
-                  UserModel user = state.user;
-        
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (_) => LeadsBloc()..add(FetchLeadsDataById(user.id)),
-                      ),
-                      BlocProvider(
-                        create: (_) => AllUserBloc(AllUserRepository())..add(AllFetchUsers()),
-                      ),
-                    ],
-                    child: DefaultTabController(
-                      length: 2,
-                      child: Column(
-                        children: [
-                          _buildProfileHeader(context, user),
-                          10.height,
-                          BlocBuilder<LeadsBloc, LeadsState>(
-                            builder: (context, leadsState) {
-                              int totalLeads = 0;
-                              if (leadsState is CheckoutLoaded) {
-                                totalLeads = leadsState.checkouts.length;
-                              }
-        
-                              return BlocBuilder<AllUserBloc, AllUserState>(
-                                builder: (context, userState) {
-                                  int teamCount = 0;
-                                  if (userState is AllUserLoaded) {
-                                    teamCount = userState.users
-                                        .where((rId) => rId.referredBy == user.id)
-                                        .length;
-                                  }
-        
-                                  return TabBar(
-                                    tabs: [
-                                      Tab(text: 'Total Lead - $totalLeads'),
-                                      Tab(text: 'Team - $teamCount'),
-                                    ],
-                                    dividerColor: Colors.transparent,
-                                    indicatorColor: CustomColor.appColor,
-                                    labelColor: CustomColor.appColor,
-                                    unselectedLabelColor: CustomColor.descriptionColor,
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              children: [
-                                SingleChildScrollView(child: _buildTotalLead(context)),
-                                _buildTotalTeam(context, user.id),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-        
-                } else if (state is UserByIdError) {
-                  return Center(child: Text('Error: ${state.message}'));
-                } else {
-                  return const Center(child: Text('No user data'));
-                }
-              },
-            )
-        ),
-      ),
+      // body: SafeArea(
+      //   child: BlocProvider(
+      //       create: (_) => UserByIdBloc(UserByIdRepository())..add(GetUserById(teamId)),
+      //       child: BlocBuilder<UserByIdBloc, UserByIdState>(
+      //         builder: (context, state) {
+      //           if (state is UserByIdLoading) {
+      //             return const Center(child: CircularProgressIndicator());
+      //           } else if (state is UserByIdLoaded) {
+      //             UserModel user = state.user;
+      //
+      //             return MultiBlocProvider(
+      //               providers: [
+      //                 BlocProvider(
+      //                   create: (_) => LeadsBloc()..add(FetchLeadsDataById(user.id)),
+      //                 ),
+      //                 BlocProvider(
+      //                   create: (_) => AllUserBloc(AllUserRepository())..add(AllFetchUsers()),
+      //                 ),
+      //               ],
+      //               child: DefaultTabController(
+      //                 length: 2,
+      //                 child: Column(
+      //                   children: [
+      //                     _buildProfileHeader(context, user),
+      //                     10.height,
+      //                     BlocBuilder<LeadsBloc, LeadsState>(
+      //                       builder: (context, leadsState) {
+      //                         int totalLeads = 0;
+      //                         if (leadsState is CheckoutLoaded) {
+      //                           totalLeads = leadsState.checkouts.length;
+      //                         }
+      //
+      //                         return BlocBuilder<AllUserBloc, AllUserState>(
+      //                           builder: (context, userState) {
+      //                             int teamCount = 0;
+      //                             if (userState is AllUserLoaded) {
+      //                               teamCount = userState.users
+      //                                   .where((rId) => rId.referredBy == user.id)
+      //                                   .length;
+      //                             }
+      //
+      //                             return TabBar(
+      //                               tabs: [
+      //                                 Tab(text: 'Total Lead - $totalLeads'),
+      //                                 Tab(text: 'Team - $teamCount'),
+      //                               ],
+      //                               dividerColor: Colors.transparent,
+      //                               indicatorColor: CustomColor.appColor,
+      //                               labelColor: CustomColor.appColor,
+      //                               unselectedLabelColor: CustomColor.descriptionColor,
+      //                             );
+      //                           },
+      //                         );
+      //                       },
+      //                     ),
+      //                     Expanded(
+      //                       child: TabBarView(
+      //                         children: [
+      //                           SingleChildScrollView(child: _buildTotalLead(context)),
+      //                           _buildTotalTeam(context, user.id),
+      //                         ],
+      //                       ),
+      //                     )
+      //                   ],
+      //                 ),
+      //               ),
+      //             );
+      //
+      //           } else if (state is UserByIdError) {
+      //             return Center(child: Text('Error: ${state.message}'));
+      //           } else {
+      //             return const Center(child: Text('No user data'));
+      //           }
+      //         },
+      //       )
+      //   ),
+      // ),
     );
   }
 }
@@ -368,162 +360,162 @@ Widget _buildTotalLead(BuildContext context,) {
   );
 }
 
-Widget _buildTotalTeam(BuildContext context, String teamId){
-  return BlocBuilder<AllUserBloc, AllUserState>(
-    builder: (context, state) {
-      if (state is AllUserLoading) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (state is AllUserLoaded) {
-        // final users = state.users;
-        final users = state.users.where((rId) => rId.referredBy == teamId).toList();
-        if (users.isEmpty) {
-          return Padding(
-            padding:  EdgeInsets.only(top: 200.0),
-            child:  Center(
-              child: Text(
-                  "No Member",
-                  style: textStyle14(context)
-              ),
-            ),
-          );
-        }
-        return ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            final user = users[index];
-
-            return BlocProvider(
-              create: (_) => LeadsBloc()..add(FetchLeadsDataById(user.id!)),
-              child: CustomContainer(
-                border: true,
-                color: CustomColor.whiteColor,
-                margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// Header row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                  backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
-                                      ? NetworkImage(user.profilePhoto!)
-                                      : AssetImage(CustomImage.nullImage) as ImageProvider,
-                                ),
-                                Positioned(
-                                  bottom: -2,
-                                  right: -2,
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    size: 20,
-                                    color: user.packageActive == true
-                                        ? CustomColor.greenColor
-                                        : Colors.grey.shade500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            10.width,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Name: ${user.fullName}", style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text('Id: ${user.userId}', style: textStyle14(context, fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'My Earning ₹ 500',
-                          style: textStyle12(context, color: CustomColor.appColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-
-                    10.height,
-                    const Divider(thickness: 0.4, height: 0),
-                    5.height,
-
-                    /// 🟡 BlocBuilder: Leads Info Row
-                    BlocBuilder<LeadsBloc, LeadsState>(
-                      builder: (context, state) {
-                        if (state is CheckoutLoading) {
-                          return _buildShimmer();
-                        } else if (state is CheckoutLoaded) {
-                          final leads = state.checkouts;
-
-                          // Total Lead
-                          final total = leads.length;
-
-                          // Active Lead -> Accepted but not Completed
-                          final active = leads.where((e) =>
-                          e.isAccepted == true && e.isCompleted != true
-                          ).length;
-
-                          // Completed Lead -> Completed true
-                          final completed = leads.where((e) =>
-                          e.isCompleted == true
-                          ).length;
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                '$total\nTotal Lead',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: CustomColor.blueColor),
-                              ),
-                              Text(
-                                '$active\nActive Lead',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: CustomColor.appColor),
-                              ),
-                              Text(
-                                '$completed\nCompleted Lead',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: CustomColor.greenColor),
-                              ),
-                            ],
-                          );
-                        } else if (state is CheckoutError) {
-                          return Center(
-                            child: Text(
-                              "Error: ${state.message}",
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    ),
-
-                  ],
-                ),
-                // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
-              ),
-            );
-          },
-        );
-      } else if (state is AllUserError) {
-        return Center(child: Text(state.message));
-      }
-
-      return const SizedBox.shrink();
-    },
-  );
-}
+// Widget _buildTotalTeam(BuildContext context, String teamId){
+//   return BlocBuilder<AllUserBloc, AllUserState>(
+//     builder: (context, state) {
+//       if (state is AllUserLoading) {
+//         return const Center(child: CircularProgressIndicator());
+//       } else if (state is AllUserLoaded) {
+//         // final users = state.users;
+//         final users = state.users.where((rId) => rId.referredBy == teamId).toList();
+//         if (users.isEmpty) {
+//           return Padding(
+//             padding:  EdgeInsets.only(top: 200.0),
+//             child:  Center(
+//               child: Text(
+//                   "No Member",
+//                   style: textStyle14(context)
+//               ),
+//             ),
+//           );
+//         }
+//         return ListView.builder(
+//           physics: const BouncingScrollPhysics(),
+//           shrinkWrap: true,
+//           itemCount: users.length,
+//           itemBuilder: (context, index) {
+//             final user = users[index];
+//
+//             return BlocProvider(
+//               create: (_) => LeadsBloc()..add(FetchLeadsDataById(user.id!)),
+//               child: CustomContainer(
+//                 border: true,
+//                 color: CustomColor.whiteColor,
+//                 margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     /// Header row
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Row(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Stack(
+//                               children: [
+//                                 CircleAvatar(
+//                                   radius: 25,
+//                                   backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+//                                   backgroundImage: user.profilePhoto != null && user.profilePhoto!.isNotEmpty
+//                                       ? NetworkImage(user.profilePhoto!)
+//                                       : AssetImage(CustomImage.nullImage) as ImageProvider,
+//                                 ),
+//                                 Positioned(
+//                                   bottom: -2,
+//                                   right: -2,
+//                                   child: Icon(
+//                                     Icons.check_circle,
+//                                     size: 20,
+//                                     color: user.packageActive == true
+//                                         ? CustomColor.greenColor
+//                                         : Colors.grey.shade500,
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             10.width,
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Text("Name: ${user.fullName}", style: textStyle14(context, fontWeight: FontWeight.w400)),
+//                                 Text('Id: ${user.userId}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                         Text(
+//                           'My Earning ₹ 500',
+//                           style: textStyle12(context, color: CustomColor.appColor),
+//                           textAlign: TextAlign.center,
+//                         ),
+//                       ],
+//                     ),
+//
+//                     10.height,
+//                     const Divider(thickness: 0.4, height: 0),
+//                     5.height,
+//
+//                     /// 🟡 BlocBuilder: Leads Info Row
+//                     BlocBuilder<LeadsBloc, LeadsState>(
+//                       builder: (context, state) {
+//                         if (state is CheckoutLoading) {
+//                           return _buildShimmer();
+//                         } else if (state is CheckoutLoaded) {
+//                           final leads = state.checkouts;
+//
+//                           // Total Lead
+//                           final total = leads.length;
+//
+//                           // Active Lead -> Accepted but not Completed
+//                           final active = leads.where((e) =>
+//                           e.isAccepted == true && e.isCompleted != true
+//                           ).length;
+//
+//                           // Completed Lead -> Completed true
+//                           final completed = leads.where((e) =>
+//                           e.isCompleted == true
+//                           ).length;
+//
+//                           return Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                             children: [
+//                               Text(
+//                                 '$total\nTotal Lead',
+//                                 textAlign: TextAlign.center,
+//                                 style: TextStyle(color: CustomColor.blueColor),
+//                               ),
+//                               Text(
+//                                 '$active\nActive Lead',
+//                                 textAlign: TextAlign.center,
+//                                 style: TextStyle(color: CustomColor.appColor),
+//                               ),
+//                               Text(
+//                                 '$completed\nCompleted Lead',
+//                                 textAlign: TextAlign.center,
+//                                 style: TextStyle(color: CustomColor.greenColor),
+//                               ),
+//                             ],
+//                           );
+//                         } else if (state is CheckoutError) {
+//                           return Center(
+//                             child: Text(
+//                               "Error: ${state.message}",
+//                               style: const TextStyle(color: Colors.red),
+//                             ),
+//                           );
+//                         } else {
+//                           return const SizedBox.shrink();
+//                         }
+//                       },
+//                     ),
+//
+//                   ],
+//                 ),
+//                 // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamLeadScreen(),)),
+//               ),
+//             );
+//           },
+//         );
+//       } else if (state is AllUserError) {
+//         return Center(child: Text(state.message));
+//       }
+//
+//       return const SizedBox.shrink();
+//     },
+//   );
+// }
 
 
 Widget _buildShimmer() {

@@ -1,30 +1,33 @@
-import 'package:fetchtrue/feature/banner/widget/marketing_banner_widget.dart';
+import 'package:fetchtrue/feature/banner/widget/business_banner_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
+import '../../../../core/costants/dimension.dart';
 import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../favorite/screen/favorite_screen.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../search/screen/search_screen.dart';
-import '../wisget/marketing_category_widget.dart';
+import '../wisget/business_category_widget.dart';
 
-class MarketingServiceScreen extends StatelessWidget {
+class BusinessScreen extends StatelessWidget {
   final String moduleId;
-  const MarketingServiceScreen({super.key, required this.moduleId});
+  const BusinessScreen({super.key, required this.moduleId});
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions =  Dimensions(context);
     final double searchBarHeight = 30;
     final userSession = Provider.of<UserSession>(context);
 
-
     return Scaffold(
-
-      appBar: CustomAppBar(title: 'Marketing', showBackButton: true,),
+      appBar: CustomAppBar(title: 'Business Service', showBackButton: true,),
       body: CustomScrollView(
         slivers: [
+
+          SliverToBoxAdapter(child: BusinessBannerWidget(moduleId: moduleId),),
+
           SliverAppBar(
             toolbarHeight: 60,
             floating: true,
@@ -52,10 +55,9 @@ class MarketingServiceScreen extends StatelessWidget {
             ),
             // flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
           ),
-          SliverToBoxAdapter(child: MarketingBannerWidget(moduleId: moduleId,),),
 
           SliverToBoxAdapter(
-            child: MarketingCategoryWidget(moduleId: moduleId,),
+            child: BusinessCategoryWidget(moduleId: moduleId,),
           ),
         ],
       ),

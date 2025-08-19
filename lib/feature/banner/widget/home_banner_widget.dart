@@ -45,63 +45,59 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
   Widget build(BuildContext context) {
     return  Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: BlocProvider(
-        create: (_) =>
-        BannerBloc(BannerRepository())..add(FetchBanners(page: 'home')),
-        child: BlocBuilder<BannerBloc, BannerState>(
-          builder: (context, state) {
-            if (state is BannerLoading) {
-              return Container(color: Colors.grey[100]);
-            } else if (state is BannerLoaded) {
-              final banners = state.banners;
-              if (banners.isEmpty) return const SizedBox.shrink();
-
-              // start auto-slide timer only once
-              startAutoSlide(banners);
-                final banner = banners[currentIndex];
-              return AnimatedSwitcher(
-                duration: const Duration(seconds: 5),
-                switchInCurve: Curves.easeInCubic,
-                switchOutCurve: Curves.easeOutCubic,
-                child: InkWell(
-                  child: CachedNetworkImage(
-                    key: ValueKey(banner.id),
-                    imageUrl: banner.file,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    placeholder: (context, url) => CustomContainer(margin: EdgeInsets.zero,),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),),
-                    onTap: () {
-                      if (banner.selectionType == 'referralUrl') {
-                        CustomUrlLaunch(banner.referralUrl!);
-                      } else if (banner.selectionType == 'subcategory') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SubcategoryScreen(
-                              categoryId: banner.subcategory!.category,
-                              categoryName: banner.subcategory!.name,
-                            ),
+      child: BlocBuilder<BannerBloc, BannerState>(
+        builder: (context, state) {
+          if (state is BannerLoading) {
+            return Container(color: Colors.grey[100]);
+          } else if (state is BannerLoaded) {
+            // final banners = state.banners;
+            final banners = state.banners.where((banner) => banner.page == "home").toList();
+            if (banners.isEmpty) return const SizedBox.shrink();
+            // start auto-slide timer only once
+            startAutoSlide(banners);
+              final banner = banners[currentIndex];
+            return AnimatedSwitcher(
+              duration: const Duration(seconds: 5),
+              switchInCurve: Curves.easeInCubic,
+              switchOutCurve: Curves.easeOutCubic,
+              child: InkWell(
+                child: CachedNetworkImage(
+                  key: ValueKey(banner.id),
+                  imageUrl: banner.file,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  placeholder: (context, url) => CustomContainer(margin: EdgeInsets.zero,),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),),
+                  onTap: () {
+                    if (banner.selectionType == 'referralUrl') {
+                      CustomUrlLaunch(banner.referralUrl!);
+                    } else if (banner.selectionType == 'subcategory') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SubcategoryScreen(
+                            categoryId: banner.subcategory!.category,
+                            categoryName: banner.subcategory!.name,
                           ),
-                        );
-                      } else if (banner.selectionType == 'service') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
-                          ),
-                        );
-                      }
+                        ),
+                      );
+                    } else if (banner.selectionType == 'service') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                        ),
+                      );
                     }
-                ),
-              );
-            } else if (state is BannerError) {
-              print("Error: ${state.message}");
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+                  }
+              ),
+            );
+          } else if (state is BannerError) {
+            print("Error: ${state.message}");
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

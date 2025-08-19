@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../auth/user_notifier/user_notifier.dart';
-import '../../favorite/widget/favorite_service_button_widget.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
 import '../../service/model/service_model.dart';
 import '../../service/screen/service_details_screen.dart';
 

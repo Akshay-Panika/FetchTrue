@@ -5,17 +5,21 @@ import '../model/banners_model.dart';
 class BannerRepository {
   final Dio _dio = Dio();
 
-  Future<List<BannerModel>> fetchBanners({String? page}) async {
-    final response = await _dio.get(ApiUrls.banner);
-    if (response.statusCode == 200) {
-      final data = response.data as List;
-      final banners = data.map((e) => BannerModel.fromJson(e)).toList();
-      if (page != null) {
-        return banners.where((b) => b.page == page).toList();
+  Future<List<BannerModel>> fetchBanners() async {
+    try {
+      final response = await _dio.get(ApiUrls.banner);
+
+      if (response.statusCode == 200 && response.data != null) {
+        return (response.data as List)
+            .map((e) => BannerModel.fromJson(e))
+            .toList();
+      } else {
+        throw Exception("Failed to fetch banners");
       }
-      return banners;
-    } else {
-      throw Exception("Failed to load banners");
+    } on DioException catch (dioError) {
+      throw Exception("Dio error: ${dioError.message}");
+    } catch (e) {
+      throw Exception("Unexpected error: $e");
     }
   }
 }

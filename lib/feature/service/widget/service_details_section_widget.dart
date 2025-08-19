@@ -11,10 +11,6 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
-import '../../favorite/widget/favorite_service_button_widget.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
 import '../model/service_model.dart';
 
 class ServiceDetailsSectionWidget extends StatelessWidget {

@@ -3,15 +3,10 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../favorite/widget/favorite_service_button_widget.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
-import '../../profile/bloc/user_bloc/user_state.dart';
 import '../model/service_model.dart';
 
 class AllServiceScreen extends StatelessWidget {
@@ -57,37 +52,6 @@ class AllServiceScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          BlocBuilder<UsersBloc, UserState>(
-                            builder: (context, state) {
-                              if (state is UserLoading) {
-                                return const Center(child: CircularProgressIndicator());
-                              }
-
-                              if (state is UserLoaded) {
-                                final favorites = state.user.favoriteServices ?? [];
-                                final isFavorite = favorites.contains(data.id);
-                                final userId = state.user.id;
-
-                                return FavoriteServiceButtonWidget(
-                                  userId: userId,
-                                  serviceId: data.id,
-                                  isInitiallyFavorite: isFavorite,
-                                  onChanged: (newFavoriteStatus) {
-                                    context.read<UsersBloc>().add(UserFavoriteChangedEvent(
-                                      serviceId: data.id,
-                                      isFavorite: newFavoriteStatus,
-                                    ));
-                                  },
-                                );
-                              }
-
-                              if (state is UserError) {
-                                return const Icon(Icons.favorite_border, color: Colors.grey);
-                              }
-
-                              return const SizedBox.shrink();
-                            },
-                          ),
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                             decoration: BoxDecoration(

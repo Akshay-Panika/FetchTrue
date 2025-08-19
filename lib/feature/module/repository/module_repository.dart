@@ -15,6 +15,8 @@ class ModuleRepository {
       } else {
         throw Exception("Failed to fetch modules");
       }
+    } on DioException catch (dioError) {
+      throw Exception("Dio error: ${dioError.message}");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }

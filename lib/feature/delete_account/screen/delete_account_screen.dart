@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/widgets/no_user_sign_widget.dart';
+import 'package:fetchtrue/feature/profile/bloc/user/user_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +10,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
+import '../../profile/bloc/user/user_bloc.dart';
 import '../repository/delete_user_service.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
@@ -34,7 +34,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       await deleteUser(widget.userId);
 
       /// Reset state
-      context.read<UsersBloc>().add(UserReset());
+      context.read<UserBloc>().add(ResetUser());
       await userSession.logout();
 
       if (context.mounted) {

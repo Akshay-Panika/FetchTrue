@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -10,10 +11,10 @@ import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_state.dart';
 
+class OnDemandCategoryWidget extends StatelessWidget {
+  final String moduleId;
+  const OnDemandCategoryWidget({super.key, required this.moduleId});
 
-class LegalServiceWidget extends StatelessWidget {
-  final String? moduleId;
-   LegalServiceWidget({super.key, this.moduleId});
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +36,10 @@ class LegalServiceWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: Color(0xff264A7D)),5.width,
-                    Text('Category', style: textStyle14(context, color: Color(0xff264A7D)),),
+                    Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
+                    Text('Category', style: textStyle14(context, color: CustomColor.appColor),),
                     10.width,
-                    Expanded(child: Divider(color: Color(0xff264A7D),))
+                    Expanded(child: Divider(color: CustomColor.appColor,))
                   ],
                 ),
               ),
@@ -46,39 +47,41 @@ class LegalServiceWidget extends StatelessWidget {
               SizedBox(
                 height: 250,
                 child: GridView.builder(
-                  itemCount: categories.length,
+                  itemCount:categories.length,
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1 / 0.9,
+                      crossAxisCount:  2 ,
+                      childAspectRatio: 1 / 0.7,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10
                   ),
                   itemBuilder: (context, index) {
                     final category = categories[index];
-                    return CustomContainer(
-                      margin: EdgeInsets.zero,
-                      color: CustomColor.whiteColor,
-                      networkImg: category.image,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubcategoryScreen(
-                              categoryName: category.name,
-                              categoryId: category.id,
-                            ),
-                          ),
-                        );
-                      },
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomContainer(
+                          height: 80,
+                          margin: EdgeInsets.zero,
+                          color: CustomColor.whiteColor,
+                          networkImg: category.image,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubcategoryScreen(
+                                  categoryName: category.name,
+                                  categoryId: category.id,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        5.height,
+                        Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2, textAlign: TextAlign.center,),
+                      ],
                     );
                   },),
               ),
@@ -90,9 +93,9 @@ class LegalServiceWidget extends StatelessWidget {
         return const SizedBox();
       },
     );
-
   }
 }
+
 
 class _ShimmerGrid extends StatelessWidget {
   const _ShimmerGrid({super.key});

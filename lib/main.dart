@@ -8,6 +8,12 @@ import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
 import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
+import 'feature/banner/bloc/banner/banner_bloc.dart';
+import 'feature/banner/bloc/banner/banner_event.dart';
+import 'feature/banner/repository/banner_repository.dart';
+import 'feature/category/bloc/category_bloc.dart';
+import 'feature/category/bloc/category_event.dart';
+import 'feature/category/repository/category_repository.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
@@ -33,8 +39,10 @@ void main() async {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => UserBloc(UserRepository())),
-            BlocProvider<ProviderBloc>(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),),
-            BlocProvider(create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),),
+            BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+            BlocProvider(create: (_) => BannerBloc(BannerRepository())..add(FetchBanners())),
+            BlocProvider(create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService())),
+            BlocProvider(create: (_) => CategoryBloc(CategoryRepository())..add(FetchCategories())),
           ],
           child: const MyApp(),
         ),

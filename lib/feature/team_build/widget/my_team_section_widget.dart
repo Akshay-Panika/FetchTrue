@@ -18,11 +18,9 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../../profile/bloc/user_bloc/user_event.dart';
 import '../../profile/model/user_model.dart';
 import '../repository/fetch_referred_user_service.dart';
 import '../repository/referral_service.dart';
-import '../../profile/bloc/user_bloc/user_bloc.dart';
 import '../model/referred_user_model.dart';
 import '../repository/referred_user_service_confirm.dart';
 import 'my_gp_team_section.dart';
@@ -285,9 +283,7 @@ class _MyTeamSectionWidgetState extends State<MyTeamSectionWidget> {
                                           referralController.clear();
                                           referredUser = null;
                                         });
-                                        context
-                                            .read<UsersBloc>()
-                                            .add(FetchUserById(users.id));
+                                        context.read<UserBloc>().add(GetUserById(users.id));
                                       } else {
                                         showCustomToast("Failed to confirm referral.");
                                       }

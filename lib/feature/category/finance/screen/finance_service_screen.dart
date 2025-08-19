@@ -1,16 +1,16 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/widgets/custom_appbar.dart';
-import '../../../highlight_serive/highlight_widget.dart';
-import '../../../../core/widgets/custom_search_bar.dart';
-import '../../../../core/widgets/custom_service_list.dart';
+import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/category_banner_widget.dart';
-import '../../../provider/widget/service_provider_widget.dart';
+import '../../../banner/widget/finance_banner_widget.dart';
+import '../../../favorite/screen/favorite_screen.dart';
+import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../search/screen/search_screen.dart';
 import '../widget/finance_category_widget.dart';
-import '../widget/finance_all_service_widget.dart';
-import '../widget/finance_recommended_service_widget.dart';
 
 
 class FinanceServiceScreen extends StatelessWidget {
@@ -19,49 +19,61 @@ class FinanceServiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
     return Scaffold(
       appBar: CustomAppBar(title: 'Finance Service', showBackButton: true,),
-
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
 
-
-
-            SliverToBoxAdapter(child: CategoryBannerWidget(),),
+            SliverToBoxAdapter(child: FinanceBannerWidget(moduleId: moduleId,),),
 
             SliverAppBar(
               toolbarHeight: 60,
               floating: true,
-              backgroundColor: CustomColor.canvasColor,
+              backgroundColor: Colors.grey[100],
               automaticallyImplyLeading: false,
-              flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
-            ),
-
-            SliverToBoxAdapter(
-              child: FinanceCategoryWidget(moduleIndexId: moduleId),
-            ),
-
-            SliverToBoxAdapter(
-              child: Column(
+              flexibleSpace:  Row(
                 children: [
-                  10.height,
+                  Expanded(
+                    child: CustomSearchBar(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SearchScreen()),
+                      ),
+                    ),
+                  ),
 
-                  /// Recommended Service
-                  FinanceRecommendedServiceWidget(headline: 'Recommended Service',moduleIndexId: moduleId,),
-
-                  /// Highlight service
-                  HighlightServiceWidget(),
-                  ///  Service Provider
-                  ServiceProviderWidget(),
-
-                  /// Popular Services
-                  Container(
-                      color: CustomColor.appColor.withOpacity(0.1),
-                      child: FinanceAllServiceWidget(headline: 'All Services',moduleIndexId: moduleId,)),
+                  CustomContainer(
+                    border: true,
+                    borderColor: CustomColor.appColor,
+                    color: CustomColor.whiteColor,
+                    padding: EdgeInsets.all(8),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
+                    child: Icon(Icons.favorite, color: Colors.red,),)
                 ],
               ),
-            )
+            ),
+
+            // SliverToBoxAdapter(
+            //   child: Column(
+            //     children: [
+            //       10.height,
+            //       CustomContainer(
+            //         height: 100,color: CustomColor.whiteColor,margin: EdgeInsetsGeometry.symmetric(horizontal: 10),),
+            //       Row(
+            //         children: [
+            //           Expanded(child: CustomContainer(height: 100,color: CustomColor.whiteColor,),),
+            //           Expanded(child: CustomContainer(height: 100,color: CustomColor.whiteColor,),),
+            //         ],
+            //       )
+            //     ],
+            //   ),
+            // ),
+
+            SliverToBoxAdapter(
+              child: FinanceCategoryWidget(moduleId: moduleId),
+            ),
           ],
         ),
       ),
