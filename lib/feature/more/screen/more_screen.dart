@@ -84,12 +84,12 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
 
                   _buildTile(context, Icons.card_giftcard, "Package", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen(userId: userSession.userId!,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen()));
                   }),
 
 
                   _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen( userId: userSession.userId!,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen()));
                   }),
 
                   if(userSession.isLoggedIn)

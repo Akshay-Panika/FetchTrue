@@ -25,7 +25,7 @@ class ProfileAppWidget extends StatelessWidget {
     final userSession = Provider.of<UserSession>(context);
     if(!userSession.isLoggedIn){
       return _userCard(context,
-        gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: userSession.userId!),)),
+        gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
         favOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),
       );
     }
@@ -43,7 +43,7 @@ class ProfileAppWidget extends StatelessWidget {
             name: user.fullName,
             des: 'Pune 411028, Maharashtra',
             pgColor: user.packageActive == true ? CustomColor.whiteColor:  CustomColor.whiteColor,
-            gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: user.id),)),
+            gpOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
             favOnTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),)),
           );
         } else if (state is UserError) {

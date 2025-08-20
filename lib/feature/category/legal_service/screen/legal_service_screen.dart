@@ -123,26 +123,7 @@ class _LegalServiceScreenState extends State<LegalServiceScreen> {
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(searchBarHeight),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CustomSearchBar(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SearchScreen()),
-                      ),
-                    ),
-                  ),
-
-                  CustomContainer(
-                    border: true,
-                    borderColor: CustomColor.appColor,
-                    color: CustomColor.whiteColor,
-                    padding: EdgeInsets.all(8),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
-                    child: Icon(Icons.favorite, color: Colors.red,),)
-                ],
-              ),
+              child:CustomSearchBar(),
             ),
           ),
 

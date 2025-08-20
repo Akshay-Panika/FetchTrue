@@ -1,5 +1,4 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/category/business/wisget/business_category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
@@ -8,6 +7,7 @@ import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/home_banner_widget.dart';
+import '../widget/business_category_widget.dart';
 
 class BusinessScreen extends StatefulWidget {
   final String moduleId;
@@ -88,18 +88,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(searchBarHeight),
-              child: Row(
-                children: [
-                  Expanded(child: CustomSearchBar(),),
-
-                  CustomContainer(
-                    border: true,
-                    borderColor: CustomColor.appColor,
-                    color: CustomColor.whiteColor,
-                    padding: EdgeInsets.all(8),
-                    child: Icon(Icons.favorite, color: Colors.red,),)
-                ],
-              ),
+              child:CustomSearchBar(),
             ),
           ),
 

@@ -89,18 +89,7 @@ class _EducationScreenState extends State<EducationScreen> {
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(searchBarHeight),
-              child: Row(
-                children: [
-                  Expanded(child: CustomSearchBar(),),
-
-                  CustomContainer(
-                    border: true,
-                    borderColor: CustomColor.appColor,
-                    color: CustomColor.whiteColor,
-                    padding: EdgeInsets.all(8),
-                    child: Icon(Icons.favorite, color: Colors.red,),)
-                ],
-              ),
+              child:CustomSearchBar(),
             ),
           ),
 

@@ -111,7 +111,7 @@ Widget _buildAssuranceSection(BuildContext context) {
                         ),
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(userId: userSession.userId!,),));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),));
                         },
                       )
                     ],

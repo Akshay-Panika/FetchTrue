@@ -64,25 +64,6 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                   ],
                 ),
 
-                InkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: CustomColor.appColor, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.leaderboard_outlined, size: 16),
-                        SizedBox(width: 5),
-                        Text('GP', style: TextStyle(fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    showCustomToast('First Sign in!');
-                  },
-                )
               ],
             ),
 
@@ -152,7 +133,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => PackageScreen(userId: userSession.userId!),
+                              builder: (_) => PackageScreen(),
                             ),
                           );
                         },

@@ -37,7 +37,7 @@ class ReferAndEarnWidget extends StatelessWidget {
           Image.asset('assets/image/inviteFrnd.png', height: 180, width: double.infinity,)
         ],
       ),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(userId: '',),)),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
     );
   }
 }

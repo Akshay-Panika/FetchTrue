@@ -61,43 +61,8 @@ class FinanceServiceScreen extends StatelessWidget {
               floating: true,
               backgroundColor: Colors.grey[100],
               automaticallyImplyLeading: false,
-              flexibleSpace:  Row(
-                children: [
-                  Expanded(
-                    child: CustomSearchBar(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SearchScreen()),
-                      ),
-                    ),
-                  ),
-
-                  CustomContainer(
-                    border: true,
-                    borderColor: CustomColor.appColor,
-                    color: CustomColor.whiteColor,
-                    padding: EdgeInsets.all(8),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
-                    child: Icon(Icons.favorite, color: Colors.red,),)
-                ],
-              ),
+              flexibleSpace:  CustomSearchBar(),
             ),
-
-            // SliverToBoxAdapter(
-            //   child: Column(
-            //     children: [
-            //       10.height,
-            //       CustomContainer(
-            //         height: 100,color: CustomColor.whiteColor,margin: EdgeInsetsGeometry.symmetric(horizontal: 10),),
-            //       Row(
-            //         children: [
-            //           Expanded(child: CustomContainer(height: 100,color: CustomColor.whiteColor,),),
-            //           Expanded(child: CustomContainer(height: 100,color: CustomColor.whiteColor,),),
-            //         ],
-            //       )
-            //     ],
-            //   ),
-            // ),
 
             SliverToBoxAdapter(
               child: FinanceCategoryWidget(moduleId: moduleId),

@@ -73,7 +73,7 @@ Widget featureWidget(String userId) {
                   icon: Icons.groups,
                   title: 'Team Build',
                   subtitle: '${team.length}',
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(userId: userId),)),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
                 ),
               );
             } else if (state is MyTeamError) {

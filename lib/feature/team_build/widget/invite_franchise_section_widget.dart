@@ -130,7 +130,7 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                PackageScreen(userId:''),
+                                PackageScreen(),
                           ),
                         ),
                       ),
