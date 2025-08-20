@@ -4,4 +4,5 @@ class CustomImage{
   static String nullImage = '${image}nullProfile.png';
   static String thumbnailImage = '${image}thumbnail1.png';
   static String inviteImage = '${image}inviteFrnd.png';
+  static String emptyCart = '${image}emptyCart.png';
 }

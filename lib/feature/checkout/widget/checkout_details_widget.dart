@@ -17,12 +17,9 @@ import '../../coupon/screen/coupon_screen.dart';
 import '../../customer/screen/add_customer_screen.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
-import '../../service/bloc/module_service/module_service_bloc.dart';
-import '../../service/bloc/module_service/module_service_event.dart';
-import '../../service/bloc/module_service/module_service_state.dart';
-import '../../service/repository/api_service.dart';
+import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_state.dart';
 import '../bloc/commission/commission_bloc.dart';
 import '../bloc/commission/commission_event.dart';
 import '../bloc/commission/commission_state.dart';
@@ -69,23 +66,19 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),),
-        BlocProvider(
-          create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
-        ),
         BlocProvider(
           create: (_) => CommissionBloc()..add(GetCommissionEvent()),
         ),
       ],
-      child: BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
+      child: BlocBuilder<ServiceBloc, ServiceState>(
         builder: (context, serviceState) {
-          if (serviceState is ModuleServiceLoading) {
+          if (serviceState is ServiceLoading) {
             return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
 
-          } else if (serviceState is ModuleServiceLoaded) {
-            final service = serviceState.serviceModel.firstWhere(
+          } else if (serviceState is ServiceLoaded) {
+            final service = serviceState.services.firstWhere(
                   (s) => s.id == widget.serviceId,
-              orElse: () => serviceState.serviceModel.first,
+              orElse: () => serviceState.services.first,
             );
 
             if (service.id == null || service.id!.isEmpty) {
@@ -657,8 +650,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                 return const SizedBox.shrink();
               },
             );
-          } else if (serviceState is ModuleServiceError) {
-            return Center(child: Text(serviceState.errorMessage));
+          } else if (serviceState is ServiceError) {
+            return Center(child: Text(serviceState.message));
           }
           return const SizedBox.shrink();
         },

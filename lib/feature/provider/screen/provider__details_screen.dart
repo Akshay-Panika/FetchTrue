@@ -15,7 +15,6 @@ import '../repository/provider_repository.dart';
 import '../widget/provider_about_widget.dart';
 import '../widget/provider_gallery_widget.dart';
 import '../widget/provider_reviews_widget.dart';
-import '../widget/provider_services_list_widget.dart';
 
 class ProviderDetailsScreen extends StatefulWidget {
   final String? providerId;
@@ -114,7 +113,6 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          ProviderServicesListWidget(data: provider,),
 
                           ProviderReviewsWidget(providerId: provider.id,),
 

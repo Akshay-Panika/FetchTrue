@@ -8,11 +8,10 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../bloc/module_service/module_service_bloc.dart';
-import '../bloc/module_service/module_service_event.dart';
-import '../bloc/module_service/module_service_state.dart';
+import '../bloc/service/service_bloc.dart';
+import '../bloc/service/service_state.dart';
 import '../model/service_model.dart';
-import '../repository/api_service.dart';
+import '../repository/service_repository.dart';
 import '../widget/franchise_details_section_widget.dart';
 import '../widget/self_add_widget.dart';
 import '../widget/service_banner_widget.dart';
@@ -45,86 +44,83 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
       ),
 
 
-      body:  BlocProvider(
-        create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
-        child:  BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
-          builder: (context, state) {
-            if (state is ModuleServiceLoading) {
-              return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+      body:  BlocBuilder<ServiceBloc, ServiceState>(
+        builder: (context, state) {
+          if (state is ServiceLoading) {
+            return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+          }
+
+          else if(state is ServiceLoaded){
+
+            // final services = state.serviceModel;
+            services = state.services.where((moduleService) =>
+            moduleService.id == widget.serviceId
+            ).toList();
+
+            if (services.isEmpty) {
+              return const Center(child: Text('No Service found.'));
             }
 
-            else if(state is ModuleServiceLoaded){
+            return SafeArea(
+              child: DefaultTabController(
+                length: 2,
+                child: CustomScrollView(
+                  slivers: [
 
-              // final services = state.serviceModel;
-              services = state.serviceModel.where((moduleService) =>
-              moduleService.id == widget.serviceId
-              ).toList();
+                    /// Banner
+                    SliverToBoxAdapter(
+                     child: ServiceBannerWidget(services: services,),
+                    ),
 
-              if (services.isEmpty) {
-                return const Center(child: Text('No Service found.'));
-              }
 
-              return SafeArea(
-                child: DefaultTabController(
-                  length: 2,
-                  child: CustomScrollView(
-                    slivers: [
+                    SliverPersistentHeader(
+                      pinned: true,
+                      floating: true,
+                      delegate: _StickyHeaderDelegate(
+                        child: SizedBox(height: 50,
+                          child: TabBar(
+                            tabs: [
+                              Tab(text: 'Service Details',),
+                              Tab(text: 'Franchise Details',),
+                            ],
+                            dividerColor: CustomColor.greyColor,
+                            dividerHeight: 0.2,
+                            labelStyle: textStyle14(context, color: CustomColor.appColor),
+                            indicatorColor: CustomColor.appColor,
+                            unselectedLabelColor: CustomColor.descriptionColor,
+                            onTap: (value) {
+                              setState(() {
+                                _indexTap = value;
+                              });
+                            },
+                          ),
+                        ),),
+                    ),
 
-                      /// Banner
-                      SliverToBoxAdapter(
-                       child: ServiceBannerWidget(services: services,),
+                    SliverToBoxAdapter(child: SizedBox(height: 5,),),
+
+                    SliverToBoxAdapter(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: _indexTap == 0
+                            ? ServiceDetailsSectionWidget(services: services)
+                            : FranchiseDetailsSectionWidget(services: services),
                       ),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: 50,),)
 
-
-                      SliverPersistentHeader(
-                        pinned: true,
-                        floating: true,
-                        delegate: _StickyHeaderDelegate(
-                          child: SizedBox(height: 50,
-                            child: TabBar(
-                              tabs: [
-                                Tab(text: 'Service Details',),
-                                Tab(text: 'Franchise Details',),
-                              ],
-                              dividerColor: CustomColor.greyColor,
-                              dividerHeight: 0.2,
-                              labelStyle: textStyle14(context, color: CustomColor.appColor),
-                              indicatorColor: CustomColor.appColor,
-                              unselectedLabelColor: CustomColor.descriptionColor,
-                              onTap: (value) {
-                                setState(() {
-                                  _indexTap = value;
-                                });
-                              },
-                            ),
-                          ),),
-                      ),
-
-                      SliverToBoxAdapter(child: SizedBox(height: 5,),),
-
-                      SliverToBoxAdapter(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: _indexTap == 0
-                              ? ServiceDetailsSectionWidget(services: services)
-                              : FranchiseDetailsSectionWidget(services: services),
-                        ),
-                      ),
-                      SliverToBoxAdapter(child: SizedBox(height: 50,),)
-
-                    ],
-                  ),
+                  ],
                 ),
-              );
+              ),
+            );
 
-            }
+          }
 
-            else if (state is ModuleServiceError) {
-              return Center(child: Text(state.errorMessage));
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+          else if (state is ServiceError) {
+            return Center(child: Text(state.message));
+          }
+          return const SizedBox.shrink();
+        },
       ),
 
       bottomNavigationBar: SafeArea(

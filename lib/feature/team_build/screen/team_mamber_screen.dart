@@ -268,7 +268,7 @@ Widget _buildTotalLead(BuildContext context, String userId, TeamData member) {
                                 10.width,
                                 CustomAmountText(amount: '${lead.service.price}', isLineThrough: true),
                                 10.width,
-                                CustomAmountText(amount: '${formatPrice(lead.service.discountedPrice)}'),
+                                // CustomAmountText(amount: '${formatPrice(lead.service.discountedPrice)}'),
                               ],
                             ),
 

@@ -1,3 +1,5 @@
+import '../../subcategory/model/subcategory_model.dart';
+
 class ModuleBannerModel {
   final String id;
   final String page;
@@ -70,38 +72,3 @@ class ModuleModel {
   }
 }
 
-class SubcategoryModel {
-  final String id;
-  final String name;
-  final String categoryId;
-  final String image;
-  final bool isDeleted;
-
-  SubcategoryModel({
-    required this.id,
-    required this.name,
-    required this.categoryId,
-    required this.image,
-    required this.isDeleted,
-  });
-
-  factory SubcategoryModel.fromJson(Map<String, dynamic> json) {
-    return SubcategoryModel(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
-      categoryId: json['category'] ?? '',
-      image: json['image'] ?? '',
-      isDeleted: json['isDeleted'] ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'name': name,
-      'category': categoryId,
-      'image': image,
-      'isDeleted': isDeleted,
-    };
-  }
-}

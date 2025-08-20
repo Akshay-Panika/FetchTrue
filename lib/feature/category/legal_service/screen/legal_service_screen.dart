@@ -1,47 +1,96 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/category/legal_service/widget/legal_category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/legal_banner_widget.dart';
 import '../../../favorite/screen/favorite_screen.dart';
 import '../../../highlight_serive/highlight_widget.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
-import '../../../banner/widget/category_banner_widget.dart';
 import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
-import '../wisget/legal_all_service_widget.dart';
-import '../wisget/legal_recommended_service_widget.dart';
-import '../wisget/legal_service_category_widget.dart';
 
-class LegalServiceScreen extends StatelessWidget {
+class LegalServiceScreen extends StatefulWidget {
   final String moduleId;
-  const LegalServiceScreen({super.key, required this.moduleId});
+  final String imageUrl;
+  const LegalServiceScreen({super.key, required this.moduleId, required this.imageUrl});
+
+  @override
+  State<LegalServiceScreen> createState() => _LegalServiceScreenState();
+}
+
+class _LegalServiceScreenState extends State<LegalServiceScreen> {
+
+  final ScrollController _scrollController = ScrollController();
+  bool _isCollapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    final isCollapsed = _scrollController.offset > 150;
+    if (isCollapsed != _isCollapsed) {
+      setState(() => _isCollapsed = isCollapsed);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
 
-    final double searchBarHeight = 10;
+    final double searchBarHeight = 50;
 
     return Scaffold(
       // appBar: CustomAppBar(title: 'Legal Service',showBackButton: true,),
 
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
 
           SliverAppBar(
-            expandedHeight: 250 + searchBarHeight,
-            leading: InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Icon(Icons.arrow_back_ios,color: CustomColor.whiteColor, size: 18,)),
-            title: Text('Legal Service', style: textStyle16(context,color: CustomColor.whiteColor),),
-            titleSpacing: 0,
+            expandedHeight: 200 + searchBarHeight,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Hero(
+                tag: widget.moduleId,
+                child: Material(
+                  color: Colors.transparent,
+                  child: CircleAvatar(radius: 20.5,
+                    backgroundColor: CustomColor.appColor,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: CustomColor.whiteColor,
+                      backgroundImage: NetworkImage(widget.imageUrl),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Legal Service', style: textStyle16(context,  color: _isCollapsed ? CustomColor.appColor : Colors.white,),),
+                Text('Pune 411028, Maharashtra', style: textStyle12(context,  color: _isCollapsed ? CustomColor.descriptionColor : Colors.white,),),
+              ],
+            ),
+            titleSpacing: 15,
+            leadingWidth: 50,
             pinned: true,
             stretch: true,
             backgroundColor: Colors.white,
@@ -50,8 +99,8 @@ class LegalServiceScreen extends StatelessWidget {
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    Color(0xff264A7D),
-                    Color(0xff4586E3),
+                    CustomColor.appColor,
+                    CustomColor.whiteColor
                   ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter
@@ -61,13 +110,13 @@ class LegalServiceScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    20.height,
+                    30.height,
                     CircleAvatar(radius: 30,
                       child: Image.asset('assets/image/legal_img.png', height: 50,),
                       backgroundColor: CustomColor.whiteColor,),
                     10.height,
-                    Text('Your Trusted Leagal Partner', style: textStyle14(context, color: CustomColor.whiteColor),),
-                    Text('One Stop for leagal & business soltuion', style: textStyle12(context, color: CustomColor.whiteColor),),
+                    Text('Your Trusted Leagal Partner', style: textStyle14(context, color: CustomColor.appColor),),
+                    Text('One Stop for leagal & business soltuion', style: textStyle12(context, color: CustomColor.descriptionColor),),
                   ],
                 ),
               ),
@@ -97,9 +146,11 @@ class LegalServiceScreen extends StatelessWidget {
             ),
           ),
 
-          SliverToBoxAdapter(child: LegalBannerWidget(moduleId: moduleId,),),
+          SliverToBoxAdapter(child: LegalBannerWidget(moduleId: widget.moduleId,),),
 
-          SliverToBoxAdapter(child: LegalServiceWidget(moduleId: moduleId,),),
+          SliverToBoxAdapter(child: LegalCategoryWidget(moduleId: widget.moduleId,),),
+
+          SliverToBoxAdapter(child: 500.height,)
 
         ],
       ),

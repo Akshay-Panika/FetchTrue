@@ -1,21 +1,21 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/core/widgets/custom_favorite_button.dart';
+import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_favorite_button.dart';
-import '../../favorite/widget/favorite_service_button_widget.dart';
-import '../../service/bloc/module_service/module_service_bloc.dart';
-import '../../service/bloc/module_service/module_service_event.dart';
-import '../../service/bloc/module_service/module_service_state.dart';
+import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_state.dart';
 import '../../service/model/service_model.dart';
-import '../../service/repository/api_service.dart';
 import '../../service/screen/service_details_screen.dart';
 import '../widget/filter_widget.dart';
-import '../widget/module_subcategory_widget.dart';
+import '../widget/subcategory_widget.dart';
 
 class SubcategoryScreen extends StatefulWidget {
   final String categoryId;
@@ -37,11 +37,10 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
       appBar: CustomAppBar(title: widget.categoryName, showBackButton: true, showFavoriteIcon: true,),
 
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-        
-            /// Subcategory
-            SliverToBoxAdapter(child: ModuleSubcategoryWidget(
+        child: Column(
+          children: [
+
+            SubcategoryWidget(
               categoryId: widget.categoryId.toString(),
               subcategoryId: selectedSubcategoryId,
               onChanged: (id) {
@@ -50,56 +49,54 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                 });
                 print('Selected Subcategory ID: $id');
               },
-            ),),
-        
-            // /// Filter
-            // SliverPersistentHeader(
-            //   pinned: true,
-            //     delegate: _StickyHeaderDelegate(child:  FilterWidget(dimensions: dimensions))),
-        
-        
-            /// Service
-            SliverToBoxAdapter(child:  BlocProvider(
-              create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
-              child:  BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
-                builder: (context, state) {
-                  if (state is ModuleServiceLoading) {
-                    return Center(child: LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,),);
-                  }
-        
-                  else if(state is ModuleServiceLoaded){
-        
-                    // final services = state.serviceModel;
-                    // final services = state.serviceModel.where((moduleService) =>
-                    // moduleService.subcategory!.id == selectedSubcategoryId
-                    // ).toList();
-                    List<ServiceModel> services = state.serviceModel.where((service) {
-                      if (selectedSubcategoryId.isNotEmpty) {
-                        // ✅ Subcategory selected — Match subcategory ID only if it's present
-                        return service.subcategory?.id == selectedSubcategoryId;
-                      } else {
-                        // ✅ No subcategory selected — Show services matching category ID
-                        return service.category.id == widget.categoryId;
-                      }
-                    }).toList();
+            ),
 
-                    if (services.isEmpty) {
-                      return Column(
-                        children: [
-                          300.height,
-                          Text('No Service found.'),
-                        ],
-                      );
+
+            /// Filter
+            FilterWidget(dimensions: dimensions),
+
+
+            BlocBuilder<ServiceBloc, ServiceState>(
+              builder: (context, state) {
+                if (state is ServiceLoading) {
+                  return _ShimmerList();
+                }
+
+                else if(state is ServiceLoaded){
+
+                  // final services = state.services;
+                  // final services = state.services.where((moduleService) =>
+                  // moduleService.subcategory!.id == selectedSubcategoryId
+                  // ).toList();
+                  List<ServiceModel> services = state.services.where((service) {
+                    if (selectedSubcategoryId.isNotEmpty) {
+                      return service.subcategory?.id == selectedSubcategoryId;
+                    } else {
+                      return service.category.id == widget.categoryId;
                     }
-        
-                    return  Column(
+                  }).toList();
+
+                  if (services.isEmpty) {
+                    return Column(
+                      children: [
+                        200.height,
+                        Image.asset(CustomImage.emptyCart, height: 80,),
+                        Text('No Service')
+                      ],
+                    );
+                  }
+
+
+                  return  Expanded(
+                    child: ListView(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
                       children: List.generate(services.length, (index) {
                         final data = services[index];
                         return CustomContainer(
                           border: false,
                           color: Colors.white,
                           padding: EdgeInsets.zero,
-                          margin: EdgeInsets.only(left: 10,right: 10),
+                          margin: EdgeInsets.only(top: 10),
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
                             serviceId: data.id,
                           ),
@@ -121,6 +118,8 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
 
+                                      CustomFavoriteButton(),
+
                                       Container(
                                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                         decoration: BoxDecoration(
@@ -138,7 +137,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   ),
                                 ),
                               ),
-
+                    
                               10.height,
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -184,7 +183,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                           ],
                                         ),
                                       )),
-
+                    
                                     10.height,
                                   ],
                                 ),
@@ -193,17 +192,17 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                           ),
                         );
                       },),
-                    );
-        
-                  }
-        
-                  else if (state is ModuleServiceError) {
-                    return Center(child: Text(state.errorMessage));
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),),
+                    ),
+                  );
+
+                }
+
+                else if (state is ServiceError) {
+                  return Center(child: Text(state.message));
+                }
+                return const SizedBox.shrink();
+              },
+            ),
         
           ],
         ),
@@ -212,29 +211,33 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
   }
 }
 
-/// _StickyHeaderDelegate
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
-  _StickyHeaderDelegate({required this.child});
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return SizedBox(
-      height: 40,
-      child: Material( // Optional: for background color
-        color: Colors.white,
-        child: child,
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 40.0;
-
-  @override
-  double get minExtent => 40.0;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+Widget _ShimmerList(){
+  return Expanded(
+    child: ListView(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+      children: List.generate(3, (index) => CustomContainer(
+        height: 200,
+        margin: EdgeInsetsGeometry.only(top: 10),
+        child:  Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+             ShimmerBox(height: 10, width: 200),
+             10.height,
+             Row(
+               children: [
+                 ShimmerBox(height: 10, width:50),
+                 10.width,
+                 ShimmerBox(height: 10, width: 50),
+               ],
+             )
+            ],
+          ),
+        ),
+      ),),
+    ),
+  );
 }

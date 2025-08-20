@@ -56,7 +56,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         if(showFavoriteIcon)
         IconButton(
           onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId,),)),
-          icon: const Icon(Icons.favorite_border),
+          icon: const Icon(Icons.favorite,color: Colors.red,),
         ),
 
         if(showSearchIcon)

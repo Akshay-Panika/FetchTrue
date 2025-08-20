@@ -1,5 +1,4 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,14 +8,9 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_event.dart';
-import '../../provider/bloc/provider/provider_state.dart';
-import '../../provider/repository/provider_service.dart';
-import '../bloc/module_service/module_service_bloc.dart';
-import '../bloc/module_service/module_service_event.dart';
-import '../bloc/module_service/module_service_state.dart';
-import '../repository/api_service.dart';
+import '../bloc/service/service_bloc.dart';
+import '../bloc/service/service_state.dart';
+import '../repository/service_repository.dart';
 
 class SubscribedProviderWidget extends StatefulWidget {
   final String serviceId;
@@ -38,121 +32,118 @@ class _SubscribedProviderWidgetState extends State<SubscribedProviderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
-      child: BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
-        builder: (context, state) {
-          if (state is ModuleServiceLoading) {
-            return Column(
-              children: [
-                SizedBox(height: 150),
-                Center(child: CircularProgressIndicator()),
-              ],
-            );
-          } else if (state is ModuleServiceLoaded) {
-            final services = state.serviceModel;
-            final matchedServices = services.where((data) => data.id == widget.serviceId).toList();
+    return BlocBuilder<ServiceBloc, ServiceState>(
+      builder: (context, state) {
+        if (state is ServiceLoading) {
+          return Column(
+            children: [
+              SizedBox(height: 150),
+              Center(child: CircularProgressIndicator()),
+            ],
+          );
+        } else if (state is ServiceLoaded) {
+          final services = state.services;
+          final matchedServices = services.where((data) => data.id == widget.serviceId).toList();
 
-            if (matchedServices.isEmpty) {
-              return const Center(child: Text('No Service found.'));
-            }
+          if (matchedServices.isEmpty) {
+            return const Center(child: Text('No Service found.'));
+          }
 
-            final data = matchedServices.first;
-            final approvedProviders = data.providerPrices;
-            // final approvedProviders = data.providerPrices.where((p) => p.status == "approved").toList();
+          final data = matchedServices.first;
+          final approvedProviders = data.providerPrices;
+          // final approvedProviders = data.providerPrices.where((p) => p.status == "approved").toList();
 
-            // Initial state fix on data load
-            if (selectedProviderId == null && !fetchTrueSelected) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                setState(() {
-                  fetchTrueSelected = true;
-                  selectedProviderId = null;
-                  if (widget.onProviderSelected != null) {
-                    widget.onProviderSelected!('fetch_true');
-                  }
-                });
+          // Initial state fix on data load
+          if (selectedProviderId == null && !fetchTrueSelected) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                fetchTrueSelected = true;
+                selectedProviderId = null;
+                if (widget.onProviderSelected != null) {
+                  widget.onProviderSelected!('fetch_true');
+                }
               });
-            }
+            });
+          }
 
-            return Column(
-              children: [
-                Center(
-                  child: buildProviderCard(
-                    context,
-                    name: 'Fetch True',
-                    price: data.price.toString(),
-                    newPrice: data.discountedPrice.toString(),
-                    discount: data.discount.toString(),
-                    commission: data.franchiseDetails.commission.toString(),
-                    checkBox: Checkbox(
-                      activeColor: CustomColor.greenColor,
-                      value: fetchTrueSelected,
-                      onChanged: (value) {
-                        if (value == true) {
-                          setState(() {
-                            fetchTrueSelected = true;
-                            selectedProviderId = null;
-                          });
-                          if (widget.onProviderSelected != null) {
-                            widget.onProviderSelected!('fetch_true');
-                          }
+          return Column(
+            children: [
+              Center(
+                child: buildProviderCard(
+                  context,
+                  name: 'Fetch True',
+                  price: data.price.toString(),
+                  newPrice: data.discountedPrice.toString(),
+                  discount: data.discount.toString(),
+                  commission: data.franchiseDetails.commission.toString(),
+                  checkBox: Checkbox(
+                    activeColor: CustomColor.greenColor,
+                    value: fetchTrueSelected,
+                    onChanged: (value) {
+                      if (value == true) {
+                        setState(() {
+                          fetchTrueSelected = true;
+                          selectedProviderId = null;
+                        });
+                        if (widget.onProviderSelected != null) {
+                          widget.onProviderSelected!('fetch_true');
                         }
-                      },
-                    ),
+                      }
+                    },
                   ),
                 ),
+              ),
 
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: approvedProviders.length,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final provider = approvedProviders[index];
-                    final isSelected = (selectedProviderId != null && provider.id != null && selectedProviderId == provider.id);
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: approvedProviders.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final provider = approvedProviders[index];
+                  final isSelected = (selectedProviderId != null && provider.id != null && selectedProviderId == provider.id);
 
-                    return Center(
-                      child: buildProviderCard(
-                        context,
-                        name: provider.provider?.fullName ?? '',
-                        price: provider.providerPrice?.toString() ?? '',
-                        newPrice: provider.providerMRP ?? '',
-                        discount: provider.providerDiscount ?? '',
-                        commission: provider.providerCommission ?? '',
-                        checkBox: Checkbox(
-                          activeColor: CustomColor.greenColor,
-                          value: isSelected,
-                          onChanged: (value) {
-                            if (value == true) {
-                              setState(() {
-                                selectedProviderId = provider.id;
-                                fetchTrueSelected = false;
-                              });
-                              if (widget.onProviderSelected != null) {
-                                widget.onProviderSelected!(provider.provider!.id ?? '');
-                              }
-                            } else {
-                              setState(() {
-                                selectedProviderId = null;
-                                fetchTrueSelected = true;
-                              });
-                              if (widget.onProviderSelected != null) {
-                                widget.onProviderSelected!('fetch_true');
-                              }
+                  return Center(
+                    child: buildProviderCard(
+                      context,
+                      name: provider.provider?.fullName ?? '',
+                      price: provider.providerPrice?.toString() ?? '',
+                      newPrice: provider.providerMRP ?? '',
+                      discount: provider.providerDiscount ?? '',
+                      commission: provider.providerCommission ?? '',
+                      checkBox: Checkbox(
+                        activeColor: CustomColor.greenColor,
+                        value: isSelected,
+                        onChanged: (value) {
+                          if (value == true) {
+                            setState(() {
+                              selectedProviderId = provider.id;
+                              fetchTrueSelected = false;
+                            });
+                            if (widget.onProviderSelected != null) {
+                              widget.onProviderSelected!(provider.provider!.id ?? '');
                             }
-                          },
-                        ),
+                          } else {
+                            setState(() {
+                              selectedProviderId = null;
+                              fetchTrueSelected = true;
+                            });
+                            if (widget.onProviderSelected != null) {
+                              widget.onProviderSelected!('fetch_true');
+                            }
+                          }
+                        },
                       ),
-                    );
-                  },
-                ),
-              ],
-            );
-          } else if (state is ModuleServiceError) {
-            return Center(child: Text(state.errorMessage));
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        } else if (state is ServiceError) {
+          return Center(child: Text(state.message));
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

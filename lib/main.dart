@@ -14,12 +14,18 @@ import 'feature/banner/repository/banner_repository.dart';
 import 'feature/category/bloc/category_bloc.dart';
 import 'feature/category/bloc/category_event.dart';
 import 'feature/category/repository/category_repository.dart';
+import 'feature/module/bloc/module_bloc.dart';
+import 'feature/module/bloc/module_event.dart';
+import 'feature/module/repository/module_repository.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
-import 'feature/service/bloc/module_service/module_service_bloc.dart';
-import 'feature/service/bloc/module_service/module_service_event.dart';
-import 'feature/service/repository/api_service.dart';
+import 'feature/service/bloc/service/service_bloc.dart';
+import 'feature/service/bloc/service/service_event.dart';
+import 'feature/service/repository/service_repository.dart';
+import 'feature/subcategory/bloc/module_subcategory/subcategory_bloc.dart';
+import 'feature/subcategory/bloc/module_subcategory/subcategory_event.dart';
+import 'feature/subcategory/repository/subcategory_repository.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -40,9 +46,11 @@ void main() async {
           providers: [
             BlocProvider(create: (_) => UserBloc(UserRepository())),
             BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
-            BlocProvider(create: (_) => BannerBloc(BannerRepository())..add(FetchBanners())),
-            BlocProvider(create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService())),
-            BlocProvider(create: (_) => CategoryBloc(CategoryRepository())..add(FetchCategories())),
+            BlocProvider(create: (_) => BannerBloc(BannerRepository())..add(GetBanners())),
+            BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
+            BlocProvider(create: (_) => CategoryBloc(CategoryRepository())..add(GetCategories())),
+            BlocProvider(create: (_) => SubcategoryBloc(SubcategoryRepository())..add(FetchSubcategories()),),
+            BlocProvider(create: (_) => ServiceBloc(ServiceRepository())..add(GetServices())),
           ],
           child: const MyApp(),
         ),

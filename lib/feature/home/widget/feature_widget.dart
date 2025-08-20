@@ -102,6 +102,7 @@ class _FeatureItem extends StatelessWidget {
       border: true,
       color: Colors.white,
        onTap: onTap,
+      margin: EdgeInsetsGeometry.symmetric(horizontal: 10),
       child: Row(
         children: [
           CircleAvatar(radius: 25.4,

@@ -1,66 +1,114 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/category/it_service/widget/it_service_category_widget.dart';
+import 'package:fetchtrue/feature/category/marketing/widget/marketing_category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
-import '../../../../core/widgets/custom_appbar.dart';
+import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
-import '../../../auth/user_notifier/user_notifier.dart';
-import '../../../banner/widget/it_service_banner_widget.dart';
-import '../../../favorite/screen/favorite_screen.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
-import '../../../search/screen/search_screen.dart';
-import '../widget/it_service_category_widget.dart';
+import '../../../auth/user_notifier/user_notifier.dart';
+import '../../../banner/widget/home_banner_widget.dart';
 
-class ItServiceScreen extends StatelessWidget {
+class ItServiceScreen extends StatefulWidget {
   final String moduleId;
-  const ItServiceScreen({super.key, required this.moduleId});
+  final String imageUrl;
+  const ItServiceScreen({super.key, required this.moduleId, required this.imageUrl});
+
+  @override
+  State<ItServiceScreen> createState() => _ItServiceScreenState();
+}
+
+class _ItServiceScreenState extends State<ItServiceScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isCollapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    final isCollapsed = _scrollController.offset > 150;
+    if (isCollapsed != _isCollapsed) {
+      setState(() => _isCollapsed = isCollapsed);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
+    final double searchBarHeight = 50;
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'It Service', showBackButton: true,),
-
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-
-            SliverToBoxAdapter(child: ItServiceBannerWidget(moduleId: moduleId,),),
-
-            SliverAppBar(
-              toolbarHeight: 60,
-              floating: true,
-              backgroundColor: Colors.grey[100],
-              automaticallyImplyLeading: false,
-              flexibleSpace: Row(
-                children: [
-                  Expanded(
-                    child: CustomSearchBar(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SearchScreen()),
-                      ),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250 + searchBarHeight,
+            pinned: true,
+            stretch: true,
+            backgroundColor: Colors.white,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Hero(
+                tag: widget.moduleId,
+                child: Material(
+                  color: Colors.transparent,
+                  child: CircleAvatar(radius: 20.5,
+                    backgroundColor: CustomColor.appColor,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: CustomColor.whiteColor,
+                      backgroundImage: NetworkImage(widget.imageUrl),
                     ),
                   ),
+                ),
+              ),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('It Service', style: textStyle16(context,  color: _isCollapsed ? CustomColor.appColor : Colors.white,),),
+                Text('Pune 411028, Maharashtra', style: textStyle12(context,  color: _isCollapsed ? CustomColor.descriptionColor : Colors.white,),),
+              ],
+            ),
+            titleSpacing: 15,
+            leadingWidth: 50,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: HomeBannerWidget(),
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(searchBarHeight),
+              child: Row(
+                children: [
+                  Expanded(child: CustomSearchBar(),),
 
                   CustomContainer(
                     border: true,
                     borderColor: CustomColor.appColor,
                     color: CustomColor.whiteColor,
                     padding: EdgeInsets.all(8),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
                     child: Icon(Icons.favorite, color: Colors.red,),)
                 ],
               ),
-              // flexibleSpace:  CustomSearchBar(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),),
             ),
+          ),
 
-            SliverToBoxAdapter(
-              child: ItServiceCategoryWidget(moduleId: moduleId),
-            ),
-          ],
-        ),
+          SliverToBoxAdapter(child: ItServiceCategoryWidget(moduleId: widget.moduleId,),),
+
+          SliverToBoxAdapter(child: 500.height,)
+
+        ],
       ),
     );
   }

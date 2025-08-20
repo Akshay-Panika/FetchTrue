@@ -4,32 +4,37 @@ description: "A new Flutter project."
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.1
-
+  sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # UI & Core Utilities
+  # UI Widgets
   cupertino_icons: ^1.0.8
-  flutter_bloc: ^9.1.0
   carousel_slider: ^5.0.0
-  intl: ^0.20.2
-  syncfusion_flutter_charts: 29.1.38
+  syncfusion_flutter_charts: ^29.1.38
   dotted_border: ^2.1.0
   scratcher: ^2.5.0
   shimmer: ^3.0.0
   flutter_html: ^3.0.0
   flutter_html_table: ^3.0.0
-  url_launcher: ^6.3.1
   youtube_player_flutter: ^9.1.1
+
+
+#  State Management & Utilities
+  flutter_bloc: ^9.1.0
+  provider: ^6.1.5
+  equatable: ^2.0.7
+  intl: ^0.20.2
+
+#  Device Information & System Utilities
   package_info_plus: ^8.3.0
-#  screenshot: ^3.0.0
   share_plus: ^11.0.0
   shared_preferences: ^2.5.3
   flutter_email_sender: ^7.0.0
-
+  fluttertoast: ^8.2.12
+  url_launcher: ^6.3.1
 
   # File & PDF Handling
   file_picker: ^10.1.9
@@ -38,35 +43,18 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.5
   permission_handler: ^12.0.0+1
-#  media_scanner: ^2.2.0
-#  pdf: ^3.11.3
-#  printing: ^5.14.2
-#  chewie: ^1.7.0
   video_player: ^2.8.2
-#  open_file: ^3.5.10
-  fluttertoast: ^8.2.12
 
-
-  # Networking
-#  flutter_cashfree_pg_sdk: ^2.2.8+46
-  flutter_inappwebview: ^6.1.5
-#  webview_flutter: ^4.13.0
-
-
-  equatable: ^2.0.7
+  # Networking & Web
   dio: ^5.8.0+1
-  http: ^1.4.0
-  provider: ^6.1.5
+  flutter_inappwebview: ^6.1.5
+  # http: ^1.4.0   # remove if not needed
+
+
+  # Firebase Services
   firebase_core: ^3.15.1
   firebase_auth: ^5.6.2
-#  cloud_functions: ^5.6.2
-#  connectivity_plus: ^6.1.4
 
-  # Device Info
-#  device_info_plus: ^10.1.0
-#  country_state_city_picker: ^1.2.8
-
-  # Payment Gateway
 
 dev_dependencies:
   flutter_test:
@@ -74,7 +62,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-
   uses-material-design: true
 
   assets:

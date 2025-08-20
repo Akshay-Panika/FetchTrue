@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../bloc/banner/banner_bloc.dart';
 import '../bloc/banner/banner_state.dart';
 
@@ -39,12 +40,11 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
                   itemCount: banners.length,
                   itemBuilder: (context, index, realIndex) {
                     final banner = banners[index];
-                    return CachedNetworkImage(
+                    return CustomNetworkImage(
                       imageUrl: banner.file,
                       fit: BoxFit.fill,
-                      width: double.infinity,
-                      placeholder: (context, url) => Container(color: Colors.grey[200]),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      margin: EdgeInsets.all(10),
+                      borderRadius: BorderRadius.circular(10),
                     );
                   },
                   options: CarouselOptions(

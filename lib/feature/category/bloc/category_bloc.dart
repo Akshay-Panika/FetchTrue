@@ -8,7 +8,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final CategoryRepository categoryRepository;
 
   CategoryBloc(this.categoryRepository) : super(CategoryInitial()) {
-    on<FetchCategories>((event, emit) async {
+    on<GetCategories>((event, emit) async {
       emit(CategoryLoading());
       try {
         final List<CategoryModel> categories =

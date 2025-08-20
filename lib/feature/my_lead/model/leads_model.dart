@@ -1,3 +1,5 @@
+import '../../service/model/service_model.dart';
+
 class LeadsModel {
   final String id;
   final String bookingId;
@@ -146,46 +148,6 @@ class LeadsModel {
   }
 }
 
-class ServiceModel {
-  final String id;
-  final String serviceName;
-  final int price;
-  final int discount;
-  final double discountedPrice;
-  final FranchiseDetails? franchiseDetails;
-
-
-  ServiceModel({
-    required this.id,
-    required this.serviceName,
-    required this.price,
-    required this.discount,
-    required this.discountedPrice,
-    required this.franchiseDetails,
-
-  });
-
-  factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    final int price = json['price'] ?? 0;
-    final int discount = json['discount'] ?? 0;
-
-    final double discountedPrice = json.containsKey('discountedPrice')
-        ? (json['discountedPrice'] as num).toDouble()
-        : price - ((discount / 100) * price);
-
-    return ServiceModel(
-      id: json['_id'] ?? '',
-      serviceName: json['serviceName'] ?? '',
-      price: price,
-      discount: discount,
-      discountedPrice: double.parse(discountedPrice.toStringAsFixed(2)),
-      franchiseDetails: json['franchiseDetails'] != null
-          ? FranchiseDetails.fromJson(json['franchiseDetails'])
-          : null,
-    );
-  }
-
-}
 
 class FranchiseDetails {
   final String? commission;

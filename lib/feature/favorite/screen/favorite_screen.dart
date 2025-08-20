@@ -1,24 +1,15 @@
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
-import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../profile/repository/user_service.dart';
-import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_event.dart';
-import '../../provider/bloc/provider/provider_state.dart';
-import '../../provider/repository/provider_repository.dart';
-import '../../provider/repository/provider_service.dart';
-import '../../service/bloc/module_service/module_service_bloc.dart';
-import '../../service/bloc/module_service/module_service_event.dart';
-import '../../service/bloc/module_service/module_service_state.dart';
-import '../../service/repository/api_service.dart';
+import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_state.dart';
 
 class FavoriteScreen extends StatelessWidget {
   final String? userId;
@@ -77,163 +68,100 @@ class FavoriteServiceWidget extends StatefulWidget {
 }
 
 class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
-  List<String> _favoriteServiceIds = [];
-  bool _isUserLoaded = false;
-  final userService = UserService();
-  final Set<String> _removingServiceIds = {}; // loader handling set
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    if (widget.userId != null) {
-      final user = await userService.fetchUserById(widget.userId!);
-      if (user != null) {
-        _favoriteServiceIds = user.favoriteServices;
-      }
-    }
-    setState(() => _isUserLoaded = true);
-  }
-
-  Future<void> removeFavoriteService(String serviceId) async {
-    setState(() {
-      _removingServiceIds.add(serviceId);
-    });
-
-    final url = Uri.parse(
-        'https://biz-booster.vercel.app/api/users/favourite-services/${widget.userId}/$serviceId');
-
-    final response = await http.delete(url);
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _favoriteServiceIds.remove(serviceId);
-        _removingServiceIds.remove(serviceId);
-      });
-      showCustomSnackBar(context, 'Removed from favorites');
-    } else {
-      setState(() {
-        _removingServiceIds.remove(serviceId);
-      });
-      showCustomSnackBar(context, 'Failed to remove favorite');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isUserLoaded) return  Center(child: CircularProgressIndicator( color: CustomColor.appColor,));
 
-    return BlocProvider(
-      create: (_) => ModuleServiceBloc(ApiService())..add(GetModuleService()),
-      child: BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
-        builder: (context, state) {
-          if (state is ModuleServiceLoading) {
-            return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
-          } else if (state is ModuleServiceLoaded) {
-            final services = state.serviceModel
-                .where((s) => _favoriteServiceIds.contains(s.id))
-                .toList();
+    return BlocBuilder<ServiceBloc, ServiceState>(
+      builder: (context, state) {
+        if (state is ServiceLoading) {
+          return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
+        } else if (state is ServiceLoaded) {
+          final services = state.services;
 
-            if (services.isEmpty) {
-              return const Center(child: Text('No Service found.'));
-            }
-
-            return ListView.builder(
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final data = services[index];
-                final isRemoving = _removingServiceIds.contains(data.id);
-
-                return CustomContainer(
-                  border: false,
-                  color: Colors.white,
-                  padding: EdgeInsets.zero,
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  height: 100,
-                  child: Row(
-                    children: [
-                      CustomContainer(
-                        networkImg: data.thumbnailImage,
-                        margin: EdgeInsets.zero,
-                        width: 180,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      data.serviceName,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      overflow: TextOverflow.clip,
-                                    ),
-                                  ),
-                                  isRemoving
-                                      ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 3, color: Colors.red)
-                                  )
-                                      : InkWell(
-                                    onTap: () {
-                                      removeFavoriteService(data.id);
-                                    },
-                                    child: const Icon(Icons.favorite,
-                                        color: Colors.red),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CustomAmountText(
-                                          amount: '150', isLineThrough: true),
-                                      const SizedBox(width: 10),
-                                      CustomAmountText(
-                                          amount: '150', isLineThrough: false),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text("Earn up to",
-                                          style: TextStyle(fontSize: 14)),
-                                      const SizedBox(width: 4),
-                                      CustomAmountText(amount: '50'),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id),)),
-                );
-              },
-            );
-          } else if (state is ModuleServiceError) {
-            return Center(child: Text(state.errorMessage));
+          if (services.isEmpty) {
+            return const Center(child: Text('No Service found.'));
           }
 
-          return const SizedBox.shrink();
-        },
-      ),
+          return ListView.builder(
+            itemCount: services.length,
+            itemBuilder: (context, index) {
+              final data = services[index];
+
+              return CustomContainer(
+                border: false,
+                color: Colors.white,
+                padding: EdgeInsets.zero,
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                height: 100,
+                child: Row(
+                  children: [
+                    CustomContainer(
+                      networkImg: data.thumbnailImage,
+                      margin: EdgeInsets.zero,
+                      width: 180,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    data.serviceName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.clip,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    CustomAmountText(
+                                        amount: '150', isLineThrough: true),
+                                    const SizedBox(width: 10),
+                                    CustomAmountText(
+                                        amount: '150', isLineThrough: false),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const Text("Earn up to",
+                                        style: TextStyle(fontSize: 14)),
+                                    const SizedBox(width: 4),
+                                    CustomAmountText(amount: '50'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id),)),
+              );
+            },
+          );
+        } else if (state is ServiceError) {
+          return Center(child: Text(state.message));
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -268,30 +196,6 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
       }
     }
     setState(() => _isUserLoaded = true);
-  }
-
-  Future<void> removeFavoriteProvider(String providerId) async {
-    setState(() {
-      _removingProviderIds.add(providerId);
-    });
-
-    final url = Uri.parse(
-        'https://biz-booster.vercel.app/api/users/favourite-providers/${widget.userId}/$providerId');
-
-    final response = await http.delete(url);
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _favoriteProviderIds.remove(providerId);
-        _removingProviderIds.remove(providerId);
-      });
-      showCustomSnackBar(context, 'Removed from favorites');
-    } else {
-      setState(() {
-        _removingProviderIds.remove(providerId);
-      });
-      showCustomSnackBar(context, 'Failed to remove favorite');
-    }
   }
 
   @override

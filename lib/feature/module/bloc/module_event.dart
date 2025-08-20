@@ -5,4 +5,4 @@ abstract class ModuleEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchModules extends ModuleEvent {}
+class GetModules extends ModuleEvent {}

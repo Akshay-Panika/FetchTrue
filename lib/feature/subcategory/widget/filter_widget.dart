@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -6,48 +6,59 @@ import '../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../core/widgets/custom_container.dart';
 
 class FilterWidget extends StatelessWidget {
- final Dimensions dimensions;
-  const FilterWidget({super.key, required this.dimensions});
+  final Dimensions dimensions;
+
+  FilterWidget({super.key, required this.dimensions});
+
+  final List<String> serviceOptions = [
+    'All',
+    'Low Price',
+    'High Price',
+    'Discounted',
+    'Most Popular',
+    'Newest First',
+    'Oldest First',
+    'Top Rated',
+    'Low to High',
+    'High to Low',
+    'Best Seller',
+    'Recommended',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 40,
-            color: CustomColor.whiteColor,
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            child: ListView.builder(
-              itemCount: 10,
+    return Container(
+      color: CustomColor.whiteColor,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+      child: Row(
+        children: [
+          // Scrollable Filter Options
+          Expanded(
+            child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.02),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth*0.03),
-                  child: Center(child: Text("Filter $index")),
-                );
-              },),
+              child: Row(
+                spacing: 10,
+                children: List.generate(
+                  serviceOptions.length,
+                      (index) => CustomContainer(
+                         color: CustomColor.appColor.withOpacity(0.05),
+                        margin: EdgeInsets.zero, padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 5),
+                    child: Center(
+                      child: Text(serviceOptions[index],style: textStyle12(context),),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-        CustomContainer(
-            height: 40,
-            border: true,
-            borderRadius: false,
-            color: Colors.white,
-            margin: EdgeInsets.zero,
-            // padding: EdgeInsets.zero,
-            onTap: () => CustomBottomSheet(context: context, height: 0.7,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+          10.width,
 
-                  ],
-                )),
-            child: Center(child: Icon(Icons.menu))),
-      ],
+          // Menu Button
+          InkWell(
+            child: const Icon(Icons.menu, size: 28),
+          )
+        ],
+      ),
     );
   }
 }

@@ -7,25 +7,22 @@ import '../../../../core/widgets/custom_container.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/franchise_banner_widget.dart';
 import '../../../favorite/screen/favorite_screen.dart';
-import '../../../highlight_serive/highlight_widget.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
-import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
-import '../widget/franchise_all_service_widget.dart';
 import '../widget/franchise_category_widget.dart';
-import '../widget/franchise_recommended_service_widget.dart';
 
 
 class FranchiseScreen extends StatelessWidget {
   final String moduleId;
-  const FranchiseScreen({super.key, required this.moduleId});
+  final String imageUrl;
+  const FranchiseScreen({super.key, required this.moduleId, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
 
-    final double searchBarHeight = 30;
+    final double searchBarHeight = 50;
 
     return Scaffold(
 
@@ -34,11 +31,32 @@ class FranchiseScreen extends StatelessWidget {
 
           SliverAppBar(
             expandedHeight: 160 + searchBarHeight,
-            leading: InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Icon(Icons.arrow_back_ios, color: CustomColor.whiteColor,size: 18,)),
-            title: Text('Franchise Service', style: textStyle16(context, color: CustomColor.whiteColor),),
-            titleSpacing: 0,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Hero(
+                tag: moduleId,
+                child: Material(
+                  color: Colors.transparent,
+                  child: CircleAvatar(radius: 20.5,
+                    backgroundColor: CustomColor.appColor,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: CustomColor.whiteColor,
+                      backgroundImage: NetworkImage(imageUrl),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Franchise Service', style: textStyle16(context, color: CustomColor.whiteColor),),
+                Text('Pune 411028, Maharashtra', style: textStyle12(context, color: CustomColor.whiteColor),),
+              ],
+            ),
+            titleSpacing: 15,
+            leadingWidth: 50,
             pinned: true,
             stretch: true,
             backgroundColor: Color(0xff1A434E),
@@ -89,27 +107,8 @@ class FranchiseScreen extends StatelessWidget {
             child: FranchiseCategoryWidget(moduleIndexId: moduleId),
           ),
 
-          // SliverToBoxAdapter(
-          //   child: Column(
-          //     children: [
-          //       10.height,
-          //
-          //       /// Services for you
-          //       FranchiseRecommendedServiceWidget(headline: 'Recommended Service', moduleIndexId: moduleId,),
-          //
-          //       /// Highlight service
-          //       HighlightServiceWidget(),
-          //
-          //       ///  Service Provider
-          //       ServiceProviderWidget(),
-          //
-          //       /// Popular Services
-          //       Container(
-          //           color: CustomColor.appColor.withOpacity(0.1),
-          //           child: FranchiseAllServiceWidget(headline: 'All Services', moduleIndexId: moduleId,)),
-          //     ],
-          //   ),
-          // )
+
+          SliverToBoxAdapter(child: 500.height,)
         ],
       ),
     );

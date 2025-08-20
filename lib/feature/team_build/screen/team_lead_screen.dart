@@ -106,7 +106,7 @@ class TeamLeadScreen extends StatelessWidget {
                                     10.width,
                                     CustomAmountText(amount: '${lead.service.price}', isLineThrough: true),
                                     10.width,
-                                    CustomAmountText(amount: '${formatPrice(lead.service.discountedPrice)}'),
+                                    // CustomAmountText(amount: '${formatPrice(lead.service.discountedPrice)}'),
                                   ],
                                 ),
 

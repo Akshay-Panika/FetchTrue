@@ -5,7 +5,7 @@ import '../../banner/model/banner_model.dart';
 class ModuleRepository {
   final Dio _dio = Dio();
 
-  Future<List<ModuleModel>> fetchModules() async {
+  Future<List<ModuleModel>> getModules() async {
     try {
       final response =
       await _dio.get(ApiUrls.modules);
@@ -13,7 +13,7 @@ class ModuleRepository {
       if (response.statusCode == 200 && response.data["success"] == true && response.data["data"] != null) {
         return (response.data["data"] as List).map((e) => ModuleModel.fromJson(e)).toList();
       } else {
-        throw Exception("Failed to fetch modules");
+        throw Exception("Failed to fetch modules: ${response.statusCode}");
       }
     } on DioException catch (dioError) {
       throw Exception("Dio error: ${dioError.message}");

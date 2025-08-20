@@ -1,3 +1,3 @@
 abstract class BannerEvent {}
 
-class FetchBanners extends BannerEvent {}
+class GetBanners extends BannerEvent {}

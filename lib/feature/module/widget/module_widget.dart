@@ -1,4 +1,3 @@
-import 'package:fetchtrue/feature/category/ondemand_service/screen/ondemand_service_screen.dart';
 import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,19 +6,19 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../category/business/screen/business_screen.dart';
-import '../../category/education_service/screen/education_service_screen.dart';
+import '../../category/education/screen/education_screen.dart';
 import '../../category/finance/screen/finance_service_screen.dart';
 import '../../category/franchise/screen/franchise_screen.dart';
 import '../../category/it_service/screen/it_service_screen.dart';
 import '../../category/legal_service/screen/legal_service_screen.dart';
-import '../../category/marketing/screen/marketing_service_screen.dart';
-import '../../category/onboarding/screen/onboarding_service_screen.dart';
+import '../../category/marketing/screen/marketing_screen.dart';
+import '../../category/onboarding/screen/onboarding_screen.dart';
+import '../../category/ondemand/screen/ondemand_screen.dart';
 import '../bloc/module_bloc.dart';
-import '../bloc/module_event.dart';
 import '../bloc/module_state.dart';
-import '../repository/module_repository.dart';
 
 class ModuleWidget extends StatelessWidget {
   const ModuleWidget({super.key,});
@@ -44,76 +43,83 @@ class ModuleWidget extends StatelessWidget {
           ),
         ),
         15.height,
-        BlocProvider(
-          create: (_) => ModuleBloc(ModuleRepository())..add(FetchModules()),
-          child: BlocBuilder<ModuleBloc, ModuleState>(
-            builder: (context, state) {
-              if (state is ModuleLoading) {
-                return ModuleShimmer();
-              } else if (state is ModuleLoaded) {
-                final modules = state.modules;
-                // final modules = state.modules.where((module) => module.categoryCount != 0).toList();
-                return  GridView.builder(
-                  itemCount: modules.length,
-                  shrinkWrap: true,
-                  padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.11 / 1,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10
-                  ),
-                  itemBuilder: (context, index) {
-                    final module = modules[index];
-                    return CustomContainer(
-                      border: true,
-                      margin: EdgeInsets.zero,
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: CustomContainer(
-                              networkImg: module.image,
-                              margin: EdgeInsets.zero,
+        BlocBuilder<ModuleBloc, ModuleState>(
+          builder: (context, state) {
+            if (state is ModuleLoading) {
+              return ModuleShimmer();
+            } else if (state is ModuleLoaded) {
+              final modules = state.modules;
+              // final modules = state.modules.where((module) => module.categoryCount != 0).toList();
+              return  GridView.builder(
+                itemCount: modules.length,
+                shrinkWrap: true,
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.11 / 1,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10
+                ),
+                itemBuilder: (context, index) {
+                  final module = modules[index];
+                  return CustomContainer(
+                    border: true,
+                    margin: EdgeInsets.zero,
+                    color: Colors.white,
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Hero(
+                            tag: module.id,
+                            child: Material( // 👈 ye add karo
                               color: Colors.transparent,
+                              child: CustomNetworkImage(
+                                borderRadius: BorderRadius.circular(10),
+                                imageUrl: module.image,
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           ),
-                          Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
-                        ],
-                      ),
-                      onTap: () {
-                        final Map<String, Widget> categoryWidgets = {
-                          'Franchise': FranchiseScreen(moduleId: module.id),
-                          'Business': BusinessScreen(moduleId: module.id),
-                          'Marketing': MarketingServiceScreen(moduleId: module.id),
-                          'Legal Services': LegalServiceScreen(moduleId: module.id),
-                          'Finance': FinanceServiceScreen(moduleId: module.id),
-                          'It Services': ItServiceScreen(moduleId: module.id),
-                          'Education': EducationServiceScreen(moduleId: module.id),
-                          'On-Demand Services': OnDemandServiceScreen(moduleId: module.id),
-                          'Onboarding': OnboardingServiceScreen(moduleId:module.id),
-                        };
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
+                        ),
+                        5.height,
+                      ],
+                    ),
+                    onTap: () {
+                      final Map<String, Widget> categoryWidgets = {
+                        'Franchise': FranchiseScreen(moduleId: module.id, imageUrl: module.image,),
+                        'Business': BusinessScreen(moduleId: module.id, imageUrl: module.image),
+                        'Marketing': MarketingScreen(moduleId: module.id, imageUrl: module.image, ),
+                        'Legal Services': LegalServiceScreen(moduleId: module.id, imageUrl: module.image,),
+                        'Finance': FinanceServiceScreen(moduleId: module.id, imageUrl: module.image,),
+                        'It Services': ItServiceScreen(moduleId: module.id,imageUrl: module.image,),
+                        'Education': EducationScreen(moduleId: module.id, imageUrl: module.image),
+                        'On-Demand Services': OnDemandScreen(moduleId: module.id, imageUrl: module.image),
+                        'Onboarding': OnboardingScreen(moduleId: module.id, imageUrl: module.image),
+                      };
 
-                        final screen = categoryWidgets[module.name];
+                      final screen = categoryWidgets[module.name];
 
-                        if (screen != null) {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => screen),);
-                        } else {
-                          showCustomToast('Module "${module.name}" not found');
-                        }
-                      },
-                    );
-                  },
-                );
-              } else if (state is ModuleError) {
-                print("Modules : ${state.message}");
-              }
-              return Container();
-            },
-          ),
+                      if (screen != null) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => screen),);
+                      }
+                      else {
+                        showCustomToast('Module "${module.name}" not found');
+                      }
+                    },
+                  );
+                },
+              );
+            } else if (state is ModuleError) {
+              print("Modules : ${state.message}");
+            }
+            return Container();
+          },
         )
       ],
     );

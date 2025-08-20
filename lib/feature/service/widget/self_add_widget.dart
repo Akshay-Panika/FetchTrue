@@ -11,18 +11,14 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../checkout/screen/checkout_screen.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/bloc/provider_review/ProviderReviewBloc.dart';
 import '../../provider/bloc/provider_review/ProviderReviewEvent.dart';
 import '../../provider/bloc/provider_review/ProviderReviewState.dart';
 import '../../provider/repository/provider_review_service.dart';
-import '../../provider/repository/provider_service.dart';
-import '../bloc/module_service/module_service_bloc.dart';
-import '../bloc/module_service/module_service_event.dart';
-import '../bloc/module_service/module_service_state.dart';
-import '../model/service_model.dart';
-import '../repository/api_service.dart';
+import '../bloc/service/service_bloc.dart';
+import '../bloc/service/service_state.dart';
+
 
 void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
   String? selectedProviderId;
@@ -65,12 +61,12 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                             style: textStyle16(context, color: CustomColor.appColor)),
                         const SizedBox(height: 10),
 
-                        BlocBuilder<ModuleServiceBloc, ModuleServiceState>(
+                        BlocBuilder<ServiceBloc, ServiceState>(
                           builder: (context, serviceState) {
-                            if (serviceState is ModuleServiceLoading) {
+                            if (serviceState is ServiceLoading) {
                               return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-                            } else if (serviceState is ModuleServiceLoaded) {
-                              final service = serviceState.serviceModel.firstWhere(
+                            } else if (serviceState is ServiceLoaded) {
+                              final service = serviceState.services.firstWhere(
                                     (s) => s.id == serviceId,
                                 // orElse: () => ServiceModel.empty(), // Avoid crash
                               );
@@ -437,8 +433,8 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                               //   },
                               // );
 
-                            } else if (serviceState is ModuleServiceError) {
-                              return Center(child: Text(serviceState.errorMessage));
+                            } else if (serviceState is ServiceError) {
+                              return Center(child: Text(serviceState.message));
                             }
                             return const SizedBox.shrink();
                           },

@@ -355,7 +355,7 @@ class ShimmerBox extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: borderRadius ?? BorderRadius.circular(4),
+        borderRadius: borderRadius ?? BorderRadius.circular(10),
       ),
     );
   }

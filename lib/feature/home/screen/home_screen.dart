@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 320 + searchBarHeight,
+            expandedHeight: 300 + searchBarHeight,
             pinned: true,
             stretch: true,
             backgroundColor: Colors.white,

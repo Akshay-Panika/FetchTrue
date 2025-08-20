@@ -1,0 +1,142 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../bloc/module_subcategory/subcategory_bloc.dart';
+import '../bloc/module_subcategory/subcategory_state.dart';
+
+class SubcategoryWidget extends StatefulWidget {
+  final String categoryId;
+  final String subcategoryId;
+  final ValueChanged<String>? onChanged;
+
+  const SubcategoryWidget({
+    super.key,
+    required this.categoryId,
+    required this.subcategoryId,
+    this.onChanged,
+  });
+
+  @override
+  State<SubcategoryWidget> createState() => _SubcategoryWidgetState();
+}
+
+class _SubcategoryWidgetState extends State<SubcategoryWidget> {
+
+  late String _selectedId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedId = widget.subcategoryId;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SubcategoryBloc, SubcategoryState>(
+      builder: (context, state) {
+        if (state is SubcategoryLoading) {
+          return const ShimmerList();
+        } else if (state is SubcategoryLoaded) {
+
+          final subcategories = state.subcategories.where((sub) => sub.category.id == widget.categoryId).toList();
+
+          if (subcategories.isEmpty) {
+            return SizedBox.shrink();
+          }
+
+
+          if (_selectedId.isEmpty && subcategories.isNotEmpty) {
+            _selectedId = subcategories.first.id;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.onChanged?.call(_selectedId);
+              setState(() {});
+            });
+          }
+
+          return  SizedBox(
+            height: 145,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.all(5),
+              children: List.generate(subcategories.length, (index) {
+                final sub = subcategories[index];
+                final isSelected = sub.id == _selectedId;
+                return Container(
+                  width: 80,
+                  margin: EdgeInsets.all(5),
+                  child: Column(
+                    spacing: 5,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CustomContainer(
+                        border: true,
+                        height: 80,
+                        networkImg: sub.image,
+                        margin: EdgeInsets.zero,
+                        onTap: () {
+                          setState(() => _selectedId = sub.id);
+                          widget.onChanged?.call(sub.id);
+                        },
+                      ),
+                      Text(sub.name,
+                        style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,),
+                        textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                    ],
+                  ),
+                );
+              },),
+            ),
+          );
+        } else if (state is SubcategoryError) {
+          return Center(child: Text("Error: ${state.message}"));
+        }
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+
+class ShimmerList extends StatelessWidget {
+  const ShimmerList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 130,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: List.generate(4, (index) =>
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  spacing: 10,
+                  children: [
+                    ShimmerBox(height: 80,width: 80,),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ShimmerBox(height: 6, width: 50,),
+                        5.height,
+                        ShimmerBox(height: 6, width: 80,),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),),
+      ),
+    );
+  }
+}
