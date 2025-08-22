@@ -1,14 +1,10 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/home/screen/understanding_fetch_true_screen.dart';
-import 'package:fetchtrue/feature/search/screen/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/costants/custom_color.dart';
-import '../../../core/widgets/custom_search_bar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../banner/widget/home_banner_widget.dart';
-import '../../favorite/screen/favorite_screen.dart';
+import '../../internet/network_wrapper_screen.dart';
 import '../../module/widget/module_widget.dart';
 import '../widget/feature_widget.dart';
 import '../widget/profile_card_widget.dart';
@@ -23,60 +19,59 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
+  final ScrollController _scrollController = ScrollController();
+  bool _isCollapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    final isCollapsed = _scrollController.offset > 150;
+    if (isCollapsed != _isCollapsed) {
+      setState(() => _isCollapsed = isCollapsed);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
-    final double searchBarHeight = 10;
+    final double searchBarHeight = 50;
 
-    return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 300 + searchBarHeight,
-            pinned: true,
-            stretch: true,
-            backgroundColor: Colors.white,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.parallax,
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  /// Banner
-                  HomeBannerWidget(),
-
-                  /// Overlay + Profile
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(
-                      children: [
-                        50.height,
-                        ProfileAppWidget(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return NetworkWrapper(
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            CustomHomeSliverAppbarWidget(
+              isCollapsed: _isCollapsed,
+              searchBarHeight: searchBarHeight,
+              background: HomeBannerWidget(),
             ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(searchBarHeight),
-              child: CustomSearchBar(),
-            ),
-          ),
-
-          /// Futures
-          if (userSession.isLoggedIn)
-          SliverToBoxAdapter(child: featureWidget(userSession.userId!)),
-
-          /// Modules
-          SliverToBoxAdapter(child: ModuleWidget()),
-          SliverToBoxAdapter(child: 15.height),
-          SliverToBoxAdapter(child: ReferAndEarnWidget()),
-          SliverToBoxAdapter(child: 15.height),
-          SliverToBoxAdapter(child: UnderstandingFetchTrueScreen()),
-          SliverToBoxAdapter(child: 15.height),
-        ],
+      
+      
+            /// Futures
+            if (userSession.isLoggedIn)
+            SliverToBoxAdapter(child: featureWidget(userSession.userId!)),
+      
+            /// Modules
+            SliverToBoxAdapter(child: ModuleWidget()),
+            SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: ReferAndEarnWidget()),
+            SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: UnderstandingFetchTrueScreen()),
+            SliverToBoxAdapter(child: 15.height),
+          ],
+        ),
       ),
     );
   }

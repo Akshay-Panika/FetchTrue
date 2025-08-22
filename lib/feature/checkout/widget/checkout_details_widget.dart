@@ -1,35 +1,35 @@
-import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_snackbar.dart';
-import '../../../core/widgets/formate_price.dart';
+import '../../../core/widgets/custom_favorite_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../coupon/model/coupon_model.dart';
 import '../../coupon/screen/coupon_screen.dart';
 import '../../customer/screen/add_customer_screen.dart';
 import '../../customer/screen/customer_screen.dart';
-import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_state.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
+import '../../service/model/service_model.dart';
 import '../bloc/commission/commission_bloc.dart';
-import '../bloc/commission/commission_event.dart';
 import '../bloc/commission/commission_state.dart';
 import '../model/checkout_model.dart';
+import '../model/commission_model.dart';
 
 class CheckoutDetailsWidget extends StatefulWidget {
   final String serviceId;
   final String providerId;
   final String status;
   final Function(CheckOutModel) onPaymentDone;
+
   const CheckoutDetailsWidget({
     super.key,
     required this.onPaymentDone,
@@ -43,12 +43,93 @@ class CheckoutDetailsWidget extends StatefulWidget {
 }
 
 class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
-  double _toDoubleSafe(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    return BlocBuilder<CommissionBloc, CommissionState>(
+      builder: (context, state) {
+        if (state is CommissionLoading) {
+          return const CircularProgressIndicator();
+        } else if (state is CommissionLoaded) {
+          final commissionCharge = state.commission;
+          return BlocBuilder<ServiceBloc, ServiceState>(
+            builder: (context, serviceState) {
+              if (serviceState is ServiceLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              else if (serviceState is ServiceError) {
+                return Center(child: Text(serviceState.message));
+
+              } else if (serviceState is ServiceLoaded) {
+                final service = serviceState.services.firstWhereOrNull((s) => s.id == widget.serviceId,);
+
+                if (service == null) return const Text('No Service Found');
+
+                if(widget.status == 'default' || widget.status == 'outService'){
+                  return CheckoutWidget(
+                    service: service,
+                    price: service.price.toString(),
+                    discountPrice: service.discountedPrice.toString(),
+                    discount: service.discount.toString(),
+                    commission: service.franchiseDetails.commission.toString(),
+                    commissionCharge: commissionCharge,
+                  );
+                }
+
+                else if(widget.status == 'inService'){
+                  final providerPriceData = service.providerPrices.firstWhere((p) => p.provider?.id == widget.providerId,
+                    orElse: () => service.providerPrices.isNotEmpty ? service.providerPrices.first : throw Exception('No provider price found'),
+                  );
+                  return CheckoutWidget(
+                    service: service,
+                    price: providerPriceData.providerMRP.toString(),
+                    discountPrice: providerPriceData.providerPrice.toString(),
+                    discount: providerPriceData.providerDiscount.toString(),
+                    commission: providerPriceData.providerCommission.toString(),
+                    commissionCharge: commissionCharge,
+                  );
+                }
+              }
+
+              return const SizedBox.shrink();
+            },
+          );
+        } else if (state is CommissionError) {
+          print(state.message);
+        }
+        return Container();
+      },
+    );
+
   }
+}
+
+
+class CheckoutWidget extends StatefulWidget {
+  final ServiceModel? service;
+  final String price;
+  final String discountPrice;
+  final String discount;
+  final String commission;
+  final CommissionModel commissionCharge;
+
+  const CheckoutWidget({
+    super.key,
+    required this.service,
+    required this.price,
+    required this.discountPrice,
+    required this.discount,
+    required this.commission,
+    required this.commissionCharge,
+  });
+
+  @override
+  State<CheckoutWidget> createState() => _CheckoutWidgetState();
+}
+
+class _CheckoutWidgetState extends State<CheckoutWidget> {
 
   String? customer_Id;
   String? customerId;
@@ -62,610 +143,458 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
-    Dimensions dimensions = Dimensions(context);
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => CommissionBloc()..add(GetCommissionEvent()),
-        ),
-      ],
-      child: BlocBuilder<ServiceBloc, ServiceState>(
-        builder: (context, serviceState) {
-          if (serviceState is ServiceLoading) {
-            return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-
-          } else if (serviceState is ServiceLoaded) {
-            final service = serviceState.services.firstWhere(
-                  (s) => s.id == widget.serviceId,
-              orElse: () => serviceState.services.first,
-            );
-
-            if (service.id == null || service.id!.isEmpty) {
-              return const Center(child: Text('Service not found'));
-            }
-
-            return BlocBuilder<ProviderBloc, ProviderState>(
-              builder: (context, providerState) {
-                if (providerState is ProviderLoading) {
-                  return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-
-                } else if (providerState is ProviderLoaded) {
-                  double price;
-                  double discountedPrice;
-                  double discountPercent;
-                  String commissionPrice;
-
-                  if (widget.status == "default" || widget.status == "outService") {
-                    price = _toDoubleSafe(service.price);
-                    discountedPrice = _toDoubleSafe(service.discountedPrice);
-                    discountPercent = _toDoubleSafe(service.discount);
-                    commissionPrice = service.franchiseDetails.commission;
-                  } else if (widget.status == "inService") {
-                    final providerPriceData = service.providerPrices.firstWhere((p) => p.provider?.id == widget.providerId,
-                      orElse: () => service.providerPrices.isNotEmpty ? service.providerPrices.first : throw Exception('No provider price found'),
-                    );
-                    price = _toDoubleSafe(providerPriceData.providerMRP);
-                    discountedPrice = _toDoubleSafe(providerPriceData.providerPrice);
-                    discountPercent = _toDoubleSafe(providerPriceData.providerDiscount);
-                    commissionPrice =   providerPriceData.providerCommission.toString();
-                  } else {
-                    price = 0.0;
-                    discountedPrice = 0.0;
-                    discountPercent = 0.0;
-                    commissionPrice = '00';
-                  }
-
-                  return BlocBuilder<CommissionBloc, CommissionState>(
-                    builder: (context, commissionState) {
-                      int platformFee = 0;
-                      double assurityFee = 0;
-
-                      if (commissionState is CommissionLoaded) {
-                        platformFee =
-                            commissionState.commission.platformFee.toInt();
-                        assurityFee =
-                            commissionState.commission.assurityFee.toDouble();
-                      }
-
-                      // Coupon Discount calculation
-                      double couponDiscount = 0.0;
-                      if (selectedCoupon != null) {
-                        if (selectedCoupon!.discountAmountType == 'Percentage') {
-                          couponDiscount =
-                              discountedPrice * selectedCoupon!.amount / 100;
-                        } else {
-                          couponDiscount =
-                              selectedCoupon!.amount.toDouble();
-                        }
-                      }
-
-                      // GST calculation
-                      double gstAmount =
-                          discountedPrice * _toDoubleSafe(service.gst) / 100;
-
-                      // Assurity charge
-                      double assurityCharge =
-                          discountedPrice * assurityFee / 100;
-
-                      // // Grand total calculation
-                      // double grandTotal = discountedPrice -
-                      //     couponDiscount +
-                      //     gstAmount +
-                      //     assurityCharge +
-                      //     platformFee;
-
-                      double calculateGrandTotal({
-                        required double discountedPrice,
-                        required double couponDiscount,
-                        required double gstAmount,
-                        required double assurityCharge,
-                        required int platformFee,
-                      }) {
-                        double total = discountedPrice - couponDiscount + gstAmount + assurityCharge + platformFee;
-
-                        // Agar decimal hai to ceil karo, warna floor karo
-                        return total % 1 == 0 ? total.floorToDouble() : total.ceilToDouble();
-                      }
-
-                      double grandTotal = calculateGrandTotal(
-                        discountedPrice: discountedPrice,
-                        couponDiscount: couponDiscount,
-                        gstAmount: gstAmount,
-                        assurityCharge: assurityCharge,
-                        platformFee: platformFee,
-                      );
+    var listingPrice = double.tryParse(widget.price.toString()) ?? 0.0;
+    var serviceDiscount = double.tryParse(widget.discount.toString()) ?? 0.0;
 
 
-                      return Expanded(
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  children: [
-                                    10.height,
-                                    /// Service Card
-                                    CustomContainer(
-                                      padding: EdgeInsets.zero,
-                                      color: CustomColor.whiteColor,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          CustomContainer(
-                                            height: 150,
-                                            networkImg: service.thumbnailImage,
-                                            margin: EdgeInsets.zero,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(service.serviceName,
-                                                    style: textStyle14(context)),
-                                                Row(
-                                                  spacing: 10,
-                                                  children: [
-                                                    CustomAmountText(
-                                                      amount: formatPrice(price),
-                                                      color:
-                                                      CustomColor.descriptionColor,
-                                                      isLineThrough: true,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                    CustomAmountText(
-                                                      amount:
-                                                      formatPrice(discountedPrice),
-                                                      color: CustomColor.appColor,
-                                                      isLineThrough: false,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                    Text(
-                                                      '$discountPercent % Off',
-                                                      style: textStyle14(
-                                                        context,
-                                                        color: CustomColor.greenColor,
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    10.height,
+    var serviceDiscountPrice = (listingPrice * serviceDiscount) / 100;
+    var serviceLessDiscountPrice = listingPrice - serviceDiscountPrice;
 
-                                    /// Commission
-                                    CustomContainer(
-                                      color: CustomColor.whiteColor,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('You Will Earn Commission', style: textStyle14(context, color: CustomColor.appColor),),
-                                          Row(
-                                            children: [
-                                              Text('Up To', style: textStyle14(context),),
-                                              10.width,
-                                              // Text(widget.status == "default" ? '${service.franchiseDetails.commission}': commissionPrice, style: textStyle14(context, color: CustomColor.greenColor),),
-                                              Text(commissionPrice, style: textStyle14(context, color: CustomColor.greenColor),),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    10.height,
+    double couponDiscount = 0.0;
+    if (selectedCoupon != null) {
+      var amount = double.tryParse(selectedCoupon!.amount.toString()) ?? 0.0;
+      if (selectedCoupon!.discountAmountType == "Percentage") {
+        couponDiscount = (serviceLessDiscountPrice * amount) / 100;
+      } else {
+        couponDiscount = amount;
+      }
+    }
 
-                                    /// Add customer
-                                    CustomContainer(
-                                      border: false,
-                                      color: CustomColor.whiteColor,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Select Customer',),
-                                          Divider(),
-
-                                          if(customerName!= null)
-                                           Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-
-                                                ListTile(
-                                                  minTileHeight: 0,
-                                                  minVerticalPadding: 0,
-                                                  contentPadding: EdgeInsets.zero,
-                                                  title: Text(
-                                                    'Name: ${customerName ?? '_____'}',
-                                                    style: textStyle12(context, color: CustomColor.descriptionColor),
-                                                  ),
-                                                  subtitle: Column(
-                                                    crossAxisAlignment:CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        'Phone: ${customerPhone ?? '_____'}',
-                                                        style: textStyle12(context, color: CustomColor.descriptionColor),
-                                                      ),
-
-                                                      if(message!.isNotEmpty)
-                                                        Text('Notes: ${message??'_____'}',
-                                                          style: textStyle12(context, color: CustomColor.descriptionColor),
-                                                        ),
-                                                    ],
-                                                  ), ),
-                                              ],
-                                            ),
-
-                                          10.height,
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: CustomContainer(
-                                                  border: true,
-                                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                                  onTap: () async {
-                                                    final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  CustomerScreen(userId: userSession.userId.toString(),)),);
-
-                                                    if (selectedCustomer != null) {
-                                                      setState(() {
-                                                        customer_Id = selectedCustomer['_id'];
-                                                        customerId = selectedCustomer['userId'];
-                                                        customerName = selectedCustomer['fullName'];
-                                                        customerPhone = selectedCustomer['phone'];
-                                                        message = selectedCustomer['message'];
-                                                      });
-                                                    }
-                                                  },
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: CustomColor.appColor,size: 16,),
-                                                      10.width,
-                                                      Text('My Customer', style: textStyle12(context, color: CustomColor.appColor),),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: CustomContainer(
-                                                    border: true,
-                                                    padding: EdgeInsets.symmetric(vertical: 8),
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Icon(Icons.add, color: CustomColor.appColor, size: 16,),
-                                                        10.width,
-                                                        Text('Add New Customer', style: textStyle12(context, color: CustomColor.appColor),),
-                                                      ],
-                                                    ),
-                                                    onTap: () async {
-                                                      final selectedCustomer = await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => AddCustomerScreen(userId: userSession.userId!),
-                                                        ),
-                                                      );
-
-                                                      if (selectedCustomer != null) {
-                                                        setState(() {
-                                                          customer_Id = selectedCustomer['_id'];
-                                                          customerId = selectedCustomer['userId'];
-                                                          customerName = selectedCustomer['fullName'];
-                                                          customerPhone = selectedCustomer['phone'];
-                                                          message = selectedCustomer['message'];
-                                                        });
-                                                      }
-                                                    }
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    10.height,
-
-                                    /// Best Coupon For You
-                                    CustomContainer(
-                                      border: false,
-                                      color: CustomColor.whiteColor,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                             Text('Best Coupon For You'),
-
-                                              InkWell(
-                                                onTap: () async {
-                                                  final selected = await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => const CouponScreen()),
-                                                  );
-
-                                                  if (selected != null && selected is CouponModel) {
-                                                    setState(() {
-                                                      selectedCoupon = selected;
-                                                    });
-                                                  }
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Text('See All', style: textStyle12(context),),
-                                                    5.width,
-                                                    Icon(Icons.arrow_forward_ios, size: 12,)
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          10.height,
-
-                                          if (selectedCoupon != null) ...[
-                                            CustomContainer(
-                                              border: true,
-                                              width: double.infinity,
-                                              borderColor: CustomColor.greenColor,
-                                              color: CustomColor.whiteColor,
-                                              margin: EdgeInsets.zero,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text('Extra ${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? '%' : ''} Off', style: textStyle12(context)),
-                                                  Text(
-                                                    'You save an extra ₹${selectedCoupon!.amount} with this coupon.',
-                                                    style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
-                                                  ),
-                                                  10.height,
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: CustomContainer(
-                                                          border: true,
-                                                          height: 40,
-                                                          margin: EdgeInsets.zero,
-                                                          child: Center(
-                                                            child: Text(
-                                                              "#${selectedCoupon!.couponCode}",
-                                                              style: textStyle14(context, color: CustomColor.greenColor),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      10.width,
-                                                      Expanded(
-                                                        child: CustomContainer(
-                                                          border: true,
-                                                          height: 40,
-                                                          margin: EdgeInsets.zero,
-                                                          child: Center(
-                                                            child: Text(
-                                                              'Applied',
-                                                              style: textStyle12(context, color: CustomColor.appColor),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ] else ...[
-                                            CustomContainer(
-                                              border: true,
-                                              width: double.infinity,
-                                              borderColor: CustomColor.greenColor,
-                                              color: CustomColor.whiteColor,
-                                              margin: EdgeInsets.zero,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text('Extra 00 Off', style: textStyle12(context),),
-                                                  Text('You save an extra ₹00 with this coupon.', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-
-                                                  10.height,
-                                                  Row(
-                                                    children: [
-                                                      Expanded(flex: 3,
-                                                          child: CustomContainer(
-                                                            border: true,
-                                                            height: 40,
-                                                            margin: EdgeInsets.zero,
-                                                            child: TextField(
-                                                              style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                                                              decoration: InputDecoration(
-                                                                border: InputBorder.none,
-                                                                suffixIcon: Icon(CupertinoIcons.check_mark_circled, color: CustomColor.appColor,size: 18,),
-                                                                labelStyle: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-                                                                hintText: 'Type Coupon Here...',
-                                                              ),
-                                                            ),
-                                                          )),
-
-                                                      10.width,
-                                                      Expanded(
-                                                        child: CustomContainer(
-                                                          border: true,
-                                                          height: 40,
-                                                          margin: EdgeInsets.zero,
-                                                          child: Center(child: Text('Apply', style: textStyle12(context, color: CustomColor.appColor),)),),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-
-                                          10.height,
-
-                                        ],
-                                      ),
-                                    ),
-                                    10.height,
-
-                                    CustomContainer(
-                                      color: Colors.white,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        spacing: 10,
-                                        children: [
-                                          _summeryText(context,
-                                              label: 'Listing Price',
-                                              value: '₹ ${formatPrice(price)}'),
-                                          _summeryText(context,
-                                              label:
-                                              'Service Discount (${formatPrice(discountPercent)} %)',
-                                              value:
-                                              '- ₹ ${formatPrice(price - discountedPrice)}'),
-                                          _summeryText(context,
-                                              label: 'Price After Discount',
-                                              value:
-                                              '₹ ${formatPrice(discountedPrice)}'),
-                                          _summeryText(context,
-                                              label:
-                                              'Coupon Discount (${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'})',
-                                              value:
-                                              '- ₹ ${formatPrice(couponDiscount)}'),
-                                          _summeryText(context,
-                                              label: 'Service GST (${service.gst}%)',
-                                              value: '+ ₹ ${formatPrice(gstAmount)}'),
-                                          _summeryText(context,
-                                              label:
-                                              'Platform Fee (₹ ${formatPrice(platformFee)})',
-                                              value:
-                                              '+ ₹ ${formatPrice(platformFee)}'),
-                                          _summeryText(context,
-                                              label:
-                                              'Fetch True Assurity Charge (${formatPrice(assurityFee)} %)',
-                                              value:
-                                              '+ ₹ ${formatPrice(assurityCharge)}'),
-                                          Divider(height: 0),
-                                          _summeryText(context,
-                                              label: 'Grand Total',
-                                              value: '₹ ${formatPrice(grandTotal)}'),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Checkbox(value: _isAgree, onChanged: (value) {
-                                      setState(() {
-                                        _isAgree = !_isAgree;
-                                      });
-                                    }, activeColor: Colors.green,),
-                                    Text('I agree with the term & condition')
-                                  ],
-                                ),
-                                5.height,
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: CustomButton(
-                                    isLoading: false,
-                                    onPressed: () async {
-                                      if (customerId == null) {
-                                        showCustomToast('Please select customer.');
-                                        return;
-                                      }
-
-                                      if (!_isAgree) {
-                                        showCustomToast('Please agree to the terms & conditions.');
-                                        return;
-                                      }
+    var finalPrice = serviceLessDiscountPrice - couponDiscount;
+    if (finalPrice < 0) finalPrice = 0;
 
 
-                                      final discountAmount = price - discountedPrice;
-                                      /// Model
-                                      final checkoutData = CheckOutModel(
-                                        user: userSession.userId.toString(),
-                                        service: service.id.toString(),
-                                        serviceCustomer: customer_Id.toString(),
-                                        provider: widget.status == "default" ? null : widget.providerId,
-                                        coupon: selectedCoupon?.id,
-                                        subtotal: discountedPrice,
-                                        serviceDiscount: discountPercent,
-                                        couponDiscount: (selectedCoupon?.amount ?? 0).toDouble(),
-                                        gst: (service.gst ?? 0).toDouble(),
-                                        platformFee: platformFee.toDouble(),
-                                        platformFeePrice: platformFee.toDouble(),
-                                        champaignDiscount: 0,
-                                        commission: commissionPrice.toString(),
-                                        assurityfee: assurityFee,
-                                        totalAmount: grandTotal,
-                                        paymentMethod: [],
-                                        walletAmount: 0,
-                                        otherAmount: 0,
-                                        paidAmount: 0,
-                                        remainingAmount: 0,
-                                        isPartialPayment: false,
-                                        paymentStatus: '',
-                                        orderStatus: '',
-                                        notes: message ?? '',
-                                        termsCondition: _isAgree,
-                                        listingPrice: price,
-                                        serviceDiscountPrice: discountAmount,
-                                        priceAfterDiscount: discountedPrice,
-                                        couponDiscountPrice: couponDiscount,
-                                        serviceGSTPrice: gstAmount,
-                                        assurityChargesPrice: assurityCharge,
-                                      );
-                                      widget.onPaymentDone(checkoutData);
-                                    },
-                                    label: 'Proceed',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
+    /// add this
+    var serviceGst = widget.service!.gst; // in %
+    var platformFee = widget.commissionCharge.platformFee; // in amount
+    var assurityFee = widget.commissionCharge.assurityFee; // in %
+
+    var gstAmount = (finalPrice * serviceGst!) / 100;
+    var platformFeeAmount = platformFee.toDouble();
+    var assurityFeeAmount = (finalPrice * assurityFee) / 100;
+
+    var grandTotal = finalPrice + gstAmount + platformFeeAmount + assurityFeeAmount;
+
+    return Expanded(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                _serviceCard(context,
+                  service: widget.service,
+                  price: widget.price,
+                  discountPrice: widget.discountPrice,
+                  discount: widget.discount,
+                  commission: widget.commission,
+                ),
+
+                /// Add customer
+               _addCustomer(context,
+                 customerName: customerName,
+                 customerPhone: customerPhone,
+                 customerMassage: message,
+                 myCustomer: () async {
+                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  CustomerScreen(userId: userSession.userId!,)),);
+
+                   if (selectedCustomer != null) {
+                     setState(() {
+                       customer_Id = selectedCustomer['_id'];
+                       customerId = selectedCustomer['userId'];
+                       customerName = selectedCustomer['fullName'];
+                       customerPhone = selectedCustomer['phone'];
+                       message = selectedCustomer['message'];
+                     });
+                   }
+                 },
+                 addCustomer: () async {
+                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userSession.userId!),),);
+
+                   if (selectedCustomer != null) {
+                     setState(() {
+                       customer_Id = selectedCustomer['_id'];
+                       customerId = selectedCustomer['userId'];
+                       customerName = selectedCustomer['fullName'];
+                       customerPhone = selectedCustomer['phone'];
+                       message = selectedCustomer['message'];
+                     });
+                   }
+                 },
+               ),
+                10.height,
+
+
+                _couponCard(context,
+                    () async {
+                    final selected = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponScreen()),);
+                    if (selected != null && selected is CouponModel) {
+                      setState(() {
+                        selectedCoupon = selected;
+                      });
+                    }
                     },
-                  );
-                } else if (providerState is ProviderError) {
-                  return Center(child: Text(providerState.message));
-                }
-                return const SizedBox.shrink();
-              },
-            );
-          } else if (serviceState is ServiceError) {
-            return Center(child: Text(serviceState.message));
-          }
-          return const SizedBox.shrink();
-        },
+                    selectedCoupon,
+                  ),
+                10.height,
+
+
+
+                CustomContainer(
+                  color: CustomColor.whiteColor,
+                  margin: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                  child: Column(spacing: 10,
+                    children: [
+                      _buildRow(context, 'Listing Price','₹ ${listingPrice.toStringAsFixed(2)}'),
+                      _buildRow(context, 'Service Discount (${serviceDiscount.toStringAsFixed(0)} %)', '- ₹ ${serviceDiscountPrice.toStringAsFixed(2)}'),
+                      _buildRow(context, 'Discount Price','₹ ${serviceLessDiscountPrice.toStringAsFixed(2)}'),
+                      _buildRow(
+                        context,
+                        'Coupon Discount (${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'})',
+                        '- ₹ ${couponDiscount.toStringAsFixed(2)}',
+                      ),
+                      _buildRow(context, 'Service GST (${serviceGst} %)','+ ${gstAmount.toStringAsFixed(2)}'),
+                      _buildRow(context, 'Platform Fee (₹ ${platformFee})','+ ${platformFeeAmount.toStringAsFixed(2)}'),
+                      _buildRow(context, 'Fetch True Assurity Charge (${assurityFee} %)','+ ${assurityFeeAmount.toStringAsFixed(2)}'),
+
+                      Divider(height: 0,),
+                      _buildRow(context, 'Grand Total', '₹ ${grandTotal.toStringAsFixed(2)}'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15, bottom: 15),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            activeColor: CustomColor.appColor,
+                            value: _isAgree, onChanged: (value) {
+                            setState(() {
+                              _isAgree = !_isAgree;
+                            });
+                          },),
+                          Text('I agree with the term  condition')
+                        ],
+                      ),
+                      10.height,
+                      CustomButton(
+                        isLoading: false,
+                        label: 'Proceed', onPressed: () => null,)
+                    ],
+                  ),
+                ),
+        ],
       ),
     );
   }
 }
 
-Widget _summeryText(BuildContext context, {String? label, String? value}) {
+
+/// Service card
+Widget _serviceCard(
+    BuildContext context,
+{
+  ServiceModel? service,
+  String? price,
+  String? discountPrice,
+  String? discount,
+  String? commission,
+}){
+
+  String formatCommission(dynamic rawCommission, {bool half = false}) {
+    if (rawCommission == null) return '0';
+
+    final commissionStr = rawCommission.toString();
+
+    // Extract numeric value
+    final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+    final numeric = double.tryParse(numericStr) ?? 0;
+
+    // Extract symbol (₹, %, etc.)
+    final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+    final value = half ? (numeric / 2).round() : numeric.round();
+
+    // Format with symbol
+    if (symbol == '%') {
+      return '$value%';
+    } else {
+      return '$symbol$value';
+    }
+  }
+
+  return  CustomContainer(
+    border: false,
+    color: Colors.white,
+    padding: EdgeInsets.zero,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CustomContainer(
+          height: 160,
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
+          networkImg: service!.thumbnailImage.toString(),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                CustomFavoriteButton(),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                    color: CustomColor.blackColor.withOpacity(0.3),
+                  ),
+                  child: Text('⭐ ${service!.averageRating} (${service!.totalReviews} ${'Reviews'})',
+                    style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        10.height,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(service!.serviceName.toString(), style: textStyle12(context)),
+                  Row(
+                    children: [
+                      CustomAmountText(
+                        amount: formatPrice(num.tryParse(price!) ?? 0),
+                        color: CustomColor.descriptionColor,
+                        isLineThrough: true,
+                        fontSize: 14,
+                      ),
+                      10.width,
+                      CustomAmountText(
+                        amount: formatPrice(num.tryParse(discountPrice!) ?? 0),
+                        color: CustomColor.descriptionColor,
+                        fontSize: 14,
+                      ),
+                      10.width,
+                      Text(
+                        '$discount%',
+                        style: textStyle14(
+                          context,
+                          color: CustomColor.greenColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Earn up to',
+                    style: textStyle14(
+                      context,
+                      color: CustomColor.appColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    formatCommission(commission, half: true), style: textStyle16(context, color: CustomColor.greenColor,),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        5.height
+      ],
+    ),
+  );
+}
+
+
+/// Coupon Card
+Widget _couponCard(BuildContext context, VoidCallback? onTap, CouponModel? selectedCoupon) {
+  final isPercentage = selectedCoupon?.discountAmountType == 'Percentage';
+
+  return CustomContainer(
+    color: CustomColor.whiteColor,
+    margin: EdgeInsetsGeometry.symmetric(horizontal: 10),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Best Coupon For You", style: textStyle14(context, fontWeight: FontWeight.w500)),
+            InkWell(
+              onTap: onTap,
+              child: Text(
+                selectedCoupon != null ? "Change Coupon" : "View Coupon",
+                style: textStyle12(context, color: CustomColor.appColor),
+              ),
+            ),
+          ],
+        ),
+        const Divider(thickness: 0.4),
+
+        if (selectedCoupon != null)
+          CustomContainer(
+            border: true,
+            color: Colors.transparent,
+            width: double.infinity,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${selectedCoupon.discountTitle}",
+                  style: textStyle14(context, fontWeight: FontWeight.w500),
+                ),
+                5.height,
+                Text(
+                  "Coupon Code: #${selectedCoupon.couponCode}",
+                  style: textStyle12(context, color: CustomColor.greenColor),
+                ),
+                5.height,
+                Text(
+                  "Offer: Save ${isPercentage ? '${selectedCoupon.amount}%' : '₹${selectedCoupon.amount}'}",
+                  style: textStyle12(context, color: CustomColor.descriptionColor),
+                ),
+              ],
+            ),
+          ),
+
+        if (selectedCoupon == null)
+          const Text("No Coupon Selected"),
+      ],
+    ),
+  );
+}
+
+Widget _buildRow(BuildContext context, label, amount){
   return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(label ?? ''),
-      Text(value ?? ''),
-    ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Text(amount),
+      ]
+  );
+}
+
+
+Widget _addCustomer(
+    BuildContext context, {
+      String? customerName,
+      String? customerPhone,
+      String? customerMassage,
+      VoidCallback? myCustomer,
+      VoidCallback? addCustomer,
+    }) {
+  return CustomContainer(
+    border: false,
+    color: CustomColor.whiteColor,
+    margin: EdgeInsets.symmetric(horizontal: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Select Customer',
+          style: textStyle14(context, fontWeight: FontWeight.w600),
+        ),
+        const Divider(),
+
+        if(customerName!= null)
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            'Name: ${customerName}',
+            style: textStyle12(context, color: CustomColor.descriptionColor),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Phone: ${customerPhone}',
+                style: textStyle12(context, color: CustomColor.descriptionColor),
+              ),
+
+              if (customerMassage != null && customerMassage.isNotEmpty)
+              Text(
+                'Notes: ${customerMassage}',
+                style: textStyle12(context, color: CustomColor.descriptionColor),
+              ),
+            ],
+          ),
+        ),
+
+
+        /// Buttons Row
+        Row(
+          children: [
+            Expanded(
+              child: _actionButton(
+                context,
+                icon: CupertinoIcons.person_crop_circle_badge_checkmark,
+                label: "My Customer",
+                onTap: myCustomer,
+              ),
+            ),
+            10.width,
+            Expanded(
+              child: _actionButton(
+                context,
+                icon: Icons.add,
+                label: "Add New Customer",
+                onTap: addCustomer,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+/// Action Button
+Widget _actionButton(
+    BuildContext context, {
+      required IconData icon,
+      required String label,
+      VoidCallback? onTap,
+    }) {
+  return CustomContainer(
+    border: true,
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    onTap: onTap,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: CustomColor.appColor, size: 16),
+        8.width,
+        Text(
+          label,
+          style: textStyle12(context, color: CustomColor.appColor),
+        ),
+      ],
+    ),
   );
 }

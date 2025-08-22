@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/service/screen/service_review_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
         Stack(
           children: [
             CustomContainer(
-              border: true,
+              border: false,
               borderColor: CustomColor.greyColor,
               color: Colors.white,
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -55,7 +56,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           10.width,
                           
                           CustomAmountText(
-                            amount: '${(data.discountedPrice ?? 0).toInt()}',
+                            amount: formatPrice(data.discountedPrice!),
                             // amount: data.discountedPrice.toString(),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -64,7 +65,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                           10.width,
 
                           if(data.discount != null)
-                          Text('${data.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),
+                          Text('${data.discount} % Off', style: textStyle14(context, color: CustomColor.greenColor),),
                         ],
                       ),
                       InkWell(
@@ -167,7 +168,7 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
       if (section.faqs != null)      return _buildFAQs(context, section.faqs!);
       if (section.highlightImages != null )  return _buildHighlight(context,images: section.highlightImages!);
       return CustomContainer(
-        border: true,
+        border: false,
         borderColor: CustomColor.greyColor,
         color: Colors.white,
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -224,7 +225,7 @@ class _Section {
 
 Widget _buildHighlight(BuildContext context,{required List<String> images,}){
   return CustomContainer(
-      border: true,
+      border: false,
       borderColor: CustomColor.greyColor,
       color: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -249,7 +250,7 @@ Widget _buildHighlight(BuildContext context,{required List<String> images,}){
 
 Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
   return CustomContainer(
-    border: true,
+    border: false,
     borderColor: CustomColor.greyColor,
     color: Colors.white,
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -330,7 +331,7 @@ Widget _buildWhyChoose(BuildContext context, List<WhyChoose> list) {
 
 Widget _buildFAQs(BuildContext context, List<Faq> list) {
   return CustomContainer(
-    border: true,
+    border: false,
     borderColor: CustomColor.greyColor,
     color: Colors.white,
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

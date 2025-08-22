@@ -39,56 +39,96 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return  Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: BlocBuilder<BannerBloc, BannerState>(
-        builder: (context, state) {
-          if (state is BannerLoading) {
-            return Container(color: Colors.grey[100]);
-          } else if (state is BannerLoaded) {
-            // final banners = state.banners;
-            final banners = state.banners.where((banner) => banner.page == "home").toList();
-            if (banners.isEmpty) return const SizedBox.shrink();
-            // start auto-slide timer only once
-            startAutoSlide(banners);
-              final banner = banners[currentIndex];
-            return AnimatedSwitcher(
-              duration: const Duration(seconds: 2),
-              switchInCurve: Curves.easeInCubic,
-              switchOutCurve: Curves.easeOutCubic,
-              child: CustomNetworkImage(
-                key: ValueKey(banner.id),
-                imageUrl: banner.file,
-                fit: BoxFit.fill,
-                  onTap: () {
-                    if (banner.selectionType == 'referralUrl') {
-                      CustomUrlLaunch(banner.referralUrl);
-                    } else if (banner.selectionType == 'subcategory') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SubcategoryScreen(
-                            categoryId: banner.subcategory!.category,
-                            categoryName: banner.subcategory!.name,
+    return  BlocBuilder<BannerBloc, BannerState>(
+      builder: (context, state) {
+        if (state is BannerLoading) {
+          return Container(color: Colors.grey[100]);
+        } else if (state is BannerLoaded) {
+          // final banners = state.banners;
+          final banners = state.banners.where((banner) => banner.page == "home").toList();
+          if (banners.isEmpty) return const SizedBox.shrink();
+          // start auto-slide timer only once
+          startAutoSlide(banners);
+            final banner = banners[currentIndex];
+          return Stack(
+            // alignment: Alignment.bottomLeft,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(seconds: 2),
+                switchInCurve: Curves.easeInCubic,
+                switchOutCurve: Curves.easeOutCubic,
+                child: CustomNetworkImage(
+                  key: ValueKey(banner.id),
+                  imageUrl: banner.file,
+                  fit: BoxFit.fill,
+                    onTap: () {
+                      if (banner.selectionType == 'referralUrl') {
+                        CustomUrlLaunch(banner.referralUrl);
+                      } else if (banner.selectionType == 'subcategory') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SubcategoryScreen(
+                              categoryId: banner.subcategory!.category,
+                              categoryName: banner.subcategory!.name,
+                            ),
                           ),
+                        );
+                      } else if (banner.selectionType == 'service') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                          ),
+                        );
+                      }
+                    }),
+              ),
+
+              if (banners.length > 1)
+                Positioned(
+                  bottom: 70,
+                  left: 15,
+                  child: Row(
+                    children: List.generate(banners.length, (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        height: 4,
+                        width: index == currentIndex ?24 :10,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(2),
                         ),
+                        child: index == currentIndex
+                            ? TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: const Duration(seconds: 8), // same as banner timer
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              widthFactor: value,
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                            : null,
                       );
-                    } else if (banner.selectionType == 'service') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
-                        ),
-                      );
-                    }
-                  }),
-            );
-          } else if (state is BannerError) {
-            print("Error: ${state.message}");
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+                    }),
+                  ),
+                )
+
+            ],
+          );
+        } else if (state is BannerError) {
+          print("Error: ${state.message}");
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

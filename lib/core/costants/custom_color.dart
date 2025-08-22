@@ -16,6 +16,7 @@ class CustomColor{
   /// App color
   static Color redColor = Colors.red;
   static Color greenColor = Colors.green;
+
   static Color blueColor = Colors.blue;
   static Color blackColor = Colors.black87;
   static Color whiteColor = Colors.white;

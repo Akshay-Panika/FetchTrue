@@ -36,10 +36,10 @@ class BusinessCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
-                    Text('Category', style: textStyle14(context, color: CustomColor.appColor),),
+                    Icon(Icons.apps, size: 19, color: Color(0xff381A67)),5.width,
+                    Text('Category', style: textStyle14(context, color: Color(0xff381A67)),),
                     10.width,
-                    Expanded(child: Divider(color: CustomColor.appColor,))
+                    Expanded(child: Divider(color: Color(0xff381A67),))
                   ],
                 ),
               ),

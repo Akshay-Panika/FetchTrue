@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/widgets/custom_favorite_button.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class SubcategoryScreen extends StatefulWidget {
 class _SubcategoryScreenState extends State<SubcategoryScreen> {
 
   String selectedSubcategoryId = '';
+  String selectedFilter = 'All';
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,14 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
 
 
             /// Filter
-            FilterWidget(dimensions: dimensions),
+            FilterWidget(
+              dimensions: dimensions,
+              onFilterSelected: (filter) {
+                setState(() {
+                  selectedFilter = filter;
+                });
+              },
+            ),
 
 
             BlocBuilder<ServiceBloc, ServiceState>(
@@ -76,6 +85,9 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                     }
                   }).toList();
 
+                  services = _applyFilter(services);
+
+
                   if (services.isEmpty) {
                     return Column(
                       children: [
@@ -89,9 +101,33 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
 
                   return  Expanded(
                     child: ListView(
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       children: List.generate(services.length, (index) {
                         final data = services[index];
+
+
+                        String formatCommission(dynamic rawCommission, {bool half = false}) {
+                          if (rawCommission == null) return '0';
+
+                          final commissionStr = rawCommission.toString();
+
+                          // Extract numeric value
+                          final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+                          final numeric = double.tryParse(numericStr) ?? 0;
+
+                          // Extract symbol (₹, %, etc.)
+                          final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+                          final value = half ? (numeric / 2).round() : numeric.round();
+
+                          // Format with symbol
+                          if (symbol == '%') {
+                            return '$value%';
+                          } else {
+                            return '$symbol$value';
+                          }
+                        }
+
                         return CustomContainer(
                           border: false,
                           color: Colors.white,
@@ -106,7 +142,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CustomContainer(
-                                height: 180,
+                                height: 160,
                                 margin: EdgeInsets.zero,
                                 padding: EdgeInsets.zero,
                                 networkImg: data.thumbnailImage,
@@ -144,21 +180,31 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(data.serviceName, style: textStyle12(context),),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,isLineThrough: true,fontSize: 14),
-                                            10.width,
-                                            CustomAmountText(amount: data.discountedPrice.toString(), color: CustomColor.descriptionColor, fontSize: 14),
+                                            Text(data.serviceName, style: textStyle12(context),),
+                                            Row(
+                                              children: [
+                                                CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,isLineThrough: true,fontSize: 14),
+                                                10.width,
+                                                CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.descriptionColor, fontSize: 14),
+                                                10.width,
+                                                Text('${data.discount} % Off', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),),
+
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                        Row(
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
-                                            Text('Earn up to ', style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                                            Text('${data.franchiseDetails.commission}', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),),
+                                            Text('Earn up to ', style: textStyle14(context, color: CustomColor.appColor, fontWeight: FontWeight.w400),),
+                                            Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
+                                            // Text('${data.franchiseDetails.commission}', style: textStyle14(context, color: CustomColor.greenColor,),),
                                           ],
                                         ),
                                       ],
@@ -183,8 +229,6 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                           ],
                                         ),
                                       )),
-                    
-                                    10.height,
                                   ],
                                 ),
                               ),
@@ -209,7 +253,30 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
       ),
     );
   }
+
+
+  /// Filter logic
+  List<ServiceModel> _applyFilter(List<ServiceModel> services) {
+    switch (selectedFilter) {
+      case 'Low to High':
+        services.sort((a, b) => (a.discountedPrice ?? 0).compareTo(b.discountedPrice ?? 0));
+        break;
+      case 'High to Low':
+        services.sort((a, b) => (b.discountedPrice ?? 0).compareTo(a.discountedPrice ?? 0));
+        break;
+      case 'Most Popular':
+        services.sort((a, b) => (b.totalReviews ?? 0).compareTo(a.totalReviews ?? 0));
+        break;
+      case 'Top Rated':
+        services.sort((a, b) => (b.averageRating ?? 0).compareTo(a.averageRating ?? 0));
+        break;
+      default:
+        break;
+    }
+    return services;
+  }
 }
+
 
 Widget _ShimmerList(){
   return Expanded(

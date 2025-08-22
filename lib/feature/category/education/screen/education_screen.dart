@@ -7,7 +7,9 @@ import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
+import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
+import '../../../banner/widget/education_banner_widget.dart';
 import '../../../banner/widget/home_banner_widget.dart';
 
 class EducationScreen extends StatefulWidget {
@@ -52,45 +54,14 @@ class _EducationScreenState extends State<EducationScreen> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            expandedHeight: 250 + searchBarHeight,
-            pinned: true,
-            stretch: true,
-            backgroundColor: Colors.white,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Hero(
-                tag: widget.moduleId,
-                child: Material(
-                  color: Colors.transparent,
-                  child: CircleAvatar(radius: 20.5,
-                    backgroundColor: CustomColor.appColor,
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: CustomColor.whiteColor,
-                      backgroundImage: NetworkImage(widget.imageUrl),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Education Service', style: textStyle16(context,  color: _isCollapsed ? CustomColor.appColor : Colors.white,),),
-                Text('Pune 411028, Maharashtra', style: textStyle12(context,  color: _isCollapsed ? CustomColor.descriptionColor : Colors.white,),),
-              ],
-            ),
-            titleSpacing: 15,
-            leadingWidth: 50,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.parallax,
-              background: HomeBannerWidget(),
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(searchBarHeight),
-              child:CustomSearchBar(),
-            ),
+
+          CustomSliverAppbar(
+            moduleId: widget.moduleId,
+            title: 'Education Service',
+            imageUrl: widget.imageUrl,
+            isCollapsed: _isCollapsed,
+            searchBarHeight: searchBarHeight,
+            background: EducationBannerWidget(moduleId: widget.moduleId),
           ),
 
           SliverToBoxAdapter(child: EducationCategoryWidget(moduleId: widget.moduleId,),),

@@ -64,10 +64,10 @@ class ModuleWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final module = modules[index];
                   return CustomContainer(
-                    border: true,
+                    border: false,
                     margin: EdgeInsets.zero,
                     color: Colors.white,
-                    padding: EdgeInsets.zero,
+                    // padding: EdgeInsets.zero,
                     child: Column(
                       children: [
                         Expanded(
@@ -83,10 +83,7 @@ class ModuleWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
-                        ),
+                        Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
                         5.height,
                       ],
                     ),

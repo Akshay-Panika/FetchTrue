@@ -17,6 +17,7 @@ import '../../coupon/screen/coupon_screen.dart';
 import '../../delete_account/screen/delete_account_screen.dart';
 import '../../favorite/screen/favorite_screen.dart';
 import '../../help_support/screen/help_support_screen.dart';
+import '../../internet/network_wrapper_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
@@ -43,157 +44,159 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
     final userSession = Provider.of<UserSession>(context);
     final isLoggedIn = userSession.isLoggedIn;
 
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Profile',
-        showBackButton: false,
-        showNotificationIcon: true,
+    return NetworkWrapper(
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Profile',
+          showBackButton: false,
+          showNotificationIcon: true,
+        ),
+      
+      
+        body:CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              floating: true,
+              toolbarHeight: 200,
+              backgroundColor: Colors.grey[100],
+              flexibleSpace: FlexibleSpaceBar(
+                background: ProfileCardWidget(),
+              ),
+            ),
+        
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  _buildSection(context, "Account", [
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.person_outline, "Profile", () async{
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId!,)));
+                     }),
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.favorite_border, "Favorite", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>
+                          FavoriteScreen(userId: userSession.userId)));
+                    }),
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.wallet_outlined, "Wallet", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  WalletScreen(userId: userSession.userId ?? '',)));
+                    }),
+        
+        
+                    _buildTile(context, Icons.card_giftcard, "Package", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen()));
+                    }),
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.person_4_outlined, "Provider", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ProviderScreen()));
+                    }),
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.person_4, "Customer", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  CustomerScreen(userId: userSession.userId.toString(), isMenu: true)));
+                    }),
+                  ]),
+        
+        
+                  _buildSection(context, "Preferences", [
+                    _buildTile(context, Icons.description_outlined, "About Us", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutUsScreen()));
+                    }),
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.settings_outlined, "Settings", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.support_agent, "Help & Support", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.security, "Privacy & Policy", () {
+                      CustomUrlLaunch('https://www.fetchtrue.com/privacypolicy');
+                      // Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
+                    }),
+        
+        
+                    _buildTile(context, Icons.rule, "Terms And Conditions", () {
+                      CustomUrlLaunch('https://www.fetchtrue.com/termsandcondition');
+                      // Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
+                    }),
+        
+                    _buildTile(context, Icons.receipt_long, "Refund Policy", () {
+                      CustomUrlLaunch('https://www.fetchtrue.com/refund&returnpolicy');
+                      // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
+                    }),
+        
+                    _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
+                    }),
+                  ]),
+        
+                  _buildSection(context, "Others", [
+        
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.delete_outline, "Delete Account", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  DeleteAccountScreen(userId: userSession.userId ?? '',)));
+                    }),
+        
+        
+                    _buildTile(context, isLoggedIn ? Icons.logout : Icons.login,
+                        isLoggedIn ? 'Sign Out' : 'Sign In', () {
+                          if (isLoggedIn) {
+                            showLogoutDialog(context, () async {
+                              await userSession.logout();
+                              context.read<UserBloc>().add(ResetUser());
+                              Navigator.pop(context);
+                            });
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const AuthScreen()),
+                            );
+                          }
+                        }),
+        
+                  ]),
+        
+                  10.height,
+                  FutureBuilder(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final version = snapshot.data!.version;
+                        return Text('Version $version');
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  30.height
+                ],
+              ),
+            )
+          ],
+        )
       ),
-
-
-      body:CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            floating: true,
-            toolbarHeight: 200,
-            backgroundColor: Colors.grey[100],
-            flexibleSpace: FlexibleSpaceBar(
-              background: ProfileCardWidget(),
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _buildSection(context, "Account", [
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.person_outline, "Profile", () async{
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  ProfileScreen(userId: userSession.userId!,)));
-                   }),
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.favorite_border, "Favorite", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                        FavoriteScreen(userId: userSession.userId)));
-                  }),
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.wallet_outlined, "Wallet", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  WalletScreen(userId: userSession.userId ?? '',)));
-                  }),
-
-
-                  _buildTile(context, Icons.card_giftcard, "Package", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.escalator_warning_outlined, "Refer And Earn", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen()));
-                  }),
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.person_4_outlined, "Provider", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProviderScreen()));
-                  }),
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.person_4, "Customer", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  CustomerScreen(userId: userSession.userId.toString(), isMenu: true)));
-                  }),
-                ]),
-
-
-                _buildSection(context, "Preferences", [
-                  _buildTile(context, Icons.description_outlined, "About Us", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutUsScreen()));
-                  }),
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.notifications_active_outlined, "Notifications", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.settings_outlined, "Settings", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.support_agent, "Help & Support", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.security, "Privacy & Policy", () {
-                    CustomUrlLaunch('https://www.fetchtrue.com/privacypolicy');
-                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()));
-                  }),
-
-
-                  _buildTile(context, Icons.rule, "Terms And Conditions", () {
-                    CustomUrlLaunch('https://www.fetchtrue.com/termsandcondition');
-                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
-                  }),
-
-                  _buildTile(context, Icons.receipt_long, "Refund Policy", () {
-                    CustomUrlLaunch('https://www.fetchtrue.com/refund&returnpolicy');
-                    // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
-                  }),
-
-                  _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
-                  }),
-                ]),
-
-                _buildSection(context, "Others", [
-
-                  if(userSession.isLoggedIn)
-                  _buildTile(context, Icons.delete_outline, "Delete Account", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>  DeleteAccountScreen(userId: userSession.userId ?? '',)));
-                  }),
-
-
-                  _buildTile(context, isLoggedIn ? Icons.logout : Icons.login,
-                      isLoggedIn ? 'Sign Out' : 'Sign In', () {
-                        if (isLoggedIn) {
-                          showLogoutDialog(context, () async {
-                            await userSession.logout();
-                            context.read<UserBloc>().add(ResetUser());
-                            Navigator.pop(context);
-                          });
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const AuthScreen()),
-                          );
-                        }
-                      }),
-
-                ]),
-
-                10.height,
-                FutureBuilder(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final version = snapshot.data!.version;
-                      return Text('Version $version');
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-                30.height
-              ],
-            ),
-          )
-        ],
-      )
     );
   }
 

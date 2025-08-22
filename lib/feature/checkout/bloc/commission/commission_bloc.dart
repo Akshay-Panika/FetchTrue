@@ -1,18 +1,19 @@
+// commission_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../repository/commission_service.dart';
+import '../../repository/commission_repository.dart';
 import 'commission_event.dart';
 import 'commission_state.dart';
 
 class CommissionBloc extends Bloc<CommissionEvent, CommissionState> {
   CommissionBloc() : super(CommissionInitial()) {
-    on<GetCommissionEvent>((event, emit) async {
+    on<GetCommission>((event, emit) async {
       emit(CommissionLoading());
       try {
-        final data = await CommissionService.fetchCommission();
-        if (data != null) {
-          emit(CommissionLoaded(data));
+        final commission = await CommissionRepository.fetchCommission();
+        if (commission != null) {
+          emit(CommissionLoaded(commission));
         } else {
-          emit(CommissionError('No commission data found'));
+          emit(CommissionError("No data found"));
         }
       } catch (e) {
         emit(CommissionError(e.toString()));

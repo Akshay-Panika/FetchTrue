@@ -18,21 +18,21 @@ class CouponScreen extends StatefulWidget {
 }
 
 class _CouponScreenState extends State<CouponScreen> {
-  CouponModel? appliedCoupon; // ✅ Correct model type
+  CouponModel? appliedCoupon;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, appliedCoupon); // ✅ coupon send karo (null ho to bhi chalega)
-        return false; // ❌ default back action disable
+        Navigator.pop(context, appliedCoupon);
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text('Coupons'),
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context, appliedCoupon); // ✅ same logic yaha bhi
+              Navigator.pop(context, appliedCoupon);
             },
             icon: Icon(Icons.arrow_back_ios),
           ),
@@ -90,7 +90,6 @@ class _CouponScreenState extends State<CouponScreen> {
   }
 
 
-  /// ✅ Available Coupon Card
   Widget _buildCouponCard(BuildContext context, CouponModel coupon) {
     final isPercentage = coupon.discountAmountType == 'Percentage';
 
@@ -119,7 +118,7 @@ class _CouponScreenState extends State<CouponScreen> {
               InkWell(
                 onTap: () {
                   setState(() {
-                    appliedCoupon = coupon; // ✅ Set applied coupon
+                    appliedCoupon = coupon;
                     // Navigator.pop(context, coupon);
                   });
                 },

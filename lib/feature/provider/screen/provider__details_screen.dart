@@ -10,11 +10,8 @@ import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../model/provider_model.dart';
-import '../repository/provider_by_id_service.dart';
 import '../repository/provider_repository.dart';
-import '../widget/provider_about_widget.dart';
-import '../widget/provider_gallery_widget.dart';
-import '../widget/provider_reviews_widget.dart';
+
 
 class ProviderDetailsScreen extends StatefulWidget {
   final String? providerId;
@@ -114,11 +111,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                         controller: _tabController,
                         children: [
 
-                          ProviderReviewsWidget(providerId: provider.id,),
 
-                          ProviderAboutWidget(providerId: provider.id,),
-
-                          ProviderGalleryWidget(providerId: provider.id,)
                         ],
                       ),
                     ),)

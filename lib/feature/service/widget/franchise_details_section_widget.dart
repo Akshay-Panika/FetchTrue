@@ -12,18 +12,39 @@ import '../model/service_model.dart';
 
 class FranchiseDetailsSectionWidget extends StatelessWidget {
   final List<ServiceModel> services;
-   FranchiseDetailsSectionWidget({super.key, required this.services});
+   const FranchiseDetailsSectionWidget({super.key, required this.services});
+
 
   @override
   Widget build(BuildContext context) {
-    final commissionString = services.first.franchiseDetails.commission;
-    final commission = double.tryParse(commissionString) ?? 0;
-    final commissionHalf = commission / 2;
+
+    String formatCommission(dynamic rawCommission, {bool half = false}) {
+      if (rawCommission == null) return '0';
+
+      final commissionStr = rawCommission.toString();
+
+      // Extract numeric value
+      final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+      final numeric = double.tryParse(numericStr) ?? 0;
+
+      // Extract symbol (₹, %, etc.)
+      final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+      final value = half ? (numeric / 2).round() : numeric.round();
+
+      // Format with symbol
+      if (symbol == '%') {
+        return '$value%';
+      } else {
+        return '$symbol$value';
+      }
+    }
+
 
     return Column(
       children: [
         CustomContainer(
-          border: true,
+          border: false,
           borderColor: CustomColor.greyColor,
           color: Colors.white,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -53,21 +74,17 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      10.width,
-                      Text('${services.first.franchiseDetails.commission}', style: textStyle22(context, color: CustomColor.greenColor),),
+
                       20.width,
-                      // Text('${commissionHalf.toStringAsFixed(2)}', style: textStyle22(context, color: CustomColor.greenColor),)
-                    ],
+
+                      Text(formatCommission(services.first.franchiseDetails.commission, half: true),
+                        // _formatHalfCommission(commissionHalf, symbol),
+                        style: textStyle22(context, color: CustomColor.greenColor),
+                      ),
+                  ],
                   ),
                 ],
               ),
-              Container(
-                height: 100,width: 150,
-                decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    image: DecorationImage(image: AssetImage('assets/package/packageBuyImg.png'), fit: BoxFit.cover)
-                ),
-              )
             ],
           ),
         ),
@@ -82,7 +99,7 @@ class FranchiseDetailsSectionWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             var data = services.first.franchiseDetails.extraSections[index];
           return CustomContainer(
-            border: true,
+            border: false,
             color: CustomColor.whiteColor,
             margin: EdgeInsets.only(top: 10),
             child: Column(
@@ -117,7 +134,7 @@ Widget _buildFranchiseCard({
     itemBuilder: (context, index) {
       final section = sections[index];
       return CustomContainer(
-          border: true,
+          border: false,
           borderColor: CustomColor.greyColor,
           color: Colors.white,
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -1,11 +1,11 @@
+
 class ServiceModel {
   final String id;
   final String serviceName;
-  final int? price;
-  final num? discountedPrice;
-  // final int? discountedPrice;
-  final int? gst;
-  final int? discount;
+  final num? price;              // int/double दोनों handle होंगे
+  final num? discountedPrice;    // int/double दोनों handle होंगे
+  final num? gst;                // int/double दोनों handle होंगे
+  final num? discount;           // int/double दोनों handle होंगे
   final String thumbnailImage;
   final List<String> bannerImages;
   final List<String> tags;
@@ -17,11 +17,10 @@ class ServiceModel {
   final List<ProviderPrice> providerPrices;
 
   /// rating
-  final double averageRating;
-  final int totalReviews;
+  final num averageRating;       // double भी आ सकता है, int भी
+  final num totalReviews;        // int/double दोनों
   final bool recommendedServices;
   final bool includeGst;
-
 
   ServiceModel({
     required this.id,
@@ -39,48 +38,51 @@ class ServiceModel {
     required this.franchiseDetails,
     required this.keyValues,
     required this.providerPrices,
-
     required this.averageRating,
     required this.totalReviews,
     required this.recommendedServices,
-    required this.includeGst
+    required this.includeGst,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      id: json['_id'],
-      serviceName: json['serviceName'],
-      price: json['price'] is int ? json['price'] : int.tryParse(json['price'].toString()),
-      gst: json['gst'] is int ? json['gst'] : int.tryParse(json['gst'].toString()),
+      id: json['_id']?.toString() ?? '',
+      serviceName: json['serviceName']?.toString() ?? '',
+      price: _parseNum(json['price']),
+      gst: _parseNum(json['gst']),
       discountedPrice: _parseNum(json['discountedPrice']),
-      // discountedPrice: json['discountedPrice'] is int ? json['discountedPrice'] : int.tryParse(json['discountedPrice'].toString()),
-      discount: json['discount'] is int ? json['discount'] : int.tryParse(json['discount'].toString()),
-      thumbnailImage: json['thumbnailImage'],
+      discount: _parseNum(json['discount']),
+      thumbnailImage: json['thumbnailImage']?.toString() ?? '',
       bannerImages: List<String>.from(json['bannerImages'] ?? []),
       tags: List<String>.from(json['tags'] ?? []),
       category: Category.fromJson(json['category']),
-      subcategory: json['subcategory'] != null ? Subcategory.fromJson(json['subcategory']) : null,
+      subcategory: json['subcategory'] != null
+          ? Subcategory.fromJson(json['subcategory'])
+          : null,
       serviceDetails: ServiceDetails.fromJson(json['serviceDetails']),
       franchiseDetails: FranchiseDetails.fromJson(json['franchiseDetails']),
       keyValues: json['keyValues'] != null
-          ? List<KeyValue>.from(json['keyValues'].map((x) => KeyValue.fromJson(x)))
+          ? List<KeyValue>.from(
+          json['keyValues'].map((x) => KeyValue.fromJson(x)))
           : [],
       providerPrices: json['providerPrices'] != null
-          ? List<ProviderPrice>.from(json['providerPrices'].map((x) => ProviderPrice.fromJson(x)))
+          ? List<ProviderPrice>.from(
+          json['providerPrices'].map((x) => ProviderPrice.fromJson(x)))
           : [],
-
-      averageRating: (json['averageRating'] ?? 0).toDouble(),
-      totalReviews: json['totalReviews'],
-      recommendedServices: json['recommendedServices'],
-      includeGst: json['includeGst'],
+      averageRating: _parseNum(json['averageRating']) ?? 0,
+      totalReviews: _parseNum(json['totalReviews']) ?? 0,
+      recommendedServices: json['recommendedServices'] ?? false,
+      includeGst: json['includeGst'] ?? false,
     );
   }
+
   static num? _parseNum(dynamic value) {
     if (value == null) return null;
     if (value is num) return value;
     return num.tryParse(value.toString());
   }
 }
+
 
 class Category {
   final String id;
@@ -106,10 +108,10 @@ class Category {
 }
 class ProviderPrice {
   final ServiceProvider? provider;
-  final int? providerPrice;
-  final String? providerCommission; // e.g. "10%"
-  final String? providerDiscount;   // e.g. "5"
-  final String? providerMRP;        // e.g. "3000"
+  final double? providerPrice;
+  final String? providerCommission;
+  final String? providerDiscount;
+  final String? providerMRP;
   final String status;
   final String id;
 
@@ -125,12 +127,11 @@ class ProviderPrice {
 
   factory ProviderPrice.fromJson(Map<String, dynamic> json) {
     return ProviderPrice(
-      provider: json['provider'] != null
-          ? ServiceProvider.fromJson(json['provider'])
-          : null,
-      providerPrice: json['providerPrice'] is int
-          ? json['providerPrice']
-          : int.tryParse(json['providerPrice']?.toString() ?? ''),
+      provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
+      providerPrice: (json['providerPrice'] is int) ? (json['providerPrice'] as int).toDouble() : (json['providerPrice'] as num).toDouble(),
+      // providerPrice: json['providerPrice'] is int
+      //     ? json['providerPrice']
+      //     : int.tryParse(json['providerPrice']?.toString() ?? ''),
       providerCommission: json['providerCommission']?.toString(),
       providerDiscount: json['providerDiscount']?.toString(),
       providerMRP: json['providerMRP']?.toString(),

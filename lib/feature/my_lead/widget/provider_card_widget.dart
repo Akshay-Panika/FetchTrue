@@ -2,18 +2,12 @@ import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
-import '../../../core/costants/custom_image.dart';
-import '../../../core/costants/text_style.dart';
+
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
-import '../../provider/bloc/provider/provider_bloc.dart';
-import '../../provider/bloc/provider/provider_event.dart';
-import '../../provider/bloc/provider/provider_state.dart';
-import '../../provider/repository/provider_service.dart';
-import '../../provider/screen/provider__details_screen.dart';
+
 import '../model/leads_model.dart';
 
 class ProviderCardWidget extends StatefulWidget {

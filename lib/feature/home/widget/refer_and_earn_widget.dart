@@ -14,11 +14,12 @@ class ReferAndEarnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return  CustomContainer(
-      border: true,
+      border: false,
       width: double.infinity,
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
       color: Colors.white,
+      borderRadius: false,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,

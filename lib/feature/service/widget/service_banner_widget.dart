@@ -62,29 +62,40 @@ class _ServiceBannerWidgetState extends State<ServiceBannerWidget> {
               },
             ),
           ),
-
-          if (mergedImages.length > 1)
-            Column(
-              children: [
-                10.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(mergedImages.length, (index) {
-                    final isActive = _current == index;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      height: 5,
-                      width: _current == index ? 24 : 10,
-                      decoration: BoxDecoration(
-                        color: isActive ? Colors.blueAccent : Colors.grey,
-                        borderRadius: BorderRadius.circular(2),
+          10.height,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(mergedImages.length, (index) {
+              final bool isActive = index == _current;
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 4,
+                width: isActive ? 24 : 10,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: isActive
+                    ? TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: 1),
+                  duration: const Duration(seconds: 4), // should match autoPlayInterval
+                  builder: (context, value, child) {
+                    return FractionallySizedBox(
+                      widthFactor: value,
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     );
-                  }),
-                ),
-              ],
-            ),
+                  },
+                )
+                    : null,
+              );
+            }),
+          ),
           10.height,
         ],
       ),

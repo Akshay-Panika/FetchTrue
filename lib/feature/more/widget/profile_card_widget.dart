@@ -109,9 +109,10 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                         CircleAvatar(
                           radius: 30,
                           backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                          backgroundImage: user.profilePhoto != null
-                              ? NetworkImage(user.profilePhoto.toString())
-                              : AssetImage(CustomImage.nullImage) as ImageProvider,
+                          backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
+                              ? NetworkImage(user.profilePhoto!)
+                              : AssetImage(CustomImage.nullImage),
+
                         ),
                         const SizedBox(width: 16),
                         Column(

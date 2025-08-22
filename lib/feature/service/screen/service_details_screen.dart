@@ -83,11 +83,9 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> with Single
                               Tab(text: 'Service Details',),
                               Tab(text: 'Franchise Details',),
                             ],
-                            dividerColor: CustomColor.greyColor,
-                            dividerHeight: 0.2,
-                            labelStyle: textStyle14(context, color: CustomColor.appColor),
+                            dividerColor: Colors.transparent,
                             indicatorColor: CustomColor.appColor,
-                            unselectedLabelColor: CustomColor.descriptionColor,
+                            labelColor: Colors.black,
                             onTap: (value) {
                               setState(() {
                                 _indexTap = value;

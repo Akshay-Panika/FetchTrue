@@ -48,6 +48,8 @@ dependencies:
   # Networking & Web
   dio: ^5.8.0+1
   flutter_inappwebview: ^6.1.5
+  connectivity_plus: ^6.1.5
+  internet_connection_checker: ^3.0.1
   # http: ^1.4.0   # remove if not needed
 
 

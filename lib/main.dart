@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'core/costants/custom_color.dart';
 import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
@@ -14,6 +13,9 @@ import 'feature/banner/repository/banner_repository.dart';
 import 'feature/category/bloc/category_bloc.dart';
 import 'feature/category/bloc/category_event.dart';
 import 'feature/category/repository/category_repository.dart';
+import 'feature/checkout/bloc/commission/commission_bloc.dart';
+import 'feature/checkout/bloc/commission/commission_event.dart';
+import 'feature/internet/network_wrapper_screen.dart';
 import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
@@ -34,6 +36,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  NetworkMonitor.init();
   final userSession = UserSession();
   await userSession.loadUserSession();
 
@@ -51,6 +54,7 @@ void main() async {
             BlocProvider(create: (_) => CategoryBloc(CategoryRepository())..add(GetCategories())),
             BlocProvider(create: (_) => SubcategoryBloc(SubcategoryRepository())..add(FetchSubcategories()),),
             BlocProvider(create: (_) => ServiceBloc(ServiceRepository())..add(GetServices())),
+            BlocProvider(create: (_) => CommissionBloc()..add(GetCommission())),
           ],
           child: const MyApp(),
         ),

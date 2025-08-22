@@ -13,7 +13,6 @@ import '../../../favorite/screen/favorite_screen.dart';
 import '../../../highlight_serive/highlight_widget.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_service_list.dart';
-import '../../../provider/widget/service_provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
 
 class LegalServiceScreen extends StatefulWidget {
@@ -99,8 +98,8 @@ class _LegalServiceScreenState extends State<LegalServiceScreen> {
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    CustomColor.appColor,
-                    CustomColor.whiteColor
+                    Color(0xff264A7D),
+                    Color(0xffF5F5F5),
                   ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter
