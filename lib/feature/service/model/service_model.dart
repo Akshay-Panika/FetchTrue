@@ -2,10 +2,10 @@
 class ServiceModel {
   final String id;
   final String serviceName;
-  final num? price;              // int/double दोनों handle होंगे
-  final num? discountedPrice;    // int/double दोनों handle होंगे
-  final num? gst;                // int/double दोनों handle होंगे
-  final num? discount;           // int/double दोनों handle होंगे
+  final num? price;
+  final num? discountedPrice;
+  final num? gst;
+  final num? discount;
   final String thumbnailImage;
   final List<String> bannerImages;
   final List<String> tags;
@@ -17,8 +17,8 @@ class ServiceModel {
   final List<ProviderPrice> providerPrices;
 
   /// rating
-  final num averageRating;       // double भी आ सकता है, int भी
-  final num totalReviews;        // int/double दोनों
+  final num averageRating;
+  final num totalReviews;
   final bool recommendedServices;
   final bool includeGst;
 
@@ -129,9 +129,6 @@ class ProviderPrice {
     return ProviderPrice(
       provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
       providerPrice: (json['providerPrice'] is int) ? (json['providerPrice'] as int).toDouble() : (json['providerPrice'] as num).toDouble(),
-      // providerPrice: json['providerPrice'] is int
-      //     ? json['providerPrice']
-      //     : int.tryParse(json['providerPrice']?.toString() ?? ''),
       providerCommission: json['providerCommission']?.toString(),
       providerDiscount: json['providerDiscount']?.toString(),
       providerMRP: json['providerMRP']?.toString(),

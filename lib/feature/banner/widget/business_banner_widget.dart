@@ -52,36 +52,76 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
           // start auto-slide timer only once
           startAutoSlide(banners);
           final banner = banners[currentIndex];
-          return AnimatedSwitcher(
-            duration: const Duration(seconds: 2),
-            switchInCurve: Curves.easeInCubic,
-            switchOutCurve: Curves.easeOutCubic,
-            child: CustomNetworkImage(
-                key: ValueKey(banner.id),
-                imageUrl: banner.file,
-                fit: BoxFit.fill,
-                onTap: () {
-                  if (banner.selectionType == 'referralUrl') {
-                    CustomUrlLaunch(banner.referralUrl);
-                  } else if (banner.selectionType == 'subcategory') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SubcategoryScreen(
-                          categoryId: banner.subcategory!.category,
-                          categoryName: banner.subcategory!.name,
+          return Stack(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(seconds: 2),
+                switchInCurve: Curves.easeInCubic,
+                switchOutCurve: Curves.easeOutCubic,
+                child: CustomNetworkImage(
+                    key: ValueKey(banner.id),
+                    imageUrl: banner.file,
+                    fit: BoxFit.fill,
+                    onTap: () {
+                      if (banner.selectionType == 'referralUrl') {
+                        CustomUrlLaunch(banner.referralUrl);
+                      } else if (banner.selectionType == 'subcategory') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SubcategoryScreen(
+                              categoryId: banner.subcategory!.category,
+                              categoryName: banner.subcategory!.name,
+                            ),
+                          ),
+                        );
+                      } else if (banner.selectionType == 'service') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                          ),
+                        );
+                      }
+                    }),
+              ),
+              if (banners.length > 1)
+                Positioned(
+                  bottom: 70,
+                  left: 15,
+                  child: Row(
+                    children: List.generate(banners.length, (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        height: 4,
+                        width: index == currentIndex ?24 :10,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(2),
                         ),
-                      ),
-                    );
-                  } else if (banner.selectionType == 'service') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
-                      ),
-                    );
-                  }
-                }),
+                        child: index == currentIndex
+                            ? TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: const Duration(seconds: 8), // same as banner timer
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              widthFactor: value,
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                            : null,
+                      );
+                    }),
+                  ),
+                )
+            ],
           );
         } else if (state is BannerError) {
           print("Error: ${state.message}");

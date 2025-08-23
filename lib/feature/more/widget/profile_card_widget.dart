@@ -169,7 +169,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
               ],
             );
           } else if (state is UserError) {
-            return Center(child: Text("Error: ${state.massage}"));
+            print('Error: ${state.massage}');
           }
           return const SizedBox();
         },

@@ -46,7 +46,8 @@ class _MarketingBannerWidgetState extends State<MarketingBannerWidget> {
           return Container(color: Colors.grey[100]);
         } else if (state is BannerLoaded) {
           // final banners = state.banners;
-          final banners = state.banners.where((banner) => banner.module!.id == widget.moduleId).toList();
+          final banners = state.banners.where((banner) => (banner.module?.id == widget.moduleId) && (banner.page.toLowerCase() == "category")).toList();
+          // final banners = state.banners.where((banner) => banner.module!.id == widget.moduleId).toList();
           // final banners = state.banners.where((banner) => banner.page == "category").toList();
           if (banners.isEmpty) return const SizedBox.shrink();
           // start auto-slide timer only once

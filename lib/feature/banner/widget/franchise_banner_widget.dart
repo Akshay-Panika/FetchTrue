@@ -1,113 +1,135 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:fetchtrue/core/costants/dimension.dart';
+import 'dart:async';
+import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
+import 'package:fetchtrue/feature/subcategory/screen/subcategory_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
-import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_network_mage.dart';
+import '../../../core/widgets/custom_url_launch.dart';
 import '../bloc/banner/banner_bloc.dart';
 import '../bloc/banner/banner_state.dart';
 
 class FranchiseBannerWidget extends StatefulWidget {
   final String moduleId;
-   const FranchiseBannerWidget({super.key, required this.moduleId});
+  const FranchiseBannerWidget({super.key, required this.moduleId});
 
   @override
   State<FranchiseBannerWidget> createState() => _FranchiseBannerWidgetState();
 }
 
 class _FranchiseBannerWidgetState extends State<FranchiseBannerWidget> {
-  int _current = 0;
+
+  int currentIndex = 0;
+  Timer? timer;
+
+  void startAutoSlide(List banners) {
+    if (timer != null && timer!.isActive) return;
+    timer = Timer.periodic(const Duration(seconds: 8), (_) {
+      if (!mounted) return;
+      setState(() {
+        currentIndex = (currentIndex + 1) % banners.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BannerBloc, BannerState>(
+    return  BlocBuilder<BannerBloc, BannerState>(
       builder: (context, state) {
         if (state is BannerLoading) {
-          return _buildShimmerCard();
+          return Container(color: Colors.grey[100]);
         } else if (state is BannerLoaded) {
           // final banners = state.banners;
-          final banners = state.banners.where((banner) => banner.module!.id == widget.moduleId).toList();
-
+          final banners = state.banners.where((banner) => (banner.module?.id == widget.moduleId) && (banner.page.toLowerCase() == "category")).toList();
+          // final banners = state.banners.where((banner) => banner.module!.id == widget.moduleId).toList();
+          // final banners = state.banners.where((banner) => banner.page == "category").toList();
           if (banners.isEmpty) return const SizedBox.shrink();
-
-          return Column(
+          // start auto-slide timer only once
+          startAutoSlide(banners);
+          final banner = banners[currentIndex];
+          return Stack(
             children: [
-              SizedBox(height: 180,width: double.infinity,
-                child: CarouselSlider.builder(
-                  itemCount: banners.length,
-                  itemBuilder: (context, index, realIndex) {
-                    final banner = banners[index];
-                    return CustomNetworkImage(
-                      imageUrl: banner.file,
-                      fit: BoxFit.fill,
-                      margin: EdgeInsets.all(10),
-                      borderRadius: BorderRadius.circular(10),
-                    );
-                  },
-                  options: CarouselOptions(
-                    scrollPhysics:  banners.length >1 ? AlwaysScrollableScrollPhysics(): NeverScrollableScrollPhysics(),
-                    autoPlay:  banners.length >1 ?true :false,
-                    viewportFraction: 1,
-                    enlargeCenterPage: true,
-                    autoPlayInterval: const Duration(seconds: 4),
-                    autoPlayCurve: Curves.easeOut,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    },
-                  ),
-                ),
+              AnimatedSwitcher(
+                duration: const Duration(seconds: 2),
+                switchInCurve: Curves.easeInCubic,
+                switchOutCurve: Curves.easeOutCubic,
+                child: CustomNetworkImage(
+                    key: ValueKey(banner.id),
+                    imageUrl: banner.file,
+                    fit: BoxFit.fill,
+                    onTap: () {
+                      if (banner.selectionType == 'referralUrl') {
+                        CustomUrlLaunch(banner.referralUrl);
+                      } else if (banner.selectionType == 'subcategory') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SubcategoryScreen(
+                              categoryId: banner.subcategory!.category,
+                              categoryName: banner.subcategory!.name,
+                            ),
+                          ),
+                        );
+                      } else if (banner.selectionType == 'service') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                          ),
+                        );
+                      }
+                    }),
               ),
-               10.height,
+
               if (banners.length > 1)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: List.generate(banners.length, (index) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      height: 5,
-                      width: _current == index ? 24 : 10,
-                      decoration: BoxDecoration(
-                        color: _current == index ? Color(0xff1abc9c) : Colors.grey,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    );
-                  }),
+                Positioned(
+                  bottom: 70,
+                  left: 15,
+                  child: Row(
+                    children: List.generate(banners.length, (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        height: 4,
+                        width: index == currentIndex ?24 :10,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        child: index == currentIndex
+                            ? TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: const Duration(seconds: 8), // same as banner timer
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              widthFactor: value,
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                            : null,
+                      );
+                    }),
+                  ),
                 )
             ],
           );
         } else if (state is BannerError) {
-          print('Error ${state.message}');
+          print("Error: ${state.message}");
         }
         return const SizedBox.shrink();
       },
     );
   }
-}
-
-
-
-Widget _buildShimmerCard(){
-  return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Column(
-        children: [
-          CustomContainer(
-              height: 180,width: double.infinity,
-              margin: EdgeInsets.zero, color: Colors.grey[200]),
-          10.height,
-
-          Row(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(2, (index) => CustomContainer(padding: EdgeInsets.zero,margin: EdgeInsets.zero,height: 5,width: index ==0 ? 25: 10, color: Colors.grey[200]),),)
-        ],
-      ));
 }

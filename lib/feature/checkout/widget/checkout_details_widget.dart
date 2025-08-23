@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,13 +52,13 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
     return BlocBuilder<CommissionBloc, CommissionState>(
       builder: (context, state) {
         if (state is CommissionLoading) {
-          return const CircularProgressIndicator();
+          return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
         } else if (state is CommissionLoaded) {
           final commissionCharge = state.commission;
           return BlocBuilder<ServiceBloc, ServiceState>(
             builder: (context, serviceState) {
               if (serviceState is ServiceLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
               }
               else if (serviceState is ServiceError) {
                 return Center(child: Text(serviceState.message));
@@ -74,7 +75,9 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                     discountPrice: service.discountedPrice.toString(),
                     discount: service.discount.toString(),
                     commission: service.franchiseDetails.commission.toString(),
+                    providerId: widget.status == 'default' ? null : widget.providerId,
                     commissionCharge: commissionCharge,
+                    onPaymentDone: widget.onPaymentDone,
                   );
                 }
 
@@ -88,7 +91,9 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                     discountPrice: providerPriceData.providerPrice.toString(),
                     discount: providerPriceData.providerDiscount.toString(),
                     commission: providerPriceData.providerCommission.toString(),
+                    providerId: widget.status == 'default' ? null : widget.providerId,
                     commissionCharge: commissionCharge,
+                    onPaymentDone: widget.onPaymentDone,
                   );
                 }
               }
@@ -113,7 +118,10 @@ class CheckoutWidget extends StatefulWidget {
   final String discountPrice;
   final String discount;
   final String commission;
+  final String? providerId;
   final CommissionModel commissionCharge;
+  final Function(CheckOutModel) onPaymentDone;
+
 
   const CheckoutWidget({
     super.key,
@@ -122,7 +130,9 @@ class CheckoutWidget extends StatefulWidget {
     required this.discountPrice,
     required this.discount,
     required this.commission,
+    this.providerId,
     required this.commissionCharge,
+    required this.onPaymentDone,
   });
 
   @override
@@ -285,7 +295,71 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                       10.height,
                       CustomButton(
                         isLoading: false,
-                        label: 'Proceed', onPressed: () => null,)
+                        label: 'Proceed', onPressed: ()async{
+                          if(customerId == null){
+                            showCustomToast('Please select customer');
+                            return ;
+                          }
+
+                          if(!_isAgree){
+                            showCustomToast('Please agree to the terms & conditions');
+                            return;
+                          }
+
+                          // final checkoutData = CheckOutModel(
+                          //   user: userSession.userId.toString(),
+                          //   provider:widget.providerId,
+                          //   serviceCustomer: customer_Id.toString(),
+                          //   notes: message.toString(),
+                          //   service: widget.service!.id,
+                          //   commission: widget.commission,
+                          //   coupon:selectedCoupon?.id,
+                          //   listingPrice: listingPrice,
+                          //   serviceDiscount: serviceDiscount,
+                          //   serviceDiscountPrice: serviceDiscountPrice,
+                          //   priceAfterDiscount: serviceLessDiscountPrice,
+                          //   couponDiscount: couponDiscount,
+                          //   couponDiscountPrice: selectedCoupon?.amount.toDouble() ?? 0.0,
+                          //   gst: serviceGst.toDouble(),
+                          //   serviceGSTPrice: gstAmount,
+                          //   platformFee: platformFee.toDouble(),
+                          //   platformFeePrice: platformFeeAmount,
+                          //   assurityfee: assurityFee.toDouble(),
+                          //   assurityChargesPrice: assurityFeeAmount,
+                          //   subtotal: serviceLessDiscountPrice,
+                          //   totalAmount:grandTotal,
+                          //   champaignDiscount:0,
+                          //   termsCondition: _isAgree,
+                          // );
+                          final checkoutData = CheckOutModel(
+                            user: userSession.userId.toString(),
+                            provider: widget.providerId,
+                            serviceCustomer: customer_Id.toString(),
+                            notes: message.toString(),
+                            service: widget.service!.id,
+                            commission: widget.commission,
+                            coupon: selectedCoupon?.id,
+                            listingPrice: double.parse(listingPrice.toStringAsFixed(2)),
+                            serviceDiscount: double.parse(serviceDiscount.toStringAsFixed(2)),
+                            serviceDiscountPrice: double.parse(serviceDiscountPrice.toStringAsFixed(2)),
+                            priceAfterDiscount: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
+                            couponDiscount: double.parse(couponDiscount.toStringAsFixed(2)),
+                            couponDiscountPrice: double.parse((selectedCoupon?.amount.toDouble() ?? 0.0).toStringAsFixed(2)),
+                            gst: double.parse(serviceGst.toStringAsFixed(2)),
+                            serviceGSTPrice: double.parse(gstAmount.toStringAsFixed(2)),
+                            platformFee: double.parse(platformFee.toStringAsFixed(2)),
+                            platformFeePrice: double.parse(platformFeeAmount.toStringAsFixed(2)),
+                            assurityfee: double.parse(assurityFee.toStringAsFixed(2)),
+                            assurityChargesPrice: double.parse(assurityFeeAmount.toStringAsFixed(2)),
+                            subtotal: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
+                            totalAmount: double.parse(grandTotal.toStringAsFixed(2)),
+                            champaignDiscount: 0.0,
+                            termsCondition: _isAgree,
+                          );
+
+                          // print('provider Id :${widget.providerId}');
+                         widget.onPaymentDone(checkoutData);
+                      },)
                     ],
                   ),
                 ),

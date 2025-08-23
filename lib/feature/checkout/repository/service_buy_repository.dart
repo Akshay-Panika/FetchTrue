@@ -10,7 +10,7 @@ Future<void> initiateServicePayment({
   required BuildContext context,
   required String orderId,
   required String checkoutId,
-  required int amount,
+  required double amount,
   required String customerId,
   required String name,
   required String email,

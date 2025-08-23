@@ -60,7 +60,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     isLast: index == steps.length - 1,
                     onTap: () {
                       setState(() {
-                        // _paymentStep = index;
+                        _paymentStep = index;
                       });
                     },
                   );

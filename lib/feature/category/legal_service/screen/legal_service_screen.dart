@@ -4,16 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_appbar.dart';
-import '../../../../core/widgets/custom_container.dart';
-import '../../../../core/widgets/custom_network_mage.dart';
+import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/legal_banner_widget.dart';
-import '../../../favorite/screen/favorite_screen.dart';
-import '../../../highlight_serive/highlight_widget.dart';
-import '../../../../core/widgets/custom_search_bar.dart';
-import '../../../../core/widgets/custom_service_list.dart';
-import '../../../search/screen/search_screen.dart';
+
 
 class LegalServiceScreen extends StatefulWidget {
   final String moduleId;
@@ -62,71 +56,14 @@ class _LegalServiceScreenState extends State<LegalServiceScreen> {
         controller: _scrollController,
         slivers: [
 
-          SliverAppBar(
-            expandedHeight: 200 + searchBarHeight,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Hero(
-                tag: widget.moduleId,
-                child: Material(
-                  color: Colors.transparent,
-                  child: CircleAvatar(radius: 20.5,
-                    backgroundColor: CustomColor.appColor,
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: CustomColor.whiteColor,
-                      backgroundImage: NetworkImage(widget.imageUrl),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Legal Service', style: textStyle16(context,  color: _isCollapsed ? CustomColor.appColor : Colors.white,),),
-                Text('Pune 411028, Maharashtra', style: textStyle12(context,  color: _isCollapsed ? CustomColor.descriptionColor : Colors.white,),),
-              ],
-            ),
-            titleSpacing: 15,
-            leadingWidth: 50,
-            pinned: true,
-            stretch: true,
-            backgroundColor: Colors.white,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.parallax,
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Color(0xff264A7D),
-                    Color(0xffF5F5F5),
-                  ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter
-                  )
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    30.height,
-                    CircleAvatar(radius: 30,
-                      child: Image.asset('assets/image/legal_img.png', height: 50,),
-                      backgroundColor: CustomColor.whiteColor,),
-                    10.height,
-                    Text('Your Trusted Leagal Partner', style: textStyle14(context, color: CustomColor.appColor),),
-                    Text('One Stop for leagal & business soltuion', style: textStyle12(context, color: CustomColor.descriptionColor),),
-                  ],
-                ),
-              ),
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(searchBarHeight),
-              child:CustomSearchBar(),
-            ),
+          CustomSliverAppbar(
+            moduleId: widget.moduleId,
+            title: 'Legal Service',
+            imageUrl: widget.imageUrl,
+            isCollapsed: _isCollapsed,
+            searchBarHeight: searchBarHeight,
+            background: LegalBannerWidget(moduleId: widget.moduleId),
           ),
-
-          SliverToBoxAdapter(child: LegalBannerWidget(moduleId: widget.moduleId,),),
 
           SliverToBoxAdapter(child: LegalCategoryWidget(moduleId: widget.moduleId,),),
 

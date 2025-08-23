@@ -5,67 +5,72 @@ import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_appbar.dart';
+import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/finance_banner_widget.dart';
+import '../../../banner/widget/franchise_banner_widget.dart';
 import '../../../favorite/screen/favorite_screen.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../search/screen/search_screen.dart';
 import '../widget/finance_category_widget.dart';
 
 
-class FinanceServiceScreen extends StatelessWidget {
+class FinanceServiceScreen extends StatefulWidget {
   final String moduleId;
   final String imageUrl;
   const FinanceServiceScreen({super.key, required this.moduleId, required this.imageUrl});
 
   @override
+  State<FinanceServiceScreen> createState() => _FinanceServiceScreenState();
+}
+
+class _FinanceServiceScreenState extends State<FinanceServiceScreen> {
+
+  final ScrollController _scrollController = ScrollController();
+  bool _isCollapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    final isCollapsed = _scrollController.offset > 150;
+    if (isCollapsed != _isCollapsed) {
+      setState(() => _isCollapsed = isCollapsed);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
+    final double searchBarHeight = 50;
+
     return Scaffold(
-      appBar: CustomAppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Hero(
-            tag: moduleId,
-            child: Material(
-              color: Colors.transparent,
-              child: CircleAvatar(radius: 18,
-                backgroundColor: CustomColor.appColor,
-                child: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: CustomColor.whiteColor,
-                  backgroundImage: NetworkImage(imageUrl),
-                ),
-              ),
-            ),
-          ),
-        ),
-        // titleSpacing: 15,
-        leadingWidth: 50,
-        titleWidget: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Finance Service', style: textStyle16(context,color: CustomColor.appColor),),
-            Text('Pune 411028, Maharashtra', style: textStyle12(context,color: CustomColor.descriptionColor),),
-          ],
-        ),
-      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
 
-            SliverToBoxAdapter(child: FinanceBannerWidget(moduleId: moduleId,),),
-
-            SliverAppBar(
-              toolbarHeight: 60,
-              floating: true,
-              backgroundColor: Colors.grey[100],
-              automaticallyImplyLeading: false,
-              flexibleSpace:  CustomSearchBar(),
+            CustomSliverAppbar(
+              moduleId: widget.moduleId,
+              title: 'Finance Service',
+              imageUrl: widget.imageUrl,
+              isCollapsed: _isCollapsed,
+              searchBarHeight: searchBarHeight,
+              background: FinanceBannerWidget(moduleId: widget.moduleId),
             ),
 
+
             SliverToBoxAdapter(
-              child: FinanceCategoryWidget(moduleId: moduleId),
+              child: FinanceCategoryWidget(moduleId: widget.moduleId),
             ),
           ],
         ),

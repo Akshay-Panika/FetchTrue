@@ -257,23 +257,40 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
 
   /// Filter logic
   List<ServiceModel> _applyFilter(List<ServiceModel> services) {
+    final filtered = List<ServiceModel>.from(services);
+
     switch (selectedFilter) {
       case 'Low to High':
-        services.sort((a, b) => (a.discountedPrice ?? 0).compareTo(b.discountedPrice ?? 0));
+        filtered.sort((a, b) => (a.discountedPrice ?? 0).compareTo(b.discountedPrice ?? 0));
         break;
       case 'High to Low':
-        services.sort((a, b) => (b.discountedPrice ?? 0).compareTo(a.discountedPrice ?? 0));
+        filtered.sort((a, b) => (b.discountedPrice ?? 0).compareTo(a.discountedPrice ?? 0));
         break;
       case 'Most Popular':
-        services.sort((a, b) => (b.totalReviews ?? 0).compareTo(a.totalReviews ?? 0));
+        filtered.sort((a, b) => (b.totalReviews ?? 0).compareTo(a.totalReviews ?? 0));
         break;
       case 'Top Rated':
-        services.sort((a, b) => (b.averageRating ?? 0).compareTo(a.averageRating ?? 0));
+        filtered.sort((a, b) => (b.averageRating ?? 0).compareTo(a.averageRating ?? 0));
+        break;
+      case 'Best Seller':
+      // rating × reviews = popularity score
+        filtered.sort((a, b) {
+          final scoreA = (a.averageRating ?? 0) * (a.totalReviews ?? 0);
+          final scoreB = (b.averageRating ?? 0) * (b.totalReviews ?? 0);
+          return scoreB.compareTo(scoreA);
+        });
+        break;
+      case 'Recommended':  // filtered.retainWhere((s) => s.recommendedServices == true);
+        filtered.sort((a, b) {
+          if (a.recommendedServices == b.recommendedServices) return 0;
+          return a.recommendedServices ? -1 : 1;
+        });
         break;
       default:
         break;
     }
-    return services;
+
+    return filtered;
   }
 }
 
