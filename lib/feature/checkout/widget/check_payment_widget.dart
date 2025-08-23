@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
-import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/checkout/widget/wallet_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -12,8 +10,6 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../profile/bloc/user/user_bloc.dart';
-import '../../profile/bloc/user/user_state.dart';
 import '../model/checkout_model.dart';
 import '../repository/checkout_service.dart';
 import '../repository/service_buy_repository.dart';
@@ -40,13 +36,26 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   CashFreeOption selectedCashFreeOption = CashFreeOption.full;
 
   bool _isLoading = false;
+  double walletAppliedAmount = 0;
 
   @override
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
     final dimensions = Dimensions(context);
+
     final num serviceAmount = widget.checkoutData.totalAmount ?? 0.0;
     final double partialAmount = double.parse((serviceAmount / 2).toStringAsFixed(2));
+
+    final double payableAmount = (
+        (selectedPayment == null
+            ? 0
+            : selectedPayment == PaymentMethod.afterConsultation
+            ? serviceAmount
+            : selectedCashFreeOption == CashFreeOption.full
+            ? serviceAmount
+            : partialAmount
+        ) - walletAppliedAmount
+    ).clamp(0, double.infinity);
 
     return Padding(
       padding: const EdgeInsets.all(15.0),
@@ -65,7 +74,17 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                 ),
               ),
               10.height,
-              WalletCardWidget(),
+              WalletCardWidget(
+                userId: userSession.userId!,
+                onWalletApplied: (walletBalance) {
+                  setState(() {
+                    walletAppliedAmount = walletBalance >= serviceAmount
+                        ? serviceAmount.toDouble()
+                        : walletBalance.toDouble();
+                  });
+                },
+              ),
+
               30.height,
               Text(
                 'Choose Payment Method',
@@ -183,14 +202,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                   Text('Total Price', style: textStyle16(context)),
                   10.width,
                   CustomAmountText(
-                    amount: (selectedPayment == null
-                        ? 0
-                        : selectedPayment == PaymentMethod.afterConsultation
-                        ? serviceAmount
-                        : selectedCashFreeOption == CashFreeOption.full
-                        ? serviceAmount
-                        : partialAmount)
-                        .toStringAsFixed(2),
+                    amount: payableAmount.toStringAsFixed(2),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: CustomColor.greenColor,
@@ -235,19 +247,26 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           ? double.parse((serviceAmount - partialAmount).toStringAsFixed(2))
                           : 0.0;
 
+                      // ✅ Payment Method list with wallet
+                      final List<String> paymentMethods = [];
+                      if (isCashFree) paymentMethods.add("cashfree");
+                      if (isPac) paymentMethods.add("pac");
+                      if (walletAppliedAmount > 0) paymentMethods.add("wallet");
+
                       final updatedCheckout = widget.checkoutData.copyWith(
-                        paymentMethod: [isCashFree ? 'cashfree' : 'pac'],
-                        walletAmount: 0,
+                        paymentMethod: paymentMethods,
+                        walletAmount: walletAppliedAmount,
                         otherAmount: 0,
-                        paidAmount: finalAmount,
+                        paidAmount: payableAmount,
+                        grandTotal: serviceAmount,
                         remainingAmount: remainingAmount,
-                        grandTotal: finalAmount,
                         paymentStatus: isPac ? 'unpaid' : 'pending',
                         orderStatus: 'processing',
                         isPartialPayment: isCashFree ? isPartial : false,
                       );
 
-                      if (isPac) {
+                      // अगर पूरा amount wallet से cover हुआ → direct booking confirm
+                      if (walletAppliedAmount >= serviceAmount) {
                         final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
                         if (!mounted) return;
                         if (checkoutResult != null) {
@@ -255,15 +274,28 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           showCustomSnackBar(context, '✅ Booking confirmed.\nBooking ID: $bookingId');
                           if (bookingId != null && mounted) {
                             widget.onPaymentDone(
-                              bookingId,
-                              checkoutResult.createdAt.toString(),
+                                bookingId,
+                                checkoutResult.createdAt.toString(),
                                 checkoutResult.paidAmount?.toStringAsFixed(2) ?? "0.00"
                             );
                           }
-                        } else {
-                          showCustomSnackBar(context, '❌ Something went wrong.');
+                        }
+                      } else if (isPac) {
+                        final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
+                        if (!mounted) return;
+                        if (checkoutResult != null) {
+                          bookingId = checkoutResult.bookingId;
+                          showCustomSnackBar(context, '✅ Booking confirmed.\nBooking ID: $bookingId');
+                          if (bookingId != null && mounted) {
+                            widget.onPaymentDone(
+                                bookingId,
+                                checkoutResult.createdAt.toString(),
+                                checkoutResult.paidAmount?.toStringAsFixed(2) ?? "0.00"
+                            );
+                          }
                         }
                       } else {
+                        // CashFree + remaining amount
                         final checkoutResult = await CheckOutService.checkOutService(updatedCheckout);
                         if (!mounted) return;
                         if (checkoutResult != null) {
@@ -274,7 +306,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             context: context,
                             orderId: 'checkout_$formattedOrderId',
                             checkoutId: checkoutId!,
-                            amount: finalAmount.toDouble(),
+                            amount: payableAmount,
                             customerId: userSession.userId!,
                             name: 'Customer',
                             phone: '9999999999',
@@ -283,7 +315,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                               widget.onPaymentDone(
                                 bookingId!,
                                 checkoutResult.createdAt.toString(),
-                                finalAmount.toStringAsFixed(2),
+                                payableAmount.toStringAsFixed(2),
                               );
                             },
                           );

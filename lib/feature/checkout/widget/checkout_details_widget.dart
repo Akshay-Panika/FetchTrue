@@ -289,7 +289,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               _isAgree = !_isAgree;
                             });
                           },),
-                          Text('I agree with the term  condition')
+                          Text('I agree with the term  condition', style: textStyle12(context),)
                         ],
                       ),
                       10.height,
@@ -518,7 +518,7 @@ Widget _couponCard(BuildContext context, VoidCallback? onTap, CouponModel? selec
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Best Coupon For You", style: textStyle14(context, fontWeight: FontWeight.w500)),
+            Text("Best Coupon For You", style: textStyle12(context,)),
             InkWell(
               onTap: onTap,
               child: Text(
@@ -528,7 +528,7 @@ Widget _couponCard(BuildContext context, VoidCallback? onTap, CouponModel? selec
             ),
           ],
         ),
-        const Divider(thickness: 0.4),
+        10.height,
 
         if (selectedCoupon != null)
           CustomContainer(
@@ -558,7 +558,32 @@ Widget _couponCard(BuildContext context, VoidCallback? onTap, CouponModel? selec
           ),
 
         if (selectedCoupon == null)
-          const Text("No Coupon Selected"),
+          CustomContainer(
+            border: true,
+            color: Colors.transparent,
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.zero,
+            child: Row(
+              children: [
+                Expanded(child: CustomContainer(
+                  padding: EdgeInsets.only(left: 20),
+                  height: 45,
+                  child: TextField(
+                    style: textStyle12(context),
+                    decoration: InputDecoration(
+                      hintText: '#XXXXXXX',
+                      hintStyle: textStyle12(context, color: CustomColor.greyColor),
+                      border: InputBorder.none
+                    ),
+                  ),
+                )),
+                CustomContainer(
+                  height: 45,width: 100,
+                  child: Center(child: Text('Apply', style: textStyle12(context),)),
+                )
+              ],
+            ),
+          ),
       ],
     ),
   );
@@ -568,8 +593,8 @@ Widget _buildRow(BuildContext context, label, amount){
   return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label),
-        Text(amount),
+        Text(label, style: textStyle12(context),),
+        Text(amount, style: textStyle12(context),),
       ]
   );
 }
@@ -592,7 +617,7 @@ Widget _addCustomer(
       children: [
         Text(
           'Select Customer',
-          style: textStyle14(context, fontWeight: FontWeight.w600),
+          style: textStyle12(context,),
         ),
         const Divider(),
 
@@ -656,7 +681,7 @@ Widget _actionButton(
       VoidCallback? onTap,
     }) {
   return CustomContainer(
-    border: true,
+    border: false,
     padding: const EdgeInsets.symmetric(vertical: 8),
     onTap: onTap,
     child: Row(

@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
+import 'package:fetchtrue/feature/customer/repository/customer_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
@@ -8,7 +9,6 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../checkout/model/add_customer_model.dart';
-import '../repository/add_customer_service.dart';
 
 class AddCustomerScreen extends StatefulWidget {
   final String userId;
@@ -107,7 +107,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     );
 
     try {
-      final result = await AddCustomerService.createCustomer(newCustomer);
+      final result = await CustomerRepository.createCustomer(newCustomer);
 
       if (result != null) {
         showCustomSnackBar(context, "Customer Created: ${result.fullName}");

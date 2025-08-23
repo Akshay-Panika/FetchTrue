@@ -3,7 +3,7 @@ import '../../../helper/api_urls.dart';
 import '../../checkout/model/add_customer_model.dart';
 import '../../../helper/api_helper.dart';
 
-class AddCustomerService {
+class CustomerRepository {
   static Future<AddCustomerModel?> createCustomer(AddCustomerModel model) async {
     try {
 
