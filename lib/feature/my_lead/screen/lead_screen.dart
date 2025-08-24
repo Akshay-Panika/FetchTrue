@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
@@ -121,8 +122,13 @@ class _LeadScreenState extends State<LeadScreen> {
                 SliverToBoxAdapter(
                   child:  filteredList.isEmpty
                       ? Padding(
-                      padding: EdgeInsetsGeometry.only(top: 300),
-                      child: const Center(child: Text('No leads.')))
+                      padding: EdgeInsetsGeometry.only(top: 280),
+                      child:  Center(child: Column(
+                        children: [
+                          Image.asset(CustomImage.emptyCart, height: 80,),
+                          Text('No leads.'),
+                        ],
+                      )))
                       : ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),

@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/formate_price.dart';
 import '../model/lead_model.dart';
 import 'leads_details_widget.dart';
 
@@ -33,8 +34,8 @@ Widget buildBookingCard(BuildContext context, { required BookingData lead}){
         ),
         Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
         Divider(),
-        _iconText(context,icon: Icons.calendar_month, text: 'Booking Date : ${DateFormat(lead.createdAt)}'),
-        _iconText(context,icon: Icons.calendar_month, text: 'Schedule Date: ${DateFormat(lead.acceptedDate)}'),
+        _iconText(context,icon: Icons.calendar_month, text: 'Booking Date : ${formatDateTime(lead.createdAt)}'),
+        _iconText(context,icon: Icons.calendar_month, text: 'Schedule Date: ${formatDateTime(lead.acceptedDate)}'),
         10.height,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

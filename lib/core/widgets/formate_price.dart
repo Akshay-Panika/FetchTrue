@@ -12,7 +12,7 @@ String formatDateTime(dynamic date) {
   } else if (date is DateTime) {
     dt = date;
   } else {
-    return '';
+    return 'N/A';
   }
   return DateFormat("dd MMM yyyy, hh:mm a").format(dt);
 }

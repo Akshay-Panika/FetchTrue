@@ -3,25 +3,20 @@ import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_state.dart';
 import '../model/lead_model.dart';
 import '../model/leads_model.dart';
 import '../repository/checkout_service_buy_repository.dart';
-import '../repository/lead_by_user_service.dart';
 import 'customer_card_widget.dart';
 import 'lead_card_widget.dart';
 
@@ -38,9 +33,7 @@ class LeadsDetailsWidget extends StatelessWidget {
         if (state is LeadLoading) {
           return CircularProgressIndicator();
         } else if (state is LeadLoaded) {
-          final lead = state.leadModel.data?.firstWhere(
-                (l) => l.id == leadId,
-          );
+          final lead = state.leadModel.data?.firstWhere((l) => l.id == leadId,);
 
           if (lead == null) {
             return const Center(child: Text("Lead not found"));
@@ -64,7 +57,7 @@ class LeadsDetailsWidget extends StatelessWidget {
 
                 /// Payment status card
                 _buildPaymentStatus(context, lead),
-                // SizedBox(height: dimensions.screenHeight*0.015,),
+                SizedBox(height: dimensions.screenHeight*0.015,),
 
                 /// Booking summary card
                 _buildBookingSummary(context,lead),
@@ -519,57 +512,44 @@ Widget _buildBookingSummary(BuildContext context, BookingData lead) {
         _buildRow(
           context,
           title: 'Listing Price',
-          // amount: '₹ ${lead.listingPrice}',
-          amount: '₹ ${formatPrice(lead.listingPrice)}',
+          amount: '₹ ${lead.listingPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
           title: 'Service Discount (${lead.service!.discount}%)',
-          // amount: '- ₹ ${lead.serviceDiscountPrice}',
-          amount: '- ₹ ${formatPrice(lead.serviceDiscountPrice)}',
-
+          amount: '- ₹ ${lead.serviceDiscountPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
           title: 'Price After Discount',
-          // amount: '₹ ${lead.service.discountedPrice}',
-          amount: '₹ ${formatPrice(lead.service!.discountedPrice)}',
-
+          amount: '₹ ${lead.service!.discountedPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
           title: 'Coupon Discount (₹ ${lead.couponDiscount})',
-          // amount: '- ₹ ${lead.couponDiscountPrice}',
-          amount: '- ₹ ${formatPrice(lead.couponDiscountPrice)}',
-
+          amount: '- ₹ ${lead.couponDiscountPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
           title: 'Service GST (${lead.gst}%)',
-          // amount: '+ ₹ ${lead.serviceGSTPrice}',
-          amount: '+ ₹ ${formatPrice(lead.serviceGSTPrice)}',
-
+          amount: '+ ₹ ${lead.serviceGSTPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
           title: 'Platform Fee (₹ ${lead.platformFee})',
-          // amount: '+ ₹ ${lead.platformFeePrice}',
-          amount: '+ ₹ ${formatPrice(lead.platformFeePrice)}',
-
+          amount: '+ ₹ ${lead.platformFeePrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
           context,
-          title: 'Fetch True Assurity Charges (0%)',
-          // amount: '+ ₹ ${lead.assurityChargesPrice}',
-          amount: '+ ₹ ${formatPrice(lead.assurityChargesPrice)}',
-
+          title: 'Fetch True Assurity Charges (${lead.assurityfee} %)',
+          amount: '+ ₹ ${lead.assurityChargesPrice?.toStringAsFixed(2)}',
         ),
         Divider(thickness: 0.4),
         _buildRow(
           context,
           title: 'Grand Total',
-          // amount: '₹ ${lead.totalAmount}',
-          amount: '₹ ${formatPrice(lead.totalAmount)}',
+          amount: '₹ ${lead.totalAmount?.toStringAsFixed(2)}',
+          // amount: '₹ ${formatPrice(lead.totalAmount)}',
         ),
       ],
     ),
@@ -580,13 +560,35 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(title, style: textStyle12(context, fontWeight: FontWeight.w400),),
-      Text(amount, style: textStyle12(context, fontWeight: FontWeight.w400),),
+      Text(title, style: textStyle12(context,),),
+      Text(amount, style: textStyle12(context,),),
     ],
   );
 }
 
 Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
+
+  String formatCommission(dynamic rawCommission, {bool half = false}) {
+    if (rawCommission == null) return '0';
+
+    final commissionStr = rawCommission.toString();
+
+    // Extract numeric value
+    final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+    final numeric = double.tryParse(numericStr) ?? 0;
+
+    // Extract symbol (₹, %, etc.)
+    final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+    final value = half ? (numeric / 2).round() : numeric.round();
+
+    // Format with symbol
+    if (symbol == '%') {
+      return '$value%';
+    } else {
+      return '$symbol$value';
+    }
+  }
 
   return CustomContainer(
     border: true,
@@ -601,8 +603,8 @@ Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
           children: [
             Text('Up To', style: textStyle12(context),),
             10.width,
-            Text(
-              lead.commission.toString(),
+            Text(formatCommission(lead.commission.toString(), half: true),
+              // lead.commission.toString(),
               style: textStyle14(context, color: Colors.green),
             ),
 

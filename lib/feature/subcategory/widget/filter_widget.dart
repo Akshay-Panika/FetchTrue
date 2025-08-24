@@ -16,7 +16,7 @@ class FilterWidget extends StatefulWidget {
 
 class _FilterWidgetState extends State<FilterWidget> {
   final List<String> serviceOptions = [
-    'All', 'Low to High', 'High to Low', 'Most Popular', 'Top Rated', 'Best Seller', 'Recommended',
+    'All', 'Low to High', 'High to Low', 'Recommended', 'Most Popular', 'Top Rated', 'Best Seller',
   ];
 
   String selectedOption = 'All';

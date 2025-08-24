@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
@@ -49,15 +50,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onTap: (index) => setState(() => _currentIndex = index),
             type: BottomNavigationBarType.fixed,
             selectedItemColor: CustomColor.appColor,
-            unselectedItemColor: CustomColor.iconColor,
+            unselectedItemColor: CustomColor.strokeColor,
             backgroundColor: Colors.white,
             elevation: 0.8,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            iconSize: 22,
+            items:  [
+              BottomNavigationBarItem(icon: Icon(Icons.home,), label: "Home"),
               BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: "Leads"),
               BottomNavigationBarItem(icon: Icon(Icons.local_offer), label: "Offers"),
               BottomNavigationBarItem(icon: Icon(Icons.school), label: "Academy"),
-              BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: "More"),
+              BottomNavigationBarItem(icon: Icon(CupertinoIcons.person_crop_circle), label: "Account"),
             ],
           ),
         ),
