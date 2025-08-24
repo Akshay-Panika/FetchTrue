@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/widgets/custom_favorite_button.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
-import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,6 +10,8 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/shimmer_box.dart';
+import '../../my_lead/screen/lead_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/model/service_model.dart';

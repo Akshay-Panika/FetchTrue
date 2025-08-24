@@ -1,6 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
-import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:fetchtrue/feature/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/shimmer_box.dart';
 import '../../team_build/bloc/my_team/my_team_bloc.dart';
 import '../../team_build/bloc/my_team/my_team_event.dart';
 import '../../team_build/bloc/my_team/my_team_state.dart';

@@ -57,12 +57,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               searchBarHeight: searchBarHeight,
               background: HomeBannerWidget(),
             ),
-      
-      
+
             /// Futures
             if (userSession.isLoggedIn)
             SliverToBoxAdapter(child: featureWidget(userSession.userId!)),
-      
             /// Modules
             SliverToBoxAdapter(child: ModuleWidget()),
             SliverToBoxAdapter(child: 15.height),

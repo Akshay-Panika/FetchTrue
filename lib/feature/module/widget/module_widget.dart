@@ -1,4 +1,3 @@
-import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -8,6 +7,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../../core/widgets/shimmer_box.dart';
 import '../../category/business/screen/business_screen.dart';
 import '../../category/education/screen/education_screen.dart';
 import '../../category/finance/screen/finance_service_screen.dart';
@@ -17,6 +17,7 @@ import '../../category/legal_service/screen/legal_service_screen.dart';
 import '../../category/marketing/screen/marketing_screen.dart';
 import '../../category/onboarding/screen/onboarding_screen.dart';
 import '../../category/ondemand/screen/ondemand_screen.dart';
+import '../../my_lead/screen/lead_screen.dart';
 import '../bloc/module_bloc.dart';
 import '../bloc/module_state.dart';
 

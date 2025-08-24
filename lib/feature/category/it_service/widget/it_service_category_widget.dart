@@ -5,16 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_container.dart';
-import '../../../../core/widgets/custom_headline.dart';
-import '../../../my_lead/screen/leads_screen.dart';
+import '../../../../core/widgets/shimmer_box.dart';
 import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_state.dart';
-import '../../bloc/module_category/module_category_bloc.dart';
-import '../../bloc/module_category/module_category_event.dart';
-import '../../bloc/module_category/module_category_state.dart';
-import '../../repository/module_category_service.dart';
+
 
 class ItServiceCategoryWidget extends StatelessWidget {
   final String? moduleId;

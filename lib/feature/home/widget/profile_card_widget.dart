@@ -1,6 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/favorite/screen/favorite_screen.dart';
-import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +9,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_search_bar.dart';
+import '../../../core/widgets/shimmer_box.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';

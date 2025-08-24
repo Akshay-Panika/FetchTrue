@@ -1,5 +1,4 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/my_lead/screen/leads_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/shimmer_box.dart';
 import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_state.dart';
