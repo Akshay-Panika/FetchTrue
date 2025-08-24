@@ -160,7 +160,7 @@ class _LeadScreenState extends State<LeadScreen> {
                         ),
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadsDetailsScreen(
                           leadName: lead.service.serviceName,
-                          lead: lead,
+                          leadId: lead.id,
                         ),)),
                       );
                     },

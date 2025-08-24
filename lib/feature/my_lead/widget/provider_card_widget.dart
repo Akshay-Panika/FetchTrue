@@ -1,231 +1,166 @@
-import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_icon.dart';
-
+import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
+import '../../provider/bloc/provider/provider_bloc.dart';
+import '../../provider/bloc/provider/provider_state.dart';
 
-import '../model/leads_model.dart';
-
-class ProviderCardWidget extends StatefulWidget {
-  final LeadsModel lead;
-  const ProviderCardWidget({super.key, required this.lead});
-
-  @override
-  State<ProviderCardWidget> createState() => _ProviderCardWidgetState();
-}
-
-class _ProviderCardWidgetState extends State<ProviderCardWidget> {
-
+class ProviderCardWidget extends StatelessWidget {
+  final String? providerId;
+  const ProviderCardWidget({super.key, required this.providerId});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-    // return BlocProvider(
-    //   create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
-    //   child:  BlocBuilder<ProviderBloc, ProviderState>(
-    //     builder: (context, state) {
-    //       if (state is ProviderLoading) {
-    //         return  SizedBox.shrink();
-    //       }
-    //
-    //       else if(state is ProviderLoaded){
-    //
-    //         final providerId = widget.lead.provider;
-    //         if (providerId == null) return _buildFTProviderCard();
-    //         final provider = state.providerModel.where((moduleService) =>
-    //         moduleService.id == providerId
-    //         ).toList();
-    //
-    //         if (provider.isEmpty) {
-    //           return  SizedBox.shrink();
-    //         }
-    //
-    //
-    //         return  CustomContainer(
-    //           border: true,
-    //           color: CustomColor.whiteColor,
-    //           margin: EdgeInsets.zero,
-    //           child: Column(
-    //             children: [
-    //               InkWell(
-    //                 // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
-    //                 child: Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   mainAxisAlignment: MainAxisAlignment.start,
-    //                   children: [
-    //                     Text('Service Provider', style: textStyle14(context),),
-    //                     10.height,
-    //
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       children: [
-    //                         Row(
-    //                           crossAxisAlignment: CrossAxisAlignment.start,
-    //                           children: [
-    //                             CircleAvatar(
-    //                               backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-    //                               backgroundImage: NetworkImage(provider.first.storeInfo!.logo.toString()),
-    //                             ),
-    //                             10.width,
-    //
-    //                             Column(
-    //                               crossAxisAlignment: CrossAxisAlignment.start,
-    //                               children: [
-    //                                 Text(provider.first.storeInfo!.storeName.toString(), style: textStyle14(context),),
-    //                                 Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-    //                                 5.height,
-    //
-    //                                 // Text('Contact: +91 ${provider.first.phoneNo}'),
-    //                               ],
-    //                             )
-    //                           ],
-    //                         ),
-    //
-    //                         Padding(
-    //                           padding: const EdgeInsets.only(right: 10.0),
-    //                           child: Row(
-    //                             mainAxisAlignment: MainAxisAlignment.center,
-    //                             crossAxisAlignment: CrossAxisAlignment.center,
-    //                             children: [
-    //                               InkWell(onTap: () => ContactHelper.whatsapp('${provider.first.phoneNo}', 'Dear Provider\n${provider.first.fullName}'),
-    //                                   child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-    //                               40.width,
-    //                               InkWell(onTap: () => ContactHelper.call(provider.first.phoneNo),
-    //                                   child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-    //
-    //                             ],
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     5.height,
-    //                     Text(
-    //                       '⭐ ${provider.first.averageRating} (${provider.first.totalReviews} Review)',
-    //                       style: TextStyle(fontSize: 12, color: Colors.black),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               // Divider(),
-    //               // InkWell(
-    //               //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(),)),
-    //               //   child: Column(
-    //               //     crossAxisAlignment: CrossAxisAlignment.start,
-    //               //     mainAxisAlignment: MainAxisAlignment.start,
-    //               //     children: [
-    //               //       Text('Service Manager', style: textStyle14(context),),
-    //               //       10.height,
-    //               //
-    //               //       Row(
-    //               //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //               //         crossAxisAlignment: CrossAxisAlignment.start,
-    //               //         children: [
-    //               //           Row(
-    //               //             crossAxisAlignment: CrossAxisAlignment.start,
-    //               //             children: [
-    //               //               CircleAvatar(radius: 25,
-    //               //                 backgroundImage: AssetImage(CustomImage.nullImage),),
-    //               //               10.width,
-    //               //
-    //               //               Column(
-    //               //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //               //                 children: [
-    //               //                   Text('Name: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
-    //               //                   Text('Contact: N/A', style: TextStyle(color: CustomColor.descriptionColor),),
-    //               //                 ],
-    //               //               )
-    //               //             ],
-    //               //           ),
-    //               //
-    //               //           Padding(
-    //               //             padding: const EdgeInsets.only(right: 10.0),
-    //               //             child: Row(
-    //               //               mainAxisAlignment: MainAxisAlignment.center,
-    //               //               crossAxisAlignment: CrossAxisAlignment.center,
-    //               //               children: [
-    //               //                 InkWell(onTap: () => ContactHelper.whatsapp('', ''),
-    //               //                     child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-    //               //                 40.width,
-    //               //                 InkWell(onTap: () => ContactHelper.call(''),
-    //               //                     child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-    //               //
-    //               //               ],
-    //               //             ),
-    //               //           )
-    //               //         ],
-    //               //       ),
-    //               //     ],
-    //               //   ),
-    //               // ),
-    //             ],
-    //           ),
-    //         );
-    //
-    //       }
-    //
-    //       else if (state is ProviderError) {
-    //         return Center(child: Text(state.errorMessage));
-    //       }
-    //       return const SizedBox.shrink();
-    //     },
-    //   ),
-    // );
-  }
-}
+    if (providerId == null || providerId!.isEmpty) {
+      return SizedBox.shrink();
+    }
 
+    return BlocBuilder<ProviderBloc, ProviderState>(
+      builder: (context, state) {
+        if (state is ProviderLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ProvidersLoaded) {
+          /// ✅ Find provider safely with orElse
+          final provider = state.providers.firstWhere(
+                (e) => e.kycCompleted == true && e.id == providerId,
+            // orElse: () => null, // null return if not found
+          );
 
+          if (provider == null) {
+            return const Center(
+              child: Text(
+                "No Provider Available",
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+            );
+          }
 
-Widget _buildFTProviderCard(){
-  return  CustomContainer(
-    border: true,
-    color: CustomColor.whiteColor,
-    margin: EdgeInsets.zero,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        10.height,
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+          return CustomContainer(
+            border: true,
+            color: CustomColor.whiteColor,
+            margin: EdgeInsets.zero,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(radius: 30,
-                  child: CircleAvatar(radius: 25,
-                    backgroundImage: AssetImage(CustomLogo.fetchTrueLogo),),
-                ),
+                Text('Service Provider', style: textStyle14(context)),
                 10.height,
-                Text('This Service Provided By Fetch True', style: TextStyle(),),
-
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.blue,
+                          backgroundImage: provider.storeInfo?.logo != null &&
+                              provider.storeInfo!.logo!.isNotEmpty
+                              ? NetworkImage(provider.storeInfo!.logo!)
+                              : null,
+                          child: (provider.storeInfo?.logo == null ||
+                              provider.storeInfo!.logo!.isEmpty)
+                              ? Text(
+                            provider.storeInfo?.storeName
+                                ?.substring(0, 1)
+                                .toUpperCase() ??
+                                "?",
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 20),
+                          )
+                              : null,
+                        ),
+                        10.width,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              provider.storeInfo?.storeName ??
+                                  'No Provider Available',
+                              style: textStyle14(context),
+                            ),
+                            Text(
+                              'No Module',
+                              style: textStyle14(
+                                context,
+                                fontWeight: FontWeight.w400,
+                                color: CustomColor.descriptionColor,
+                              ),
+                            ),
+                            5.height,
+                            if (provider.storeInfo?.storePhone != null &&
+                                provider.storeInfo!.storePhone!.isNotEmpty)
+                              Text(
+                                'Contact: +91 ${provider.storeInfo!.storePhone}',
+                                style: textStyle12(
+                                  context,
+                                  color: CustomColor.descriptionColor,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () => ContactHelper.whatsapp(
+                              provider.phoneNo ?? '',
+                              'Dear Provider\n${provider.fullName ?? ''}',
+                            ),
+                            child: Image.asset(
+                              CustomIcon.whatsappIcon,
+                              height: 25,
+                            ),
+                          ),
+                          40.width,
+                          InkWell(
+                            onTap: () {
+                              if (provider.storeInfo?.storePhone != null &&
+                                  provider.storeInfo!.storePhone!.isNotEmpty) {
+                                ContactHelper.call(
+                                    provider.storeInfo!.storePhone!);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                    Text('Phone number not available'),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Image.asset(
+                              CustomIcon.phoneIcon,
+                              height: 25,
+                              color: CustomColor.appColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                5.height,
+                Text(
+                  '⭐ ${provider.totalReviews ?? 0} (${provider.totalReviews ?? 0} Reviews)',
+                  style: const TextStyle(fontSize: 12, color: Colors.black),
+                ),
               ],
             ),
-
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(onTap: () => ContactHelper.whatsapp('', 'Dear Provide}'),
-                      child: Image.asset(CustomIcon.whatsappIcon, height: 25,)),
-                  40.width,
-                  InkWell(onTap: () => ContactHelper.call(''),
-                      child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-
-                ],
-              ),
-            )
-          ],
-        ),
-      ],
-    ),
-  );
+          );
+        } else if (state is ProviderError) {
+          debugPrint(state.message);
+          return const SizedBox.shrink();
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
 }

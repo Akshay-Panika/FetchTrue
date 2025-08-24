@@ -2,6 +2,7 @@ import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -11,177 +12,78 @@ import '../../../core/costants/custom_icon.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
-import '../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../checkout/repository/service_buy_repository.dart';
+import '../bloc/lead/lead_bloc.dart';
+import '../bloc/lead/lead_state.dart';
+import '../model/lead_model.dart';
 import '../model/leads_model.dart';
 import '../repository/checkout_service_buy_repository.dart';
-import '../repository/download_invoice_service.dart';
 import '../repository/lead_by_user_service.dart';
+import 'customer_card_widget.dart';
+import 'lead_card_widget.dart';
 
-class LeadsDetailsWidget extends StatefulWidget {
-  final String userId;
-  final String checkoutId;
-  const LeadsDetailsWidget({super.key, required this.checkoutId, required this.userId});
-
-  @override
-  State<LeadsDetailsWidget> createState() => _LeadsDetailsWidgetState();
-}
-
-class _LeadsDetailsWidgetState extends State<LeadsDetailsWidget> {
-
-  LeadsModel? lead;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchCheckoutData();
-  }
-
-  Future<void> _refreshData() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    await fetchCheckoutData();
-  }
-
-  Future<void> fetchCheckoutData() async {
-    final data = await LeadByUserService.fetchCheckoutById(
-      widget.userId,
-      widget.checkoutId,
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      lead = data;
-      isLoading = false;
-    });
-  }
+class LeadsDetailsWidget extends StatelessWidget {
+  final  String leadId;
+  const LeadsDetailsWidget({super.key, required this.leadId,});
 
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    if (isLoading) {
-      return Align(
-          alignment: Alignment.topCenter,
-          child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
-    }
 
-    if (lead == null) {
-      return const Center(child: Text("No lead data available"));
-    }
-    return  RefreshIndicator(
-      onRefresh: _refreshData,
-      child: SingleChildScrollView(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            SizedBox(height: dimensions.screenHeight*0.01,),
+    return BlocBuilder<LeadBloc, LeadState>(
+      builder: (context, state) {
+        if (state is LeadLoading) {
+          return CircularProgressIndicator();
+        } else if (state is LeadLoaded) {
+          final lead = state.leadModel.data?.firstWhere(
+                (l) => l.id == leadId,
+          );
 
-            /// Booking card
-            _buildBookingCard(context , lead: lead!),
-            SizedBox(height: dimensions.screenHeight*0.015,),
+          if (lead == null) {
+            return const Center(child: Text("Lead not found"));
+          }
+          return SingleChildScrollView(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                SizedBox(height: dimensions.screenHeight*0.01,),
 
-            _buildCommissionCard(context, lead: lead!),
-            SizedBox(height: dimensions.screenHeight*0.015,),
+                /// Booking card
+                buildBookingCard(context , lead: lead),
+                SizedBox(height: dimensions.screenHeight*0.015,),
 
-            /// Custom details card
-            _customerDetails(context, lead!),
-            SizedBox(height: dimensions.screenHeight*0.015,),
+                _buildCommissionCard(context, lead: lead),
+                SizedBox(height: dimensions.screenHeight*0.015,),
 
+                /// Custom details card
+                customerDetails(context, lead),
+                SizedBox(height: dimensions.screenHeight*0.015,),
 
-            /// Payment status card
-            _buildPaymentStatus(context, lead!, _refreshData),
-            SizedBox(height: dimensions.screenHeight*0.015,),
+                /// Payment status card
+                _buildPaymentStatus(context, lead),
+                // SizedBox(height: dimensions.screenHeight*0.015,),
 
-            /// Booking summary card
-            _buildBookingSummary(context,lead!),
-            SizedBox(height: dimensions.screenHeight*0.015,),
+                /// Booking summary card
+                _buildBookingSummary(context,lead),
+                SizedBox(height: dimensions.screenHeight*0.015,),
 
-            /// Provider Card
-            ProviderCardWidget(lead:lead!),
-            50.height
-          ],
-        ),
-      ),
+                /// Provider Card
+                ProviderCardWidget(providerId: lead.provider,),
+                50.height
+              ],
+            ),
+          );
+
+        } else if (state is LeadError) {
+          return Center(child: Text("❌ ${state.message}"));
+        }
+        return const Center(child: Text("No data"));
+      },
     );
   }
-}
-
-/// Booking card
-Widget _buildBookingCard(BuildContext context, { required LeadsModel lead}){
-
-  /// Format Date
-  String formatDate(String? rawDate) {
-    if (rawDate == null) return 'N/A';
-    final date = DateTime.tryParse(rawDate);
-    if (date == null) return 'Invalid Date';
-    return DateFormat('dd MMM yyyy').format(date);
-  }
-
-  return CustomContainer(
-    border: true,
-    color: Colors.white,
-    margin: EdgeInsets.zero,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(lead.service.serviceName, style: textStyle14(context),),
-            Text(
-              '[ ${getLeadStatus(lead)} ]',
-              style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
-            )
-          ],
-        ),
-        Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
-        Divider(),
-        _iconText(context,icon: Icons.calendar_month, text: 'Booking Date : ${formatDate(lead.createdAt)}'),
-        _iconText(context,icon: Icons.calendar_month, text: 'Schedule Date: ${formatDate(lead.acceptedDate)}'),
-        10.height,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('OTP: ${lead.otp}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
-            InkWell(
-              onTap: () async {
-                final url = Uri.parse('https://biz-booster.vercel.app/api/invoice/${lead.id}');
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
-              child: Text(
-                'Invoice Download',
-                style: textStyle14(context, color: CustomColor.appColor),
-              ),
-            )
-         ],
-        ),
-
-      ],
-    ),
-  );
-}
-Widget _iconText(BuildContext context,{IconData? icon, double? iconSize,Color? iconColor, String? text, Color? textColor,FontWeight? fontWeight}){
-  return Row(
-    spacing: 10,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: [
-      Icon(icon!, size: iconSize ?? 14,color: iconColor ?? CustomColor.appColor,),
-      Expanded(child: Text(text!, style: textStyle12(context, color: textColor ?? CustomColor.blackColor, fontWeight: fontWeight ??FontWeight.w400),))
-    ],
-  );
 }
 
 /// Lead Status
@@ -206,64 +108,16 @@ String capitalize(String value) {
 }
 
 
-/// Customer details
-Widget _customerDetails(BuildContext context, LeadsModel lead){
-  final phoneNumber = lead.serviceCustomer.phone;
-  final message = 'Hello, I am contacting you from Fetch True.';
-
-  return CustomContainer(
-    border: true,
-    color: Colors.white,
-    margin: EdgeInsets.zero,
-    width: double.infinity,
-    child: Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Customer Details', style: textStyle12(context),),
-            5.height,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Name : ${lead.serviceCustomer.fullName}', style:  textStyle12(context, fontWeight: FontWeight.w400)),
-                Text('Phone : ${lead.serviceCustomer.phone}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
-                // Text('Email Id : ${lead.serviceCustomer!.email}',  style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
-                Text('Address: ${lead.serviceCustomer.address}, ${lead.serviceCustomer.city}, ${lead.serviceCustomer.state}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
-
-                if(lead.notes.isNotEmpty)
-                Text('Note : ${lead.notes}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
-              ],
-            ),
-       ],
-        ),
-
-        Positioned(
-            top: 20,right: 20,
-            child:  Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                InkWell(onTap: () => ContactHelper.whatsapp(phoneNumber.toString(), message),
-                    child: Image.asset(CustomIcon.whatsappIcon, height: 25, )),
-                40.width,
-                InkWell(onTap: () => ContactHelper.call(phoneNumber.toString()),
-                    child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-
-              ],
-            ))
-      ],
-    ),
-  );
-}
-
 /// Payment status
-Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? onPaymentSuccess){
-  final status = lead.paidAmount == 0
-      ? 'Unpaid' : (lead.remainingAmount != 0 ? 'Pending' : 'Paid');
+Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
+  final paid = lead.paidAmount ?? 0;
+  final remaining = lead.remainingAmount ?? 0;
 
-  // final status =  lead.paidAmount !=0 ? 'Paid' : (lead.paidAmount !=0 && lead.remainingAmount !=0) ?'Pending':'Unpaid';
-    return Stack(
+  final status = paid == 0
+      ? 'Unpaid'
+      : (remaining != 0 ? 'Pending' : 'Paid');
+
+  return Stack(
     children: [
       CustomContainer(
         border: true,
@@ -273,96 +127,94 @@ Widget _buildPaymentStatus(BuildContext context, LeadsModel lead, VoidCallback? 
           children: [
             Row(
               children: [
-                Text('Payment Status', style: textStyle12(context),),
+                Text('Payment Status', style: textStyle12(context)),
                 10.width,
-                Text('( $status )', style: textStyle12(context, color: status == 'Paid'? CustomColor.appColor:status == 'Unpaid'? CustomColor.redColor : CustomColor.amberColor),),
+                Text(
+                  '( $status )',
+                  style: textStyle12(
+                    context,
+                    color: status == 'Paid'
+                        ? CustomColor.appColor
+                        : status == 'Unpaid'
+                        ? CustomColor.redColor
+                        : CustomColor.amberColor,
+                  ),
+                ),
               ],
             ),
-            Divider(),
+            const Divider(),
 
-
+            /// Paid / Remaining Amounts
             Column(
-             spacing: 5,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Text(
-                //   'Payment Method: ${lead.paymentMethod.map((method) {
-                //     switch (method) {
-                //       case 'pac':
-                //         return 'Pay After Consultation';
-                //       case 'cashfree':
-                //         return 'Cashfree';
-                //       case 'wallet':
-                //         return 'Wallet';
-                //       default:
-                //         return method;
-                //     }
-                //   }).join(', ')}',
-                //   style: textStyle12(context, fontWeight: FontWeight.w400),
-                // ),
-
-                if(lead.paidAmount!=0)
-                 _buildRow(context, title: 'Paid Amount', amount: '₹ ${formatPrice(lead.paidAmount)}',),
-                if(lead.remainingAmount !=0)
-                _buildRow(context, title: 'Remaining Amount', amount: '₹ ${formatPrice(lead.remainingAmount)}',),
-              ],
-            ),
-
-
-            Column(
-              children: [
-                if(lead.paidAmount ==0 && '${getLeadStatus(lead)}' != 'Cancel')
-                  Padding(
-                    padding: EdgeInsetsGeometry.only(top: 10),
-                    child: InkWell(
-                      child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
-                      onTap: () {
-                        _showPaymentBottomSheet(context,lead, onPaymentSuccess);
-                      },
-                    ),
+                if (paid != 0)
+                  _buildRow(
+                    context,
+                    title: 'Paid Amount',
+                    amount: '₹ ${formatPrice(paid.toDouble())}',
+                  ),
+                if (remaining != 0)
+                  _buildRow(
+                    context,
+                    title: 'Remaining Amount',
+                    amount: '₹ ${formatPrice(remaining.toDouble())}',
                   ),
               ],
             ),
 
+            /// Pay Now Button
+            if (paid == 0 && '${getLeadStatus(lead)}' != 'Cancel')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: InkWell(
+                  onTap: () {},
+                  child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+                ),
+              ),
 
-            /// Remaining Pay
-            if(lead.paidAmount !=0 && lead.remainingAmount!=0)
-            Padding(
-              padding: EdgeInsetsGeometry.only(top: 10),
-              child: RemainingPaymentButton(lead: lead,onPaymentSuccess: onPaymentSuccess,),
-            ),
-
+            /// Remaining Payment Button
+            if (paid != 0 && remaining != 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: RemainingPaymentButton(lead: lead),
+              ),
           ],
         ),
       ),
 
+      /// Share Button
       Positioned(
-          top: -5,
-          right: 5,
-          child: IconButton(
-              onPressed: () {
-                final userSession = Provider.of<UserSession>(context, listen: false);
-                final serviceId =lead.service.id;
-                final userId = serviceId.isNotEmpty ?  userSession.userId: null;
+        top: -5,
+        right: 5,
+        child: IconButton(
+          onPressed: () {
+            final userSession = Provider.of<UserSession>(context, listen: false);
+            final serviceId = lead.service?.id;
+            final userId = (serviceId != null && serviceId.isNotEmpty)
+                ? userSession.userId
+                : null;
 
-                print('-----------serviceId: $serviceId------userId: $userId---------');
+            print('-----------serviceId: $serviceId------userId: $userId---------');
 
-                if (userId != null) {
-                  final shareUrl = 'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
-                  Share.share('Check out this service on FetchTrue:\n$shareUrl');
-                } else {
-                  showCustomSnackBar(context,  'Please wait data is loading.');
-                }
-              },
-              icon: Icon(Icons.share,color: CustomColor.appColor,)))
+            if (userId != null) {
+              final shareUrl =
+                  'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
+              Share.share('Check out this service on FetchTrue:\n$shareUrl');
+            } else {
+              showCustomSnackBar(context, 'Please wait data is loading.');
+            }
+          },
+          icon: Icon(Icons.share, color: CustomColor.appColor),
+        ),
+      ),
     ],
   );
 }
 
+void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
 
-void _showPaymentBottomSheet(BuildContext context, LeadsModel lead, VoidCallback? onPaymentSuccess) {
-
-  double fullAmount = lead.totalAmount.toDouble();
+  double fullAmount = lead.totalAmount!.toDouble();
   double halfAmount = fullAmount / 2;
   double walletBalance = 100.0;
 
@@ -544,9 +396,9 @@ void _showPaymentBottomSheet(BuildContext context, LeadsModel lead, VoidCallback
                                       final result = await initiateCheckoutServicePayment(
                                         context: context,
                                         orderId: 'checkout_$formattedOrderId',
-                                        checkoutId: lead.id,
+                                        checkoutId: lead.id.toString(),
                                         amount: payableAmount.value.toInt(),
-                                        customerId: lead.serviceCustomer.id,
+                                        customerId: lead.serviceCustomer!.id.toString(),
                                         name: 'Akshay',
                                         phone: '8989207770',
                                         email: 'akshay@gmail.com',
@@ -579,70 +431,12 @@ void _showPaymentBottomSheet(BuildContext context, LeadsModel lead, VoidCallback
 }
 
 class RemainingPaymentButton extends StatefulWidget {
-  final LeadsModel lead;
-  final VoidCallback? onPaymentSuccess;
-
-  const RemainingPaymentButton({super.key, this.onPaymentSuccess, required this.lead});
+  final BookingData lead;
+  const RemainingPaymentButton({super.key, required this.lead});
 
   @override
   State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
 }
-
-// class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
-//   bool _isLoading = false;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//
-//     final now = DateTime.now();
-//     final formattedOrderId =
-//         "${now.day.toString().padLeft(2, '0')}/"
-//         "${now.month.toString().padLeft(2, '0')}/"
-//         "${now.year.toString().substring(2)}/_"
-//         "${now.hour.toString().padLeft(2, '0')}:"
-//         "${now.minute.toString().padLeft(2, '0')}:"
-//         "${now.second.toString().padLeft(2, '0')}";
-//
-//     return InkWell(
-//       onTap: _isLoading
-//           ? null
-//           : () async {
-//         setState(() {
-//           _isLoading = true;
-//         });
-//
-//         final result = await initiateCheckoutServicePayment(
-//           context: context,
-//           orderId: 'checkout_$formattedOrderId',
-//           checkoutId: widget.lead.id,
-//           amount: widget.lead.remainingAmount.toDouble(),
-//           customerId: widget.lead.serviceCustomer.id,
-//           name: 'Akshay',
-//           phone: '8989207770',
-//           email: 'akshay@gmail.com',
-//         );
-//
-//         setState(() {
-//           _isLoading = false;
-//         });
-//
-//         if (result == true) {
-//           // print("Payment Success");
-//           widget.onPaymentSuccess?.call();
-//         }
-//       },
-//       child: _isLoading
-//           ?  SizedBox(
-//         height: 20,
-//         width: 20,
-//         child: CircularProgressIndicator(
-//           color: CustomColor.appColor,
-//         ),
-//       )
-//           :  Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
-//     );
-//   }
-// }
 
 class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
   bool _isLoading = false;
@@ -676,9 +470,9 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         final result = await initiateCheckoutServicePayment(
           context: context,
           orderId: 'checkout_$formattedOrderId',
-          checkoutId: widget.lead.id,
+          checkoutId: widget.lead.id.toString(),
           amount: roundedAmount.round(),
-          customerId: widget.lead.serviceCustomer.id,
+          customerId: widget.lead.serviceCustomer!.id.toString(),
           name: 'Akshay',
           phone: '8989207770',
           email: 'akshay@gmail.com',
@@ -689,7 +483,7 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         });
 
         if (result == true) {
-          widget.onPaymentSuccess?.call();
+          // widget.onPaymentSuccess?.call();
         }
       },
       child: _isLoading
@@ -709,13 +503,11 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
   }
 }
 
-
-Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
+Widget _buildBookingSummary(BuildContext context, BookingData lead) {
   String formatPrice(num? value) {
-    if (value == null) return '0'; // या 'N/A' या कुछ भी fallback
+    if (value == null) return '0';
     return value.round().toString();
   }
-
 
   return CustomContainer(
     border: true,
@@ -732,7 +524,7 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
         ),
         _buildRow(
           context,
-          title: 'Service Discount (${lead.service.discount}%)',
+          title: 'Service Discount (${lead.service!.discount}%)',
           // amount: '- ₹ ${lead.serviceDiscountPrice}',
           amount: '- ₹ ${formatPrice(lead.serviceDiscountPrice)}',
 
@@ -741,7 +533,7 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
           context,
           title: 'Price After Discount',
           // amount: '₹ ${lead.service.discountedPrice}',
-          amount: '₹ ${formatPrice(lead.service.discountedPrice)}',
+          amount: '₹ ${formatPrice(lead.service!.discountedPrice)}',
 
         ),
         _buildRow(
@@ -767,7 +559,7 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
         ),
         _buildRow(
           context,
-          title: 'Fetch True Assurity Charges (${lead.assurityFee}%)',
+          title: 'Fetch True Assurity Charges (0%)',
           // amount: '+ ₹ ${lead.assurityChargesPrice}',
           amount: '+ ₹ ${formatPrice(lead.assurityChargesPrice)}',
 
@@ -784,7 +576,6 @@ Widget _buildBookingSummary(BuildContext context, LeadsModel lead) {
   );
 }
 
-
 Widget _buildRow(BuildContext context, {required String title, required String amount,}){
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -795,7 +586,7 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   );
 }
 
-Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
+Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
 
   return CustomContainer(
     border: true,
@@ -811,7 +602,7 @@ Widget _buildCommissionCard(BuildContext context, { required LeadsModel lead}){
             Text('Up To', style: textStyle12(context),),
             10.width,
             Text(
-              lead.commission,
+              lead.commission.toString(),
               style: textStyle14(context, color: Colors.green),
             ),
 
