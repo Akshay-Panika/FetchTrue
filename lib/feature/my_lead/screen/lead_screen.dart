@@ -9,12 +9,12 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
-import '../repository/lead_repository.dart';
 import '../widget/leads_details_widget.dart';
 import 'leads_details_screen.dart';
 
@@ -29,21 +29,35 @@ class _LeadScreenState extends State<LeadScreen> {
 
   final List<String> filters = ['All', 'Pending', 'Accepted', 'Completed', 'Cancel'];
   String selectedFilter = 'All';
-  @override
-  void initState() {
-    super.initState();
 
-    // Bloc event trigger only once
+  String? lastUserId;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userSession = Provider.of<UserSession>(context, listen: false);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userSession = Provider.of<UserSession>(context, listen: false);
-      context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+      if (userSession.isLoggedIn && userSession.userId != lastUserId) {
+        lastUserId = userSession.userId;
+        context.read<LeadBloc>().add(FetchLeadsByUser(lastUserId!));
+      } else if (!userSession.isLoggedIn) {
+        lastUserId = null;
+        context.read<LeadBloc>().add(ClearLeadData());
+      }
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    // final userSession = Provider.of<UserSession>(context);
-    // context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+
+    final userSession = Provider.of<UserSession>(context);
+
+    if (!userSession.isLoggedIn) {
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Leads',),
+        body: const Center(child: NoUserSignWidget()),
+      );
+    }
 
     return Scaffold(
       appBar: CustomAppBar(title:'Leads'),

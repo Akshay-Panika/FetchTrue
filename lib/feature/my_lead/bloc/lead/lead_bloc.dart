@@ -20,5 +20,8 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         emit(LeadError(e.toString()));
       }
     });
+    on<ClearLeadData>((event, emit) {
+      emit(LeadInitial());
+    });
   }
 }

@@ -12,3 +12,6 @@ class FetchLeadsByUser extends LeadEvent {
   @override
   List<Object?> get props => [userId];
 }
+
+class ClearLeadData extends LeadEvent {}
+
