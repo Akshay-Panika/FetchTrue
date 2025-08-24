@@ -13,12 +13,16 @@ import 'feature/banner/repository/banner_repository.dart';
 import 'feature/category/bloc/category_bloc.dart';
 import 'feature/category/bloc/category_event.dart';
 import 'feature/category/repository/category_repository.dart';
+import 'feature/checkout/bloc/checkout/checkout_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_event.dart';
+import 'feature/checkout/repository/checkout_repository.dart';
 import 'feature/internet/network_wrapper_screen.dart';
 import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
+import 'feature/my_lead/bloc/lead/lead_bloc.dart';
+import 'feature/my_lead/repository/lead_repository.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
@@ -55,6 +59,9 @@ void main() async {
             BlocProvider(create: (_) => SubcategoryBloc(SubcategoryRepository())..add(FetchSubcategories()),),
             BlocProvider(create: (_) => ServiceBloc(ServiceRepository())..add(GetServices())),
             BlocProvider(create: (_) => CommissionBloc()..add(GetCommission())),
+            BlocProvider(create: (_) => CheckoutBloc(repository: CheckOutRepository())),
+            BlocProvider(create: (_) => LeadBloc(LeadRepository())),
+
           ],
           child: const MyApp(),
         ),

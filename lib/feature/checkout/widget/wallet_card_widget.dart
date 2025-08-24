@@ -45,13 +45,9 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomAmountText(
-                        amount: '${wallet.balance}',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: CustomColor.appColor,
-                      ),
+                      Text('₹ ${wallet.balance.toStringAsFixed(2)}', style: textStyle16(context, color: CustomColor.appColor, fontWeight: FontWeight.w600),),
                       Text(
                         'Wallet Balance',
                         style: textStyle14(

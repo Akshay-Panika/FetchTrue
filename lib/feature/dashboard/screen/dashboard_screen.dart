@@ -6,6 +6,7 @@ import '../../../core/costants/dimension.dart';
 import '../../academy/screen/academy_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../more/screen/more_screen.dart';
+import '../../my_lead/screen/lead_screen.dart';
 import '../../my_lead/screen/leads_screen.dart';
 import '../../offer/screen/offers_screen.dart';
 
@@ -48,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return [
       const HomeScreen(),
       LeadsScreen(key: UniqueKey()),
-      const OffersScreen(),
+      const LeadsByUserScreen(userId: '689f4d1bd81bd14f1fb67674',),
       const AcademyScreen(),
       const MoreScreen(),
     ];

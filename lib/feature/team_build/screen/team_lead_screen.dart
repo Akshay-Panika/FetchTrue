@@ -49,11 +49,11 @@ class TeamLeadScreen extends StatelessWidget {
         create: (_) => LeadsBloc()..add(FetchLeadsDataById(userId)),
         child: BlocBuilder<LeadsBloc, LeadsState>(
           builder: (context, state) {
-            if (state is CheckoutLoading) {
+            if (state is LeadsLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (state is CheckoutLoaded) {
+            if (state is LeadsLoaded) {
               final leads = state.checkouts;
 
               if (leads.isEmpty) {
@@ -199,7 +199,7 @@ class TeamLeadScreen extends StatelessWidget {
               );
             }
 
-            if (state is CheckoutError) {
+            if (state is LeadsError) {
               return Center(child: Text(state.message));
             }
 

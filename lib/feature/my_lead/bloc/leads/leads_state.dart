@@ -3,18 +3,18 @@ import '../../model/leads_model.dart';
 
 abstract class LeadsState {}
 
-class CheckoutInitial extends LeadsState {}
+class LeadsInitial extends LeadsState {}
 
-class CheckoutLoading extends LeadsState {}
+class LeadsLoading extends LeadsState {}
 
-class CheckoutLoaded extends LeadsState {
+class LeadsLoaded extends LeadsState {
   final List<LeadsModel> checkouts;
 
-  CheckoutLoaded(this.checkouts);
+  LeadsLoaded(this.checkouts);
 }
 
-class CheckoutError extends LeadsState {
+class LeadsError extends LeadsState {
   final String message;
 
-  CheckoutError(this.message);
+  LeadsError(this.message);
 }

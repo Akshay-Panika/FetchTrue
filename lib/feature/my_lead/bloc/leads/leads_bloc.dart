@@ -7,9 +7,9 @@ import 'leads_event.dart';
 import 'leads_state.dart';
 
 class LeadsBloc extends Bloc<LeadsEvent, LeadsState> {
-  LeadsBloc() : super(CheckoutInitial()) {
+  LeadsBloc() : super(LeadsInitial()) {
     on<FetchLeadsDataById>((event, emit) async {
-      emit(CheckoutLoading());
+      emit(LeadsLoading());
 
       try {
         final url = 'https://biz-booster.vercel.app/api/checkout/lead-by-user/${event.userId}';
@@ -19,12 +19,12 @@ class LeadsBloc extends Bloc<LeadsEvent, LeadsState> {
           final body = json.decode(response.body);
           final List data = body['data'];
           final checkouts = data.map((e) => LeadsModel.fromJson(e)).toList();
-          emit(CheckoutLoaded(checkouts.cast<LeadsModel>()));
+          emit(LeadsLoaded(checkouts.cast<LeadsModel>()));
         } else {
-          emit(CheckoutError('Error: ${response.statusCode}'));
+          emit(LeadsError('Error: ${response.statusCode}'));
         }
       } catch (e) {
-        emit(CheckoutError(e.toString()));
+        emit(LeadsError(e.toString()));
       }
     });
   }

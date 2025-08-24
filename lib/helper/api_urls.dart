@@ -23,6 +23,7 @@ class ApiUrls{
   static const String serviceCustomer = '${baseUrl}service-customer';
   static const String coupon = '${baseUrl}coupon';
   static const String checkout = '${baseUrl}checkout';
+  static const String leads = '${baseUrl}checkout/lead-by-user';
   static const String leadStatus = '${baseUrl}leads';
 
 

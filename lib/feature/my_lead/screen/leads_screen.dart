@@ -74,10 +74,10 @@ class _LeadsScreenState extends State<LeadsScreen> {
           create: (_) => leadsBloc!,
           child: BlocBuilder<LeadsBloc, LeadsState>(
             builder: (context, state) {
-              if (state is CheckoutLoading) {
+              if (state is LeadsLoading) {
                 return _buildShimmer();
               }
-              else if (state is CheckoutLoaded) {
+              else if (state is LeadsLoaded) {
                 final allLeads = state.checkouts;
         
                 // 🔹 Filter Logic
@@ -199,7 +199,7 @@ class _LeadsScreenState extends State<LeadsScreen> {
                 );
               }
         
-              else if (state is CheckoutError) {
+              else if (state is LeadsError) {
                 return Center(child: Text('❌ ${state.message}'));
               } else {
                 return const SizedBox();

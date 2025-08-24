@@ -15,10 +15,10 @@ class LeadsModel {
   final int gst;
   final int platformFee;
   final int assurityFee;
-  final double walletAmount; // changed to double
-  final double otherAmount;  // changed to double
-  final double paidAmount;   // changed to double
-  final double remainingAmount; // changed to double
+  final double walletAmount;
+  final double otherAmount;
+  final double paidAmount;
+  final double remainingAmount;
   final bool isPartialPayment;
   final bool isVerified;
   final bool isAccepted;
@@ -34,13 +34,13 @@ class LeadsModel {
   final String createdAt;
   final String updatedAt;
 
-  final double? listingPrice; // changed to double
-  final double? serviceDiscountPrice; // changed to double
-  final double? priceAfterDiscount; // changed to double
-  final double? couponDiscountPrice; // changed to double
-  final double? serviceGSTPrice; // changed to double
-  final double? platformFeePrice; // changed to double
-  final double? assurityChargesPrice; // changed to double
+  final double? listingPrice;
+  final double? serviceDiscountPrice;
+  final double? priceAfterDiscount;
+  final double? couponDiscountPrice;
+  final double? serviceGSTPrice;
+  final double? platformFeePrice;
+  final double? assurityChargesPrice;
 
   final ServiceModel service;
   final ServiceCustomerModel serviceCustomer;
@@ -147,7 +147,6 @@ class LeadsModel {
     );
   }
 }
-
 
 class FranchiseDetails {
   final String? commission;

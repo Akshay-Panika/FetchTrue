@@ -173,9 +173,9 @@ Widget _buildProfileHeader(BuildContext context, UserModel user) {
         /// 🟡 BlocBuilder: Leads Info Row
         BlocBuilder<LeadsBloc, LeadsState>(
           builder: (context, state) {
-            if (state is CheckoutLoading) {
+            if (state is LeadsLoading) {
               return _buildShimmer();
-            } else if (state is CheckoutLoaded) {
+            } else if (state is LeadsLoaded) {
               final leads = state.checkouts;
 
               // Total Lead
@@ -211,7 +211,7 @@ Widget _buildProfileHeader(BuildContext context, UserModel user) {
                   ),
                 ],
               );
-            } else if (state is CheckoutError) {
+            } else if (state is LeadsError) {
               return Center(
                 child: Text(
                   "Error: ${state.message}",
@@ -260,11 +260,11 @@ Widget _buildProfileHeader(BuildContext context, UserModel user) {
 Widget _buildTotalLead(BuildContext context,) {
   return BlocBuilder<LeadsBloc, LeadsState>(
     builder: (context, state) {
-      if (state is CheckoutLoading) {
+      if (state is LeadsLoading) {
         return const Center(child: CircularProgressIndicator());
       }
 
-      if (state is CheckoutLoaded) {
+      if (state is LeadsLoaded) {
         final leads = state.checkouts;
 
         if (leads.isEmpty) {
@@ -351,7 +351,7 @@ Widget _buildTotalLead(BuildContext context,) {
         );
       }
 
-      if (state is CheckoutError) {
+      if (state is LeadsError) {
         return Center(child: Text(state.message));
       }
 
