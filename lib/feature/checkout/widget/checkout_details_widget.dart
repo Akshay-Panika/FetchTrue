@@ -352,6 +352,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             assurityfee: double.parse(assurityFee.toStringAsFixed(2)),
                             assurityChargesPrice: double.parse(assurityFeeAmount.toStringAsFixed(2)),
                             subtotal: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
+                            grandTotal: double.parse(grandTotal.toStringAsFixed(2)),
                             totalAmount: double.parse(grandTotal.toStringAsFixed(2)),
                             champaignDiscount: 0.0,
                             termsCondition: _isAgree,

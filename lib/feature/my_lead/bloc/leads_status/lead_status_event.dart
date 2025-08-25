@@ -1,7 +1,16 @@
-abstract class LeadStatusEvent {}
+// lead_status_event.dart
+import 'package:equatable/equatable.dart';
 
-class FetchLeadStatus extends LeadStatusEvent {
+abstract class LeadStatusEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class FetchLeadStatusEvent extends LeadStatusEvent {
   final String checkoutId;
 
-  FetchLeadStatus(this.checkoutId);
+  FetchLeadStatusEvent(this.checkoutId);
+
+  @override
+  List<Object?> get props => [checkoutId];
 }

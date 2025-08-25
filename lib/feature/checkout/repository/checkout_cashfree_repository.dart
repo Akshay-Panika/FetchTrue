@@ -6,7 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as http;
 
 
-Future<void> initiateServicePayment({
+Future<void> checkoutCashfreeRepository({
   required BuildContext context,
   required String orderId,
   required String checkoutId,
@@ -15,7 +15,7 @@ Future<void> initiateServicePayment({
   required String name,
   required String email,
   required String phone,
-  required VoidCallback onPaymentSuccess, // 👈
+  required VoidCallback onPaymentSuccess,
 
 }) async {
   final url = Uri.parse("https://biz-booster.vercel.app/api/payment/generate-payment-link");

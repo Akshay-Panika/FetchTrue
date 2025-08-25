@@ -177,6 +177,7 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
       ),
 
       /// Share Button
+      if(status != 'Paid')
       Positioned(
         top: -5,
         right: 5,

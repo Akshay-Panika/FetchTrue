@@ -13,7 +13,7 @@
 // import '../../auth/user_notifier/user_notifier.dart';
 // import '../model/checkout_model.dart';
 // import '../repository/checkout_service.dart';
-// import '../repository/service_buy_repository.dart';
+// import '../repository/checkout_cashfree_repository.dart';
 //
 // class CheckPaymentWidget extends StatefulWidget {
 //   final void Function(String bookingId, String dateTime, String amount) onPaymentDone;
@@ -352,9 +352,7 @@
 //   }
 // }
 
-
-import 'dart:developer';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -372,7 +370,7 @@ import '../bloc/checkout/checkout_bloc.dart';
 import '../bloc/checkout/checkout_event.dart';
 import '../bloc/checkout/checkout_state.dart';
 import '../model/checkout_model.dart';
-import '../repository/checkout_repository.dart';
+import '../repository/checkout_cashfree_repository.dart';
 import '../widget/wallet_card_widget.dart';
 
 
@@ -412,15 +410,33 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
       listener: (context, state) {
         if (state is CheckoutSuccess) {
           final bookingId = state.model.bookingId ?? '';
-          showCustomToast('✅ Booking confirmed. ID: $bookingId');
-          widget.onPaymentDone(bookingId,
-            state.model.createdAt.toString(),
-            state.model.paidAmount?.toStringAsFixed(2) ?? "0.00",
-          );
+          final checkoutId = state.model.id ?? '';
+          final createdAt = state.model.createdAt?.toString() ?? '';
+          final paidAmount = state.model.paidAmount?.toStringAsFixed(2) ?? "0.00";
+
+          print('Booking confirmed. ID: $bookingId');
+
+          if (selectedPayment == PaymentMethod.cashFree) {
+            checkoutCashfreeRepository(
+              context: context,
+              orderId: 'checkout_$bookingId',
+              checkoutId: checkoutId,
+              amount: payableAmount,
+              customerId: userSession.userId!,
+              name: 'Customer',
+              phone: '9999999999',
+              email: 'customer@mail.com',
+              onPaymentSuccess: () {
+                widget.onPaymentDone(bookingId, createdAt, paidAmount);
+              },
+            );
+          }
+          else {
+            widget.onPaymentDone(bookingId, createdAt, paidAmount);
+          }
 
           context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
-        }
-        else if (state is CheckoutFailure) {
+        } else if (state is CheckoutFailure) {
           showCustomToast('❌ ${state.error}');
         }
       },
@@ -430,43 +446,42 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
 
-           Expanded(
-             child: ListView(
-               padding: EdgeInsets.symmetric(horizontal: 15),
-               children: [
-                 15.height,
-                 /// wallet
-                 Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text('Price: ₹ ${serviceAmount.toStringAsFixed(2)}', style: textStyle16(context),),
-                     10.height,
-                     WalletCardWidget(
-                       userId: userSession.userId!,
-                       onWalletApplied: (walletBalance) {
-                         setState(() {
-                           walletAppliedAmount = walletBalance >= serviceAmount ? serviceAmount.toDouble() : walletBalance.toDouble();
-                         });
-                       },
-                     ),
-                   ],
-                 ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                children: [
+                  15.height,
+                  /// wallet
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Price: ₹ ${serviceAmount.toStringAsFixed(2)}', style: textStyle16(context)),
+                      10.height,
+                      WalletCardWidget(
+                        userId: userSession.userId!,
+                        onWalletApplied: (walletBalance) {
+                          setState(() {
+                            walletAppliedAmount = walletBalance >= serviceAmount ? serviceAmount.toDouble() : walletBalance.toDouble();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
 
-                 20.height,
+                  20.height,
 
-                 /// Payment Options
-                 Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text('Choose Payment Method', style: textStyle14(context, color: CustomColor.descriptionColor)),
-                     10.height,
-                     _paymentOptionWidgets(serviceAmount, partialAmount),
-                   ],
-                 ),
-               ],
-             ),
-           ),
-
+                  /// Payment Options
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Choose Payment Method', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                      10.height,
+                      _paymentOptionWidgets(serviceAmount, partialAmount),
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
             /// Total + Pay Button
             Padding(
@@ -490,25 +505,30 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         label: 'Pay Now',
                         onPressed: () {
                           if (selectedPayment == null) {
-                            showCustomSnackBar(context, 'Please select a payment method');
+                            showCustomToast('Please select a payment method');
                             return;
                           }
 
+                          /// prepare model
                           final checkoutModel = widget.checkoutData.copyWith(
-                            walletAmount: walletAppliedAmount,
-                            paidAmount: payableAmount,
                             paymentMethod: [
                               if (selectedPayment == PaymentMethod.cashFree) 'cashfree',
                               if (selectedPayment == PaymentMethod.afterConsultation) 'pac',
                               if (walletAppliedAmount > 0) 'wallet',
                             ],
+                            walletAmount: walletAppliedAmount,
+                            paidAmount: payableAmount,
+                            orderStatus: 'processing',
+                            remainingAmount: selectedPayment == PaymentMethod.afterConsultation
+                                ? serviceAmount.toDouble()
+                                : (serviceAmount - payableAmount - walletAppliedAmount)
+                                .clamp(0, double.infinity)
+                                .toDouble(),
                             paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
                             isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
                           );
 
-                          // Bloc Event Trigger
                           context.read<CheckoutBloc>().add(CheckoutRequestEvent(checkoutModel));
-                          log("CheckoutRequestEvent => $checkoutModel");
                         },
                       );
                     },

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../model/lead_status_model.dart';
 
-class LeadStatusService {
+class LeadStatusRepository {
   final Dio _dio = Dio();
 
   Future<LeadStatusModel?> fetchLeadStatusByCheckout(String checkoutId) async {

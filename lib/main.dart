@@ -22,7 +22,9 @@ import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
 import 'feature/my_lead/bloc/lead/lead_bloc.dart';
+import 'feature/my_lead/bloc/leads_status/lead_status_bloc.dart';
 import 'feature/my_lead/repository/lead_repository.dart';
+import 'feature/my_lead/repository/lead_status_repository.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
@@ -61,6 +63,7 @@ void main() async {
             BlocProvider(create: (_) => CommissionBloc()..add(GetCommission())),
             BlocProvider(create: (_) => CheckoutBloc(repository: CheckOutRepository())),
             BlocProvider(create: (_) => LeadBloc(LeadRepository())),
+            BlocProvider(create: (_) => LeadStatusBloc(LeadStatusRepository())),
 
           ],
           child: const MyApp(),

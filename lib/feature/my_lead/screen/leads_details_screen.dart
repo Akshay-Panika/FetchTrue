@@ -43,8 +43,7 @@ class LeadsDetailsScreen extends StatelessWidget {
                 Expanded(child: TabBarView(
                   children: [
                     LeadsDetailsWidget(leadId: leadId,),
-                    Container()
-                    // LeadsStatusWidget(checkoutId:)
+                    LeadsStatusWidget(checkoutId:leadId)
                   ],
                 )),
 

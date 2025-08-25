@@ -54,9 +54,7 @@ Widget featureWidget(String userId) {
             } else if (state is MyTeamLoaded) {
               // final team = state.myTeam.team;
 
-              final team = state.myTeam.team
-                  .where((member) => member.user.packageActive == true)
-                  .toList();
+              final team = state.myTeam.team.where((member) => member.user.packageActive == true).toList();
 
               if (team.isEmpty) {
                 return  Expanded(
@@ -64,6 +62,7 @@ Widget featureWidget(String userId) {
                     icon: Icons.groups,
                     title: 'Team Build',
                     subtitle: '00',
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
                   ),
                 );
               }
