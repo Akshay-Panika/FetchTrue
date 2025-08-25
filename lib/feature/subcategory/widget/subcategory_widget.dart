@@ -96,7 +96,8 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
             ),
           );
         } else if (state is SubcategoryError) {
-          return Center(child: Text("Error: ${state.message}"));
+          print('Dio Error: ${state.message}');
+          // return Center(child: Text('Dio Error: ${state.message}'));
         }
         return const SizedBox();
       },

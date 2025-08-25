@@ -1,17 +1,8 @@
-import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/costants/custom_color.dart';
-import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_appbar.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/finance_banner_widget.dart';
-import '../../../banner/widget/franchise_banner_widget.dart';
-import '../../../favorite/screen/favorite_screen.dart';
-import '../../../../core/widgets/custom_search_bar.dart';
-import '../../../search/screen/search_screen.dart';
 import '../widget/finance_category_widget.dart';
 
 
@@ -55,25 +46,23 @@ class _FinanceServiceScreenState extends State<FinanceServiceScreen> {
     final double searchBarHeight = 50;
 
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
+      body: CustomScrollView(
+        slivers: [
 
-            CustomSliverAppbar(
-              moduleId: widget.moduleId,
-              title: 'Finance Service',
-              imageUrl: widget.imageUrl,
-              isCollapsed: _isCollapsed,
-              searchBarHeight: searchBarHeight,
-              background: FinanceBannerWidget(moduleId: widget.moduleId),
-            ),
+          CustomSliverAppbar(
+            moduleId: widget.moduleId,
+            title: 'Finance Service',
+            imageUrl: widget.imageUrl,
+            isCollapsed: _isCollapsed,
+            searchBarHeight: searchBarHeight,
+            background: FinanceBannerWidget(moduleId: widget.moduleId),
+          ),
 
 
-            SliverToBoxAdapter(
-              child: FinanceCategoryWidget(moduleId: widget.moduleId),
-            ),
-          ],
-        ),
+          SliverToBoxAdapter(
+            child: FinanceCategoryWidget(moduleId: widget.moduleId),
+          ),
+        ],
       ),
     );
   }

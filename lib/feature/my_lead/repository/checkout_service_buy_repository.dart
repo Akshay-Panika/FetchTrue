@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ Future<bool> initiateCheckoutServicePayment({
   required BuildContext context,
   required String orderId,
   required String checkoutId,
-  required int amount,
+  required double amount,
   required String customerId,
   required String name,
   required String email,

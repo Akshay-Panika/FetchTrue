@@ -243,7 +243,8 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                 }
 
                 else if (state is ServiceError) {
-                  return Center(child: Text(state.message));
+                  // print('Dio Error: ${state.message}');
+                  return Expanded(child: Center(child: Text('No Service')));
                 }
                 return const SizedBox.shrink();
               },

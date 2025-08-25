@@ -1,5 +1,4 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/favorite/screen/favorite_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,6 +63,13 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
           );
         } else if (state is UserError) {
           print("Error: ${state.massage}");
+          return _buildSliverAppBar(
+            context,
+            isCollapsed,
+            background,
+            name: "Guest",
+            photo: null,
+          );
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());
       },

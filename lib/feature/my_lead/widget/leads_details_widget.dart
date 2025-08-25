@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
+import 'package:fetchtrue/feature/my_lead/bloc/lead/lead_event.dart';
 import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_state.dart';
 import '../model/lead_model.dart';
-import '../model/leads_model.dart';
 import '../repository/checkout_service_buy_repository.dart';
 import 'customer_card_widget.dart';
 import 'lead_card_widget.dart';
@@ -31,7 +31,7 @@ class LeadsDetailsWidget extends StatelessWidget {
     return BlocBuilder<LeadBloc, LeadState>(
       builder: (context, state) {
         if (state is LeadLoading) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         } else if (state is LeadLoaded) {
           final lead = state.leadModel.data?.firstWhere((l) => l.id == leadId,);
 
@@ -71,7 +71,8 @@ class LeadsDetailsWidget extends StatelessWidget {
           );
 
         } else if (state is LeadError) {
-          return Center(child: Text("❌ ${state.message}"));
+          print("❌ ${state.message}");
+          return const Center(child: Text("No data"));
         }
         return const Center(child: Text("No data"));
       },
@@ -79,36 +80,31 @@ class LeadsDetailsWidget extends StatelessWidget {
   }
 }
 
-/// Lead Status
-String getLeadStatus(lead) {
-  if (lead.isCanceled == true) return 'Cancel';
-  if (lead.isCompleted == true) return 'Completed';
-  if (lead.isAccepted == true) return 'Accepted';
-  return 'Pending';
-}
-
-/// Status Color
-Color getStatusColor(lead) {
-  if (lead.isCanceled == true) return Colors.red;
-  if (lead.isCompleted == true) return Colors.green;
-  if (lead.isAccepted == true) return Colors.orange;
-  return Colors.grey;
-}
-
-String capitalize(String value) {
-  if (value.isEmpty) return value;
-  return value[0].toUpperCase() + value.substring(1);
-}
-
-
 /// Payment status
 Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
-  final paid = lead.paidAmount ?? 0;
-  final remaining = lead.remainingAmount ?? 0;
+  final userSession = Provider.of<UserSession>(context);
 
-  final status = paid == 0
-      ? 'Unpaid'
-      : (remaining != 0 ? 'Pending' : 'Paid');
+  final paidAmount = lead.paidAmount!.toStringAsFixed(2);
+  final remainingAmount = lead.remainingAmount!.toStringAsFixed(2);
+  final status = lead.paymentStatus;
+  String capitalize(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'paid':
+        return Colors.green;
+      case 'unpaid':
+        return Colors.red;
+      case 'pending':
+        return Colors.orange;
+      default:
+        return Colors.black;
+    }
+  }
+
 
   return Stack(
     children: [
@@ -122,17 +118,8 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
               children: [
                 Text('Payment Status', style: textStyle12(context)),
                 10.width,
-                Text(
-                  '( $status )',
-                  style: textStyle12(
-                    context,
-                    color: status == 'Paid'
-                        ? CustomColor.appColor
-                        : status == 'Unpaid'
-                        ? CustomColor.redColor
-                        : CustomColor.amberColor,
-                  ),
-                ),
+                Text('( ${capitalize(status!)} )', style: textStyle12(context, color: getStatusColor(status)),)
+
               ],
             ),
             const Divider(),
@@ -141,33 +128,47 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (paid != 0)
+
+                  if(status == 'paid')
                   _buildRow(
                     context,
                     title: 'Paid Amount',
-                    amount: '₹ ${formatPrice(paid.toDouble())}',
+                    amount: '₹ ${paidAmount}',
                   ),
-                if (remaining != 0)
+
+                  if(status == 'pending')
                   _buildRow(
                     context,
                     title: 'Remaining Amount',
-                    amount: '₹ ${formatPrice(remaining.toDouble())}',
+                    amount: '₹ ${remainingAmount}',
                   ),
               ],
             ),
 
             /// Pay Now Button
-            if (paid == 0 && '${getLeadStatus(lead)}' != 'Cancel')
+            if (status == 'unpaid')
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: InkWell(
-                  onTap: () {},
-                  child: Text('Pay Now', style: textStyle14(context, color: CustomColor.appColor),),
+                  onTap: () {
+                    _showPaymentBottomSheet(
+                      context,
+                      lead,
+                          () {
+                        context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Pay Now',
+                    style: textStyle14(context, color: CustomColor.appColor),
+                  ),
                 ),
               ),
 
+
             /// Remaining Payment Button
-            if (paid != 0 && remaining != 0)
+             if(status == 'pending')
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: RemainingPaymentButton(lead: lead),
@@ -177,7 +178,6 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
       ),
 
       /// Share Button
-      if(status != 'Paid')
       Positioned(
         top: -5,
         right: 5,
@@ -251,7 +251,10 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      Text('Service Amount : ₹ $fullAmount', style: textStyle16(context)),
+                      Text(
+                        'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
+                        style: textStyle16(context),
+                      ),
                       const SizedBox(height: 10),
 
                       /// Wallet Container
@@ -384,14 +387,13 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                                     isLoading: _isLoading,
                                     label: 'Pay Now',
                                     onPressed: () async {
-                                      // innerSetState(() => isLoading = true);
                                       setState(() => _isLoading = true);
 
                                       final result = await initiateCheckoutServicePayment(
                                         context: context,
                                         orderId: 'checkout_$formattedOrderId',
                                         checkoutId: lead.id.toString(),
-                                        amount: payableAmount.value.toInt(),
+                                        amount: double.parse(payableAmount.value.toStringAsFixed(2)),
                                         customerId: lead.serviceCustomer!.id.toString(),
                                         name: 'Akshay',
                                         phone: '8989207770',
@@ -399,7 +401,6 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                                       );
 
                                       setState(() => _isLoading = false);
-                                      // innerSetState(() => isLoading = false);
 
                                       if (result == true) {
                                         onPaymentSuccess?.call();
@@ -424,6 +425,7 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
   );
 }
 
+
 class RemainingPaymentButton extends StatefulWidget {
   final BookingData lead;
   const RemainingPaymentButton({super.key, required this.lead});
@@ -437,6 +439,8 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
+
     final now = DateTime.now();
 
     // Safe Order ID for Payment Gateway
@@ -449,23 +453,14 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         "${now.second.toString().padLeft(2, '0')}";
 
     return InkWell(
-      onTap: _isLoading
-          ? null
-          : () async {
-        setState(() {
-          _isLoading = true;
-        });
-
-        // Round the remaining amount to avoid float issues
-        final roundedAmount = double.parse(
-          widget.lead.remainingAmount.toStringAsFixed(2),
-        );
+      onTap: _isLoading ? null : () async {
+        setState(() {_isLoading = true;});
 
         final result = await initiateCheckoutServicePayment(
           context: context,
           orderId: 'checkout_$formattedOrderId',
           checkoutId: widget.lead.id.toString(),
-          amount: roundedAmount.round(),
+          amount: widget.lead.remainingAmount,
           customerId: widget.lead.serviceCustomer!.id.toString(),
           name: 'Akshay',
           phone: '8989207770',
@@ -477,7 +472,7 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
         });
 
         if (result == true) {
-          // widget.onPaymentSuccess?.call();
+          context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
         }
       },
       child: _isLoading
@@ -498,10 +493,6 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
 }
 
 Widget _buildBookingSummary(BuildContext context, BookingData lead) {
-  String formatPrice(num? value) {
-    if (value == null) return '0';
-    return value.round().toString();
-  }
 
   return CustomContainer(
     border: true,
@@ -614,4 +605,26 @@ Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
       ],
     ),
   );
+}
+
+
+/// Lead Status
+String getLeadStatus(lead) {
+  if (lead.isCanceled == true) return 'Cancel';
+  if (lead.isCompleted == true) return 'Completed';
+  if (lead.isAccepted == true) return 'Accepted';
+  return 'Pending';
+}
+
+/// Status Color
+Color getStatusColor(lead) {
+  if (lead.isCanceled == true) return Colors.red;
+  if (lead.isCompleted == true) return Colors.green;
+  if (lead.isAccepted == true) return Colors.orange;
+  return Colors.grey;
+}
+
+String capitalize(String value) {
+  if (value.isEmpty) return value;
+  return value[0].toUpperCase() + value.substring(1);
 }

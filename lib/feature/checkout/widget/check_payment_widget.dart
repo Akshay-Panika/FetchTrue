@@ -352,7 +352,6 @@
 //   }
 // }
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -427,12 +426,12 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
               phone: '9999999999',
               email: 'customer@mail.com',
               onPaymentSuccess: () {
-                widget.onPaymentDone(bookingId, createdAt, paidAmount);
+                widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
               },
             );
           }
           else {
-            widget.onPaymentDone(bookingId, createdAt, paidAmount);
+            widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
           }
 
           context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
@@ -517,13 +516,10 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                               if (walletAppliedAmount > 0) 'wallet',
                             ],
                             walletAmount: walletAppliedAmount,
-                            paidAmount: payableAmount,
+                            paidAmount: 0,
+                            // paidAmount: payableAmount,
                             orderStatus: 'processing',
-                            remainingAmount: selectedPayment == PaymentMethod.afterConsultation
-                                ? serviceAmount.toDouble()
-                                : (serviceAmount - payableAmount - walletAppliedAmount)
-                                .clamp(0, double.infinity)
-                                .toDouble(),
+                            remainingAmount: selectedPayment == PaymentMethod.afterConsultation ? serviceAmount.toDouble() : (serviceAmount - payableAmount - walletAppliedAmount).clamp(0, double.infinity).toDouble(),
                             paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
                             isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
                           );
