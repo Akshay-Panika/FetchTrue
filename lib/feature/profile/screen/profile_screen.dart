@@ -6,6 +6,8 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
+import 'package:fetchtrue/feature/profile/screen/add_address_screen.dart';
+import 'package:fetchtrue/feature/profile/screen/additional_details_screen.dart';
 import 'package:fetchtrue/feature/profile/screen/update_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,11 +16,6 @@ import 'package:shimmer/shimmer.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'update_info_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -183,6 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           trailing: const Icon(Icons.add,
                               size: 20, color: Colors.grey),
                         ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(user: user!.id.toString(),),)),
                       ),
                       10.height,
                       CustomContainer(
@@ -197,6 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           subtitle: const Text('Add Address'),
                           trailing: const Icon(Icons.add, color: Colors.grey),
                         ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(userId: user!.id.toString(),),)),
                       ),
                     ],
                   ),

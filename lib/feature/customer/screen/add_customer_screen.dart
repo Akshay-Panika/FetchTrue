@@ -8,7 +8,7 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../checkout/model/add_customer_model.dart';
+import '../model/add_customer_model.dart';
 
 class AddCustomerScreen extends StatefulWidget {
   final String userId;

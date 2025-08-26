@@ -13,6 +13,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../internet/network_wrapper_screen.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
@@ -60,142 +61,144 @@ class _LeadScreenState extends State<LeadScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: CustomAppBar(title:'Leads'),
-
-      body: BlocBuilder<LeadBloc, LeadState>(
-        builder: (context, state) {
-          if (state is LeadLoading) {
-            return _buildShimmer();
-          } else if (state is LeadLoaded) {
-            // final allLeads = state.leadModel.data ?? [];
-            final allLeads = (state.leadModel.data ?? [])
-              ..sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
-
-            // Filter Logic
-            final pendingLeads = allLeads.where((e) => e.isAccepted == false && e.isCompleted == false && e.isCanceled == false).toList();
-
-            final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
-
-            final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
-
-            final cancelLeads = allLeads.where((e) => e.isCanceled == true).toList();
-
-            // 🔹 Filtered List According to Tab
-            List filteredList;
-            switch (selectedFilter) {
-              case 'Pending':
-                filteredList = pendingLeads;
-                break;
-              case 'Accepted':
-                filteredList = acceptedLeads;
-                break;
-              case 'Completed':
-                filteredList = completedLeads;
-                break;
-              case 'Cancel':
-                filteredList = cancelLeads;
-                break;
-              default:
-                filteredList = allLeads;
-            }
-
-            return  CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  floating: true,
-                  toolbarHeight: 30,
-                  backgroundColor: CustomColor.whiteColor,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildFilterChip('All', allLeads.length),
-                        _buildFilterChip('Pending', pendingLeads.length),
-                        _buildFilterChip('Accepted', acceptedLeads.length),
-                        _buildFilterChip('Completed', completedLeads.length),
-                        _buildFilterChip('Cancel', cancelLeads.length),
-                      ],
-                    ),),
-                ),
-
-                SliverToBoxAdapter(
-                  child:  filteredList.isEmpty
-                      ? Padding(
-                      padding: EdgeInsetsGeometry.only(top: 280),
-                      child:  Center(child: Column(
+    return NetworkWrapper(
+      child: Scaffold(
+        appBar: CustomAppBar(title:'Leads'),
+      
+        body: BlocBuilder<LeadBloc, LeadState>(
+          builder: (context, state) {
+            if (state is LeadLoading) {
+              return _buildShimmer();
+            } else if (state is LeadLoaded) {
+              // final allLeads = state.leadModel.data ?? [];
+              final allLeads = (state.leadModel.data ?? [])
+                ..sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+      
+              // Filter Logic
+              final pendingLeads = allLeads.where((e) => e.isAccepted == false && e.isCompleted == false && e.isCanceled == false).toList();
+      
+              final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
+      
+              final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+      
+              final cancelLeads = allLeads.where((e) => e.isCanceled == true).toList();
+      
+              // 🔹 Filtered List According to Tab
+              List filteredList;
+              switch (selectedFilter) {
+                case 'Pending':
+                  filteredList = pendingLeads;
+                  break;
+                case 'Accepted':
+                  filteredList = acceptedLeads;
+                  break;
+                case 'Completed':
+                  filteredList = completedLeads;
+                  break;
+                case 'Cancel':
+                  filteredList = cancelLeads;
+                  break;
+                default:
+                  filteredList = allLeads;
+              }
+      
+              return  CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                    toolbarHeight: 30,
+                    backgroundColor: CustomColor.whiteColor,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: ListView(
+                        scrollDirection: Axis.horizontal,
                         children: [
-                          Image.asset(CustomImage.emptyCart, height: 80,),
-                          Text('No leads.'),
+                          _buildFilterChip('All', allLeads.length),
+                          _buildFilterChip('Pending', pendingLeads.length),
+                          _buildFilterChip('Accepted', acceptedLeads.length),
+                          _buildFilterChip('Completed', completedLeads.length),
+                          _buildFilterChip('Cancel', cancelLeads.length),
                         ],
-                      )))
-                      : ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: filteredList.length,
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                    itemBuilder: (context, index) {
-                      final lead = filteredList[index];
-
-
-                      return CustomContainer(
-                        color: Colors.white,
-                        margin: EdgeInsets.only(top: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(lead.service.serviceName, style: textStyle14(context)),
-                                Text(
-                                  '[ ${getLeadStatus(lead)} ]',
-                                  style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
-                                )
-                              ],
-                            ),
-                            Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                            const Divider(),
-                            5.height,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Booking Date:  ${formatDateTime(lead.createdAt)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-                                    Text('Schedule Date:  ${formatDateTime(lead.acceptedDate)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
-                                    CustomAmountText(amount: '${formatPrice(lead.totalAmount)}'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadsDetailsScreen(
-                          leadName: lead.service.serviceName,
-                          leadId: lead.id,
-                        ),)),
-                      );
-                    },
+                      ),),
                   ),
-                ),
-
-                SliverToBoxAdapter(child: SizedBox(height: 20,),)
-              ],
-            );
-
-          } else if (state is LeadError) {
-            return Center(child: Text("❌ ${state.message}"));
-          }
-          return const Center(child: Text("No data"));
-        },
+      
+                  SliverToBoxAdapter(
+                    child:  filteredList.isEmpty
+                        ? Padding(
+                        padding: EdgeInsetsGeometry.only(top: 280),
+                        child:  Center(child: Column(
+                          children: [
+                            Image.asset(CustomImage.emptyCart, height: 80,),
+                            Text('No leads.'),
+                          ],
+                        )))
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: filteredList.length,
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                      itemBuilder: (context, index) {
+                        final lead = filteredList[index];
+      
+      
+                        return CustomContainer(
+                          color: Colors.white,
+                          margin: EdgeInsets.only(top: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(lead.service.serviceName, style: textStyle14(context)),
+                                  Text(
+                                    '[ ${getLeadStatus(lead)} ]',
+                                    style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
+                                  )
+                                ],
+                              ),
+                              Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                              const Divider(),
+                              5.height,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Booking Date:  ${formatDateTime(lead.createdAt)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                                      Text('Schedule Date:  ${formatDateTime(lead.acceptedDate)}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
+                                      CustomAmountText(amount: '${formatPrice(lead.totalAmount)}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadsDetailsScreen(
+                            leadName: lead.service.serviceName,
+                            leadId: lead.id,
+                          ),)),
+                        );
+                      },
+                    ),
+                  ),
+      
+                  SliverToBoxAdapter(child: SizedBox(height: 20,),)
+                ],
+              );
+      
+            } else if (state is LeadError) {
+              return Center(child: Text("❌ ${state.message}"));
+            }
+            return const Center(child: Text("No data"));
+          },
+        ),
       ),
     );
   }

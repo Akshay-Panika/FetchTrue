@@ -1,45 +1,47 @@
 import 'package:dio/dio.dart';
-import '../../../helper/api_urls.dart';
-import '../../checkout/model/add_customer_model.dart';
+import '../model/add_customer_model.dart';
 import '../../../helper/api_helper.dart';
+import '../../../helper/api_urls.dart';
+import '../model/customer_model.dart';
 
 class CustomerRepository {
+  static final _dio = ApiClient.dio;
+
+  /// Create a new customer
   static Future<AddCustomerModel?> createCustomer(AddCustomerModel model) async {
     try {
-
-      print("🚀 Request Data: ${model.toJson()}");
-
-      final formData = FormData.fromMap(model.toJson());
-      // final formData = FormData.fromMap(data);
-      final response = await ApiClient.dio.post(
+      final response = await _dio.post(
         ApiUrls.serviceCustomer,
-        data: formData, // send as JSON
-        // data: model.toJson(),
-        options: Options(
-          headers: {
-            // 'Content-Type': 'application/json',
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
+        data: FormData.fromMap(model.toJson()),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final jsonData = response.data['data'];
-        print('✅ Response: $jsonData');
+        return AddCustomerModel.fromJson(response.data['data']);
+      }
+    } on DioException catch (e) {
+      print('Dio error: ${e.response?.data ?? e.message}');
+    } catch (e) {
+      print('Unexpected error: $e');
+    }
+    return null;
+  }
 
-        return AddCustomerModel.fromJson(jsonData);
+  /// Fetch all customers
+  static Future<List<CustomerModel>> fetchCustomer() async {
+    try {
+      final response = await _dio.get(ApiUrls.serviceCustomer);
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'];
+        return data.map((json) => CustomerModel.fromJson(json)).toList();
       } else {
-        print('❌ Invalid response: ${response.data}');
-        return null;
+        throw Exception('Invalid response or status: ${response.statusCode}');
       }
     } on DioException catch (e) {
       final errorMsg = e.response?.data ?? e.message;
-      print('❌ DioException: $errorMsg');
-      return null;
+      throw Exception('Dio error: $errorMsg');
     } catch (e) {
-      print('❌ Unexpected error: $e');
-      return null;
+      throw Exception('Unexpected error in fetching customers: $e');
     }
   }
 }
-

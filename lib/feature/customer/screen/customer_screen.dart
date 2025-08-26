@@ -58,9 +58,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   minHeight: 2.5,
                 );
               } else if (state is CustomerLoaded) {
-                // final customer = state.customerModel;
-                final customer = state.customerModel.where((customerId) =>
-                customerId.userId == widget.userId).toList();
+                final customer = state.customers;
+                // final customer = state.customerModel.where((customerId) =>
+                // customerId.userId == widget.userId).toList();
 
                 // Initialize _messageControllers safely
                 if (_messageControllers.length != customer.length) {

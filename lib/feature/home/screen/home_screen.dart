@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/home/screen/understanding_fetch_true_screen.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             CustomHomeSliverAppbarWidget(
               isCollapsed: _isCollapsed,
               searchBarHeight: searchBarHeight,
-              background: HomeBannerWidget(),
+              background: HomeBannerWidget()
             ),
 
             /// Futures

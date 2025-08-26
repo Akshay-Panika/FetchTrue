@@ -25,7 +25,9 @@ import 'feature/my_lead/bloc/lead/lead_bloc.dart';
 import 'feature/my_lead/bloc/leads_status/lead_status_bloc.dart';
 import 'feature/my_lead/repository/lead_repository.dart';
 import 'feature/my_lead/repository/lead_status_repository.dart';
+import 'feature/profile/bloc/additional_details/additional_details_bloc.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
+import 'feature/profile/repository/additinal_details_repository.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
 import 'feature/service/bloc/service/service_bloc.dart';
@@ -54,6 +56,7 @@ void main() async {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => UserBloc(UserRepository())),
+            BlocProvider(create: (_) => AdditionalDetailsBloc(service: UserAdditionalDetailsService(),),),
             BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
             BlocProvider(create: (_) => BannerBloc(BannerRepository())..add(GetBanners())),
             BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),

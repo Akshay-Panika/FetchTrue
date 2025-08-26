@@ -1,4 +1,3 @@
-import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
@@ -7,8 +6,6 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
-import '../model/address_model.dart';
-import '../repository/address_service.dart';
 
 
 class AddAddressScreen extends StatefulWidget {
@@ -71,47 +68,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     super.dispose();
   }
 
-  Future<void> _handleSave() async {
-    if (isLoading) return;
-    setState(() => isLoading = true);
 
-    final model = AddressModel(
-      addressType: labels[selectedIndex],
-      address: Address(
-        houseNumber: houseNumberController.text.trim(),
-        landmark: landmarkController.text.trim(),
-        state: selectedState.value,
-        city: selectedCity.value,
-        pinCode: pinCodeController.text.trim(),
-        country: countryController.text.trim(),
-        fullAddress: fullAddressController.text.trim(),
-      ),
-    );
-
-    // Validation
-    if (model.address.houseNumber.isEmpty ||
-        model.address.landmark.isEmpty ||
-        model.address.fullAddress.isEmpty ||
-        model.address.state.isEmpty ||
-        model.address.city.isEmpty ||
-        model.address.pinCode.isEmpty) {
-      setState(() => isLoading = false);
-
-      showCustomSnackBar(context, 'Please fill all required fields');
-      return;
-    }
-
-    final success = await AddressService.updateUserAddress(widget.userId, model);
-
-    setState(() => isLoading = false);
-
-    if (success) {
-      showCustomSnackBar(context, 'Address updated successfully!');
-      Navigator.pop(context, true);
-    } else {
-      showCustomSnackBar(context, 'Failed to update address.');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,16 +230,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                       border: true,
                       borderColor: CustomColor.appColor,
                       color: CustomColor.whiteColor,
-                      onTap: isLoading ? null : _handleSave,
-                      child: Center(
-                        child: isLoading
-                            ?  SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(color: CustomColor.appColor,),
-                        )
-                            : Text("SAVE", style: textStyle16(context)),
-                      ),
+                      onTap: isLoading ? null : (){},
+                      child: Text("SAVE", style: textStyle16(context)),
                     ),
                   ),
                 ],
