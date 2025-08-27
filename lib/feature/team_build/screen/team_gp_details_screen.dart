@@ -14,13 +14,10 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../../helper/Contact_helper.dart';
-import '../../my_lead/bloc/leads/leads_bloc.dart';
-import '../../my_lead/bloc/leads/leads_event.dart';
-import '../../my_lead/bloc/leads/leads_state.dart';
-import '../../my_lead/screen/lead_screen.dart';
+import '../../lead/bloc/leads/leads_bloc.dart';
+import '../../lead/bloc/leads/leads_state.dart';
 import '../../profile/model/user_model.dart';
-import '../../profile/repository/all_user_repository.dart';
-import '../../profile/repository/user_by_id_repojetory.dart';
+
 
 
 class TeamGPDetailsScreen extends StatelessWidget {

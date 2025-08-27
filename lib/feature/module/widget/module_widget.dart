@@ -17,7 +17,6 @@ import '../../category/legal_service/screen/legal_service_screen.dart';
 import '../../category/marketing/screen/marketing_screen.dart';
 import '../../category/onboarding/screen/onboarding_screen.dart';
 import '../../category/ondemand/screen/ondemand_screen.dart';
-import '../../my_lead/screen/lead_screen.dart';
 import '../bloc/module_bloc.dart';
 import '../bloc/module_state.dart';
 

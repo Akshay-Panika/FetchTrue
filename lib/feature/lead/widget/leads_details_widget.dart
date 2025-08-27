@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
-import 'package:fetchtrue/feature/my_lead/bloc/lead/lead_event.dart';
-import 'package:fetchtrue/feature/my_lead/widget/provider_card_widget.dart';
+import 'package:fetchtrue/feature/lead/widget/provider_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +13,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/lead/lead_bloc.dart';
+import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
 import '../model/lead_model.dart';
 import '../repository/checkout_service_buy_repository.dart';
@@ -178,6 +178,7 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
       ),
 
       /// Share Button
+      if(status != 'paid')
       Positioned(
         top: -5,
         right: 5,

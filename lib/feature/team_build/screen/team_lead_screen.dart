@@ -8,14 +8,12 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/formate_price.dart';
-import '../../my_lead/bloc/leads/leads_bloc.dart';
-import '../../my_lead/bloc/leads/leads_event.dart';
-import '../../my_lead/bloc/leads/leads_state.dart';
-import '../../my_lead/widget/leads_details_widget.dart';
+import '../../lead/bloc/leads/leads_bloc.dart';
+import '../../lead/bloc/leads/leads_event.dart';
+import '../../lead/bloc/leads/leads_state.dart';
 import '../bloc/upcoming_lead_commission/upcoming_lead_commission_bloc.dart';
 import '../bloc/upcoming_lead_commission/upcoming_lead_commission_event.dart';
 import '../bloc/upcoming_lead_commission/upcoming_lead_commission_state.dart';
-import '../model/my_team_model.dart';
 import '../repository/upcoming_lead_commission_repository.dart';
 
 class TeamLeadScreen extends StatelessWidget {

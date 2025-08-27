@@ -7,7 +7,6 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
-import '../../my_lead/screen/lead_screen.dart';
 import '../bloc/module_subcategory/subcategory_bloc.dart';
 import '../bloc/module_subcategory/subcategory_state.dart';
 
