@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../../../core/widgets/custom_appbar.dart';
+import '../model/package_model.dart';
 
 class PackageBenefitsScreen extends StatelessWidget {
-  final String htmlDesc;
-  const PackageBenefitsScreen({super.key, required this.htmlDesc});
+  final PackageModel package;
+  final String planKey;
+  const PackageBenefitsScreen({super.key, required this.package, required this.planKey,});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,11 @@ class PackageBenefitsScreen extends StatelessWidget {
       body: SafeArea(child:
       SingleChildScrollView(
           padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-          child: Html(data: htmlDesc))),
+          child: Html(
+            data: package.description[planKey] ?? "",
+          ),
+      )
+      ),
     );
   }
 }

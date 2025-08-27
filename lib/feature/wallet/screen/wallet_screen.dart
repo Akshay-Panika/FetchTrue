@@ -141,7 +141,7 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
                   ],
                 );
               } else if (state is PackageError) {
-                return Center(child: Text("Error: ${state.message}"));
+                return Center(child: Text("Error: ${state.error}"));
               }
               return Container();
             },

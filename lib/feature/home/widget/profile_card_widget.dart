@@ -126,7 +126,7 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
               color:
               isCollapsed ? CustomColor.descriptionColor : Colors.white,
             ),
-            child: const Text('Pune 411028, Maharashtra'),
+            child: const Text('Pune, Maharashtra'),
           ),
         ],
       ),
@@ -154,9 +154,8 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
                 const Icon(Icons.verified_outlined, size: 16),
                 10.width,
                  Text(
-                  'GP',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                  'Package',
+                  style: textStyle12(context, fontWeight: FontWeight.w600,
                     color:isCollapsed ? CustomColor.appColor : Colors.white,
                   ),
                 ),

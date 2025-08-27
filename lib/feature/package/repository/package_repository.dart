@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 
 import '../model/package_model.dart';
 
-class PackageService {
-  static Future<List<PackageModel>> fetchPackages() async {
+class PackageRepository {
+  static Future<List<PackageModel>> getPackages() async {
     final response = await http.get(
       Uri.parse("https://biz-booster.vercel.app/api/packages"),
     );

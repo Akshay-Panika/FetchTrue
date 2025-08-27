@@ -2,9 +2,16 @@ import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
-import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:path/path.dart';
+import '../../../core/widgets/custom_appbar.dart';
+import '../bloc/package_bloc.dart';
+import '../bloc/package_state.dart';
+import '../model/package_model.dart';
 
 class PackageScreen extends StatefulWidget {
   @override
@@ -83,144 +90,200 @@ class _PackageScreenState extends State<PackageScreen> {
   };
 
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: CustomAppBar(title: 'Package',showBackButton: true,),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: 15.height,),
-          SliverAppBar(
-          pinned: false,
-          floating: true,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          toolbarHeight: 40,
-          flexibleSpace: _buildEnhancedToggleSwitch(),
-        ),
-        SliverToBoxAdapter(child: 15.height,),
+      appBar: CustomAppBar(title: 'Package', showBackButton: true),
 
+      body: BlocBuilder<PackageBloc, PackageState>(
+        builder: (context, state) {
+          if (state is PackageLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          else if (state is PackageLoaded) {
+            final PackageModel package = state.packages.first;
+            return DefaultTabController(
+              length: 3,
+              child: SafeArea(
+                child: CustomScrollView(
+                  slivers: [
+                    /// Tabs
+                    SliverAppBar(
+                      pinned: false,
+                      floating: true,
+                      automaticallyImplyLeading: false,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      toolbarHeight: 40,
+                      flexibleSpace: Container(
+                        color: Colors.white,
+                        child: TabBar(
+                          dividerColor: Colors.transparent,
+                          indicatorColor: CustomColor.appColor,
+                          labelColor: Colors.black,
+                          onTap: (index) {
+                            setState(() {
+                              if (index == 0) selectedPlan = 'gp';
+                              if (index == 1) selectedPlan = 'sgp';
+                              if (index == 2) selectedPlan = 'pgp';
+                            });
+                          },
+                          tabs: const [
+                            Tab(text: "GP"),
+                            Tab(text: "SGP"),
+                            Tab(text: "PGP"),
+                          ],
+                        ),
+                      ),
+                    ),
 
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  _buildEnhancedMainCard(packages[selectedPlan]!),
-                  15.height,
+                    /// Body
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          _buildEnhancedMainCard(context,packages[selectedPlan]!,package, selectedPlan),
 
-                  if(selectedPlan == 'gp')
-                  _buildPaymentCard(context),
-                ],
+                             if (selectedPlan == 'gp')
+                            _buildPaymentCard(context, package),
+                            if (selectedPlan == 'sgp')
+                            CustomContainer(
+                              height: 300,
+                            ),
+                          if (selectedPlan == 'pgp')
+                            CustomContainer(
+                              height: 300,
+                            )
+                        ],
+                      ),
+                    ),
+
+                    SliverToBoxAdapter(child: 50.height),
+                  ],
+                ),
               ),
-            ),
-
-            SliverToBoxAdapter(child: 150.height,)
-          ],
-        ),
+            );
+          }
+          else if (state is PackageError) {
+            return Center(child: Text("Error: ${state.error}"));
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
+}
 
-  /// 🔹 Custom Toggle with 3 Tabs
-  Widget _buildEnhancedToggleSwitch() {
-    final tabs = ['gp', 'sgp', 'pgp'];
-
-    return CustomContainer(
-      borderColor: CustomColor.appColor,
-      color: CustomColor.whiteColor,
-      margin: EdgeInsets.symmetric(horizontal: 50),
-      padding: EdgeInsets.zero,
-      child: Row(
-        children: tabs.map((tab) {
-          bool isSelected = selectedPlan == tab;
-          String label = tab.toUpperCase();
-          return Expanded(
-            child: CustomContainer(
-              color: isSelected ? CustomColor.appColor : Colors.transparent,
-              margin: EdgeInsets.zero,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: Center(
-                child: Text(label,
-                  style: textStyle14(context, color: isSelected ? Colors.white : Colors.grey[600],),),
-              ),
-              onTap: () {setState(() {selectedPlan = tab;});},
-            ),
-          );
-        }).toList(),
+/// Main Card with Pricing
+Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> packages, PackageModel package, String planKey) {
+  return Container(
+    padding: EdgeInsets.all(15),
+    margin: EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.white,
+          Colors.grey.shade200,
+        ],
       ),
-    );
-  }
-
-  /// Main Card with Pricing
-  Widget _buildEnhancedMainCard(Map<String, dynamic> package) {
-    return Column(
+    ),
+    child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomContainer(
-          color: CustomColor.whiteColor,
-          padding: const EdgeInsets.all(20),
-          child:  Row(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(radius: 32,
                 backgroundColor: CustomColor.appColor,
-                child: CircleAvatar(radius: 31,backgroundColor: CustomColor.whiteColor,),
+                child: CircleAvatar(radius: 31,backgroundColor: CustomColor.whiteColor,
+                child: Text(planKey.toUpperCase()),),
               ),
 
 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('${package['packageName']}',style: textStyle16(context, color: CustomColor.appColor),),
+                  Text('${packages['packageName']}',style: textStyle16(context, color: CustomColor.appColor),),
                   10.height,
-                  Text('${package['price']}', style: textStyle12(context, color: CustomColor.greenColor),),
-                  Text('${package['monthFixEarning']}', style: textStyle14(context, color: CustomColor.greenColor),),
+                  Text('${packages['price']}', style: textStyle12(context, color: CustomColor.greenColor),),
+                  // Text('${packages['monthFixEarning']}', style: textStyle14(context, color: CustomColor.greenColor),),
+                  Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle14(context, color: CustomColor.greenColor),),
                 ],
               )
             ],
           ),
         ),
-        10.height,
-
+        20.height,
 
         _buildEnhancedFeaturesSection(context),
-       10.height,
+        10.height,
 
-       Container(
-         padding: const EdgeInsets.all(10),
-         margin: const EdgeInsets.symmetric(horizontal: 10),
-         decoration: BoxDecoration(
-           borderRadius: BorderRadius.circular(10),
-           gradient: LinearGradient(
-             begin: Alignment.topCenter,
-             end: Alignment.bottomCenter,
-             colors: [
-               CustomColor.whiteColor,
-               Colors.grey.shade200,
-             ],
-           ),
-         ),
-         child: Column(
-           spacing: 20,
-           children: [
-             Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text('How to promoted GP to SGP?', style: textStyle18(context),),
-                 Text('Recruit 10 Growth Partner to become a Super Growth Partner (SGP)', style: textStyle14(context,color: CustomColor.descriptionColor),),
-               ],
-             ),
-             250.height,
-           ],
-         ),
-       ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('How to promoted GP to SGP?', style: textStyle18(context),),
+            Text('Recruit 10 Growth Partner to become a Super Growth Partner (SGP)', style: textStyle14(context,color: CustomColor.descriptionColor),),
+          ],
+        ),
+        10.height,
+
+        CustomContainer(
+          border: true,
+          color: WidgetStateColor.transparent,
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.all(20),
+          child: Column(
+            spacing: 15,
+            children: [
+              _labelText(context,'REVENUE',
+                ["Earn 5% to 15% revenue share.",],
+              ),
+              _labelText(context,'TEAM BUILDING INCOME',
+                [
+                  "Earn ₹5,000 for every GP you onboard",
+                  "Get ₹3,000 when your onboarded GP brings another."
+                ],
+              ),
+
+              _labelText(context,'MARKETING SUPPORT',
+                [
+                  "Support within 3-6 hours.",
+                  "Full support system.",
+                  "Expert help, anytime you need it."
+                ],
+              ),
+
+              InkWell(
+                child: Row(
+                  children: [
+                    Icon(Icons.arrow_forward_ios, size: 16,color: CustomColor.appColor,),10.width,
+                    Text('Benefit', style: textStyle14(context, color: CustomColor.appColor),)
+                  ],
+                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(package: package, planKey: planKey,),)),
+              ),
+            ],
+          ),
+        ),
+        10.height,
+                
+        Text('Welcome Gift'),
+        Wrap(
+          children: List.generate(7, (index) =>
+            CustomContainer(
+              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+              child: Text('Gift', style: textStyle12(context),),),),
+        ),
       ],
-    );
-  }
+    ),
+  );
 }
 
 /// What’s Includes
@@ -270,10 +333,9 @@ Widget _buildEnhancedFeaturesSection(BuildContext context) {
   );
 }
 
-
-Widget _buildPaymentCard(BuildContext context){
+Widget _buildPaymentCard(BuildContext context, PackageModel package){
   return Padding(
-    padding: const EdgeInsets.all(15.0),
+    padding: const EdgeInsets.symmetric(horizontal: 15.0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -285,18 +347,54 @@ Widget _buildPaymentCard(BuildContext context){
           margin: EdgeInsets.zero,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Padding(padding: EdgeInsetsGeometry.all(10),
+              child: Column(
                 children: [
-                  Text('Growth Total'),
-                  CustomAmountText(amount: '199999')
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('Franchise Fees'),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                              Center(child: CustomAmountText(amount: '${package.price}', isLineThrough: true)),
+                            ],
+                          ),
+                          Center(child: CustomAmountText(amount: '${package.discountedPrice}', color: CustomColor.appColor)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Divider(),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Franchise Deposite'),
+                      CustomAmountText(amount: '${package.deposit}', color: CustomColor.appColor)
+                    ],
+                  ),
+                  Divider(),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Growth Total'),
+                      CustomAmountText(amount: '${package.grandtotal}', color: CustomColor.appColor)
+                    ],
+                  ),
+                  Divider(),
                 ],
-              ),
-              Divider(),
+              ),),
 
               CustomContainer(
                width: double.infinity,
                 margin: EdgeInsets.zero,
+                color: Color(0xffF2F7FF),
                 child: Column(
                   children: [
                    Row(
@@ -328,16 +426,192 @@ Widget _buildPaymentCard(BuildContext context){
                 ),
               ),
               10.height,
-              
+
               CustomContainer(
                 padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
                 color: CustomColor.appColor,
                 child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+                onTap: () {
+                  showActivateBottomSheet(context);
+                },
+
               )
             ],
           ),
         ),
       ],
     ),
+  );
+}
+
+void showActivateBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: CustomColor.whiteColor,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      String selectedOption = "full"; // default value
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                15.height,
+                Text('Amount: ₹1,00,000', style: textStyle16(context)),
+                15.height,
+                Text('Select Payment Option', style: textStyle14(context,fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+
+                CustomContainer(
+                  border: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Full Payment Option
+                      Row(
+                        children: [
+                          Radio<String>(
+                            value: "full",
+                            activeColor: CustomColor.appColor,
+                            groupValue: selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedOption = value!;
+                              });
+                            },
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Full Payment'),
+                              CustomAmountText(amount: '100000'),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Half Payment Option
+                      Row(
+                        children: [
+                          Radio<String>(
+                            value: "half",
+                            activeColor: CustomColor.appColor,
+                            groupValue: selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedOption = value!;
+                              });
+                            },
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Half Payment'),
+                              CustomAmountText(amount: '50000'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+               15.height,
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        child: Center(child: Text('Cancel', style: textStyle14(context, color: CustomColor.redColor),)),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+
+                    Expanded(
+                      child: CustomContainer(
+                        color: CustomColor.appColor,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        onTap: () {
+                          Navigator.pop(context);
+                          debugPrint("Selected Option: $selectedOption");
+                        },
+                        child: Center(
+                          child: Text('Pay Now', style: textStyle14(context, color: CustomColor.whiteColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                50.height,
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+
+Widget _labelText(
+    BuildContext context,
+    String headline,
+    List<String> descriptions, // multiple descriptions
+    ) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          const Icon(Icons.check_circle_outline_outlined, size: 16),
+          const SizedBox(width: 10),
+          Text(headline, style: textStyle12(context)),
+        ],
+      ),
+      const SizedBox(height: 4),
+
+      /// multiple descriptions
+      Padding(
+        padding: const EdgeInsets.only(left:5,top: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: descriptions.map((des) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 2.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                   Padding(
+                     padding: const EdgeInsets.only(top: 5.0,right: 5),
+                     child: Icon(Icons.circle, size: 8, color: CustomColor.iconColor,),
+                   ),
+
+                  Expanded(
+                    child: Text(
+                      des,
+                      style: textStyle12(
+                        context,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    ],
   );
 }

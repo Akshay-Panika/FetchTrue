@@ -25,6 +25,8 @@ import 'feature/lead/repository/lead_status_repository.dart';
 import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
+import 'feature/package/bloc/package_bloc.dart';
+import 'feature/package/bloc/package_event.dart';
 import 'feature/profile/bloc/additional_details/additional_details_bloc.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
 import 'feature/profile/repository/additinal_details_repository.dart';
@@ -67,6 +69,7 @@ void main() async {
             BlocProvider(create: (_) => CheckoutBloc(repository: CheckOutRepository())),
             BlocProvider(create: (_) => LeadBloc(LeadRepository())),
             BlocProvider(create: (_) => LeadStatusBloc(LeadStatusRepository())),
+            BlocProvider(create: (_) => PackageBloc()..add(FetchPackages()),),
 
           ],
           child: const MyApp(),
