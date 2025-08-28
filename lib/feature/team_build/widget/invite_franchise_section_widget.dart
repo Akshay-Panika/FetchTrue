@@ -56,17 +56,11 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text('Invite & Earn', style: textStyle20(context, color: CustomColor.appColor),),
                             Row(
                               children: [
-                                Text('Invite & Earn', style: textStyle20(context, color: CustomColor.appColor),),
-                                10.width,
-                                Text('more than',style: textStyle16(context, color: Colors.green),),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                 Text('₹5000', style: textStyle18(context),),
-                                  Text('/month!', style: textStyle14(context),),
+                                Text('more than',style: textStyle20(context, color: Colors.green),),10.width,
+                                Text('₹5000', style: textStyle18(context),),
                               ],
                             ),
                           ],

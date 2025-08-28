@@ -3,11 +3,13 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
@@ -170,7 +172,7 @@ class _PackageScreenState extends State<PackageScreen> {
                                 _buildEnhancedMainCard(context,packages[selectedPlan]!,package, selectedPlan),
 
                                 if (selectedPlan == 'gp')
-                                  _buildPaymentCard(context, package,  userState.user),
+                                  PaymentCard(package: package, user: userState.user),
                                 if (selectedPlan == 'sgp')
                                   CustomContainer(height: 300,),
                                 if (selectedPlan == 'pgp')
@@ -244,7 +246,6 @@ Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> package
                   Text('${packages['packageName']}',style: textStyle16(context, color: CustomColor.appColor),),
                   10.height,
                   Text('${packages['price']}', style: textStyle12(context, color: CustomColor.greenColor),),
-                  // Text('${packages['monthFixEarning']}', style: textStyle14(context, color: CustomColor.greenColor),),
                   Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle14(context, color: CustomColor.greenColor),),
                 ],
               )
@@ -358,187 +359,255 @@ Widget _buildEnhancedFeaturesSection(BuildContext context) {
   );
 }
 
-Widget _buildPaymentCard(BuildContext context, PackageModel package, UserModel user){
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+class PaymentCard extends StatefulWidget {
+  final PackageModel package;
+  final UserModel user;
+  const PaymentCard({super.key, required this.package, required this.user});
 
-        if(user.packageActive != true)
-        Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),),
-        15.height,
+  @override
+  State<PaymentCard> createState() => _PaymentCardState();
+}
 
-        if(user.packageActive != true)
-        CustomContainer(
-          color: CustomColor.whiteColor,
-          margin: EdgeInsets.zero,
-          child: Column(
-            children: [
-              Padding(padding: EdgeInsetsGeometry.all(10),
+class _PaymentCardState extends State<PaymentCard> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final package = widget.package;
+    final user = widget.user;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          if(user.packageActive != true)
+            Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),),
+          15.height,
+
+          if(user.packageActive != true)
+            CustomContainer(
+              color: CustomColor.whiteColor,
+              margin: EdgeInsets.zero,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('Franchise Fees'),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
+                  Padding(padding: EdgeInsetsGeometry.all(10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('Franchise Fees'),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                                    Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
+                                  ],
+                                ),
+                                Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Divider(),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Franchise Deposite'),
+                            CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
+                          ],
+                        ),
+                        Divider(),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Growth Total'),
+                            CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
+                          ],
+                        ),
+                        Divider(),
+
+                        if(user.remainingAmount!=0)
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                              Center(child: CustomAmountText(amount: '${package.price}', isLineThrough: true)),
+                              Text('Remaining Amount'),
+                              CustomAmountText(amount: '${formatPrice(user.remainingAmount!)}', color: CustomColor.appColor)
                             ],
                           ),
-                          Center(child: CustomAmountText(amount: '${package.discountedPrice}', color: CustomColor.appColor)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(),
+                      ],
+                    ),),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Franchise Deposite'),
-                      CustomAmountText(amount: '${package.deposit}', color: CustomColor.appColor)
-                    ],
-                  ),
-                  Divider(),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Growth Total'),
-                      CustomAmountText(amount: '${package.grandtotal}', color: CustomColor.appColor)
-                    ],
-                  ),
-                  Divider(),
-
-                  if(user.remainingAmount!=0)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Remaining Amount'),
-                      CustomAmountText(amount: '${user.remainingAmount}', color: CustomColor.appColor)
-                    ],
-                  ),
-                ],
-              ),),
-
-              CustomContainer(
-               width: double.infinity,
-                margin: EdgeInsets.zero,
-                color: Color(0xffF2F7FF),
-                child: Column(
-                  children: [
-                   Row(
-                     children: [
-                       Expanded(child: Container()),
-                       Expanded(flex: 2,
-                         child: Column(
-                           crossAxisAlignment: CrossAxisAlignment.end,
-                           mainAxisAlignment: MainAxisAlignment.end,
-                           children: [
-                             Row(
-                               crossAxisAlignment: CrossAxisAlignment.end,
-                               mainAxisAlignment: MainAxisAlignment.end,
-                               children: [
-                                 Text('We Assure You up to', style: textStyle14(context),),
-                                 Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
-                               ],
-                             ),
-                             5.height,
-
-                             Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
-                           ],
-                         ),
-                       ),
-                     ],
-                   ),
-                   Text('Safe, secure, and assured returns on your investment.')
-                  ],
-                ),
-              ),
-              10.height,
-
-              CustomContainer(
-                padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                color: CustomColor.appColor,
-                child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
-                onTap: () {
-                  showActivateBottomSheet(context, package, user);
-                },
-
-              )
-            ],
-          ),
-        ),
-
-        if(user.packageActive == true)
-        CustomContainer(
-          margin: EdgeInsets.zero,
-          color: CustomColor.whiteColor,
-          child: Column(
-            children: [
-              Text('Fetch True Growth Partner Package', style: textStyle16(context, color: CustomColor.appColor),),
-              10.height,
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(child: Container()),
-                      Expanded(flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
+                  CustomContainer(
+                    width: double.infinity,
+                    margin: EdgeInsets.zero,
+                    color: Color(0xffF2F7FF),
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
-                            Row(
+                            Expanded(child: Container()),
+                            Expanded(flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text('We Assure You up to', style: textStyle14(context),),
+                                      Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
+                                    ],
+                                  ),
+                                  5.height,
+
+                                  Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text('Safe, secure, and assured returns on your investment.')
+                      ],
+                    ),
+                  ),
+                  10.height,
+
+                  if(user.remainingAmount == 0)
+                    CustomContainer(
+                      padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
+                      color: CustomColor.appColor,
+                      child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+                      onTap: () {
+                        showActivateBottomSheet(context, package, user);
+                      },
+
+                    ),
+
+                  if(user.remainingAmount != 0)
+                    CustomContainer(
+                      color: CustomColor.appColor,
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+                      onTap: isLoading
+                          ? null
+                          : () async {
+                        setState(() => isLoading = true);
+
+                        DateTime now = DateTime.now();
+                        String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
+
+
+                        final isSuccess =
+                        await packageBuyPaymentRepository(
+                          context: context,
+                          orderId: 'package_${formattedDate}',
+                          customerId: '${user.id}',
+                          customerName: '${user.fullName}',
+                          customerPhone: '${user.mobileNumber}',
+                          customerEmail: '${user.email}',
+                          amount: user.remainingAmount!,
+                        );
+
+                        setState(() => isLoading = false);
+
+                        if (isSuccess) {
+                          // Payment successful → Refresh User
+                          context.read<UserBloc>().add(GetUserById(user.id));
+                          if (context.mounted) {Navigator.pop(context);}
+                        }
+                      },
+                      child: isLoading
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : Text(
+                        'Pay Now',
+                        style: textStyle16(context,
+                            color: CustomColor.whiteColor),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
+          if(user.packageActive == true)
+            CustomContainer(
+              margin: EdgeInsets.zero,
+              color: CustomColor.whiteColor,
+              child: Column(
+                children: [
+                  Text('Fetch True Growth Partner Package', style: textStyle16(context, color: CustomColor.appColor),),
+                  10.height,
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Container()),
+                          Expanded(flex: 2,
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text('We Assure You up to', style: textStyle14(context),),
-                                Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text('We Assure You up to', style: textStyle14(context),),
+                                    Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
+                                  ],
+                                ),
+                                5.height,
+
+                                Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
                               ],
                             ),
-                            5.height,
-
-                            Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Your Extra Benefits', style: textStyle14(context),),
+                          Text('You’ve received ₹5,000 as your fixed monthly earning bonus for purchasing the package.')
+                        ],
+                      )
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Your Extra Benefits', style: textStyle14(context),),
-                      Text('You’ve received ₹5,000 as your fixed monthly earning bonus for purchasing the package.')
-                    ],
+
+                  CustomContainer(
+                    color: Color(0xffF2F7FF),
+                    child: Column(
+                      children: [
+                        CircleAvatar(radius: 30, backgroundColor: CustomColor.whiteColor,child: Icon(Icons.image),),
+                        10.height,
+                        Text('Your package is active', style: textStyle16(context),),
+                        Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
+                      ],
+                    ),
                   )
                 ],
               ),
-              
-              CustomContainer(
-                color: Color(0xffF2F7FF),
-                child: Column(
-                  children: [
-                    CircleAvatar(radius: 30, backgroundColor: CustomColor.whiteColor,child: Icon(Icons.image),),
-                    10.height,
-                    Text('Your package is active', style: textStyle16(context),),
-                    Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
+            ),
+        ],
+      ),
+    );
+  }
 }
+
+
+
 
 void showActivateBottomSheet(BuildContext context, PackageModel package, UserModel user) {
   showModalBottomSheet(
@@ -593,7 +662,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Full Payment'),
-                              CustomAmountText(amount: '${package.discountedPrice.toStringAsFixed(2)}'),
+                              CustomAmountText(amount: '${formatPrice(package.discountedPrice)}'),
                             ],
                           ),
                         ],
@@ -616,8 +685,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Half Payment'),
-                              CustomAmountText(
-                                  amount: (user.remainingAmount != 0)? (user.remainingAmount!.toStringAsFixed(2)) :'${(package.discountedPrice / 2).toStringAsFixed(2)}'),
+                              CustomAmountText(amount: '${formatPrice(package.discountedPrice / 2)}'),
                             ],
                           ),
                         ],
@@ -655,15 +723,21 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
 
                           debugPrint("Selected Option: $selectedOption");
 
+                          DateTime now = DateTime.now();
+                          String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
+
+
                           final isSuccess =
                           await packageBuyPaymentRepository(
                             context: context,
-                            orderId: user.id,
+                            orderId: 'package_${formattedDate}',
                             customerId: '${user.id}',
                             customerName: '${user.fullName}',
                             customerPhone: '${user.mobileNumber}',
                             customerEmail: '${user.email}',
-                            amount: selectedOption == "full" ? package.discountedPrice.toDouble() : (package.discountedPrice / 2).toDouble(),
+                            amount: selectedOption == "full" ? package.discountedPrice : package.discountedPrice / 2,
+
+                            // amount: selectedOption == "full" ? formatPrice(package.discountedPrice) : formatPrice(package.discountedPrice / 2),
                           );
 
                           setState(() => isLoading = false);

@@ -8,7 +8,7 @@ final dio = Dio();
 
 Future<bool> packageBuyPaymentRepository({
   required BuildContext context,
-  required double amount,
+  required num amount,
   required String customerId,
   required String customerName,
   required String customerEmail,

@@ -16,7 +16,7 @@ class UserModel {
   final String? packageType;
   final bool? packageActive;
   final int? packageAmountPaid;
-  final int? remainingAmount;
+  final num? remainingAmount;
 
   final bool isCommissionDistribute;
   final List<String> favoriteServices;
