@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../ads/model/add_model.dart';
-import '../ads/repository/ads_repsitory.dart';
 import 'bloc/ads_bloc.dart';
 import 'bloc/ads_event.dart';
 import 'bloc/ads_state.dart';

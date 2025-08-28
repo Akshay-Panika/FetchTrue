@@ -68,18 +68,17 @@ class ModuleWidget extends StatelessWidget {
                     margin: EdgeInsets.zero,
                     color: Colors.white,
                     // padding: EdgeInsets.zero,
-                    child: Column(
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
                       children: [
-                        Expanded(
-                          child: Hero(
-                            tag: module.id,
-                            child: Material( // 👈 ye add karo
-                              color: Colors.transparent,
-                              child: CustomNetworkImage(
-                                borderRadius: BorderRadius.circular(10),
-                                imageUrl: module.image,
-                                fit: BoxFit.fill,
-                              ),
+                        Hero(
+                          tag: module.id,
+                          child: Material( // 👈 ye add karo
+                            color: Colors.transparent,
+                            child: CustomNetworkImage(
+                              borderRadius: BorderRadius.circular(10),
+                              imageUrl: module.image,
+                              fit: BoxFit.fill,
                             ),
                           ),
                         ),

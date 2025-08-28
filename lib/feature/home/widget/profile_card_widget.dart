@@ -55,20 +55,14 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
         } else if (state is UserLoaded) {
           final user = state.user;
           return _buildSliverAppBar(
-            context,
-            isCollapsed,
-            background,
+            context, isCollapsed, background,
             name: user.fullName ?? "Guest",
             photo: user.profilePhoto,
+            packageActive: user.packageActive,
           );
         } else if (state is UserError) {
           print("Error: ${state.massage}");
-          return _buildSliverAppBar(
-            context,
-            isCollapsed,
-            background,
-            name: "Guest",
-            photo: null,
+          return _buildSliverAppBar( context, isCollapsed, background, name: "Guest", photo: null,
           );
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -82,6 +76,7 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
       Widget background, {
         required String name,
         String? photo,
+        bool? packageActive,
       }) {
     return SliverAppBar(
       expandedHeight: 250 + searchBarHeight,
@@ -151,10 +146,10 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.verified_outlined, size: 16),
+                 Icon(Icons.verified_outlined, size: 16),
                 10.width,
                  Text(
-                  'Package',
+                   packageActive == true ? 'GP':'Package',
                   style: textStyle12(context, fontWeight: FontWeight.w600,
                     color:isCollapsed ? CustomColor.appColor : Colors.white,
                   ),

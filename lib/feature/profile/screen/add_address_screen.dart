@@ -5,6 +5,7 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
+import 'package:india_state_city_picker/india_state_city_picker.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 
 
@@ -68,6 +69,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     super.dispose();
   }
 
+  String selectState = "State";
+  String selectCity = "City";
 
 
   @override
@@ -116,6 +119,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                 isRequired: true,
               ),
               15.height,
+              // IndiaStateCityPicker(
+              //   direction: false,
+              //   selectedState: selectState,
+              //   selectedCity: selectCity,
+              //   onChanged: (state, city) {
+              //     setState(() {
+              //       selectState = state;
+              //       selectCity = city;
+              //     });
+              //   },
+              // ),
               Row(
                 children: [
                   Expanded(

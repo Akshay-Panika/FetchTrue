@@ -4,14 +4,22 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
+import 'package:fetchtrue/feature/profile/model/user_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_appbar.dart';
+import '../../../core/widgets/no_user_sign_widget.dart';
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
+import '../../profile/widget/gift_package_widget.dart';
 import '../bloc/package_bloc.dart';
 import '../bloc/package_state.dart';
 import '../model/package_model.dart';
+import '../repository/package_buy_repository.dart';
 
 class PackageScreen extends StatefulWidget {
   @override
@@ -92,82 +100,105 @@ class _PackageScreenState extends State<PackageScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final userSession = Provider.of<UserSession>(context);
+
+    if (!userSession.isLoggedIn) {
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Package', showBackButton: true,),
+        body: const Center(child: NoUserSignWidget()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: CustomAppBar(title: 'Package', showBackButton: true),
 
-      body: BlocBuilder<PackageBloc, PackageState>(
-        builder: (context, state) {
-          if (state is PackageLoading) {
+      body:BlocBuilder<UserBloc, UserState>(
+        builder: (context, userState) {
+          if (userState is UserInitial || userState is UserLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          else if (state is PackageLoaded) {
-            final PackageModel package = state.packages.first;
-            return DefaultTabController(
-              length: 3,
-              child: SafeArea(
-                child: CustomScrollView(
-                  slivers: [
-                    /// Tabs
-                    SliverAppBar(
-                      pinned: false,
-                      floating: true,
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      toolbarHeight: 40,
-                      flexibleSpace: Container(
-                        color: Colors.white,
-                        child: TabBar(
-                          dividerColor: Colors.transparent,
-                          indicatorColor: CustomColor.appColor,
-                          labelColor: Colors.black,
-                          onTap: (index) {
-                            setState(() {
-                              if (index == 0) selectedPlan = 'gp';
-                              if (index == 1) selectedPlan = 'sgp';
-                              if (index == 2) selectedPlan = 'pgp';
-                            });
-                          },
-                          tabs: const [
-                            Tab(text: "GP"),
-                            Tab(text: "SGP"),
-                            Tab(text: "PGP"),
-                          ],
-                        ),
-                      ),
-                    ),
 
-                    /// Body
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          _buildEnhancedMainCard(context,packages[selectedPlan]!,package, selectedPlan),
-
-                             if (selectedPlan == 'gp')
-                            _buildPaymentCard(context, package),
-                            if (selectedPlan == 'sgp')
-                            CustomContainer(
-                              height: 300,
+          else if (userState is UserLoaded) {
+            return BlocBuilder<PackageBloc, PackageState>(
+              builder: (context, state) {
+                if (state is PackageLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                else if (state is PackageLoaded) {
+                  final PackageModel package = state.packages.first;
+                  return DefaultTabController(
+                    length: 3,
+                    child: SafeArea(
+                      child: CustomScrollView(
+                        slivers: [
+                          /// Tabs
+                          SliverAppBar(
+                            pinned: false,
+                            floating: true,
+                            automaticallyImplyLeading: false,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                            toolbarHeight: 40,
+                            flexibleSpace: Container(
+                              color: Colors.white,
+                              child: TabBar(
+                                dividerColor: Colors.transparent,
+                                indicatorColor: CustomColor.appColor,
+                                labelColor: Colors.black,
+                                onTap: (index) {
+                                  setState(() {
+                                    if (index == 0) selectedPlan = 'gp';
+                                    if (index == 1) selectedPlan = 'sgp';
+                                    if (index == 2) selectedPlan = 'pgp';
+                                  });
+                                },
+                                tabs: const [
+                                  Tab(text: "GP"),
+                                  Tab(text: "SGP"),
+                                  Tab(text: "PGP"),
+                                ],
+                              ),
                             ),
-                          if (selectedPlan == 'pgp')
-                            CustomContainer(
-                              height: 300,
-                            )
+                          ),
+
+                          /// Body
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                _buildEnhancedMainCard(context,packages[selectedPlan]!,package, selectedPlan),
+
+                                if (selectedPlan == 'gp')
+                                  _buildPaymentCard(context, package,  userState.user),
+                                if (selectedPlan == 'sgp')
+                                  CustomContainer(height: 300,),
+                                if (selectedPlan == 'pgp')
+                                  CustomContainer(height: 300,)
+                              ],
+                            ),
+                          ),
+
+                          SliverToBoxAdapter(child: 50.height),
                         ],
                       ),
                     ),
-
-                    SliverToBoxAdapter(child: 50.height),
-                  ],
-                ),
-              ),
+                  );
+                }
+                else if (state is PackageError) {
+                  return Center(child: Text("Error: ${state.error}"));
+                }
+                return const SizedBox.shrink();
+              },
             );
           }
-          else if (state is PackageError) {
-            return Center(child: Text("Error: ${state.error}"));
+
+          else if (userState is UserError){
+            print('Error : ${userState.massage}');
           }
-          return const SizedBox.shrink();
+
+          return SizedBox.shrink();
+
         },
       ),
     );
@@ -273,14 +304,8 @@ Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> package
           ),
         ),
         10.height,
-                
-        Text('Welcome Gift'),
-        Wrap(
-          children: List.generate(7, (index) =>
-            CustomContainer(
-              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-              child: Text('Gift', style: textStyle12(context),),),),
-        ),
+
+        GiftPackageWidget()
       ],
     ),
   );
@@ -333,15 +358,18 @@ Widget _buildEnhancedFeaturesSection(BuildContext context) {
   );
 }
 
-Widget _buildPaymentCard(BuildContext context, PackageModel package){
+Widget _buildPaymentCard(BuildContext context, PackageModel package, UserModel user){
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 15.0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
+        if(user.packageActive != true)
         Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),),
         15.height,
 
+        if(user.packageActive != true)
         CustomContainer(
           color: CustomColor.whiteColor,
           margin: EdgeInsets.zero,
@@ -388,6 +416,15 @@ Widget _buildPaymentCard(BuildContext context, PackageModel package){
                     ],
                   ),
                   Divider(),
+
+                  if(user.remainingAmount!=0)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Remaining Amount'),
+                      CustomAmountText(amount: '${user.remainingAmount}', color: CustomColor.appColor)
+                    ],
+                  ),
                 ],
               ),),
 
@@ -432,9 +469,68 @@ Widget _buildPaymentCard(BuildContext context, PackageModel package){
                 color: CustomColor.appColor,
                 child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
                 onTap: () {
-                  showActivateBottomSheet(context);
+                  showActivateBottomSheet(context, package, user);
                 },
 
+              )
+            ],
+          ),
+        ),
+
+        if(user.packageActive == true)
+        CustomContainer(
+          margin: EdgeInsets.zero,
+          color: CustomColor.whiteColor,
+          child: Column(
+            children: [
+              Text('Fetch True Growth Partner Package', style: textStyle16(context, color: CustomColor.appColor),),
+              10.height,
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Container()),
+                      Expanded(flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text('We Assure You up to', style: textStyle14(context),),
+                                Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
+                              ],
+                            ),
+                            5.height,
+
+                            Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Your Extra Benefits', style: textStyle14(context),),
+                      Text('You’ve received ₹5,000 as your fixed monthly earning bonus for purchasing the package.')
+                    ],
+                  )
+                ],
+              ),
+              
+              CustomContainer(
+                color: Color(0xffF2F7FF),
+                child: Column(
+                  children: [
+                    CircleAvatar(radius: 30, backgroundColor: CustomColor.whiteColor,child: Icon(Icons.image),),
+                    10.height,
+                    Text('Your package is active', style: textStyle16(context),),
+                    Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
+                  ],
+                ),
               )
             ],
           ),
@@ -444,7 +540,7 @@ Widget _buildPaymentCard(BuildContext context, PackageModel package){
   );
 }
 
-void showActivateBottomSheet(BuildContext context) {
+void showActivateBottomSheet(BuildContext context, PackageModel package, UserModel user) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -454,6 +550,7 @@ void showActivateBottomSheet(BuildContext context) {
     ),
     builder: (context) {
       String selectedOption = "full"; // default value
+      bool isLoading = false;
 
       return StatefulBuilder(
         builder: (context, setState) {
@@ -464,9 +561,15 @@ void showActivateBottomSheet(BuildContext context) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
-                Text('Amount: ₹1,00,000', style: textStyle16(context)),
+                Text('Amount: ₹ ${package.discountedPrice}',
+                    style: textStyle16(context)),
                 15.height,
-                Text('Select Payment Option', style: textStyle14(context,fontWeight: FontWeight.w400,color: CustomColor.descriptionColor)),
+                Text(
+                  'Select Payment Option',
+                  style: textStyle14(context,
+                      fontWeight: FontWeight.w400,
+                      color: CustomColor.descriptionColor),
+                ),
 
                 CustomContainer(
                   border: true,
@@ -489,8 +592,8 @@ void showActivateBottomSheet(BuildContext context) {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Full Payment'),
-                              CustomAmountText(amount: '100000'),
+                              const Text('Full Payment'),
+                              CustomAmountText(amount: '${package.discountedPrice.toStringAsFixed(2)}'),
                             ],
                           ),
                         ],
@@ -512,8 +615,9 @@ void showActivateBottomSheet(BuildContext context) {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Half Payment'),
-                              CustomAmountText(amount: '50000'),
+                              const Text('Half Payment'),
+                              CustomAmountText(
+                                  amount: (user.remainingAmount != 0)? (user.remainingAmount!.toStringAsFixed(2)) :'${(package.discountedPrice / 2).toStringAsFixed(2)}'),
                             ],
                           ),
                         ],
@@ -522,28 +626,68 @@ void showActivateBottomSheet(BuildContext context) {
                   ),
                 ),
 
-               15.height,
+                15.height,
                 Row(
                   children: [
                     Expanded(
                       child: InkWell(
-                        child: Center(child: Text('Cancel', style: textStyle14(context, color: CustomColor.redColor),)),
+                        child: Center(
+                            child: Text(
+                              'Cancel',
+                              style: textStyle14(context,
+                                  color: CustomColor.redColor),
+                            )),
                         onTap: () {
                           Navigator.pop(context);
                         },
                       ),
                     ),
 
+                    // ✅ Pay Now Button with Loader
                     Expanded(
                       child: CustomContainer(
                         color: CustomColor.appColor,
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        onTap: () {
-                          Navigator.pop(context);
+                        onTap: isLoading
+                            ? null
+                            : () async {
+                          setState(() => isLoading = true);
+
                           debugPrint("Selected Option: $selectedOption");
+
+                          final isSuccess =
+                          await packageBuyPaymentRepository(
+                            context: context,
+                            orderId: user.id,
+                            customerId: '${user.id}',
+                            customerName: '${user.fullName}',
+                            customerPhone: '${user.mobileNumber}',
+                            customerEmail: '${user.email}',
+                            amount: selectedOption == "full" ? package.discountedPrice.toDouble() : (package.discountedPrice / 2).toDouble(),
+                          );
+
+                          setState(() => isLoading = false);
+
+                          if (isSuccess) {
+                            // Payment successful → Refresh User
+                            context.read<UserBloc>().add(GetUserById(user.id));
+                            if (context.mounted) {Navigator.pop(context);}
+                          }
                         },
                         child: Center(
-                          child: Text('Pay Now', style: textStyle14(context, color: CustomColor.whiteColor),
+                          child: isLoading
+                              ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                              : Text(
+                            'Pay Now',
+                            style: textStyle14(context,
+                                color: CustomColor.whiteColor),
                           ),
                         ),
                       ),
@@ -560,7 +704,6 @@ void showActivateBottomSheet(BuildContext context) {
     },
   );
 }
-
 
 Widget _labelText(
     BuildContext context,

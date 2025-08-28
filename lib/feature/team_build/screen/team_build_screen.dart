@@ -17,21 +17,8 @@ class TeamBuildScreen extends StatefulWidget {
   State<TeamBuildScreen> createState() => _TeamBuildScreenState();
 }
 
-class _TeamBuildScreenState extends State<TeamBuildScreen> with TickerProviderStateMixin {
-  late TabController _tabController;
+class _TeamBuildScreenState extends State<TeamBuildScreen> {
 
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,30 +37,31 @@ class _TeamBuildScreenState extends State<TeamBuildScreen> with TickerProviderSt
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Team Build', showBackButton: true),
       body: SafeArea(
-        child: Column(
-          children: [
-            TabBar(
-              controller: _tabController,
-              indicatorColor: CustomColor.appColor,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              tabs: const [
-                Tab(text: 'Team Build'),
-                Tab(text: 'My Team'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  InviteFranchiseSectionWidget(),
-                  MyTeamSectionWidget(),
+        child: DefaultTabController(
+          length: 2,
+          child: Column(
+            children: [
+              TabBar(
+                indicatorColor: CustomColor.appColor,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                tabs: const [
+                  Tab(text: 'Team Build'),
+                  Tab(text: 'My Team'),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Expanded(
+                child: TabBarView(
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    InviteFranchiseSectionWidget(),
+                    MyTeamSectionWidget(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

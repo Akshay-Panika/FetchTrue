@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,7 +42,19 @@ import 'feature/subcategory/bloc/module_subcategory/subcategory_event.dart';
 import 'feature/subcategory/repository/subcategory_repository.dart';
 import 'firebase_options.dart';
 
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true; // allow self-signed
+  }
+}
+
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

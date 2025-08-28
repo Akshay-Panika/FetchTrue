@@ -1,12 +1,12 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:http/http.dart' as http;
 
+final dio = Dio();
 
-Future<bool> initiatePackagePayment({
+Future<bool> packageBuyPaymentRepository({
   required BuildContext context,
   required double amount,
   required String customerId,
@@ -15,23 +15,21 @@ Future<bool> initiatePackagePayment({
   required String customerPhone,
   required String orderId,
 }) async {
-  final url = Uri.parse("https://biz-booster.vercel.app/api/payment/generate-payment-link");
-
   try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
+    final response = await dio.post(
+      "https://biz-booster.vercel.app/api/payment/generate-payment-link",
+      data: {
         "orderId": orderId,
         "amount": amount,
         "customerId": customerId,
         "customerName": customerName,
         "customerEmail": customerEmail,
         "customerPhone": customerPhone,
-      }),
+      },
+      options: Options(headers: {"Content-Type": "application/json"}),
     );
 
-    final data = jsonDecode(response.body);
+    final data = response.data;
 
     if (response.statusCode == 200 && data["paymentLink"] != null) {
       final paymentUrl = data["paymentLink"];
@@ -47,7 +45,6 @@ Future<bool> initiatePackagePayment({
   }
 }
 
-
 Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
   final uri = Uri.tryParse(paymentUrl);
   if (uri == null) {
@@ -62,7 +59,7 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
     MaterialPageRoute(
       builder: (_) => WillPopScope(
         onWillPop: () async {
-          Navigator.pop(context, isPaymentSuccess); // Pass result on back
+          Navigator.pop(context, isPaymentSuccess);
           return false;
         },
         child: Scaffold(
@@ -77,7 +74,8 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
                   isPaymentHandled = true;
                   isPaymentSuccess = true;
                   showCustomSnackBar(context, 'Payment Successful!');
-                } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
+                } else if (currentUrl.contains("failed") ||
+                    currentUrl.contains("cancel")) {
                   isPaymentHandled = true;
                   isPaymentSuccess = false;
                   showCustomSnackBar(context, 'Payment Failed or Cancelled');
@@ -90,5 +88,5 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
     ),
   );
 
-  return result ?? false; // Default to false if null
+  return result ?? false;
 }

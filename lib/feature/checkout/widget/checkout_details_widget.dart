@@ -206,7 +206,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                  customerPhone: customerPhone,
                  customerMassage: message,
                  myCustomer: () async {
-                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  CustomerScreen(userId: userSession.userId!,)),);
+                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  CustomerScreen(userId: userSession.userId,)),);
 
                    if (selectedCustomer != null) {
                      setState(() {
@@ -219,7 +219,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                    }
                  },
                  addCustomer: () async {
-                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userSession.userId!),),);
+                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userSession.userId),),);
 
                    if (selectedCustomer != null) {
                      setState(() {
@@ -343,8 +343,9 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             serviceDiscount: double.parse(serviceDiscount.toStringAsFixed(2)),
                             serviceDiscountPrice: double.parse(serviceDiscountPrice.toStringAsFixed(2)),
                             priceAfterDiscount: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
-                            couponDiscount: double.parse(couponDiscount.toStringAsFixed(2)),
-                            couponDiscountPrice: double.parse((selectedCoupon?.amount.toDouble() ?? 0.0).toStringAsFixed(2)),
+                            couponDiscountPrice: double.parse(couponDiscount.toStringAsFixed(2)),
+                            couponDiscount: double.parse((selectedCoupon?.amount.toDouble() ?? 0.0).toStringAsFixed(2)),
+                            // couponDiscount: '${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'}',
                             gst: double.parse(serviceGst.toStringAsFixed(2)),
                             serviceGSTPrice: double.parse(gstAmount.toStringAsFixed(2)),
                             platformFee: double.parse(platformFee.toStringAsFixed(2)),

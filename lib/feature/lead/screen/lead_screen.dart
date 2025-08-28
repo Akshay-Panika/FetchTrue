@@ -173,7 +173,7 @@ class _LeadScreenState extends State<LeadScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
-                                      CustomAmountText(amount: '${formatPrice(lead.totalAmount)}'),
+                                      CustomAmountText(amount: '${lead.totalAmount.toStringAsFixed(2)}'),
                                     ],
                                   ),
                                 ],

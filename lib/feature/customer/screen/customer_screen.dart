@@ -1,6 +1,7 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
@@ -8,7 +9,9 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../../helper/Contact_helper.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/customer/customer_bloc.dart';
 import '../bloc/customer/customer_event.dart';
 import '../bloc/customer/customer_state.dart';
@@ -16,8 +19,8 @@ import '../repository/customer_service.dart';
 
 class CustomerScreen extends StatefulWidget {
   final bool? isMenu;
-  final String userId;
-  const CustomerScreen({super.key, this.isMenu, required this.userId});
+  final String? userId;
+  const CustomerScreen({super.key, this.isMenu, this.userId});
 
   @override
   State<CustomerScreen> createState() => _CustomerScreenState();
@@ -38,7 +41,14 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
 
+    if (widget.userId == null || !userSession.isLoggedIn) {
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Customer List', showBackButton: true,),
+        body: const Center(child: NoUserSignWidget()),
+      );
+    }
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Customer List',

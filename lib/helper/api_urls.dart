@@ -13,6 +13,7 @@ class ApiUrls{
 
 
   /// Module Api
+  static const String packages = '${baseUrl}packages';
   static const String modules = '${baseUrl}modules';
   static const String modulesCategory = '${baseUrl}category';
   static const String modulesSubcategory = '${baseUrl}subcategory';

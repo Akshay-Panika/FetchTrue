@@ -1,18 +1,20 @@
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:fetchtrue/feature/customer/repository/customer_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../../core/widgets/no_user_sign_widget.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../model/add_customer_model.dart';
 
 class AddCustomerScreen extends StatefulWidget {
-  final String userId;
-  const AddCustomerScreen({super.key, required this.userId});
+  final String? userId;
+  const AddCustomerScreen({super.key, this.userId});
 
   @override
   State<AddCustomerScreen> createState() => _AddCustomerScreenState();
@@ -103,7 +105,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       city: selectedCity.value,
       state: selectedState.value,
       country: country.text.trim(),
-      user: widget.userId,
+      user: widget.userId.toString(),
     );
 
     try {
@@ -143,6 +145,17 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+
+    final userSession = Provider.of<UserSession>(context);
+
+    if (widget.userId == null || !userSession.isLoggedIn) {
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Customer Details', showBackButton: true,),
+        body: const Center(child: NoUserSignWidget()),
+      );
+    }
+
+
     return Scaffold(
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Customer Details', showBackButton: true,),

@@ -1,16 +1,14 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
+import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/package_model.dart';
 
 class PackageRepository {
+  static final Dio _dio = Dio();
   static Future<List<PackageModel>> getPackages() async {
-    final response = await http.get(
-      Uri.parse("https://biz-booster.vercel.app/api/packages"),
-    );
+    final response = await _dio.get(ApiUrls.packages);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = response.data;
 
       if (data is List) {
         return data.map((item) => PackageModel.fromJson(item as Map<String, dynamic>)).toList();

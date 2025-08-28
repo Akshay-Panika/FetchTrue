@@ -20,8 +20,7 @@ class InviteFranchiseSectionWidget extends StatefulWidget {
   const InviteFranchiseSectionWidget({super.key});
 
   @override
-  State<InviteFranchiseSectionWidget> createState() =>
-      _InviteFranchiseSectionWidgetState();
+  State<InviteFranchiseSectionWidget> createState() => _InviteFranchiseSectionWidgetState();
 }
 
 class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWidget> {
@@ -32,208 +31,382 @@ class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWid
     Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          50.height,
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
 
-          /// Illustration or Banner
-          CustomContainer(
-            height: dimensions.screenHeight * 0.2,
-            width: double.infinity,
-            margin: EdgeInsets.zero,
-            assetsImg: CustomImage.inviteImage,
-          ),
-          20.height,
-
-          /// Title & Subtext
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              Text(
-                'Invite Friends & Businesses',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Share your referral code below and\ngrow your team.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.blue),
-              ),
-              SizedBox(height: 60),
-            ],
-          ),
-
-          BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-
-              if (state is UserInitial) {
-                context.read<UserBloc>().add(GetUserById(userSession.userId!));
-                return Column(
+        if (state is UserInitial) {
+          return CircularProgressIndicator();
+        }
+        else if(state is UserLoading){
+          return CircularProgressIndicator();
+        }
+        else if (state is UserLoaded) {
+          final user = state.user;
+          return  SingleChildScrollView(
+            child: Column(
+              children: [
+                20.height,
+                // Hero Section
+                Column(
                   children: [
-                    Center(child: shimmerBox(height: 100, width: double.infinity)),
-                    50.height,
-                    Center(child: shimmerBox(height: 50, width: 200)),
-                  ],
-                );
-              }
-              else if(state is UserLoading){
-                return Column(
-                  children: [
-                    Center(child: shimmerBox(height: 100, width: double.infinity)),
-                    50.height,
-                    Center(child: shimmerBox(height: 50, width: 200)),
-                  ],
-                );
-              }
-              else if (state is UserLoaded) {
-                final user = state.user;
-                final packageActive = user.packageActive == true;
-                final referralCode = user.referralCode ?? '';
 
-                if (!packageActive) {
-                  return Column(
-                    children: [
-                      CustomContainer(
-                        border: true,
-                        height: 100,
-                        color: CustomColor.whiteColor,
-                        margin: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
+                      children: [
+                        20.width,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.lock, color: CustomColor.appColor),
-                            10.width,
-                            Text(
-                              'Upgrade now to start earning',
-                              style: textStyle16(context,
-                                  color: CustomColor.appColor),
+                            Row(
+                              children: [
+                                Text('Invite & Earn', style: textStyle20(context, color: CustomColor.appColor),),
+                                10.width,
+                                Text('more than',style: textStyle16(context, color: Colors.green),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                 Text('₹5000', style: textStyle18(context),),
+                                  Text('/month!', style: textStyle14(context),),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                      50.height,
-                      CustomContainer(
-                        width: 200,
-                        color: CustomColor.appColor,
-                        child: Center(
-                          child: Text(
-                            'Upgrade Now',
-                            style: textStyle16(context,
-                                color: CustomColor.whiteColor),
-                          ),
-                        ),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                PackageScreen(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                else {
-                  return Column(
-                    children: [
-                      DottedBorder(
-                        color: Colors.grey,
-                        dashPattern: [10, 5],
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(8),
-                        borderPadding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 25),
-                            Expanded(
-                              flex: 2,
-                              child: TextField(
-                                readOnly: true,
-                                controller: TextEditingController(
-                                    text: referralCode),
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 16),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: CustomContainer(
-                                color:
-                                CustomColor.appColor.withOpacity(0.8),
-                                child: IconButton(
-                                  icon: const Icon(Icons.copy,
-                                      color: Colors.white),
-                                  onPressed: () {
-                                    Clipboard.setData(
-                                        ClipboardData(text: referralCode));
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Copied!')),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      50.height,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        Expanded(child: Image.asset(CustomImage.inviteImage,)),
+                      ],
+                    ),
+
+                    // Referral Code Box
+                    CustomContainer(
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
                         children: [
-                          Text('Share this code', style: textStyle16(context)),
-                          15.width,
-                          CircleAvatar(
-                            backgroundColor: Colors.blue.shade50,
-                            child: IconButton(
-                              onPressed: () {
-                                final shareMessage =
-                                    'Join me on this amazing platform!\nUse my referral code: $referralCode';
-                                Share.share(shareMessage);
-                              },
-                              icon: Icon(Icons.share, color: CustomColor.appColor),
+                          Text('Referral code', style: textStyle14(context),),
+                         15.width,
+                           Text(user.referralCode, style: textStyle18(context, color: CustomColor.appColor),),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              Clipboard.setData(const ClipboardData(text: 'NL4Q1ZMF'));
+                            },
+                            child:  Icon(Icons.copy, color: CustomColor.appColor,),
+                          ),
+                          20.width,
+                          InkWell(
+                            onTap: () {
+                              // Share functionality
+                            },
+                            child:  Icon(Icons.share, color: CustomColor.appColor, ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  ],
+                ),
+
+                20.height,
+
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFE8F5E8),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.currency_rupee,
+                                  size: 12,
+                                  color: Color(0xFF4CAF50),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                '₹0',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF333333),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'My Earning',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF666666),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 40,
+                      color: const Color(0xFFE0E0E0),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFE8F5E8),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.currency_rupee,
+                                  size: 12,
+                                  color: Color(0xFF4CAF50),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                '₹0',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF333333),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Team Earning',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF666666),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                30.height,
 
+
+                // How to earn section
+                CustomContainer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Text('How to earn assured cash?', style: textStyle14(context),),
+                      20.height,
+
+                      // Step 1
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: CustomColor.appColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '1',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Click on "Invite Now" button',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF333333),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Step 2
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: CustomColor.appColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '2',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Invite your friends',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF333333),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Step 3
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: CustomColor.appColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '3',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF333333),
+                                ),
+                                children: [
+                                  TextSpan(text: 'Your friend earns '),
+                                  TextSpan(
+                                    text: 'up to ₹1,000',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(text: ' after they get a loan'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.wallet, color: CustomColor.appColor,),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF333333),
+                                ),
+                                children: [
+                                  TextSpan(text: 'For every friend who takes a build team , you earn '),
+                                  TextSpan(
+                                    text: 'up to ₹5,000',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
-                  );
-                }
-              }
-              else if (state is UserError) {
-                return Center(child: Text("Error: ${state.massage}"));
-              }
-              return const SizedBox();
-            },
+                  ),
+                ),
+                50.height,
+
+
+                CustomContainer(color: CustomColor.appColor,
+                  padding: EdgeInsets.symmetric(horizontal: 50,vertical: 10),
+                  child: Text('Active Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
+                )
+
+              ],
+            ),
+          );
+        }
+        else if (state is UserError) {
+          return Center(child: Text("Error: ${state.massage}"));
+        }
+        return const SizedBox();
+      },
+    );
+  }
+}
+
+
+  Widget _buildSuccessStory(String name, String amount) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.star,
+            color: Color(0xFFFFB400),
+            size: 16,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '$name earned $amount',
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF666666),
+            ),
           ),
         ],
       ),
     );
   }
-
-  /// ✅ Reusable shimmer widget
-  Widget shimmerBox({required double height, required double width}) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Container(
-        height: height,
-        width: width,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );
-  }
-}

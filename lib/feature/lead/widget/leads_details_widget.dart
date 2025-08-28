@@ -519,7 +519,7 @@ Widget _buildBookingSummary(BuildContext context, BookingData lead) {
         ),
         _buildRow(
           context,
-          title: 'Coupon Discount (₹ ${lead.couponDiscount})',
+          title: 'Coupon Discount (${lead.couponDiscount})',
           amount: '- ₹ ${lead.couponDiscountPrice?.toStringAsFixed(2)}',
         ),
         _buildRow(
