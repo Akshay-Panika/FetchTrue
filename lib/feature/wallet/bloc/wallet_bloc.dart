@@ -1,30 +1,29 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
-import '../model/wallet_model.dart';
 import 'wallet_event.dart';
 import 'wallet_state.dart';
+import '../repository/wallet_repository.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
-  final Dio dio;
+  final WalletRepository walletRepository;
 
-  WalletBloc({Dio? dioClient})
-      : dio = dioClient ?? Dio(),
-        super(WalletInitial()) {
-    on<FetchWallet>((event, emit) async {
-      emit(WalletLoading());
-      final url = 'https://biz-booster.vercel.app/api/wallet/fetch-by-user/${event.userId}';
+  WalletBloc(this.walletRepository) : super(WalletInitial()) {
+    on<FetchWalletByUserId>(_onFetchWallet);
+  }
 
-      try {
-        final response = await dio.get(url);
-        if (response.statusCode == 200) {
-          final wallet = WalletModel.fromJson(response.data);
-          emit(WalletLoaded(wallet));
-        } else {
-          emit(WalletError('Failed to load wallet data: ${response.statusCode}'));
-        }
-      } catch (e) {
-        emit(WalletError('Error: $e'));
+  Future<void> _onFetchWallet(
+      FetchWalletByUserId event,
+      Emitter<WalletState> emit,
+      ) async {
+    emit(WalletLoading());
+    try {
+      final wallet = await walletRepository.fetchWalletByUserId(event.userId);
+      if (wallet != null) {
+        emit(WalletLoaded(wallet));
+      } else {
+        emit(const WalletError("Wallet data not found"));
       }
-    });
+    } catch (e) {
+      emit(WalletError("Failed to fetch wallet: $e"));
+    }
   }
 }

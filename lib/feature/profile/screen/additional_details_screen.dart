@@ -8,7 +8,6 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/custom_dropdown_field.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
-
 import '../bloc/additional_details/additional_details_bloc.dart';
 import '../bloc/additional_details/additional_details_event.dart';
 import '../bloc/additional_details/additional_details_state.dart';

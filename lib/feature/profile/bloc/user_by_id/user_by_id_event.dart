@@ -1,16 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-abstract class WalletEvent extends Equatable {
-  const WalletEvent();
-
+abstract class UserByIdEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class FetchWalletByUserId extends WalletEvent {
+class FetchUserById extends UserByIdEvent {
   final String userId;
-
-  const FetchWalletByUserId(this.userId);
+  FetchUserById(this.userId);
 
   @override
   List<Object?> get props => [userId];

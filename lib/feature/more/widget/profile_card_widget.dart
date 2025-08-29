@@ -1,7 +1,9 @@
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
@@ -12,6 +14,8 @@ import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
+import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_state.dart';
 
 class ProfileCardWidget extends StatefulWidget {
   const ProfileCardWidget({super.key,});
@@ -162,9 +166,32 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatus(value: '00', valueType: 'Joining date'),
+                    _buildStatus(
+                      value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
+                          ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
+                          ? user.createdAt as DateTime
+                          : DateTime.parse(user.createdAt.toString()))
+                          : 'Not available',
+                      valueType: 'Joining date',
+                    ),
+
                     _buildStatus(value: '00', valueType: 'Lead Completed'),
-                    _buildStatus(value: '00', valueType: 'Total Earning'),
+
+                    BlocBuilder<WalletBloc, WalletState>(
+                      builder: (context, state) {
+                        if (state is WalletLoading) {
+                         return  _buildStatus(value: '00', valueType: 'Total Earning');
+                        } else if (state is WalletLoaded) {
+                          final wallet = state.wallet;
+                          return  _buildStatus(value: '${wallet.balance}', valueType: 'Total Earning');
+                        } else if (state is WalletError) {
+                          return  _buildStatus(value: '00', valueType: 'Total Earning');
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+
+
                   ],
                 ),
               ],

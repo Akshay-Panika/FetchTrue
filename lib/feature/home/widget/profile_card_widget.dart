@@ -96,9 +96,7 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
               radius: 20,
               backgroundColor: CustomColor.whiteColor,
               backgroundImage: (photo != null && photo.isNotEmpty)
-                  ? NetworkImage(photo)
-                  : AssetImage(CustomImage.nullImage),
-
+                  ? NetworkImage(photo) : AssetImage(CustomImage.nullImage),
             ),
           ),
         ),
@@ -108,19 +106,12 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
         children: [
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: textStyle16(
-              context,
-              color: isCollapsed ? CustomColor.appColor : Colors.white,
-            ),
+            style: textStyle16(context, color: isCollapsed ? CustomColor.appColor : Colors.white,),
             child: Text(name),
           ),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: textStyle12(
-              context,
-              color:
-              isCollapsed ? CustomColor.descriptionColor : Colors.white,
-            ),
+            style: textStyle12(context, color: isCollapsed ? CustomColor.descriptionColor : Colors.white,),
             child: const Text('Pune, Maharashtra'),
           ),
         ],

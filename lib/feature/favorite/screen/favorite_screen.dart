@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../profile/repository/user_service.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 
@@ -177,30 +176,10 @@ class FavoriteProviderWidget extends StatefulWidget {
 }
 
 class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
-  List<String> _favoriteProviderIds = [];
-  bool _isUserLoaded = false;
-  final userService = UserService();
-  final Set<String> _removingProviderIds = {}; // loader map
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    if (widget.userId != null) {
-      final user = await userService.fetchUserById(widget.userId!);
-      if (user != null) {
-        _favoriteProviderIds = user.favoriteProviders;
-      }
-    }
-    setState(() => _isUserLoaded = true);
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isUserLoaded) return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
 
     // return BlocProvider(
     //   create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),

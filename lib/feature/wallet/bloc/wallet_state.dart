@@ -1,6 +1,13 @@
+import 'package:equatable/equatable.dart';
+
 import '../model/wallet_model.dart';
 
-abstract class WalletState {}
+abstract class WalletState extends Equatable {
+  const WalletState();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class WalletInitial extends WalletState {}
 
@@ -8,10 +15,18 @@ class WalletLoading extends WalletState {}
 
 class WalletLoaded extends WalletState {
   final WalletModel wallet;
-  WalletLoaded(this.wallet);
+
+  const WalletLoaded(this.wallet);
+
+  @override
+  List<Object?> get props => [wallet];
 }
 
 class WalletError extends WalletState {
   final String message;
-  WalletError(this.message);
+
+  const WalletError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

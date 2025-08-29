@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +29,9 @@ import 'feature/package/bloc/package_bloc.dart';
 import 'feature/package/bloc/package_event.dart';
 import 'feature/profile/bloc/additional_details/additional_details_bloc.dart';
 import 'feature/profile/bloc/user/user_bloc.dart';
+import 'feature/profile/bloc/user_by_id/user_by_id_bloc.dart';
 import 'feature/profile/repository/additinal_details_repository.dart';
+import 'feature/profile/repository/user_by_id_repojetory.dart';
 import 'feature/profile/repository/user_repository.dart';
 import 'feature/provider/bloc/provider/provider_event.dart';
 import 'feature/service/bloc/service/service_bloc.dart';
@@ -40,21 +40,14 @@ import 'feature/service/repository/service_repository.dart';
 import 'feature/subcategory/bloc/module_subcategory/subcategory_bloc.dart';
 import 'feature/subcategory/bloc/module_subcategory/subcategory_event.dart';
 import 'feature/subcategory/repository/subcategory_repository.dart';
+import 'feature/team_build/bloc/user_referral/user_referral_bloc.dart';
+import 'feature/team_build/repository/user_referral_repository.dart';
+import 'feature/wallet/bloc/wallet_bloc.dart';
+import 'feature/wallet/repository/wallet_repository.dart';
 import 'firebase_options.dart';
 
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true; // allow self-signed
-  }
-}
-
 void main() async {
-  HttpOverrides.global = MyHttpOverrides();
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -84,7 +77,9 @@ void main() async {
             BlocProvider(create: (_) => LeadBloc(LeadRepository())),
             BlocProvider(create: (_) => LeadStatusBloc(LeadStatusRepository())),
             BlocProvider(create: (_) => PackageBloc()..add(FetchPackages()),),
-
+            BlocProvider(create: (_) => WalletBloc(WalletRepository()),),
+            BlocProvider(create: (context) => UserReferralBloc(UserReferralRepository()),),
+            BlocProvider(create: (_) => UserByIdBloc(UserByIdRepository())),
           ],
           child: const MyApp(),
         ),

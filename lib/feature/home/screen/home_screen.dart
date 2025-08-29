@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             /// Futures
             if (userSession.isLoggedIn)
-            SliverToBoxAdapter(child: featureWidget(userSession.userId!)),
+            SliverToBoxAdapter(child: FeatureWidget(userId: userSession.userId!,)),
             /// Modules
             SliverToBoxAdapter(child: ModuleWidget()),
             SliverToBoxAdapter(child: 15.height),

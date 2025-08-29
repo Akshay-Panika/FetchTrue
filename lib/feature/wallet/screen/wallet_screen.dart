@@ -15,6 +15,7 @@ import '../bloc/wallet_bloc.dart';
 import '../bloc/wallet_event.dart';
 import '../bloc/wallet_state.dart';
 import '../model/wallet_model.dart';
+import '../repository/wallet_repository.dart';
 
 class WalletScreen extends StatefulWidget {
   final String userId;
@@ -33,58 +34,69 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
 
-      body: BlocProvider(
-          create: (_) => WalletBloc()..add(FetchWallet(widget.userId)),
-          child: BlocBuilder<WalletBloc, WalletState>(
-            builder: (context, state) {
-              if (state is WalletLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is WalletLoaded) {
-                final wallet = state.wallet;
-                return DefaultTabController(
-                  length: 3,
-                  child: Column(
-                    children: [
+      // body: BlocBuilder<WalletBloc, WalletState>(
+      //   builder: (context, state) {
+      //     if (state is WalletLoading) {
+      //       return const Center(child: CircularProgressIndicator());
+      //     } else if (state is WalletLoaded) {
+      //       return Text("Balance: ${state.wallet.balance}");
+      //     } else if (state is WalletError) {
+      //       return Text(state.message, style: const TextStyle(color: Colors.red));
+      //     }
+      //     return const SizedBox();
+      //   },
+      // )
 
-                      _buildStatsCard(context, wallet),
-                      // _BuildDevitCredit(context),
+      body: BlocBuilder<WalletBloc, WalletState>(
+        builder: (context, state) {
+          if (state is WalletLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is WalletLoaded) {
+            final wallet = state.wallet;
+            return DefaultTabController(
+              length: 3,
+              child: Column(
+                children: [
 
-                      Container(
-                        color: CustomColor.whiteColor,
-                        child:TabBar(
-                          isScrollable: false,
-                          labelColor: CustomColor.appColor,
-                          unselectedLabelColor: CustomColor.descriptionColor,
-                          indicatorColor: CustomColor.appColor,
-                          tabs: const [
-                            Tab(text: "Self Earning"),
-                            Tab(text: "Team Build"),
-                            Tab(text: "Team Revenue"),
-                          ],
-                        ),
-                      ),
+                  _buildStatsCard(context, wallet),
 
-                      Expanded(
-                        child: Container(
-                          color: CustomColor.whiteColor,
-                          child: TabBarView(
-                            children: [
-                              _buildSelfEarning(context),
-                              _buildTeamBuildEarning(context),
-                              _buildTeamRevenueEarning(context),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                  Container(
+                    color: CustomColor.whiteColor,
+                    child:TabBar(
+                      isScrollable: false,
+                      labelColor: CustomColor.appColor,
+                      unselectedLabelColor: CustomColor.descriptionColor,
+                      indicatorColor: CustomColor.appColor,
+                      tabs: const [
+                        Tab(text: "Self Earning"),
+                        Tab(text: "Team Build"),
+                        Tab(text: "Team Revenue"),
+                      ],
+                    ),
                   ),
-                );
-              } else if (state is WalletError) {
-                return Center(child: Text(state.message));
-              }
-              return const SizedBox();
-            },
-          ) ),
+
+                  Expanded(
+                    child: Container(
+                      color: CustomColor.whiteColor,
+                      child: TabBarView(
+                        children: [
+                          _buildSelfEarning(context),
+                          _buildTeamBuildEarning(context),
+                          _buildTeamRevenueEarning(context),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else if (state is WalletError) {
+            print('Error: ${state.message}');
+            return SizedBox.shrink();
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 
@@ -125,68 +137,31 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
           ],
         ),
         const Divider(height: 24, thickness: 0.5),
-        BlocProvider(
-          create: (_) => PackageBloc()..add(FetchPackages()),
-          child: BlocBuilder<PackageBloc, PackageState>(
-            builder: (context, state) {
-              if (state is PackageLoading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is PackageLoaded) {
-                final data = state.packages.first;
-                return Column(
-                  children: [
-                    _earningRow(context,"Franchise Deposit", "₹ ${formatPrice(data.deposit)}"),
-                    _earningRow(context,"Monthly Fix Earnings", "₹ ${formatPrice(data.monthlyEarnings)}"), // Placeholder
-                    _earningRow(context,"Lock In Period", "${data.lockInPeriod}, Month"),
-                  ],
-                );
-              } else if (state is PackageError) {
-                return Center(child: Text("Error: ${state.error}"));
-              }
-              return Container();
-            },
-          ),
+        BlocBuilder<PackageBloc, PackageState>(
+          builder: (context, state) {
+            if (state is PackageLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (state is PackageLoaded) {
+              final data = state.packages.first;
+              return Column(
+                children: [
+                  _earningRow(context,"Franchise Deposit", "₹ ${formatPrice(data.deposit)}"),
+                  _earningRow(context,"Monthly Fix Earnings", "₹ ${formatPrice(data.monthlyEarnings)}"), // Placeholder
+                  _earningRow(context,"Lock In Period", "${data.lockInPeriod}, Month"),
+                ],
+              );
+            } else if (state is PackageError) {
+               print("Error: ${state.error}");
+               return SizedBox.shrink();
+            }
+            return SizedBox.shrink();
+          },
         ),
 
       ],
     ),
   );
 }
-
-// Widget _BuildDevitCredit(BuildContext context){
-//   return  Row(
-//     children: [
-//       Expanded(
-//         child: CustomContainer(
-//           border: true,
-//           color: CustomColor.whiteColor,
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               const Icon(CupertinoIcons.arrow_turn_left_down),
-//               10.width,
-//               Text('Add Amount', style: textStyle14(context)),
-//             ],
-//           ),
-//         ),
-//       ),
-//       Expanded(
-//         child: CustomContainer(
-//           border: true,
-//           color: CustomColor.whiteColor,
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               const Icon(CupertinoIcons.arrow_turn_up_right),
-//               10.width,
-//               Text('Withdraw Amount', style: textStyle14(context)),
-//             ],
-//           ),
-//         ),
-//       ),
-//     ],
-//   );
-// }
 
 Widget _buildSelfEarning(BuildContext context) {
   final state = context.watch<WalletBloc>().state;

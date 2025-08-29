@@ -444,41 +444,41 @@ class _PaymentCardState extends State<PaymentCard> {
                       ],
                     ),),
 
-                  CustomContainer(
-                    width: double.infinity,
-                    margin: EdgeInsets.zero,
-                    color: Color(0xffF2F7FF),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(child: Container()),
-                            Expanded(flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text('We Assure You up to', style: textStyle14(context),),
-                                      Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
-                                    ],
-                                  ),
-                                  5.height,
-
-                                  Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text('Safe, secure, and assured returns on your investment.')
-                      ],
-                    ),
-                  ),
-                  10.height,
+                  // CustomContainer(
+                  //   width: double.infinity,
+                  //   margin: EdgeInsets.zero,
+                  //   color: Color(0xffF2F7FF),
+                  //   child: Column(
+                  //     children: [
+                  //       Row(
+                  //         children: [
+                  //           Expanded(child: Container()),
+                  //           Expanded(flex: 2,
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.end,
+                  //               mainAxisAlignment: MainAxisAlignment.end,
+                  //               children: [
+                  //                 Row(
+                  //                   crossAxisAlignment: CrossAxisAlignment.end,
+                  //                   mainAxisAlignment: MainAxisAlignment.end,
+                  //                   children: [
+                  //                     Text('We Assure You up to', style: textStyle14(context),),
+                  //                     Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
+                  //                   ],
+                  //                 ),
+                  //                 5.height,
+                  //
+                  //                 Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       Text('Safe, secure, and assured returns on your investment.')
+                  //     ],
+                  //   ),
+                  // ),
+                  // 10.height,
 
                   if(user.remainingAmount == 0)
                     CustomContainer(
@@ -520,7 +520,7 @@ class _PaymentCardState extends State<PaymentCard> {
                         if (isSuccess) {
                           // Payment successful → Refresh User
                           context.read<UserBloc>().add(GetUserById(user.id));
-                          if (context.mounted) {Navigator.pop(context);}
+                          // if (context.mounted) {Navigator.pop(context);}
                         }
                       },
                       child: isLoading
@@ -630,7 +630,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
-                Text('Amount: ₹ ${package.discountedPrice}',
+                Text('Amount: ₹ ${package.grandtotal}',
                     style: textStyle16(context)),
                 15.height,
                 Text(
@@ -662,7 +662,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Full Payment'),
-                              CustomAmountText(amount: '${formatPrice(package.discountedPrice)}'),
+                              CustomAmountText(amount: '${formatPrice(package.grandtotal)}'),
                             ],
                           ),
                         ],
@@ -685,7 +685,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Half Payment'),
-                              CustomAmountText(amount: '${formatPrice(package.discountedPrice / 2)}'),
+                              CustomAmountText(amount: '${formatPrice(package.grandtotal / 2)}'),
                             ],
                           ),
                         ],
@@ -735,9 +735,10 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             customerName: '${user.fullName}',
                             customerPhone: '${user.mobileNumber}',
                             customerEmail: '${user.email}',
-                            amount: selectedOption == "full" ? package.discountedPrice : package.discountedPrice / 2,
-
-                            // amount: selectedOption == "full" ? formatPrice(package.discountedPrice) : formatPrice(package.discountedPrice / 2),
+                            // amount: selectedOption == "full" ? package.grandtotal : package.grandtotal / 2,
+                            amount: selectedOption == "full"
+                                ? package.grandtotal.round()
+                                : (package.grandtotal / 2).round(),
                           );
 
                           setState(() => isLoading = false);
