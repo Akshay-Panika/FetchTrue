@@ -1,7 +1,9 @@
 import 'package:fetchtrue/core/costants/custom_color.dart';
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/feature/team_build/widget/relationship_manager_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +49,7 @@ class RelationshipManagerSection extends StatelessWidget {
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                child: const Text('Relationship Manager'),
+                child:  Text('Relationship Manager', style: textStyle14(context, color: CustomColor.appColor),),
               ),
 
               if(user.referredBy == null)
@@ -122,79 +124,83 @@ class RelationshipManagerSection extends StatelessWidget {
                   BlocBuilder<UserReferralBloc, UserReferralState>(
                     builder: (context, state) {
                       if (state is UserReferralLoaded) {
-                        return CustomContainer(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Name: ${state.user.fullName}'),
-                              Text('Email: ${state.user.email}'),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      context.read<UserReferralBloc>().emit(UserReferralInitial());
+                        final user = state.user;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RelationshipManagerCardWidget(
+                              backgroundImage: user.profilePhoto == null ? AssetImage(CustomImage.nullImage) :NetworkImage(user.profilePhoto!),
+                              name: user.fullName,
+                              phone: user.mobileNumber,
+                              id: user.userId,
+                              level: user.packageActive == true ? 'GP' : 'Non-GP',
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<UserReferralBloc>().emit(UserReferralInitial());
+                                    _referralController.clear();
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+
+                                BlocConsumer<UserConfirmReferralBloc, UserConfirmReferralState>(
+                                  listener: (context, confirmState) {
+                                    if (confirmState is UserConfirmReferralError) {
+                                      showCustomToast('Please change referral code!');
+                                    }
+                                    if (confirmState is UserConfirmReferralLoaded) {
+                                      showCustomToast('Referral confirmed ✅');
+
+                                      /// Re-fetch fresh user details
+                                      context.read<UserBloc>().add(GetUserById(user.id));
+
+                                      /// ReferralCode textfield clear
                                       _referralController.clear();
-                                    },
-                                    child: const Text(
-                                      'Cancel',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
 
-                                  BlocConsumer<UserConfirmReferralBloc, UserConfirmReferralState>(
-                                    listener: (context, confirmState) {
-                                      if (confirmState is UserConfirmReferralError) {
-                                        showCustomToast('Please change referral code!');
-                                      }
-                                      if (confirmState is UserConfirmReferralLoaded) {
-                                        showCustomToast('Referral confirmed ✅');
-
-                                        /// Re-fetch fresh user details
-                                        context.read<UserBloc>().add(GetUserById(user.id));
-
-                                        /// ReferralCode textfield clear
-                                        _referralController.clear();
-
-                                        /// Reset referral verification state (taaki UI dobara build ho)
-                                        context.read<UserReferralBloc>().emit(UserReferralInitial());
-                                      }
-                                    },
-                                    builder: (context, confirmState) {
-                                      if (confirmState is UserConfirmReferralLoading) {
-                                        return const SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        );
-                                      } else if (confirmState is UserConfirmReferralLoaded) {
-                                        return const Text("Confirmed", style: TextStyle(color: Colors.green));
-                                      }
-                                      return TextButton(
-                                        onPressed: () {
-                                          final referralCode = _referralController.text.trim();
-                                          if (user.id.isNotEmpty && referralCode.isNotEmpty) {
-                                            context.read<UserConfirmReferralBloc>().add(
-                                              ConfirmReferralCodeEvent(
-                                                userId: user.id,
-                                                referralCode: referralCode,
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: const Text(
-                                          'Confirm',
-                                          style: TextStyle(color: Colors.green),
-                                        ),
+                                      /// Reset referral verification state (taaki UI dobara build ho)
+                                      context.read<UserReferralBloc>().emit(UserReferralInitial());
+                                    }
+                                  },
+                                  builder: (context, confirmState) {
+                                    if (confirmState is UserConfirmReferralLoading) {
+                                      return const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
                                       );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                    } else if (confirmState is UserConfirmReferralLoaded) {
+                                      return const Text("Confirmed", style: TextStyle(color: Colors.green));
+                                    }
+                                    return TextButton(
+                                      onPressed: () {
+                                        final referralCode = _referralController.text.trim();
+                                        if (user.id.isNotEmpty && referralCode.isNotEmpty) {
+                                          context.read<UserConfirmReferralBloc>().add(
+                                            ConfirmReferralCodeEvent(
+                                              userId: user.id,
+                                              referralCode: referralCode,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Confirm',
+                                        style: TextStyle(color: Colors.green),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         );
                       } else if (state is UserReferralError) {
                         return CustomContainer(
@@ -242,15 +248,15 @@ class RelationshipManagerSection extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is UserByIdLoaded) {
                       final user = state.user;
-                      return CustomContainer(
-                       width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Name: ${user.fullName}"),
-                            Text("Email: ${user.email}"),
-                          ],
-                        ),
+                      return    RelationshipManagerCardWidget(
+                        backgroundImage: (user.profilePhoto == null || user.profilePhoto!.isEmpty)
+                            ?  AssetImage(CustomImage.nullImage)
+                            : NetworkImage(user.profilePhoto!) as ImageProvider,
+                        name: user.fullName,
+                        phone: user.mobileNumber,
+                        id: user.userId,
+                        address: '${user.homeAddress!.city}, ${user.homeAddress!.state}',
+                        level: user.packageActive == true ? 'GP' : 'Non-GP',
                       );
                     } else if (state is UserByIdError) {
                       return Center(child: Text("Error: ${state.message}"));

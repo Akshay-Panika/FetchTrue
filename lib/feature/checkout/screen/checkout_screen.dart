@@ -59,9 +59,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     isCurrent: _paymentStep == index,
                     isLast: index == steps.length - 1,
                     onTap: () {
-                      setState(() {
-                        _paymentStep = index;
-                      });
+                      // setState(() {
+                      //   _paymentStep = index;
+                      // });
                     },
                   );
                 }),

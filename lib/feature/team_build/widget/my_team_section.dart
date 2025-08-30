@@ -1,3 +1,5 @@
+import 'package:fetchtrue/feature/team_build/widget/my_gp_team_section.dart';
+import 'package:fetchtrue/feature/team_build/widget/my_non_gp_team_section.dart';
 import 'package:fetchtrue/feature/team_build/widget/relationship_manager_seaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +29,8 @@ class _MyTeamSectionState extends State<MyTeamSection> {
             unselectedLabelColor: Colors.grey,
             dividerColor: WidgetStateColor.transparent,
             tabs: const [
-              Tab(text: 'Non GP'),
-              Tab(text: 'GP'),
+              Tab(text: 'Non GP (0)'),
+              Tab(text: 'GP (0)'),
             ],
           ),
 
@@ -36,31 +38,8 @@ class _MyTeamSectionState extends State<MyTeamSection> {
           Expanded(
             child: TabBarView(
               children: [
-                /// Non GP List
-                ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 60,
-                      color: index.isEven ? Colors.red[200] : Colors.red[400],
-                      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      child: Center(child: Text("Non GP Member $index")),
-                    );
-                  },
-                ),
-
-                /// GP List
-                ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 60,
-                      color: index.isEven ? Colors.blue[200] : Colors.blue[400],
-                      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      child: Center(child: Text("GP Member $index")),
-                    );
-                  },
-                ),
+                MyNonGpTeamSection(),
+                MyGpTeamSection()
               ],
             ),
           )
