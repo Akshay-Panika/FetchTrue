@@ -1,20 +1,30 @@
-// my_team_state.dart
+import 'package:equatable/equatable.dart';
+
 import '../../model/my_team_model.dart';
 
-abstract class MyTeamState {}
+abstract class MyTeamState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class MyTeamInitial extends MyTeamState {}
 
 class MyTeamLoading extends MyTeamState {}
 
 class MyTeamLoaded extends MyTeamState {
-  final MyTeamModel myTeam;
+  final MyTeamModel response;
 
-  MyTeamLoaded(this.myTeam);
+  MyTeamLoaded(this.response);
+
+  @override
+  List<Object?> get props => [response];
 }
 
 class MyTeamError extends MyTeamState {
   final String message;
 
   MyTeamError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

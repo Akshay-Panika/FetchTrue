@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../costants/custom_color.dart';
 import '../costants/text_style.dart';
 
@@ -90,8 +91,8 @@ Widget CustomFormField(
     onTap: onTap,
     controller: controller,
     enabled: enabled,
-    maxLines: maxLines,
     obscureText: obscureText,
+    keyboardType: keyboardType,
     style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
     decoration: InputDecoration(
       hintText: hint,
@@ -115,6 +116,23 @@ Widget CustomFormField(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     ),
     validator: validator,
+    maxLength: maxLength,
+    maxLines: maxLines,
+    autofillHints: null,
+    // autofillHints: const [AutofillHints.telephoneNumber],
+    buildCounter: (
+        BuildContext context, {
+          required int currentLength,
+          required bool isFocused,
+          required int? maxLength,
+        }) {
+      return null;
+    },
+
+    inputFormatters: [
+      FilteringTextInputFormatter.digitsOnly,
+      if (maxLength != null) LengthLimitingTextInputFormatter(maxLength),
+    ],
   );
 }
 

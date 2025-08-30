@@ -39,21 +39,6 @@ class UserReferralBloc extends Bloc<UserReferralEvent, UserReferralState> {
         emit(UserReferralError(e.toString()));
       }
     });
-
-    // Confirm referral code
-    on<ConfirmReferralCodeEvent>((event, emit) async {
-      emit(UserReferralLoading());
-      final success = await repository.confirmReferralCode(
-        userId: event.userId,
-        referralCode: event.referralCode,
-      );
-
-      if (success) {
-        emit(UserReferralConfirmed("Referral confirmed successfully!"));
-      } else {
-        emit(UserReferralError("Failed to confirm referral."));
-      }
-    });
   }
 }
 

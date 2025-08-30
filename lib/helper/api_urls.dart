@@ -1,7 +1,7 @@
 
 class ApiUrls{
 
-  static const String baseUrl = 'https://biz-booster.vercel.app/api/';
+  static const String baseUrl = 'https://api.fetchtrue.com/api/';
 
   /// Auth api
   static const String user = '${baseUrl}users';
@@ -26,6 +26,8 @@ class ApiUrls{
   static const String checkout = '${baseUrl}checkout';
   static const String leads = '${baseUrl}checkout/lead-by-user';
   static const String leadStatus = '${baseUrl}leads';
+
+  static const String myTeam = '${baseUrl}team-build/my-team';
 
 
   static const Client_id= 'TEST107274954a9cf3c92a3b5a1a511359472701';

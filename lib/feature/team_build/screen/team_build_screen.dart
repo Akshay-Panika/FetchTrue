@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:provider/provider.dart';
-import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
-
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../widget/invite_franchise_section_widget.dart';
-import '../widget/my_team_section_widget.dart';
+import '../widget/invite_franchise_section.dart';
+import '../widget/my_team_section.dart';
 
 class TeamBuildScreen extends StatefulWidget {
   const TeamBuildScreen({super.key,});
@@ -55,8 +52,8 @@ class _TeamBuildScreenState extends State<TeamBuildScreen> {
                 child: TabBarView(
                   physics: const BouncingScrollPhysics(),
                   children: [
-                    InviteFranchiseSectionWidget(),
-                    MyTeamSectionWidget(),
+                    InviteFranchiseSection(),
+                    MyTeamSection(),
                   ],
                 ),
               ),

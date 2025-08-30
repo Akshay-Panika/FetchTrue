@@ -1,5 +1,6 @@
 import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
+import 'package:fetchtrue/feature/team_build/bloc/user_confirm_referral/user_confirm_referral_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +41,9 @@ import 'feature/service/repository/service_repository.dart';
 import 'feature/subcategory/bloc/module_subcategory/subcategory_bloc.dart';
 import 'feature/subcategory/bloc/module_subcategory/subcategory_event.dart';
 import 'feature/subcategory/repository/subcategory_repository.dart';
+import 'feature/team_build/bloc/my_team/my_team_bloc.dart';
 import 'feature/team_build/bloc/user_referral/user_referral_bloc.dart';
+import 'feature/team_build/repository/my_team_repository.dart';
 import 'feature/team_build/repository/user_referral_repository.dart';
 import 'feature/wallet/bloc/wallet_bloc.dart';
 import 'feature/wallet/repository/wallet_repository.dart';
@@ -78,8 +81,10 @@ void main() async {
             BlocProvider(create: (_) => LeadStatusBloc(LeadStatusRepository())),
             BlocProvider(create: (_) => PackageBloc()..add(FetchPackages()),),
             BlocProvider(create: (_) => WalletBloc(WalletRepository()),),
-            BlocProvider(create: (context) => UserReferralBloc(UserReferralRepository()),),
+            BlocProvider(create: (_) => UserReferralBloc(UserReferralRepository()),),
+            BlocProvider(create: (_) => UserConfirmReferralBloc(UserReferralRepository()),),
             BlocProvider(create: (_) => UserByIdBloc(UserByIdRepository())),
+            BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())),
           ],
           child: const MyApp(),
         ),

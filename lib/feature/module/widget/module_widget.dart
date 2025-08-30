@@ -67,6 +67,7 @@ class ModuleWidget extends StatelessWidget {
                     border: false,
                     margin: EdgeInsets.zero,
                     color: Colors.white,
+                    padding: EdgeInsets.zero,
                     // padding: EdgeInsets.zero,
                     child: Stack(
                       alignment: AlignmentDirectional.bottomCenter,
@@ -82,8 +83,10 @@ class ModuleWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
-                        5.height,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 10),
+                          child: Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
+                        ),
                       ],
                     ),
                     onTap: () {

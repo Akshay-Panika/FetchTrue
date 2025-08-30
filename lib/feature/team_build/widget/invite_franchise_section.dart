@@ -14,14 +14,14 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
 
-class InviteFranchiseSectionWidget extends StatefulWidget {
-  const InviteFranchiseSectionWidget({super.key});
+class InviteFranchiseSection extends StatefulWidget {
+  const InviteFranchiseSection({super.key});
 
   @override
-  State<InviteFranchiseSectionWidget> createState() => _InviteFranchiseSectionWidgetState();
+  State<InviteFranchiseSection> createState() => _InviteFranchiseSectionState();
 }
 
-class _InviteFranchiseSectionWidgetState extends State<InviteFranchiseSectionWidget> {
+class _InviteFranchiseSectionState extends State<InviteFranchiseSection> {
 
 
   @override

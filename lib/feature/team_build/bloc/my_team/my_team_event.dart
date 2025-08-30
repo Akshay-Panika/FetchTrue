@@ -1,8 +1,15 @@
-// my_team_event.dart
-abstract class MyTeamEvent {}
+import 'package:equatable/equatable.dart';
 
-class GetMyTeam extends MyTeamEvent {
+abstract class MyTeamEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class FetchMyTeam extends MyTeamEvent {
   final String userId;
 
-  GetMyTeam(this.userId);
+  FetchMyTeam(this.userId);
+
+  @override
+  List<Object?> get props => [userId];
 }
