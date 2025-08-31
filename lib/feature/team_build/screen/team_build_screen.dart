@@ -31,21 +31,28 @@ class _TeamBuildScreenState extends State<TeamBuildScreen> {
       );
     }
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: 'Team Build', showBackButton: true),
+      // backgroundColor: Colors.white,
+      appBar: AppBar(toolbarHeight: 30,leading: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: Icon(Icons.arrow_back_ios, size: 20,),
+      ),),
+      // appBar: CustomAppBar(title: 'Team Build', showBackButton: true),
       body: SafeArea(
         child: DefaultTabController(
           length: 2,
           child: Column(
             children: [
-              TabBar(
-                indicatorColor: CustomColor.appColor,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                tabs: const [
-                  Tab(text: 'Team Build'),
-                  Tab(text: 'My Team'),
-                ],
+              Container(
+                color: CustomColor.whiteColor,
+                child: TabBar(
+                  indicatorColor: CustomColor.appColor,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  tabs: const [
+                    Tab(text: 'Team Build'),
+                    Tab(text: 'My Team'),
+                  ],
+                ),
               ),
               const SizedBox(height: 8),
               Expanded(

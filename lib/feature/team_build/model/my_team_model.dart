@@ -26,7 +26,6 @@ class MyTeamModel {
   }
 }
 
-/// ✅ Team Data
 class TeamData {
   final User? user;
   final double? totalEarningsFromShare2;
@@ -79,7 +78,6 @@ class TeamData {
   }
 }
 
-/// ✅ Sub Team (Nested inside Team)
 class SubTeam {
   final User? user;
   final double? totalEarningsFromShare3;
@@ -118,7 +116,6 @@ class SubTeam {
   }
 }
 
-/// ✅ User Model
 class User {
   final String id;
   final String fullName;
@@ -187,7 +184,6 @@ class User {
   }
 }
 
-/// ✅ Lead Model
 class Lead {
   final String checkoutId;
   final String leadId;

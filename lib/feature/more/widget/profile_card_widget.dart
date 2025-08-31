@@ -10,6 +10,8 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../lead/bloc/lead/lead_bloc.dart';
+import '../../lead/bloc/lead/lead_state.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
@@ -175,7 +177,24 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       valueType: 'Joining date',
                     ),
 
-                    _buildStatus(value: '00', valueType: 'Lead Completed'),
+                    BlocBuilder<LeadBloc, LeadState>(
+                      builder: (context, state) {
+                        if (state is LeadLoading) {
+                           return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                        } else if (state is LeadLoaded) {
+                          final allLeads = state.leadModel.data ?? [];
+                          final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+
+
+                          return  _buildStatus(value: '${completedLeads.length}', valueType: 'Lead Completed');
+
+                        } else if (state is LeadError) {
+                          return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                        }
+                        return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                      },
+                    ),
+
 
                     BlocBuilder<WalletBloc, WalletState>(
                       builder: (context, state) {
@@ -183,7 +202,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                          return  _buildStatus(value: '00', valueType: 'Total Earning');
                         } else if (state is WalletLoaded) {
                           final wallet = state.wallet;
-                          return  _buildStatus(value: '${wallet.balance}', valueType: 'Total Earning');
+                          return  _buildStatus(value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
                         } else if (state is WalletError) {
                           return  _buildStatus(value: '00', valueType: 'Total Earning');
                         }
@@ -210,7 +229,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         Text(
           valueType,

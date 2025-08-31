@@ -5,29 +5,52 @@ import 'package:fetchtrue/core/costants/custom_icon.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/shimmer_box.dart';
 import 'package:fetchtrue/helper/Contact_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
-class TeamCardWidget extends StatelessWidget {
+import '../../lead/bloc/lead/lead_bloc.dart';
+import '../../lead/bloc/lead/lead_event.dart';
+import '../../lead/bloc/lead/lead_state.dart';
+
+class TeamCardWidget extends StatefulWidget {
  final ImageProvider<Object>? backgroundImage;
  final double? radius;
  final String? name;
  final String? phone;
  final String? id;
+ final String? memberId;
  final String? level;
  final String? address;
  final String? earning;
-  const TeamCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.radius, this.address, this.earning});
+ final VoidCallback? onTap;
+  const TeamCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.radius, this.address, this.earning, this.memberId, this.onTap,
+  });
+
+  @override
+  State<TeamCardWidget> createState() => _TeamCardWidgetState();
+}
+
+class _TeamCardWidgetState extends State<TeamCardWidget> {
+
+   @override
+  void initState() {
+    super.initState();
+    context.read<LeadBloc>().add(FetchLeadsByUser(widget.id!));
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomContainer(
-      border: true,
+      border: false,
       borderColor: CustomColor.appColor,
       color: Colors.white,
       padding: EdgeInsets.zero,
       margin: EdgeInsets.only(top: 10),
+      onTap: widget.onTap,
       child: Stack(
         children: [
           Padding(
@@ -40,18 +63,18 @@ class TeamCardWidget extends StatelessWidget {
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: [
                    CircleAvatar(
-                     radius:radius?? 30,
+                     radius:widget.radius?? 30,
                      backgroundColor: CustomColor.whiteColor,
-                     backgroundImage: backgroundImage,
+                     backgroundImage: widget.backgroundImage,
                    ),
 
                    Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildRow(context, 'Name:', name?? 'Guest'),
-                        _buildRow(context, 'ID:', id ?? '#XXXXX'),
-                        if(address != null && address != '')
-                        _buildRow(context, 'Address:', address!),
+                        _buildRow(context, 'ID:', widget.memberId ?? '#XXXXX'),
+                        _buildRow(context, 'Name:', widget.name?? 'Guest'),
+                        if(widget.address != null && widget.address != '')
+                        _buildRow(context, 'Address:', widget.address!),
 
                       ],
                    )
@@ -63,16 +86,36 @@ class TeamCardWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    /// Leads
                     Expanded(flex: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                         Text('00\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff3B82F6)),),
-                         Text('00\nActive', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff22C55E)),),
-                         Text('00\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
-                        ],
+                      child: BlocBuilder<LeadBloc, LeadState>(
+                        builder: (context, state) {
+                          if (state is LeadLoading) {
+                            return _leadShimmer();
+                          } else if (state is LeadLoaded) {
+                            final allLeads = state.leadModel.data ?? [];
+
+                            final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
+                            final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+
+
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('${allLeads.length}\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff3B82F6)),),
+                                Text('${acceptedLeads.length}\nActive', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff22C55E)),),
+                                Text('${completedLeads.length}\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
+                              ],
+                            );
+
+                          } else if (state is LeadError) {
+                            return Center(child: Text("❌ ${state.message}"));
+                          }
+                          return const Center(child: Text("No data"));
+                        },
                       ),
                     ),
+
                     30.width,
                     Container(width: 1,height:30, color: Colors.grey,),
 
@@ -81,12 +124,12 @@ class TeamCardWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           InkWell(
-                              onTap: () => ContactHelper.call(phone!),
+                              onTap: () => ContactHelper.call(widget.phone!),
                               child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
 
 
                           InkWell(
-                              onTap: () => ContactHelper.whatsapp(phone!, 'Hello ${name}!'),
+                              onTap: () => ContactHelper.whatsapp(widget.phone!, 'Hello ${widget.name}!'),
                               child: Image.asset(CustomIcon.whatsappIcon, height: 25,color: CustomColor.greenColor,)),
                         ],
                       ),
@@ -105,11 +148,11 @@ class TeamCardWidget extends StatelessWidget {
                 )
               ),
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(level!, style: textStyle12(context, color: CustomColor.whiteColor),)),
-          
+              child: Text(widget.level!, style: textStyle12(context, color: CustomColor.whiteColor,fontWeight: FontWeight.w400),)),
+
           Positioned(
               right: 10,top: 10,
-              child:  Text(earning ??'Earning', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.end,))
+              child:  Text(widget.earning ??'Earning', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.end,))
         ],
       ),
     );
@@ -120,9 +163,50 @@ class TeamCardWidget extends StatelessWidget {
 Widget _buildRow(BuildContext context ,String key, String value){
   return Row(
     children: [
-      Text(key, style: textStyle14(context, fontWeight: FontWeight.w400),),
+      Text(key, style: textStyle12(context, fontWeight: FontWeight.w400),),
       10.width,
-      Text(value, style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+      Text(value, style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
     ],
+  );
+}
+
+
+
+Widget _leadShimmer(){
+  return Shimmer.fromColors(
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+       Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: [
+           ShimmerBox(height: 10, width: 15),
+           8.height,
+           ShimmerBox(height: 10, width: 50),
+         ],
+       ) ,
+       Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: [
+           ShimmerBox(height: 10, width: 15),
+           8.height,
+           ShimmerBox(height: 10, width: 50),
+         ],
+       ) ,
+       Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: [
+           ShimmerBox(height: 10, width: 15),
+           8.height,
+           ShimmerBox(height: 10, width: 50),
+         ],
+       ) ,
+      ],
+    ),
   );
 }

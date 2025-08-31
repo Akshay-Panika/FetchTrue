@@ -31,7 +31,7 @@ class RelationshipManagerSection extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return RelationshipManagerCardShimmer();
         }
 
         if (state is UserLoaded) {
@@ -45,12 +45,6 @@ class RelationshipManagerSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              10.height,
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                child:  Text('Relationship Manager', style: textStyle14(context, color: CustomColor.appColor),),
-              ),
 
               if(user.referredBy == null)
               Column(
@@ -245,7 +239,7 @@ class RelationshipManagerSection extends StatelessWidget {
                 BlocBuilder<UserByIdBloc, UserByIdState>(
                   builder: (context, state) {
                     if (state is UserByIdLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return RelationshipManagerCardShimmer();
                     } else if (state is UserByIdLoaded) {
                       final user = state.user;
                       return    RelationshipManagerCardWidget(

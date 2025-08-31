@@ -42,84 +42,87 @@ class _InviteFranchiseSectionState extends State<InviteFranchiseSection> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
 
-              Column(
-                children: [
-                  50.height,
-
-                  Row(
-                    children: [
-                      20.width,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Invite & Earn', style: textStyle20(context, color: CustomColor.appColor),),
-                          Row(
-                            children: [
-                              Text('more than',style: textStyle20(context, color: Colors.green),),10.width,
-                              Text('₹5000', style: textStyle18(context),),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Expanded(child: Image.asset(CustomImage.inviteImage,)),
-                    ],
-                  ),
-
-                  /// Referral Code Box
-                  CustomContainer(
-                    color: CustomColor.appColor,
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
+              CustomContainer(
+                color: CustomColor.whiteColor,
+                child: Column(
+                  children: [
+                    50.height,
+                
+                    Row(
                       children: [
+                        20.width,
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Referral code', style: textStyle12(context, color: CustomColor.whiteColor),),
-                            Text(user.packageActive != true ?'#XXXXXX':user.referralCode, style: textStyle20(context, color: CustomColor.whiteColor),),
+                            Text('Invite & Earn', style: textStyle20(context, color: CustomColor.appColor),),
+                            Row(
+                              children: [
+                                Text('more than',style: textStyle20(context, color: Colors.green),),10.width,
+                                Text('₹5000', style: textStyle18(context),),
+                              ],
+                            ),
                           ],
                         ),
-
-
-                        const Spacer(),
-                        InkWell(
-                          onTap: () {
-                            if(user.packageActive == true){
-                              Clipboard.setData( ClipboardData(text: '${user.referralCode}'));
-                            }
-                            else{
-                              showCustomToast('Please first active package');
-                            }
-
-                          },
-                          child:  Icon(Icons.copy, color: CustomColor.whiteColor,),
-                        ),
-                        50.width,
-                        InkWell(
-                          onTap: () {
-                            if(user.packageActive == true){
-                              Share.share("Hey! Use my referral code 👉 ${user.referralCode} to signup and enjoy benefits.");
-                            }
-                            else{
-                              showCustomToast('Please first active package');
-                            }
-                          },
-                          child:  Icon(Icons.share, color: CustomColor.whiteColor, ),
-                        ),
-                        10.width
+                        Expanded(child: Image.asset(CustomImage.inviteImage,)),
                       ],
                     ),
-                  ),
-                  50.height,
-
-
-                  if(user.packageActive != true)
-                  CustomContainer(color: CustomColor.appColor,
-                    padding: EdgeInsets.symmetric(horizontal: 50,vertical: 10),
-                    child: Text('Active Now', style: textStyle16(context, color: CustomColor.whiteColor),),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
-                  ),
-
-                ],
+                
+                    /// Referral Code Box
+                    CustomContainer(
+                      color: CustomColor.appColor,
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Referral code', style: textStyle12(context, color: CustomColor.whiteColor),),
+                              Text(user.packageActive != true ?'#XXXXXX':user.referralCode, style: textStyle20(context, color: CustomColor.whiteColor),),
+                            ],
+                          ),
+                
+                
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              if(user.packageActive == true){
+                                Clipboard.setData( ClipboardData(text: '${user.referralCode}'));
+                              }
+                              else{
+                                showCustomToast('Please first active package');
+                              }
+                
+                            },
+                            child:  Icon(Icons.copy, color: CustomColor.whiteColor,),
+                          ),
+                          50.width,
+                          InkWell(
+                            onTap: () {
+                              if(user.packageActive == true){
+                                Share.share("Hey! Use my referral code 👉 ${user.referralCode} to signup and enjoy benefits.");
+                              }
+                              else{
+                                showCustomToast('Please first active package');
+                              }
+                            },
+                            child:  Icon(Icons.share, color: CustomColor.whiteColor, ),
+                          ),
+                          10.width
+                        ],
+                      ),
+                    ),
+                    50.height,
+                
+                
+                    if(user.packageActive != true)
+                    CustomContainer(color: CustomColor.appColor,
+                      padding: EdgeInsets.symmetric(horizontal: 50,vertical: 10),
+                      child: Text('Active Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageScreen(),)),
+                    ),
+                
+                  ],
+                ),
               ),
 
               CustomContainer(height: 300,
