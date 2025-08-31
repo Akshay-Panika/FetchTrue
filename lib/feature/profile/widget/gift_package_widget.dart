@@ -39,7 +39,7 @@ class GiftPackageWidget extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: CustomColor.appColor.withOpacity(0.1),
+                color: CustomColor.whiteColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(

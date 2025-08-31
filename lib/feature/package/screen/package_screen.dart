@@ -6,6 +6,7 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
+import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,17 +40,30 @@ class _PackageScreenState extends State<PackageScreen> {
       'des':[
         {
           'headline':'Revenue',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Earn 5% to 15% revenue share.'
+          ],
         },
         {
           'headline':'Team Building Income',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Earn ₹5,000 for every GP you onboard',
+            'Get ₹3,000 when your onboarded GP brings another.'
+          ]
         },
         {
           'headline':'Marketing Support',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Support within 3-6 hours.',
+            'Full support system.',
+            'Expert help, anytime you need it.'
+          ],
         },
-      ]
+      ],
+      'includes': {
+        'title': 'How to promoted GP to SGP?',
+        'des': 'Recruit 10 Growth Partner to become a Super Growth Partner (SGP)'
+      },
     },
     'sgp': {
       'packageName': 'Super Growth Partner (SGP)',
@@ -58,21 +72,32 @@ class _PackageScreenState extends State<PackageScreen> {
       'des':[
         {
           'headline':'Revenue',
-          'dec':'Earn up to 15% revenue share on all successful leads you generate.',
+          'des':['Earn up to 15% revenue share on all successful leads you generate.']
         },
         {
           'headline':'Team Building Income',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Earn ₹5,000 for every GP you onboard',
+            'Get ₹3,000 when your onboarded GP brings another.'
+          ]
         },
         {
           'headline':'Team Revenue Income',
-          'dec':'empty'
+          'des':['Extra earn 5% to 8% for team revenue.']
         },
         {
           'headline':'Marketing Support',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Support within 3-6 hours.',
+            'Full support system.',
+            'Expert help, anytime you need it.'
+          ],
         },
-      ]
+      ],
+      'includes': {
+        'title':'How to promoted SGP to PGP?',
+        'des':'Support 3 (SGPs) in your team to qualify as a Premium Growth Partner (PGP).'
+      },
     },
     'pgp': {
       'packageName': 'Premium Growth Partner (SGP)',
@@ -81,24 +106,37 @@ class _PackageScreenState extends State<PackageScreen> {
       'des':[
         {
           'headline':'Revenue',
-          'dec':'Earn up to 15% revenue share on all successful leads you generate.',
+          'des':['Earn up to 15% revenue share on all successful leads you generate.']
         },
         {
           'headline':'Team Building Income',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Earn ₹5,000 for every GP you onboard',
+            'Get ₹3,000 when your onboarded GP brings another.'
+          ]
         },
         {
           'headline':'Team Revenue Income',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Extra earn 5% to 8% for direct team revenue.',
+            'Extra earn 3% to 7% for indirect team revenue.'
+          ]
         },
         {
           'headline':'Marketing Support',
-          'dec':'Earn 5% to 15% revenue share.',
+          'des':[
+            'Support within 3-6 hours.',
+            'Full support system.',
+            'Expert help, anytime you need it.'
+          ],
         },
-      ]
+      ],
+      'includes': {
+        'title':'How to promoted PGP?',
+        'des': 'You are a Premium Growth Partner (PGP) and eligible for unlimited earnings.'
+      }
     },
   };
-
 
   @override
   Widget build(BuildContext context) {
@@ -169,14 +207,34 @@ class _PackageScreenState extends State<PackageScreen> {
                           SliverToBoxAdapter(
                             child: Column(
                               children: [
-                                _buildEnhancedMainCard(context,packages[selectedPlan]!,package, selectedPlan),
+                                _buildEnhancedMainCard(context,
+                                    userState.user,
+                                    packages[selectedPlan]!,package, selectedPlan),
 
                                 if (selectedPlan == 'gp')
                                   PaymentCard(package: package, user: userState.user),
                                 if (selectedPlan == 'sgp')
-                                  CustomContainer(height: 300,),
+                                 Column(
+                                   children: [
+                                     Center(child: Image.asset('assets/image/pgp_img.png',height: 400,)),
+                                     CustomContainer(
+                                       width: 200,
+                                       color: CustomColor.appColor,
+                                       child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                     )
+                                   ],
+                                 ),
                                 if (selectedPlan == 'pgp')
-                                  CustomContainer(height: 300,)
+                                  Column(
+                                    children: [
+                                      Center(child: Image.asset('assets/image/sgp_img.png',height: 400,)),
+                                      CustomContainer(
+                                        width: 200,
+                                        color: CustomColor.appColor,
+                                        child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                      )
+                                    ],
+                                  ),
                               ],
                             ),
                           ),
@@ -208,9 +266,9 @@ class _PackageScreenState extends State<PackageScreen> {
 }
 
 /// Main Card with Pricing
-Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> packages, PackageModel package, String planKey) {
+Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, dynamic> packages, PackageModel package, String planKey) {
+
   return Container(
-    padding: EdgeInsets.all(15),
     margin: EdgeInsets.all(10),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
@@ -227,16 +285,25 @@ Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> package
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        CustomContainer(
+          color: Color(0xffEDF4FF),
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.all(15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(radius: 32,
-                backgroundColor: CustomColor.appColor,
-                child: CircleAvatar(radius: 31,backgroundColor: CustomColor.whiteColor,
-                child: Text(planKey.toUpperCase()),),
+              Column(
+                children: [
+                  CircleAvatar(radius: 32,
+                    backgroundColor: CustomColor.appColor,
+                    child: CircleAvatar(radius: 31,backgroundColor: CustomColor.whiteColor,
+                    child: Text(planKey.toUpperCase()),),
+                  ),
+                  5.height,
+                  
+                  Text('Current Level', style: textStyle12(context, color: CustomColor.appColor),)
+                ],
               ),
 
 
@@ -244,9 +311,13 @@ Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> package
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text('${packages['packageName']}',style: textStyle16(context, color: CustomColor.appColor),),
-                  10.height,
+                  Text('Assured Earnings', style: textStyle14(context, color: CustomColor.greenColor),),
                   Text('${packages['price']}', style: textStyle12(context, color: CustomColor.greenColor),),
-                  Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle14(context, color: CustomColor.greenColor),),
+                  CustomContainer(
+                    color: CustomColor.appColor,
+                    margin: EdgeInsets.zero,
+                      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 2),
+                      child: Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle12(context, color: CustomColor.whiteColor),)),
                 ],
               )
             ],
@@ -255,58 +326,61 @@ Widget _buildEnhancedMainCard(BuildContext context ,Map<String, dynamic> package
         20.height,
 
         _buildEnhancedFeaturesSection(context),
-        10.height,
 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('How to promoted GP to SGP?', style: textStyle18(context),),
-            Text('Recruit 10 Growth Partner to become a Super Growth Partner (SGP)', style: textStyle14(context,color: CustomColor.descriptionColor),),
-          ],
-        ),
-        10.height,
 
-        CustomContainer(
-          border: true,
-          color: WidgetStateColor.transparent,
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.all(20),
+        Padding(
+          padding: const EdgeInsets.all(10.0),
           child: Column(
-            spacing: 15,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _labelText(context,'REVENUE',
-                ["Earn 5% to 15% revenue share.",],
-              ),
-              _labelText(context,'TEAM BUILDING INCOME',
-                [
-                  "Earn ₹5,000 for every GP you onboard",
-                  "Get ₹3,000 when your onboarded GP brings another."
-                ],
-              ),
-
-              _labelText(context,'MARKETING SUPPORT',
-                [
-                  "Support within 3-6 hours.",
-                  "Full support system.",
-                  "Expert help, anytime you need it."
-                ],
-              ),
-
-              InkWell(
-                child: Row(
-                  children: [
-                    Icon(Icons.arrow_forward_ios, size: 16,color: CustomColor.appColor,),10.width,
-                    Text('Benefit', style: textStyle14(context, color: CustomColor.appColor),)
-                  ],
-                ),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(package: package, planKey: planKey,),)),
-              ),
+                Text(packages['includes']['title'].toString(), style: textStyle14(context, color: CustomColor.blackColor),),
+                Text(packages['includes']['des'].toString(), style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
             ],
           ),
         ),
+
+
+        if(user.packageActive == true)
+          CustomProgressBar(
+            value: 0.3, // 30%
+            leftLabel: "3",
+            rightLabel: "10",
+          ),
+
+        Column(
+          children: List.generate(
+            packages['des'].length,
+                (index) {
+              final feature = packages['des'][index];
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _labelText(
+                  context,
+                  feature['headline'],
+                  List<String>.from(feature['des']),
+                ),
+              );
+            },
+          ),
+        ),
+
         10.height,
 
-        GiftPackageWidget()
+        InkWell(
+          child: Row(
+            children: [
+              Icon(Icons.arrow_forward_ios, size: 16,color: CustomColor.appColor,),10.width,
+              Text('Benefit', style: textStyle14(context, color: CustomColor.appColor),)
+            ],
+          ),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(package: package, planKey: planKey,),)),
+        ),
+
+        20.height,
+
+        GiftPackageWidget(),
+
+
       ],
     ),
   );
@@ -384,177 +458,22 @@ class _PaymentCardState extends State<PaymentCard> {
           if(user.packageActive != true)
             Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),),
           15.height,
-
-          if(user.packageActive != true)
-            CustomContainer(
-              color: CustomColor.whiteColor,
-              margin: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  Padding(padding: EdgeInsetsGeometry.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('Franchise Fees'),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                                    Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
-                                  ],
-                                ),
-                                Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Divider(),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Franchise Deposite'),
-                            CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
-                          ],
-                        ),
-                        Divider(),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Growth Total'),
-                            CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
-                          ],
-                        ),
-                        Divider(),
-
-                        if(user.remainingAmount!=0)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Remaining Amount'),
-                              CustomAmountText(amount: '${formatPrice(user.remainingAmount!)}', color: CustomColor.appColor)
-                            ],
-                          ),
-                      ],
-                    ),),
-
-                  // CustomContainer(
-                  //   width: double.infinity,
-                  //   margin: EdgeInsets.zero,
-                  //   color: Color(0xffF2F7FF),
-                  //   child: Column(
-                  //     children: [
-                  //       Row(
-                  //         children: [
-                  //           Expanded(child: Container()),
-                  //           Expanded(flex: 2,
-                  //             child: Column(
-                  //               crossAxisAlignment: CrossAxisAlignment.end,
-                  //               mainAxisAlignment: MainAxisAlignment.end,
-                  //               children: [
-                  //                 Row(
-                  //                   crossAxisAlignment: CrossAxisAlignment.end,
-                  //                   mainAxisAlignment: MainAxisAlignment.end,
-                  //                   children: [
-                  //                     Text('We Assure You up to', style: textStyle14(context),),
-                  //                     Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
-                  //                   ],
-                  //                 ),
-                  //                 5.height,
-                  //
-                  //                 Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       Text('Safe, secure, and assured returns on your investment.')
-                  //     ],
-                  //   ),
-                  // ),
-                  // 10.height,
-
-                  if(user.remainingAmount == 0)
-                    CustomContainer(
-                      padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                      color: CustomColor.appColor,
-                      child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
-                      onTap: () {
-                        showActivateBottomSheet(context, package, user);
-                      },
-
-                    ),
-
-                  if(user.remainingAmount != 0)
-                    CustomContainer(
-                      color: CustomColor.appColor,
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-                      onTap: isLoading
-                          ? null
-                          : () async {
-                        setState(() => isLoading = true);
-
-                        DateTime now = DateTime.now();
-                        String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
-
-
-                        final isSuccess =
-                        await packageBuyPaymentRepository(
-                          context: context,
-                          orderId: 'package_${formattedDate}',
-                          customerId: '${user.id}',
-                          customerName: '${user.fullName}',
-                          customerPhone: '${user.mobileNumber}',
-                          customerEmail: '${user.email}',
-                          amount: user.remainingAmount!,
-                        );
-
-                        setState(() => isLoading = false);
-
-                        if (isSuccess) {
-                          // Payment successful → Refresh User
-                          context.read<UserBloc>().add(GetUserById(user.id));
-                          // if (context.mounted) {Navigator.pop(context);}
-                        }
-                      },
-                      child: isLoading
-                          ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                          : Text(
-                        'Pay Now',
-                        style: textStyle16(context,
-                            color: CustomColor.whiteColor),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-
           if(user.packageActive == true)
             CustomContainer(
               margin: EdgeInsets.zero,
               color: CustomColor.whiteColor,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Fetch True Growth Partner Package', style: textStyle16(context, color: CustomColor.appColor),),
+                  Text('Fetch True Growth Partner Package', style: textStyle14(context, color: CustomColor.blackColor),),
                   10.height,
                   Column(
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(child: Container()),
+                          Expanded(child: Image.asset('assets/image/package_active_img.png')),
                           Expanded(flex: 2,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -570,7 +489,8 @@ class _PaymentCardState extends State<PaymentCard> {
                                 ),
                                 5.height,
 
-                                Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,)
+                                Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,
+                                style: textStyle12(context),)
                               ],
                             ),
                           ),
@@ -580,18 +500,152 @@ class _PaymentCardState extends State<PaymentCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Your Extra Benefits', style: textStyle14(context),),
-                          Text('You’ve received ₹5,000 as your fixed monthly earning bonus for purchasing the package.')
+                          Text('You’ve received ₹3,000 as your fixed monthly earning bonus for purchasing the package.', style: textStyle12(context),),
+                          
+                          Text('Safe, secure, and assured returns on your investment.', style: textStyle12(context,color: CustomColor.appColor, fontWeight: FontWeight.w400),)
                         ],
                       )
                     ],
                   ),
+                  10.height,
+
+                  Column(
+                    children: [
+                      if(user.packageActive != true)
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text('Franchise Fees'),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                                      Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
+                                    ],
+                                  ),
+                                  Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Franchise Deposit (Refundable)'),
+                              CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
+                            ],
+                          ),
+                          Divider(),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Growth Total'),
+                              CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
+                            ],
+                          ),
+                          Divider(),
+
+                          if(user.remainingAmount!=0)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Remaining Amount'),
+                                CustomAmountText(amount: '${formatPrice(user.remainingAmount!)}', color: CustomColor.appColor)
+                              ],
+                            ),
+                        ],
+                      ),
+                      10.height,
+
+                      if(user.packageActive != true)
+                       CustomContainer(
+                          padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
+                          color: CustomColor.appColor,
+                          child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
+                          onTap: () {
+                            showActivateBottomSheet(context, package, user);
+                          },
+
+                        ),
+
+                      if(user.remainingAmount != 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Text('Paid Amount: ₹ ${user.packageAmountPaid}'),
+                              Text('Remaining Amount: ₹ ${user.remainingAmount}'),
+                              ],
+                            ),
+                            CustomContainer(
+                              color: CustomColor.appColor,
+                              margin: EdgeInsets.zero,
+                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+                              onTap: isLoading
+                                  ? null
+                                  : () async {
+                                setState(() => isLoading = true);
+                            
+                                DateTime now = DateTime.now();
+                                String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
+                            
+                            
+                                final isSuccess =
+                                await packageBuyPaymentRepository(
+                                  context: context,
+                                  orderId: 'package_${formattedDate}',
+                                  customerId: '${user.id}',
+                                  customerName: '${user.fullName}',
+                                  customerPhone: '${user.mobileNumber}',
+                                  customerEmail: '${user.email}',
+                                  amount: user.remainingAmount!,
+                                );
+                            
+                                setState(() => isLoading = false);
+                            
+                                if (isSuccess) {
+                                  // Payment successful → Refresh User
+                                  context.read<UserBloc>().add(GetUserById(user.id));
+                                  // if (context.mounted) {Navigator.pop(context);}
+                                }
+                              },
+                              child: isLoading
+                                  ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : Text(
+                                'Pay Now',
+                                style: textStyle16(context,
+                                    color: CustomColor.whiteColor),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
 
                   CustomContainer(
+                    margin: EdgeInsets.zero,
                     color: Color(0xffF2F7FF),
                     child: Column(
                       children: [
-                        CircleAvatar(radius: 30, backgroundColor: CustomColor.whiteColor,child: Icon(Icons.image),),
-                        10.height,
+                        Image.asset('assets/image/active_package_img.png',height: 100,),
                         Text('Your package is active', style: textStyle16(context),),
                         Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
                       ],
@@ -605,9 +659,6 @@ class _PaymentCardState extends State<PaymentCard> {
     );
   }
 }
-
-
-
 
 void showActivateBottomSheet(BuildContext context, PackageModel package, UserModel user) {
   showModalBottomSheet(
@@ -791,9 +842,9 @@ Widget _labelText(
     children: [
       Row(
         children: [
-          const Icon(Icons.check_circle_outline_outlined, size: 16),
+          Icon(Icons.check_circle_outline_outlined, size: 16, color: CustomColor.greenColor,),
           const SizedBox(width: 10),
-          Text(headline, style: textStyle12(context)),
+          Text(headline.toUpperCase(), style: textStyle12(context)),
         ],
       ),
       const SizedBox(height: 4),
@@ -832,4 +883,80 @@ Widget _labelText(
       ),
     ],
   );
+}
+
+class CustomProgressBar extends StatelessWidget {
+  final double value; // 0.0 - 1.0
+  final Color activeColor;
+  final String leftLabel;
+  final String rightLabel;
+
+  const CustomProgressBar({
+    super.key,
+    required this.value,
+    required this.leftLabel,
+    required this.rightLabel,
+    this.activeColor = Colors.green,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: LinearProgressIndicator(
+              value: value,
+              minHeight: 5,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(activeColor),
+            ),
+          ),
+          10.height,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _labelBox(context, leftLabel, CustomColor.greyColor),
+              _labelBox(context, rightLabel, CustomColor.greenColor),
+            ],
+          ),
+          15.height,
+
+          CustomContainer(
+            color: CustomColor.appColor,
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add, size: 20,color: CustomColor.whiteColor,),
+                10.width,
+                Text('Add Remining Partners', style: textStyle14(context, color: CustomColor.whiteColor),)
+              ],
+            ),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _labelBox(BuildContext context, String text, Color activeColor) {
+    return Container(
+      height: 22,
+      width: 22,
+      decoration: BoxDecoration(
+        color: activeColor,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
+  }
 }

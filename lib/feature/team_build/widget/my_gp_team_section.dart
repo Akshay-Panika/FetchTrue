@@ -35,7 +35,7 @@ class MyGpTeamSection extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => TeamMemberScreen(members: members,),
+                  builder: (_) => TeamMemberScreen(members: members[index],),
                 ),
               );
             },
