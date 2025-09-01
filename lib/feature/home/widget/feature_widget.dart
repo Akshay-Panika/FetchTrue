@@ -57,6 +57,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                 icon: Icons.wallet,
                 title: 'Wallet',
                 subtitle: '0.0',
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
               );
             }
             return const SizedBox();

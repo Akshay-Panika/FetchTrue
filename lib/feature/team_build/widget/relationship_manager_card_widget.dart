@@ -23,6 +23,7 @@ class RelationshipManagerCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return CustomContainer(
       border: false,
       borderColor: CustomColor.appColor,
@@ -50,8 +51,9 @@ class RelationshipManagerCardWidget extends StatelessWidget {
                       children: [
                         _buildRow(context, 'ID:', id ?? '#XXXXX'),
                         _buildRow(context, 'Name:', name?? 'Guest'),
-                         if(address != null && address != '')
-                        _buildRow(context, 'Address:', address!),
+
+                        _buildRow(context, 'Address:', address ?? '__________'),
+
                       ],
                    )
                  ],

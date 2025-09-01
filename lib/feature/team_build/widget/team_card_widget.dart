@@ -36,10 +36,13 @@ class TeamCardWidget extends StatefulWidget {
 
 class _TeamCardWidgetState extends State<TeamCardWidget> {
 
-   @override
+
+  @override
   void initState() {
     super.initState();
-    context.read<LeadBloc>().add(FetchLeadsByUser(widget.id!));
+    if (widget.id != null) {
+      context.read<LeadBloc>().add(FetchLeadsByUser(widget.id!));
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
 import '../../profile/model/user_model.dart';
 
 class UserReferralRepository {
@@ -8,7 +9,7 @@ class UserReferralRepository {
    /// is correct
   Future<UserModel> getUserByReferralCode(String referralCode) async {
     final response = await _dio.get(
-      'https://biz-booster.vercel.app/api/users/referredby',
+      '${ApiUrls.user}/referredby',
       queryParameters: {'referralCode': referralCode},
     );
 
@@ -24,7 +25,8 @@ class UserReferralRepository {
     required String referralCode,
   }) async {
     final response = await _dio.patch(
-      'https://biz-booster.vercel.app/api/users/referredby',
+      '${ApiUrls.user}/referredby',
+      // 'https://biz-booster.vercel.app/api/users/referredby',
       data: {
         "userId": userId,
         "referralCode": referralCode,

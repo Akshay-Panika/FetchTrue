@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/lead_model.dart';
 
 class LeadRepository {
@@ -6,7 +7,7 @@ class LeadRepository {
 
   Future<LeadModel?> getBookingsByUser(String userId) async {
     try {
-      final response = await _dio.get("https://biz-booster.vercel.app/api/checkout/lead-by-user/$userId");
+      final response = await _dio.get("${ApiUrls.leads}/$userId");
 
       if (response.statusCode == 200) {
         return LeadModel.fromJson(response.data);

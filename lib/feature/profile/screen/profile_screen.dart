@@ -151,12 +151,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 30, vertical: 5),
                                   child: Row(
-                                    children: const [
+                                    children:  [
                                       Icon(Icons.verified,
-                                          size: 20, color: Colors.grey),
+                                          size: 20, color: user.packageActive == true ? CustomColor.greenColor :Colors.grey),
                                       SizedBox(width: 10),
-                                      Text('KYC',
-                                          style: TextStyle(color: Colors.grey)),
+                                      Text(user.packageActive == true ? 'GP':'Package',
+                                          style: TextStyle(color: user.packageActive == true ? CustomColor.greenColor :Colors.grey)),
                                     ],
                                   ),
                                 )
@@ -181,21 +181,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(user: user!.id.toString(),),)),
                       ),
-                      10.height,
-                      CustomContainer(
-                        border: false,
-                        color: CustomColor.whiteColor,
-                        margin: EdgeInsets.zero,
-                        child: ListTile(
-                          minVerticalPadding: 0,
-                          minTileHeight: 0,
-                          contentPadding: EdgeInsets.all(0),
-                          title: const Text('Address'),
-                          subtitle: const Text('Add Address'),
-                          trailing: const Icon(Icons.add, color: Colors.grey),
-                        ),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(userId: user!.id.toString(),),)),
-                      ),
+                      // 10.height,
+                      // CustomContainer(
+                      //   border: false,
+                      //   color: CustomColor.whiteColor,
+                      //   margin: EdgeInsets.zero,
+                      //   child: ListTile(
+                      //     minVerticalPadding: 0,
+                      //     minTileHeight: 0,
+                      //     contentPadding: EdgeInsets.all(0),
+                      //     title: const Text('Address'),
+                      //     subtitle: const Text('Add Address'),
+                      //     trailing: const Icon(Icons.add, color: Colors.grey),
+                      //   ),
+                      //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(userId: user!.id.toString(),),)),
+                      // ),
                     ],
                   ),
                 ),

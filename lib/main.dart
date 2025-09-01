@@ -26,6 +26,8 @@ import 'feature/lead/repository/lead_status_repository.dart';
 import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
+import 'feature/offer/bloc/offer_bloc.dart';
+import 'feature/offer/bloc/offer_event.dart';
 import 'feature/package/bloc/package_bloc.dart';
 import 'feature/package/bloc/package_event.dart';
 import 'feature/profile/bloc/additional_details/additional_details_bloc.dart';
@@ -85,6 +87,7 @@ void main() async {
             BlocProvider(create: (_) => UserConfirmReferralBloc(UserReferralRepository()),),
             BlocProvider(create: (_) => UserByIdBloc(UserByIdRepository())),
             BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())),
+            BlocProvider(create: (_) => OfferBloc()..add(FetchOffersEvent())),
           ],
           child: const MyApp(),
         ),

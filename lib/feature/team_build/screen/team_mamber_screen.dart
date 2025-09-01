@@ -4,6 +4,7 @@ import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
+import 'package:fetchtrue/feature/team_build/screen/team_leads_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,9 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../lead/bloc/lead/lead_bloc.dart';
+import '../../lead/bloc/lead/lead_event.dart';
 import '../../lead/bloc/lead/lead_state.dart';
+import '../../lead/repository/lead_repository.dart';
 import '../model/my_team_model.dart';
 import '../widget/team_card_widget.dart';
 
@@ -27,61 +30,63 @@ class TeamMemberScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'Team Member', showBackButton: true,),
 
-      body: DefaultTabController(
-        length: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              TeamCardWidget(
-                radius: 25,
-                backgroundImage: AssetImage(CustomImage.nullImage),
-                id: member!.id,
-                memberId: member.userId,
-                name: member.fullName,
-                level: 'GP',
-                address: 'address',
-                phone: member.mobileNumber,
-                earning: 'My Earning\n₹ ${members.totalEarningsFromShare2}',
-              ),
-
-
-              TabBar(
-                indicatorColor: CustomColor.appColor,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                dividerColor: WidgetStateColor.transparent,
-                tabs: [
-                  Tab(text: 'Leads (${members.leads.length})'),
-                  Tab(text: 'Teams (${members.team.length})'),
-                ],
-              ),
-
-              Expanded(
-                child: TabBarView(
-                 children: [
-
-                   members.leads.isNotEmpty ? _MemberLeads():
-                   Column(
-                     mainAxisAlignment: MainAxisAlignment.center,
-                     children: [
-                       Icon(Icons.leaderboard, color: CustomColor.iconColor,size: 50,),
-                       Text("No Leads"),
-                     ],
-                   ),
-
-                   members.team.isNotEmpty ? _TeamMembers(members: members.team,):
-                   Column(
-                     mainAxisAlignment: MainAxisAlignment.center,
-                     children: [
-                       Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
-                       Text("No Member"),
-                     ],
-                   )
-                 ],
+      body: SafeArea(
+        child: DefaultTabController(
+          length: 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                TeamCardWidget(
+                  radius: 25,
+                  backgroundImage: AssetImage(CustomImage.nullImage),
+                  id: member!.id,
+                  memberId: member.userId,
+                  name: member.fullName,
+                  level: 'GP',
+                  address: 'address',
+                  phone: member.mobileNumber,
+                  earning: 'My Earning\n₹ ${members.totalEarningsFromShare2}',
                 ),
-              ),
-            ],
+        
+        
+                TabBar(
+                  indicatorColor: CustomColor.appColor,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  dividerColor: WidgetStateColor.transparent,
+                  tabs: [
+                    Tab(text: 'Leads (${members.leads.length})'),
+                    Tab(text: 'Teams (${members.team.length})'),
+                  ],
+                ),
+        
+                Expanded(
+                  child: TabBarView(
+                   children: [
+        
+                     members.leads.isNotEmpty ? _MemberLeads():
+                     Column(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Icon(Icons.leaderboard, color: CustomColor.iconColor,size: 50,),
+                         Text("No Leads"),
+                       ],
+                     ),
+        
+                     members.team.isNotEmpty ? _TeamMembers(members: members.team,):
+                     Column(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
+                         Text("No Member"),
+                       ],
+                     )
+                   ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -187,30 +192,33 @@ class _TeamMembers extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: members.length,
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      // padding: EdgeInsets.symmetric(horizontal: 10),
       itemBuilder: (context, index) {
 
         final member = members[index].user;
         final earning = members[index].totalEarningsFromShare3;
 
-        return TeamCardWidget(
-          radius: 25,
-          backgroundImage: AssetImage(CustomImage.nullImage),
-          id: member!.id,
-          memberId: member.userId,
-          name: member.fullName,
-          level: 'GP',
-          address: 'address',
-          phone: member.mobileNumber,
-          earning: 'My Earning\n₹ ${earning}',
-          onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (_) => TeamMemberScreen(members: members[index],),
-            //   ),
-            // );
-          },
+        return BlocProvider(
+          create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
+          child: TeamCardWidget(
+            radius: 25,
+            backgroundImage: AssetImage(CustomImage.nullImage),
+            id: member!.id,
+            memberId: member.userId,
+            name: member.fullName,
+            level: 'GP',
+            address: '_______',
+            phone: member.mobileNumber,
+            earning: 'My Earning\n₹ ${earning}',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TeamLeadsScreen(member: member,  earning: earning.toString(),),
+                ),
+              );
+            },
+          ),
         );
       },);
   }

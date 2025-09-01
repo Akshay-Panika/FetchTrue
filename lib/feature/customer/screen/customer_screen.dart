@@ -68,9 +68,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   minHeight: 2.5,
                 );
               } else if (state is CustomerLoaded) {
-                final customer = state.customers;
-                // final customer = state.customerModel.where((customerId) =>
-                // customerId.userId == widget.userId).toList();
+                // final customer = state.customers;
+                final customer = state.customers.where((customerId) =>
+                customerId.userId == widget.userId).toList();
 
                 // Initialize _messageControllers safely
                 if (_messageControllers.length != customer.length) {
@@ -84,9 +84,11 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CircleAvatar(radius: 35,backgroundImage: AssetImage(CustomImage.nullImage),),
+                      CircleAvatar(
+                        backgroundColor: CustomColor.whiteColor,
+                        radius: 30,backgroundImage: AssetImage(CustomImage.nullImage),),
                       20.height,
-                      Text('No Customer found.', style: textStyle14(context, color: CustomColor.descriptionColor),),
+                      Text('No Customer.', style: textStyle14(context, color: CustomColor.descriptionColor),),
                     ],
                   ));
                 }

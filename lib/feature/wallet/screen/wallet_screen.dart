@@ -34,19 +34,6 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
 
-      // body: BlocBuilder<WalletBloc, WalletState>(
-      //   builder: (context, state) {
-      //     if (state is WalletLoading) {
-      //       return const Center(child: CircularProgressIndicator());
-      //     } else if (state is WalletLoaded) {
-      //       return Text("Balance: ${state.wallet.balance}");
-      //     } else if (state is WalletError) {
-      //       return Text(state.message, style: const TextStyle(color: Colors.red));
-      //     }
-      //     return const SizedBox();
-      //   },
-      // )
-
       body: BlocBuilder<WalletBloc, WalletState>(
         builder: (context, state) {
           if (state is WalletLoading) {

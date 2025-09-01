@@ -51,7 +51,13 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                   final List<TeamData> team = state.response.team;
 
                   if (team.isEmpty) {
-                    return const Center(child: Text("No team data found"));
+                    return  Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(CupertinoIcons.person_2_fill, size: 50,color: CustomColor.iconColor,),
+                        Text("No Franchise"),
+                      ],
+                    ));
                   }
 
                   final nonGpMembers = team.where((e) => e.user?.packageActive == false).toList();
@@ -100,7 +106,15 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                     ],
                   );
                 } else if (state is MyTeamError) {
-                  return Center(child: Text("Error: ${state.message}"));
+                 print("Error: ${state.message}");
+                 return  Center(child: Column(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                     Icon(CupertinoIcons.person_2_fill, size: 50,color: CustomColor.iconColor,),
+                     Text("No Franchise"),
+                   ],
+                 ));
+
                 }
                 return const SizedBox();
               },

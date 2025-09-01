@@ -378,6 +378,8 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
 
         20.height,
 
+
+        if (planKey == 'gp')
         GiftPackageWidget(),
 
 
@@ -456,9 +458,12 @@ class _PaymentCardState extends State<PaymentCard> {
         children: [
 
           if(user.packageActive != true)
-            Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),),
-          15.height,
-          if(user.packageActive == true)
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Center(child: Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),)),
+            ),
+          10.height,
+
             CustomContainer(
               margin: EdgeInsets.zero,
               color: CustomColor.whiteColor,
@@ -553,19 +558,12 @@ class _PaymentCardState extends State<PaymentCard> {
                           ),
                           Divider(),
 
-                          if(user.remainingAmount!=0)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Remaining Amount'),
-                                CustomAmountText(amount: '${formatPrice(user.remainingAmount!)}', color: CustomColor.appColor)
-                              ],
-                            ),
+
                         ],
                       ),
                       10.height,
 
-                      if(user.packageActive != true)
+                      if(user.packageAmountPaid == 0 )
                        CustomContainer(
                           padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
                           color: CustomColor.appColor,
@@ -640,6 +638,7 @@ class _PaymentCardState extends State<PaymentCard> {
                     ],
                   ),
 
+                  if(user.packageActive == true)
                   CustomContainer(
                     margin: EdgeInsets.zero,
                     color: Color(0xffF2F7FF),

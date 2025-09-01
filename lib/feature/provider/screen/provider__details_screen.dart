@@ -11,7 +11,7 @@ import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../model/provider_model.dart';
 import '../repository/provider_repository.dart';
-
+import '../widget/provider_review_widget.dart';
 
 class ProviderDetailsScreen extends StatefulWidget {
   final String? providerId;
@@ -22,10 +22,7 @@ class ProviderDetailsScreen extends StatefulWidget {
   State<ProviderDetailsScreen> createState() => _ProviderDetailsScreenState();
 }
 
-class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
+class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
   final List<Tab> myTabs = const [
     Tab(text: 'Services'),
     Tab(text: 'Reviews'),
@@ -34,104 +31,143 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: myTabs.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: CustomColor.whiteColor,
+      backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(
         title: widget.storeName ?? 'Store Name',
         showBackButton: true,
         showFavoriteIcon: true,
       ),
-      body:BlocProvider(
-        create: (_) => ProviderBloc(ProviderRepository())..add(GetProviderById(widget.providerId!)),
-        child: BlocBuilder<ProviderBloc, ProviderState>(
-          builder: (context, state) {
-            if (state is ProviderLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ProviderLoaded) {
-              final provider = state.provider;
+      body: DefaultTabController(
+        length: myTabs.length,
+        child: BlocProvider(
+          create: (_) => ProviderBloc(ProviderRepository())
+            ..add(GetProviderById(widget.providerId!)),
+          child: BlocBuilder<ProviderBloc, ProviderState>(
+            builder: (context, state) {
+              if (state is ProviderLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is ProviderLoaded) {
+                final provider = state.provider;
 
-              return CustomScrollView(
-                slivers: [
-
-                  /// Cover Image
-                  SliverAppBar(
-                    toolbarHeight: 200,
-                    pinned: false,
-                    floating: false,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background:Container(
-                        decoration: BoxDecoration(
-                            image: DecorationImage(image: NetworkImage(provider.storeInfo!.cover ??''), fit: BoxFit.fill)
+                return CustomScrollView(
+                  slivers: [
+                    /// Cover Image
+                    SliverAppBar(
+                      toolbarHeight: 200,
+                      pinned: false,
+                      floating: false,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                  provider.storeInfo!.cover ?? ''),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _StickyHeaderDelegate(
+                    /// Sticky Header with Profile + TabBar
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _StickyHeaderDelegate(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Center(child: _profileCard(data:provider)),
+                            Center(child: _profileCard(data: provider)),
                             TabBar(
-                              controller: _tabController,
                               isScrollable: true,
-                              labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                              labelPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                               labelColor: Colors.blueAccent,
                               unselectedLabelColor: Colors.black54,
                               indicatorColor: Colors.blueAccent,
                               tabAlignment: TabAlignment.start,
                               tabs: myTabs,
-                            )
+                            ),
                           ],
-                        )),
-                  ),
+                        ),
+                      ),
+                    ),
 
-
-                  SliverToBoxAdapter(
-                    child:  SizedBox(
-                      height: MediaQuery.of(context).size.height,
+                    /// TabBarView content
+                    SliverFillRemaining(
                       child: TabBarView(
-                        controller: _tabController,
                         children: [
+                          /// Services
+                          Center(
+                            child: Text(
+                              'Services Coming Soon...',
+                              style: textStyle16(context),
+                            ),
+                          ),
 
+                          /// Reviews
+                          ProviderReviewScreen(providerId: provider.id),
 
+                          /// About
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+
+                                // Text('ID: ${provider}', style: textStyle14(context), textAlign: TextAlign.center,),
+                                Text('Name: ${provider.fullName}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                Text('Email: ${provider.storeInfo!.storeEmail}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                Text('Phone: ${provider.storeInfo!.storePhone}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                Text('Address: ${provider.storeInfo!.address}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+
+                                Divider(),
+
+                                Text(
+                                  "Disclaimer: The information provided about this provider, "
+                                      "including services, pricing, reviews, and gallery, is sourced "
+                                      "from the provider or public data. While we strive to ensure "
+                                      "accuracy, FetchTrue does not guarantee completeness, reliability, "
+                                      "or availability of this information. Please verify details directly "
+                                      "with the provider before making any decisions.",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                    height: 2,
+                                  ),
+                                  textAlign: TextAlign.justify,
+                                )
+                              ],
+                            ),
+                          ),
+
+                          /// Gallery
+                          Center(
+                            child: Text(
+                              'Gallery Section',
+                              style: textStyle16(context),
+                            ),
+                          ),
                         ],
                       ),
-                    ),)
-
-                ],
-              );
-
-            } else if (state is ProviderError) {
-              return Center(child: Text(state.message));
-            }
-            return const SizedBox.shrink();
-          },
+                    ),
+                  ],
+                );
+              } else if (state is ProviderError) {
+                return Center(child: Text(state.message));
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _profileCard({ ProviderModel? data}) {
+  Widget _profileCard({ProviderModel? data}) {
     return CustomContainer(
-     // border: true,
       color: Colors.white,
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
@@ -149,46 +185,54 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
                     CircleAvatar(
                       radius: 40,
                       backgroundColor: const Color(0xFFF2F2F2),
-                      backgroundImage: NetworkImage(data!.storeInfo!.logo.toString()),
+                      backgroundImage:
+                      NetworkImage(data!.storeInfo!.logo.toString()),
                     ),
                     CustomContainer(
-                        color: CustomColor.appColor,
-                        margin: EdgeInsets.zero,
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                        child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                      color: CustomColor.appColor,
+                      margin: EdgeInsets.zero,
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        'Open',
+                        style: textStyle12(context,
+                            color: CustomColor.whiteColor),
+                      ),
+                    ),
                   ],
                 ),
                 10.width,
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(data.storeInfo!.storeName,
+                      Text(
+                        data.storeInfo!.storeName,
                         style: textStyle16(context),
                       ),
-                      Text( "Module Name", style: textStyle14(context, fontWeight: FontWeight.w400)),
-
+                      Text("Module Name",
+                          style: textStyle14(context,
+                              fontWeight: FontWeight.w400)),
                       Text(
                         '⭐ ${data.averageRating} (${data.totalReviews} Review)',
-                        style: TextStyle(fontSize: 12, color: Colors.black),
+                        style:
+                        const TextStyle(fontSize: 12, color: Colors.black),
                       ),
                       5.height,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2.0),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2.0),
                             child: Icon(
                               Icons.location_on_outlined,
                               size: 16,
-                              color: Colors.grey.shade700,
+                              color: Colors.grey,
                             ),
                           ),
-                         5.width,
+                          5.width,
                           Expanded(
                             child: Text(
-                              'Address: ${data.storeInfo!.address??''}',
+                              'Address: ${data.storeInfo!.address ?? ''}',
                               style: TextStyle(color: Colors.grey.shade700),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
@@ -204,7 +248,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
           ),
 
           /// Favorite Button Top Right
-          Positioned(
+          const Positioned(
             top: 0,
             right: 0,
             child: CustomFavoriteButton(),
@@ -213,7 +257,6 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen>
       ),
     );
   }
-
 }
 
 /// Sticky TabBar Delegate
@@ -225,9 +268,7 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-        color: Colors.white,
-        child: child);
+    return Container(color: Colors.white, child: child);
   }
 
   @override
