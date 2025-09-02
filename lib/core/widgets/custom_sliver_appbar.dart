@@ -85,10 +85,6 @@ class CustomSliverAppbar extends StatelessWidget {
             ),
             child: background),
       ),
-      // flexibleSpace: FlexibleSpaceBar(
-      //   collapseMode: CollapseMode.parallax,
-      //   background: background,
-      // ),
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(searchBarHeight),
         child: Padding(

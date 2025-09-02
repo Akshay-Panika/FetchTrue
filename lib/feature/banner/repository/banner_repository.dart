@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_helper.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/banners_model.dart';
 
 class BannerRepository {
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.dio;
 
   Future<List<BannerModel>> fetchBanners() async {
     try {

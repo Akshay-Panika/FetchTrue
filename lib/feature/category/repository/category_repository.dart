@@ -1,11 +1,12 @@
 
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/feature/category/model/category_model.dart';
+import 'package:fetchtrue/helper/api_helper.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
 import '../../banner/model/banner_model.dart';
 
 class CategoryRepository {
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.dio;
 
   Future<List<CategoryModel>> getCategory() async {
     try {
