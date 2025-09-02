@@ -287,7 +287,9 @@ class _InviteFranchiseSectionState extends State<InviteFranchiseSection> {
           );
         }
         else if (state is UserError) {
-          return Center(child: Text("Error: ${state.massage}"));
+          print('Error: ${state.massage}');
+          return Center(child: Text('Try to sum time'));
+          
         }
         return const SizedBox();
       },

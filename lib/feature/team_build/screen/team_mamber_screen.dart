@@ -16,7 +16,11 @@ import '../../lead/bloc/lead/lead_bloc.dart';
 import '../../lead/bloc/lead/lead_event.dart';
 import '../../lead/bloc/lead/lead_state.dart';
 import '../../lead/repository/lead_repository.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_bloc.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_event.dart';
+import '../bloc/upcoming_lead_commission/upcoming_lead_commission_state.dart';
 import '../model/my_team_model.dart';
+import '../repository/upcoming_lead_commission_repository.dart';
 import '../widget/team_card_widget.dart';
 
 class TeamMemberScreen extends StatelessWidget {
@@ -25,7 +29,6 @@ class TeamMemberScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final member = members.user;
     return Scaffold(
       appBar: CustomAppBar(title: 'Team Member', showBackButton: true,),
@@ -44,9 +47,9 @@ class TeamMemberScreen extends StatelessWidget {
                   memberId: member.userId,
                   name: member.fullName,
                   level: 'GP',
-                  address: 'address',
+                  address: '______',
                   phone: member.mobileNumber,
-                  earning: 'My Earning\n₹ ${members.totalEarningsFromShare2}',
+                  earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
                 ),
         
         
@@ -62,27 +65,29 @@ class TeamMemberScreen extends StatelessWidget {
                 ),
         
                 Expanded(
-                  child: TabBarView(
-                   children: [
-        
-                     members.leads.isNotEmpty ? _MemberLeads():
-                     Column(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                         Icon(Icons.leaderboard, color: CustomColor.iconColor,size: 50,),
-                         Text("No Leads"),
-                       ],
-                     ),
-        
-                     members.team.isNotEmpty ? _TeamMembers(members: members.team,):
-                     Column(
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                         Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
-                         Text("No Member"),
-                       ],
-                     )
-                   ],
+                  child: BlocProvider(
+                    create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
+                    child: TabBarView(
+                     children: [
+                       members.leads.isNotEmpty ? _MemberLeads(leadsData: members.leads,):
+                       Column(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Icon(Icons.leaderboard, color: CustomColor.iconColor,size: 50,),
+                           Text("No Leads"),
+                         ],
+                       ),
+
+                       members.team.isNotEmpty ? _TeamMembers(members: members.team,):
+                       Column(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
+                           Text("No Member"),
+                         ],
+                       )
+                     ],
+                    ),
                   ),
                 ),
               ],
@@ -97,10 +102,27 @@ class TeamMemberScreen extends StatelessWidget {
 
 /// _MemberLeads
 class _MemberLeads extends StatelessWidget {
-  const _MemberLeads({super.key});
+  final List<Lead> leadsData;
+  const _MemberLeads({super.key, required this.leadsData});
 
   @override
   Widget build(BuildContext context) {
+
+    Color getStatusColor(String status) {
+      switch (status.toLowerCase()) {
+        case 'completed':
+          return Colors.orange;
+        case 'processing':
+          return CustomColor.appColor;
+        case 'pending':
+          return Colors.orange;
+        case 'cancelled':
+          return Colors.red;
+        default:
+          return CustomColor.descriptionColor;
+      }
+    }
+
     return BlocBuilder<LeadBloc, LeadState>(
       builder: (context, state) {
         if (state is LeadLoading) {
@@ -108,14 +130,17 @@ class _MemberLeads extends StatelessWidget {
         } else if (state is LeadLoaded) {
           final allLeads = state.leadModel.data ?? [];
 
-          final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
-          final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
-
-
           return ListView.builder(
             itemCount: allLeads.length,
             itemBuilder: (context, index) {
               final leads = allLeads[index];
+              final leadId = leads.id;
+              final leadCommission = leadsData.cast<Lead?>().firstWhere(
+                    (e) => e?.checkoutId == leadId,
+                orElse: () => null,
+              );
+
+
             return CustomContainer(
               color: CustomColor.whiteColor,
               margin: EdgeInsetsGeometry.only(top: 10),
@@ -129,13 +154,25 @@ class _MemberLeads extends StatelessWidget {
                        Row(
                          children: [
                            CustomAmountText(amount: leads.service!.price.toString(),isLineThrough: true),10.width,
-                           CustomAmountText(amount: leads.service!.discountedPrice.toString(),isLineThrough: false),10.width,
+                           CustomAmountText(amount: formatPrice(leads.service!.discountedPrice!),isLineThrough: false),10.width,
                            Text('${leads.service!.discount.toString()} %', style: textStyle12(context, color: CustomColor.greenColor),),
                          ],
                        ),
-                       Text('Status: [ ${leads.orderStatus} ]', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                      Row(
+                        children: [
+                          Text('Status:', style: textStyle12(context, fontWeight: FontWeight.w400,),),10.width,
+                          Text(
+                            '${leads.orderStatus[0].toUpperCase()}${leads.orderStatus.substring(1).toLowerCase()}',
+                            style: textStyle12(
+                              context,
+                              fontWeight: FontWeight.w400,
+                              color: getStatusColor(leads.orderStatus),
+                            ),
+                          ),
+                        ],
+                      ),
                       10.height,
-                  
+
                       DottedBorder(
                         color: CustomColor.appColor,
                         strokeWidth: 1,
@@ -156,7 +193,7 @@ class _MemberLeads extends StatelessWidget {
                                Column(
                                  children: [
                                    Text('Schedule Date', style: textStyle12(context, color: CustomColor.descriptionColor),),
-                                   Text('${formatDateTime(leads.isAccepted)}',style: textStyle12(context, fontWeight: FontWeight.w400),),
+                                   Text('${formatDateTime(leads.acceptedDate)}',style: textStyle12(context, fontWeight: FontWeight.w400),),
                                  ],
                                ),
                              ],
@@ -165,10 +202,51 @@ class _MemberLeads extends StatelessWidget {
                        )
                     ],
                   ),
-                  
+
+                  /// its work
+                  if (leadCommission != null)
                   Positioned(
-                      right: 0,top: 0,
-                      child: Text('Earning\nOpportunity ₹ 00', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.end,))
+                    right: 0,
+                    top: 0,
+                    child: BlocProvider(
+                        create: (context) =>
+                        UpcomingCommissionBloc(UpcomingLeadCommissionRepository())
+                          ..add(FetchUpcomingCommission(leadId!)),
+                        child: BlocBuilder<UpcomingCommissionBloc, UpcomingCommissionState>(
+                          builder: (context, state) {
+                            if (state is UpcomingCommissionLoading) {
+                              return SizedBox(
+                                  height: 20,width: 20,
+                                  child:  Center(child: CircularProgressIndicator(strokeWidth: 3,color: CustomColor.appColor,)));
+                            } else if (state is UpcomingCommissionLoaded) {
+                              final data = state.commission.data!;
+                              return Column(
+                                children: [
+
+                                  if(leadCommission == 0)
+                                    Text(
+                                      'Earning\nOpportunity ₹ ${data.share2}',
+                                      style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                      textAlign: TextAlign.end,
+                                    ),
+
+                                  if(leadCommission != 0)
+                                    Text(
+                                      'My Earning\n₹ ${leadCommission.commissionEarned ?? 0}',
+                                      style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                ],
+                              );
+                            } else if (state is UpcomingCommissionError) {
+                              return Text('After Accepted\n₹ __', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor), textAlign: TextAlign.end,);
+                            }
+                            return SizedBox.shrink();
+                          },
+                        )
+                    ),
+                  )
+
                 ],
               ),
             );
@@ -196,7 +274,8 @@ class _TeamMembers extends StatelessWidget {
       itemBuilder: (context, index) {
 
         final member = members[index].user;
-        final earning = members[index].totalEarningsFromShare3;
+        final teamCommission = members[index].totalEarningsFromShare3;
+        final leadsData = members[index].leads;
 
         return BlocProvider(
           create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
@@ -209,12 +288,16 @@ class _TeamMembers extends StatelessWidget {
             level: 'GP',
             address: '_______',
             phone: member.mobileNumber,
-            earning: 'My Earning\n₹ ${earning}',
+            earning: 'My Earning\n₹ ${teamCommission}',
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => TeamLeadsScreen(member: member,  earning: earning.toString(),),
+                  builder: (_) => TeamLeadsScreen(
+                    member: member,
+                    earning: teamCommission.toString(),
+                    leadsData: leadsData,
+                  ),
                 ),
               );
             },

@@ -1,6 +1,15 @@
-abstract class UpcomingLeadCommissionEvent {}
+import 'package:equatable/equatable.dart';
 
-class FetchUpcomingLeadCommission extends UpcomingLeadCommissionEvent {
+abstract class UpcomingCommissionEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+
+class FetchUpcomingCommission extends UpcomingCommissionEvent {
   final String checkoutId;
-  FetchUpcomingLeadCommission(this.checkoutId);
+
+  FetchUpcomingCommission(this.checkoutId);
+
+  @override
+  List<Object?> get props => [checkoutId];
 }

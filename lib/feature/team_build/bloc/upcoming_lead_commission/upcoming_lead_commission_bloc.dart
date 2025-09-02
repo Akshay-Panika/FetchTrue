@@ -1,21 +1,20 @@
+import 'package:fetchtrue/feature/team_build/bloc/upcoming_lead_commission/upcoming_lead_commission_event.dart';
+import 'package:fetchtrue/feature/team_build/bloc/upcoming_lead_commission/upcoming_lead_commission_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/upcoming_lead_commission_repository.dart';
-import 'upcoming_lead_commission_event.dart';
-import 'upcoming_lead_commission_state.dart';
 
-class UpcomingLeadCommissionBloc
-    extends Bloc<UpcomingLeadCommissionEvent, UpcomingLeadCommissionState> {
+class UpcomingCommissionBloc
+    extends Bloc<UpcomingCommissionEvent, UpcomingCommissionState> {
   final UpcomingLeadCommissionRepository repository;
 
-  UpcomingLeadCommissionBloc({required this.repository})
-      : super(UpcomingLeadCommissionInitial()) {
-    on<FetchUpcomingLeadCommission>((event, emit) async {
-      emit(UpcomingLeadCommissionLoading());
+  UpcomingCommissionBloc(this.repository) : super(UpcomingCommissionInitial()) {
+    on<FetchUpcomingCommission>((event, emit) async {
+      emit(UpcomingCommissionLoading());
       try {
-        final data = await repository.fetchCommission(event.checkoutId);
-        emit(UpcomingLeadCommissionLoaded(data));
+        final commission = await repository.fetchCommission(event.checkoutId);
+        emit(UpcomingCommissionLoaded(commission));
       } catch (e) {
-        emit(UpcomingLeadCommissionError(e.toString()));
+        emit(UpcomingCommissionError(e.toString()));
       }
     });
   }

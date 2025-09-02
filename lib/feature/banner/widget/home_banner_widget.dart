@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:fetchtrue/feature/subcategory/screen/subcategory_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -126,8 +127,9 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
           );
         } else if (state is BannerError) {
           print("Error: ${state.message}");
+          return Image.asset(CustomImage.nullBackImage,fit: BoxFit.cover,);
         }
-        return const SizedBox.shrink();
+        return Image.asset(CustomImage.nullBackImage,fit: BoxFit.cover,);
       },
     );
   }

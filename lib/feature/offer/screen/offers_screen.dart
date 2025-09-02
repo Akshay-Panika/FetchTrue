@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../bloc/offer_bloc.dart';
-import '../bloc/offer_event.dart';
 import '../bloc/offer_state.dart';
 import 'offers_details_screen.dart';
 
@@ -37,7 +36,8 @@ class OfferScreen extends StatelessWidget {
               },
             );
           } else if (state is OfferError) {
-            return Center(child: Text("Error: ${state.message}"));
+            print('Error: ${state.message}');
+            return const Center(child: Text("No data"));
           }
           return const Center(child: Text("No data"));
         },

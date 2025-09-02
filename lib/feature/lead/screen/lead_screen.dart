@@ -194,9 +194,24 @@ class _LeadScreenState extends State<LeadScreen> {
               );
       
             } else if (state is LeadError) {
-              return Center(child: Text("❌ ${state.message}"));
+             print("❌ ${state.message}");
+              return Padding(
+                  padding: EdgeInsetsGeometry.only(top: 280),
+                  child:  Center(child: Column(
+                    children: [
+                      Image.asset(CustomImage.emptyCart, height: 80,),
+                      Text('No leads.'),
+                    ],
+                  )));
             }
-            return const Center(child: Text("No data"));
+            return Padding(
+                padding: EdgeInsetsGeometry.only(top: 280),
+                child:  Center(child: Column(
+                  children: [
+                    Image.asset(CustomImage.emptyCart, height: 80,),
+                    Text('No leads.'),
+                  ],
+                )));
           },
         ),
       ),

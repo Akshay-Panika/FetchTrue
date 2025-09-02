@@ -112,9 +112,11 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                             );
 
                           } else if (state is LeadError) {
-                            return Center(child: Text("❌ ${state.message}"));
+                            print('"❌ ${state.message}"');
+                            return SizedBox.shrink();
+                            // return Center(child: Text("❌ ${state.message}"));
                           }
-                          return const Center(child: Text("No data"));
+                          return SizedBox.shrink();
                         },
                       ),
                     ),

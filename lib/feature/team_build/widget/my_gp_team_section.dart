@@ -36,7 +36,7 @@ class MyGpTeamSection extends StatelessWidget {
               level: 'GP',
               address: '_______',
               phone: member.mobileNumber,
-              earning: 'My Earning\n₹ ${earning}',
+              earning: 'My Earning\n₹ ${earning?.toStringAsFixed(2)}',
               onTap: () {
                 Navigator.push(
                   context,

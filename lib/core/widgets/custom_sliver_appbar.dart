@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../costants/custom_color.dart';
+import '../costants/custom_image.dart';
 import '../costants/text_style.dart';
 import 'custom_search_bar.dart';
 
@@ -77,8 +78,17 @@ class CustomSliverAppbar extends StatelessWidget {
       leadingWidth: 50,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        background: background,
+        background: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(image:
+                AssetImage(CustomImage.nullBackImage), fit: BoxFit.fill)
+            ),
+            child: background),
       ),
+      // flexibleSpace: FlexibleSpaceBar(
+      //   collapseMode: CollapseMode.parallax,
+      //   background: background,
+      // ),
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(searchBarHeight),
         child: Padding(

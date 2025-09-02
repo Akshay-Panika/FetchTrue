@@ -28,6 +28,7 @@ class ApiUrls{
   static const String leadStatus = '${baseUrl}leads';
 
   static const String myTeam = '${baseUrl}team-build/my-team';
+  static const String upcomingLeadCommission = '${baseUrl}upcoming-lead-commission/find-by-checkoutId';
 
 
   static const Client_id= 'TEST107274954a9cf3c92a3b5a1a511359472701';

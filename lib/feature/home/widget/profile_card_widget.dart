@@ -120,7 +120,12 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
       leadingWidth: 50,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        background: background,
+        background: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(image: 
+              AssetImage(CustomImage.nullBackImage), fit: BoxFit.fill)
+            ),
+            child: background),
       ),
       actions: [
         InkWell(

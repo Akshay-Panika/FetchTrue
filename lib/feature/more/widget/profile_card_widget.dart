@@ -217,6 +217,55 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             );
           } else if (state is UserError) {
             print('Error: ${state.massage}');
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                          backgroundImage: AssetImage(CustomImage.nullImage) as ImageProvider,
+                        ),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Guest',
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.clip,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'guest@test.com',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
+
+                const Divider(),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatus(value: '00', valueType: 'Joining date'),
+                    _buildStatus(value: '00', valueType: 'Lead Completed'),
+                    _buildStatus(value: '00', valueType: 'Total Earning'),
+                  ],
+                ),
+              ],
+            );
           }
           return const SizedBox();
         },

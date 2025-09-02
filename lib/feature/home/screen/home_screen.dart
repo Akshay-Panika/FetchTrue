@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             CustomHomeSliverAppbarWidget(
               isCollapsed: _isCollapsed,
               searchBarHeight: searchBarHeight,
-              background: HomeBannerWidget()
+              background: HomeBannerWidget(),
             ),
 
             /// Futures

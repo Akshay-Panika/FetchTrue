@@ -1,19 +1,23 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../../../helper/api_urls.dart';
 import '../model/upcoming_lead_commission_model.dart';
 
 class UpcomingLeadCommissionRepository {
+  final Dio _dio = Dio();
+
   Future<UpcomingLeadCommissionModel> fetchCommission(String checkoutId) async {
-    final url = Uri.parse(
-      "https://biz-booster.vercel.app/api/upcoming-lead-commission/find-by-checkoutId/$checkoutId",
-    );
+    try {
+      final response = await _dio.get(
+        "${ApiUrls.upcomingLeadCommission}/$checkoutId",
+      );
 
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return UpcomingLeadCommissionModel.fromJson(json.decode(response.body));
-    } else {
-      throw Exception("Failed to load commission data");
+      if (response.statusCode == 200) {
+        return UpcomingLeadCommissionModel.fromJson(response.data);
+      } else {
+        throw Exception("Failed to load commission data");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
     }
   }
 }
