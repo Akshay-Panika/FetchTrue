@@ -155,7 +155,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                             children: [
                               Icon(Icons.verified_outlined, size: 16),
                               SizedBox(width: 5),
-                              Text(user.packageActive == true ? 'GP' :'Package', style: textStyle12(context,fontWeight: FontWeight.w600)),
+                              Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context,fontWeight: FontWeight.w600)),
                             ],
                           ),
                         ),

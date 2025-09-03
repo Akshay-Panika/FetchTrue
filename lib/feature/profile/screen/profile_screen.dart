@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Icon(Icons.verified,
                                           size: 20, color: user.packageActive == true ? CustomColor.greenColor :Colors.grey),
                                       SizedBox(width: 10),
-                                      Text(user.packageActive == true ? 'GP':'Package',
+                                      Text(user.packageActive == true ? '${user.packageStatus}':'Package',
                                           style: TextStyle(color: user.packageActive == true ? CustomColor.greenColor :Colors.grey)),
                                     ],
                                   ),

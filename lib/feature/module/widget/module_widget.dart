@@ -25,24 +25,28 @@ class ModuleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Column(
       children: [
-        10.height,
+        15.height,
 
         Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 15.0),
+          padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.015),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Icon(Icons.apps, size: 19, color: CustomColor.appColor),
+              ),5.width,
               Text('Modules', style: textStyle14(context, color: CustomColor.appColor),),
               10.width,
               Expanded(child: Divider(color: CustomColor.appColor,))
             ],
           ),
         ),
-        15.height,
+        10.height,
         BlocBuilder<ModuleBloc, ModuleState>(
           builder: (context, state) {
             if (state is ModuleLoading) {
@@ -53,7 +57,7 @@ class ModuleWidget extends StatelessWidget {
               return  GridView.builder(
                 itemCount: modules.length,
                 shrinkWrap: true,
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                padding: EdgeInsetsGeometry.symmetric(horizontal: dimensions.screenHeight*0.010),
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -77,14 +81,14 @@ class ModuleWidget extends StatelessWidget {
                           child: Material( // 👈 ye add karo
                             color: Colors.transparent,
                             child: CustomNetworkImage(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(dimensions.screenHeight*0.010),
                               imageUrl: module.image,
                               fit: BoxFit.fill,
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 10),
+                          padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.008,vertical: dimensions.screenHeight*0.010),
                           child: Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
                         ),
                       ],

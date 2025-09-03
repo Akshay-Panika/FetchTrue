@@ -11,7 +11,8 @@ import '../bloc/banner/banner_bloc.dart';
 import '../bloc/banner/banner_state.dart';
 
 class HomeBannerWidget extends StatefulWidget {
-  const HomeBannerWidget({super.key});
+  final Function(bool status)? onStatus; // parent ko status dene ke liye
+  const HomeBannerWidget({super.key, this.onStatus});
 
   @override
   State<HomeBannerWidget> createState() => _HomeBannerWidgetState();
@@ -40,28 +41,39 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return  BlocBuilder<BannerBloc, BannerState>(
-      builder: (context, state) {
-        if (state is BannerLoading) {
-          return Container(color: Colors.grey[100]);
-        } else if (state is BannerLoaded) {
-          // final banners = state.banners;
-          final banners = state.banners.where((banner) => banner.page == "home").toList();
-          if (banners.isEmpty) return const SizedBox.shrink();
-          // start auto-slide timer only once
-          startAutoSlide(banners);
+    return BlocListener<BannerBloc, BannerState>(
+      listener: (context, state) {
+        if (state is BannerLoaded) {
+          final banners = state.banners.where((b) => b.page == "home").toList();
+          widget.onStatus?.call(banners.isNotEmpty);
+        } else if (state is BannerError) {
+          widget.onStatus?.call(false);
+        }
+      },
+      child: BlocBuilder<BannerBloc, BannerState>(
+        builder: (context, state) {
+          if (state is BannerLoading) {
+            return Container(color: Colors.grey[100]);
+          } else if (state is BannerLoaded) {
+            final banners = state.banners.where((b) => b.page == "home").toList();
+
+            if (banners.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            startAutoSlide(banners);
             final banner = banners[currentIndex];
-          return Stack(
-            // alignment: Alignment.bottomLeft,
-            children: [
-              AnimatedSwitcher(
-                duration: const Duration(seconds: 2),
-                switchInCurve: Curves.easeInCubic,
-                switchOutCurve: Curves.easeOutCubic,
-                child: CustomNetworkImage(
-                  key: ValueKey(banner.id),
-                  imageUrl: banner.file,
-                  fit: BoxFit.fill,
+
+            return Stack(
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(seconds: 2),
+                  switchInCurve: Curves.easeInCubic,
+                  switchOutCurve: Curves.easeOutCubic,
+                  child: CustomNetworkImage(
+                    key: ValueKey(banner.id),
+                    imageUrl: banner.file,
+                    fit: BoxFit.fill,
                     onTap: () {
                       if (banner.selectionType == 'referralUrl') {
                         CustomUrlLaunch(banner.referralUrl);
@@ -79,58 +91,62 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                            builder: (_) => ServiceDetailsScreen(
+                              serviceId: banner.service!,
+                            ),
                           ),
                         );
                       }
-                    }),
-              ),
-
-              if (banners.length > 1)
-                Positioned(
-                  bottom: 70,
-                  left: 15,
-                  child: Row(
-                    children: List.generate(banners.length, (index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        height: 4,
-                        width: index == currentIndex ?24 :10,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                        child: index == currentIndex
-                            ? TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: 1),
-                          duration: const Duration(seconds: 8), // same as banner timer
-                          builder: (context, value, child) {
-                            return FractionallySizedBox(
-                              widthFactor: value,
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                            : null,
-                      );
-                    }),
+                    },
                   ),
-                )
+                ),
 
-            ],
-          );
-        } else if (state is BannerError) {
-          print("Error: ${state.message}");
-          return Image.asset(CustomImage.nullBackImage,fit: BoxFit.cover,);
-        }
-        return Image.asset(CustomImage.nullBackImage,fit: BoxFit.cover,);
-      },
+                if (banners.length > 1)
+                  Positioned(
+                    bottom: 70,
+                    left: 15,
+                    child: Row(
+                      children: List.generate(banners.length, (index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          height: 4,
+                          width: index == currentIndex ? 24 : 10,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: index == currentIndex
+                              ? TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(seconds: 8),
+                            builder: (context, value, child) {
+                              return FractionallySizedBox(
+                                widthFactor: value,
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueAccent,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                              : null,
+                        );
+                      }),
+                    ),
+                  ),
+              ],
+            );
+          } else if (state is BannerError) {
+            print("Error: ${state.message}");
+            return const SizedBox.shrink();
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
+
 }

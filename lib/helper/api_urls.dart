@@ -10,6 +10,7 @@ class ApiUrls{
   static const String signUp = '${baseUrl}auth/register';
   static const String signIn = '${baseUrl}auth/login';
   static const String verifyOtp = '${baseUrl}auth/verify-otp';
+  static const String forgotPassword = '${baseUrl}auth/forgot-password';
 
 
   /// Module Api

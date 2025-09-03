@@ -27,6 +27,7 @@ class RelationshipManagerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     final TextEditingController _referralController = TextEditingController();
 
     return BlocBuilder<UserBloc, UserState>(
@@ -51,7 +52,7 @@ class RelationshipManagerSection extends StatelessWidget {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding:  EdgeInsets.all(dimensions.screenHeight*0.01),
                     child: DottedBorder(
                       color: CustomColor.appColor,
                       strokeWidth: 1,
@@ -80,7 +81,7 @@ class RelationshipManagerSection extends StatelessWidget {
                               color: CustomColor.appColor,
                               margin: EdgeInsets.zero,
                               padding: EdgeInsets.zero,
-                              height: 40,width: 100,
+                              height: dimensions.screenHeight*0.04,width: dimensions.screenHeight*0.1,
                               child: Center(
                                 child: BlocConsumer<UserReferralBloc, UserReferralState>(
                                   listener: (context, state) {
@@ -157,7 +158,7 @@ class RelationshipManagerSection extends StatelessWidget {
                               name: referralUser.fullName,
                               phone: referralUser.mobileNumber,
                               id: referralUser.userId,
-                              level: referralUser.packageActive == true ? 'GP' : 'Non-GP',
+                              level: user.packageStatus,
                               address: address.isNotEmpty ? address : null,
                             ),
 

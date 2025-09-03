@@ -46,11 +46,12 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
     return NetworkWrapper(
       child: Scaffold(
-        appBar: const CustomAppBar(
-          title: 'Profile',
-          showBackButton: false,
-          showNotificationIcon: true,
-        ),
+        appBar: AppBar(toolbarHeight: 20,),
+        // appBar: const CustomAppBar(
+        //   title: 'Account',
+        //   showBackButton: false,
+        //   showNotificationIcon: true,
+        // ),
       
       
         body:CustomScrollView(

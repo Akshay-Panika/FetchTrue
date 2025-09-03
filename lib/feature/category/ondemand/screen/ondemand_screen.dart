@@ -1,16 +1,9 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/category/education/widget/education_category_widget.dart';
-import 'package:fetchtrue/feature/category/it_service/widget/it_service_category_widget.dart';
 import 'package:fetchtrue/feature/category/ondemand/widget/ondemand_category_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/costants/custom_color.dart';
-import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_container.dart';
-import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
-import '../../../banner/widget/home_banner_widget.dart';
 import '../../../banner/widget/ondemand_banner_widget.dart';
 
 class OnDemandScreen extends StatefulWidget {
@@ -48,8 +41,9 @@ class _OnDemandScreenState extends State<OnDemandScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
-    final double searchBarHeight = 50;
+    final double searchBarHeight = dimensions.screenHeight*0.06;
 
     return Scaffold(
       body: CustomScrollView(

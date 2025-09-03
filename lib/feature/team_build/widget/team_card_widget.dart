@@ -47,21 +47,22 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return CustomContainer(
       border: false,
       borderColor: CustomColor.appColor,
       color: Colors.white,
       padding: EdgeInsets.zero,
-      margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: dimensions.screenHeight*0.01),
       onTap: widget.onTap,
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 15, left: 10, right: 10),
+            padding:  EdgeInsets.only(top: dimensions.screenHeight*0.03, bottom: dimensions.screenHeight*0.015, left: dimensions.screenHeight*0.015, right: dimensions.screenHeight*0.01),
             child: Column(
               children: [
                Row(
-                 spacing: 10,
+                 spacing: dimensions.screenHeight*0.01,
                  crossAxisAlignment: CrossAxisAlignment.start,
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: [
@@ -122,7 +123,7 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                     ),
 
                     30.width,
-                    Container(width: 1,height:30, color: Colors.grey,),
+                    Container(width: 1,height:dimensions.screenHeight*0.03, color: Colors.grey,),
 
                     Expanded(
                       child: Row(
@@ -152,7 +153,7 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                   bottomRight: Radius.circular(10),
                 )
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.01),
               child: Text(widget.level!, style: textStyle12(context, color: CustomColor.whiteColor,fontWeight: FontWeight.w400),)),
 
           Positioned(

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:fetchtrue/helper/api_helper.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
+import '../../../helper/api_client.dart';
 import '../model/lead_model.dart';
 
 class LeadRepository {

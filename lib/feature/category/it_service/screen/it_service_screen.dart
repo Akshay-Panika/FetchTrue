@@ -47,8 +47,9 @@ class _ItServiceScreenState extends State<ItServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
-    final double searchBarHeight = 50;
+    final double searchBarHeight = dimensions.screenHeight*0.06;
 
     return Scaffold(
       body: CustomScrollView(

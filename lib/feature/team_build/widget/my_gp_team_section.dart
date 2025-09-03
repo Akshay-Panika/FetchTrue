@@ -33,7 +33,7 @@ class MyGpTeamSection extends StatelessWidget {
               id: member!.id,
               memberId: member.userId,
               name: member.fullName,
-              level: 'GP',
+              level: member.packageStatus,
               address: '_______',
               phone: member.mobileNumber,
               earning: 'My Earning\n₹ ${earning?.toStringAsFixed(2)}',

@@ -1,5 +1,6 @@
 
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,14 +29,14 @@ class ReferAndEarnWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('Your Fetch True', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: CustomColor.appColor),),
-              Text('Your friend are going to love us tool', style: TextStyle(fontSize: 14),),
+              Text('Your Fetch True', style: textStyle16(context, color: CustomColor.appColor),),
+              Text('Your friend are going to love us tool', style: textStyle14(context, fontWeight: FontWeight.w400),),
               5.height,
-              Text('Refer And Win up to ____', style: TextStyle(fontSize: 16, color: CustomColor.iconColor, fontWeight: FontWeight.w600),),
+              Text('Refer And Win up to ____', style: textStyle16(context,color: CustomColor.iconColor,),),
             ],
           ),
 
-          Image.asset('assets/image/inviteFrnd.png', height: 180, width: double.infinity,)
+          Image.asset('assets/image/inviteFrnd.png', height: dimensions.screenHeight*0.180, width: double.infinity,)
         ],
       ),
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),

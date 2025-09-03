@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
-
-import '../../../helper/api_helper.dart';
+import '../../../helper/api_client.dart';
 import '../model/sign_in_model.dart';
 
 class SignInService {

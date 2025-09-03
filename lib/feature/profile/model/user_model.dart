@@ -14,6 +14,7 @@ class UserModel {
   final List<String> serviceCustomers;
 
   final String? packageType;
+  final String? packageStatus;
   final bool? packageActive;
   final int? packageAmountPaid;
   final num? remainingAmount;
@@ -73,6 +74,7 @@ class UserModel {
     this.otherAddress,
 
     this.packageType,
+    this.packageStatus,
     this.packageActive,
     this.packageAmountPaid,
     this.remainingAmount,
@@ -122,6 +124,7 @@ class UserModel {
           : null,
 
       packageType: json['packageType'],
+      packageStatus: json['packageStatus'],
       packageActive: json['packageActive'],
       packageAmountPaid: json['packageAmountPaid'],
       remainingAmount: json['remainingAmount'],

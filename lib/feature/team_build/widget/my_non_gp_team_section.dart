@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/team_build/model/my_team_model.dart';
 import 'package:fetchtrue/feature/team_build/widget/team_card_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,10 +15,11 @@ class MyNonGpTeamSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return SafeArea(
       child: ListView.builder(
         itemCount: members.length,
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.01),
         itemBuilder: (context, index) {
 
           final member = members[index].user;

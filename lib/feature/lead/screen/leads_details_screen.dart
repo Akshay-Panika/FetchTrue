@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../model/lead_model.dart';
-import '../model/leads_model.dart';
 import '../widget/leads_details_widget.dart';
 import '../widget/leads_status_widget.dart';
 
@@ -18,7 +16,7 @@ class LeadsDetailsScreen extends StatelessWidget {
     final userSession = Provider.of<UserSession>(context);
 
     return Scaffold(
-      appBar: CustomAppBar(title: '${leadName}', showBackButton: true,),
+      appBar: CustomAppBar(title: 'Details', showBackButton: true,),
 
       backgroundColor: CustomColor.whiteColor,
       body: SafeArea(

@@ -7,5 +7,5 @@ import '../costants/custom_icon.dart';
 Widget CustomSearchIcon({VoidCallback? onTap}){
   return InkWell(
       onTap: onTap,
-      child: Image.asset(CustomIcon.searchIcon, color: CustomColor.appColor,scale: 25,));
+      child: Image.asset(CustomIcon.searchIcon, color: CustomColor.appColor,height: 18,));
 }

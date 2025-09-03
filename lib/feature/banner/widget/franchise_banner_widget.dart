@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:fetchtrue/feature/subcategory/screen/subcategory_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,6 +41,7 @@ class _FranchiseBannerWidgetState extends State<FranchiseBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return  BlocBuilder<BannerBloc, BannerState>(
       builder: (context, state) {
         if (state is BannerLoading) {

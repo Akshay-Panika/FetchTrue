@@ -75,7 +75,6 @@ class AcademyScreen extends StatelessWidget {
       child: Scaffold(
         appBar: CustomAppBar(
           title: 'Academy',
-          showNotificationIcon: true,
         ),
         body: Column(
           children: [

@@ -23,7 +23,7 @@ Widget buildBookingCard(BuildContext context, { required BookingData lead}){
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(lead.service!.serviceName.toString(), style: textStyle14(context),),
+            Expanded(child: Text(lead.service!.serviceName.toString(), style: textStyle14(context),)),
             Text(
               '[ ${getLeadStatus(lead)} ]',
               style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),

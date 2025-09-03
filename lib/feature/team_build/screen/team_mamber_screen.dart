@@ -8,7 +8,6 @@ import 'package:fetchtrue/feature/team_build/screen/team_leads_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
@@ -46,7 +45,7 @@ class TeamMemberScreen extends StatelessWidget {
                   id: member!.id,
                   memberId: member.userId,
                   name: member.fullName,
-                  level: 'GP',
+                  level: member.packageStatus,
                   address: '______',
                   phone: member.mobileNumber,
                   earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
@@ -285,7 +284,7 @@ class _TeamMembers extends StatelessWidget {
             id: member!.id,
             memberId: member.userId,
             name: member.fullName,
-            level: 'GP',
+            level: member.packageStatus == 'nonGP'? 'Non-GP':member.packageStatus,
             address: '_______',
             phone: member.mobileNumber,
             earning: 'My Earning\n₹ ${teamCommission}',

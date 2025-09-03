@@ -45,9 +45,9 @@ class _LegalServiceScreenState extends State<LegalServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
-
-    final double searchBarHeight = 50;
+    final double searchBarHeight = dimensions.screenHeight*0.06;
 
     return Scaffold(
       // appBar: CustomAppBar(title: 'Legal Service',showBackButton: true,),

@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/team_build/widget/my_gp_team_section.dart';
 import 'package:fetchtrue/feature/team_build/widget/my_non_gp_team_section.dart';
 import 'package:fetchtrue/feature/team_build/widget/relationship_manager_card_widget.dart';
@@ -35,6 +36,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
 
   @override
   Widget build(BuildContext context) {
+     Dimensions dimensions = Dimensions(context);
     return DefaultTabController(
       length: 2,
       child: Column(
@@ -54,7 +56,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                     return  Center(child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(CupertinoIcons.person_2_fill, size: 50,color: CustomColor.iconColor,),
+                        Icon(CupertinoIcons.person_2_fill, size: dimensions.screenHeight*0.05,color: CustomColor.iconColor,),
                         Text("No Franchise"),
                       ],
                     ));
@@ -85,7 +87,7 @@ class _MyTeamSectionState extends State<MyTeamSection> {
                                 ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
+                                    Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: dimensions.screenHeight*0.05,),
                                     Text("No Non-GP Member"),
                                   ],
                                 )

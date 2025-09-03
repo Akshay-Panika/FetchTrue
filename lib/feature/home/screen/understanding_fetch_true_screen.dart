@@ -51,28 +51,24 @@ class _UnderstandingFetchTrueScreenState
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return FutureBuilder<UnderstandingFetchTrueModel>(
       future: _futureData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox(
-            height: 200,
+          return  SizedBox(
+            height: dimensions.screenHeight*0.02,
             child: Center(child: CircularProgressIndicator()),
           );
         }
         if (snapshot.hasError) {
-          return SizedBox(
-            height: 200,
-            child: Center(child: Text("Error: ${snapshot.error}")),
-          );
+          print("Error: ${snapshot.error}");
+          return SizedBox.shrink();
         }
 
         final dataList = snapshot.data?.data ?? [];
         if (dataList.isEmpty) {
-          return const SizedBox(
-            height: 200,
-            child: Center(child: Text("No Data Found")),
-          );
+          return SizedBox.shrink();
         }
 
         // सभी वीडियो urls की लिस्ट बनाएं
@@ -87,7 +83,7 @@ class _UnderstandingFetchTrueScreenState
             .toList();
 
         return SizedBox(
-          height: 200,
+          height: dimensions.screenHeight*0.2,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: dataList.length,
@@ -96,7 +92,7 @@ class _UnderstandingFetchTrueScreenState
               final videoId = YoutubePlayer.convertUrlToId(item.videoUrl) ?? '';
 
               return CustomContainer(
-                width: 250,
+                width: dimensions.screenHeight*0.25,
                 border: true,
                 color: Colors.white,
                 padding: EdgeInsets.zero,
@@ -118,8 +114,8 @@ class _UnderstandingFetchTrueScreenState
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(item.fullName),
+                      padding:  EdgeInsets.all(dimensions.screenHeight*0.008),
+                      child: Text(item.fullName, style: textStyle14(context, fontWeight: FontWeight.w400),),
                     ),
                   ],
                 ),

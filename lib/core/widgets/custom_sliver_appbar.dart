@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../costants/custom_color.dart';
 import '../costants/custom_image.dart';
+import '../costants/dimension.dart';
 import '../costants/text_style.dart';
 import 'custom_search_bar.dart';
 
@@ -26,8 +27,10 @@ class CustomSliverAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
+
     return SliverAppBar(
-      expandedHeight: 250 + searchBarHeight,
+      expandedHeight: dimensions.screenHeight*0.25 + searchBarHeight,
       pinned: true,
       stretch: true,
       elevation: isCollapsed ? 0.2 : 0,

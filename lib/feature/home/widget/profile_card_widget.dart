@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/banner/widget/home_banner_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,28 +17,36 @@ import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
 
-class CustomHomeSliverAppbarWidget extends StatelessWidget {
+class CustomHomeSliverAppbarWidget extends StatefulWidget {
   final double searchBarHeight;
   final bool isCollapsed;
-  final Widget background;
 
   const CustomHomeSliverAppbarWidget({
     super.key,
     required this.searchBarHeight,
     required this.isCollapsed,
-    required this.background,
   });
 
   @override
+  State<CustomHomeSliverAppbarWidget> createState() =>
+      _CustomHomeSliverAppbarWidgetState();
+}
+
+class _CustomHomeSliverAppbarWidgetState
+    extends State<CustomHomeSliverAppbarWidget> {
+  bool _bannerAvailable = true; // default false
+
+  @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
+
     final userSession = Provider.of<UserSession>(context);
     final _isLogIn = userSession.isLoggedIn;
 
     if (!_isLogIn) {
       return _buildSliverAppBar(
         context,
-        isCollapsed,
-        background,
+        widget.isCollapsed,
         name: "Guest",
         photo: null,
       );
@@ -51,18 +60,24 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
           }
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         } else if (state is UserLoading) {
-          return  SliverToBoxAdapter(child: _profileShimmer(),);
+          return SliverToBoxAdapter(child: _profileShimmer(dimensions));
         } else if (state is UserLoaded) {
           final user = state.user;
           return _buildSliverAppBar(
-            context, isCollapsed, background,
+            context,
+            widget.isCollapsed,
             name: user.fullName ?? "Guest",
             photo: user.profilePhoto,
             packageActive: user.packageActive,
+            packageStatus: user.packageStatus,
           );
         } else if (state is UserError) {
-          print("Error: ${state.massage}");
-          return _buildSliverAppBar( context, isCollapsed, background, name: "Guest", photo: null,
+          debugPrint("Error: ${state.massage}");
+          return _buildSliverAppBar(
+            context,
+            widget.isCollapsed,
+            name: "Guest",
+            photo: null,
           );
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -72,17 +87,20 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
 
   SliverAppBar _buildSliverAppBar(
       BuildContext context,
-      bool isCollapsed,
-      Widget background, {
+      bool isCollapsed, {
         required String name,
         String? photo,
         bool? packageActive,
+        String? packageStatus,
       }) {
+    Dimensions dimensions = Dimensions(context);
+
     return SliverAppBar(
-      expandedHeight: 250 + searchBarHeight,
+      expandedHeight: (_bannerAvailable ? dimensions.screenHeight*0.25 : 0) + widget.searchBarHeight,
       pinned: true,
       stretch: true,
-      elevation: isCollapsed ? 0.2 : 0,
+      elevation: 0,
+      // elevation: isCollapsed ? 0.2 : 0,
       shadowColor: Colors.black26,
       backgroundColor: Colors.white,
       leading: Padding(
@@ -96,7 +114,8 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
               radius: 20,
               backgroundColor: CustomColor.whiteColor,
               backgroundImage: (photo != null && photo.isNotEmpty)
-                  ? NetworkImage(photo) : AssetImage(CustomImage.nullImage),
+                  ? NetworkImage(photo)
+                  : AssetImage(CustomImage.nullImage) as ImageProvider,
             ),
           ),
         ),
@@ -106,12 +125,19 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
         children: [
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: textStyle16(context, color: isCollapsed ? CustomColor.appColor : Colors.white,),
+            style: textStyle14(
+              context,
+              color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
+            ),
             child: Text(name),
           ),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
-            style: textStyle12(context, color: isCollapsed ? CustomColor.descriptionColor : Colors.white,),
+            style: textStyle12(
+              context,
+              color:
+              (!_bannerAvailable || isCollapsed) ? CustomColor.descriptionColor : Colors.white,
+            ),
             child: const Text('Pune, Maharashtra'),
           ),
         ],
@@ -120,12 +146,32 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
       leadingWidth: 50,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.parallax,
-        background: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(image: 
-              AssetImage(CustomImage.nullBackImage), fit: BoxFit.fill)
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Container(
+              decoration:  BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white,
+                    Colors.grey.shade100,
+                  ],
+                ),
+              ),
             ),
-            child: background),
+            HomeBannerWidget(
+              onStatus: (status) {
+                if (_bannerAvailable != status) {
+                  setState(() {
+                    _bannerAvailable = status; // yahan control ho raha hai
+                  });
+                }
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         InkWell(
@@ -134,20 +180,24 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
             MaterialPageRoute(builder: (context) => PackageScreen()),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            padding:  EdgeInsets.symmetric(vertical: dimensions.screenHeight*0.005, horizontal: dimensions.screenHeight*0.015),
             decoration: BoxDecoration(
-              border:
-              Border.all(color: CustomColor.appColor, width: 0.5),
+              border: Border.all(color: CustomColor.appColor, width: 0.5),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                 Icon(Icons.verified_outlined, size: 16),
+                Icon(Icons.verified_outlined, size: 14,
+                  color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
+                ),
                 10.width,
-                 Text(
-                   packageActive == true ? 'GP':'Package',
-                  style: textStyle12(context, fontWeight: FontWeight.w600,
-                    color:isCollapsed ? CustomColor.appColor : Colors.white,
+                Text(
+                  packageActive == true ? '${packageStatus}' : 'Package',
+                  style: textStyle12(
+                    context,
+                    color: (!_bannerAvailable || isCollapsed)
+                        ? CustomColor.appColor
+                        : Colors.white,
                   ),
                 ),
               ],
@@ -160,16 +210,16 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => NotificationScreen()),
           ),
-          icon:  Icon(
+          icon: Icon(
             Icons.notifications_active_outlined,
-            color: isCollapsed ? CustomColor.iconColor : Colors.white,
+            color: (!_bannerAvailable || isCollapsed) ? CustomColor.iconColor : Colors.white,
           ),
         ),
       ],
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(searchBarHeight),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        preferredSize: Size.fromHeight(widget.searchBarHeight),
+        child:  Padding(
+          padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.012, vertical: dimensions.screenHeight*0.006),
           child: CustomSearchBar(),
         ),
       ),
@@ -178,9 +228,10 @@ class CustomHomeSliverAppbarWidget extends StatelessWidget {
 }
 
 
-Widget _profileShimmer(){
+Widget _profileShimmer(Dimensions dimensions){
+
   return Container(
-    height: 350,
+    height: dimensions.screenHeight*0.35,
     child: Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,

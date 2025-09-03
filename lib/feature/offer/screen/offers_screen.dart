@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ class OfferScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return Scaffold(
       appBar: CustomAppBar(title: 'Offers',),
       body: BlocBuilder<OfferBloc, OfferState>(
@@ -21,16 +23,16 @@ class OfferScreen extends StatelessWidget {
           } else if (state is OfferLoaded) {
             final offers = state.offers;
             return ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
               itemCount: offers.length,
               itemBuilder: (context, index) {
                 final offer = offers[index];
                 return CustomContainer(
-                  height: 200,
+                  height: dimensions.screenHeight*0.18,
                   border: true,
                   color: CustomColor.whiteColor,
                   networkImg: offer.thumbnailImage,
-                  margin: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.010),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OffersDetailsScreen(offersFuture: offer,),)),
                 );
               },

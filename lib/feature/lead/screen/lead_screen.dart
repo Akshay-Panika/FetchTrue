@@ -52,6 +52,8 @@ class _LeadScreenState extends State<LeadScreen> {
   @override
   Widget build(BuildContext context) {
 
+    Dimensions dimensions = Dimensions(context);
+
     final userSession = Provider.of<UserSession>(context);
 
     if (!userSession.isLoggedIn) {
@@ -106,7 +108,7 @@ class _LeadScreenState extends State<LeadScreen> {
                 slivers: [
                   SliverAppBar(
                     floating: true,
-                    toolbarHeight: 30,
+                    toolbarHeight: dimensions.screenHeight*0.035,
                     backgroundColor: CustomColor.whiteColor,
                     flexibleSpace: FlexibleSpaceBar(
                       background: ListView(
@@ -135,21 +137,21 @@ class _LeadScreenState extends State<LeadScreen> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: filteredList.length,
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: dimensions.screenHeight*0.010),
                       itemBuilder: (context, index) {
                         final lead = filteredList[index];
       
       
                         return CustomContainer(
                           color: Colors.white,
-                          margin: EdgeInsets.only(top: 10),
+                          margin: EdgeInsets.only(top: dimensions.screenHeight*0.010),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(lead.service.serviceName, style: textStyle14(context)),
+                                  Expanded(child: Text(lead.service.serviceName, style: textStyle14(context))),
                                   Text(
                                     '[ ${getLeadStatus(lead)} ]',
                                     style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
@@ -189,26 +191,26 @@ class _LeadScreenState extends State<LeadScreen> {
                     ),
                   ),
       
-                  SliverToBoxAdapter(child: SizedBox(height: 20,),)
+                  SliverToBoxAdapter(child: SizedBox(height: dimensions.screenHeight*0.020,),)
                 ],
               );
       
             } else if (state is LeadError) {
              print("❌ ${state.message}");
               return Padding(
-                  padding: EdgeInsetsGeometry.only(top: 280),
+                  padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
                   child:  Center(child: Column(
                     children: [
-                      Image.asset(CustomImage.emptyCart, height: 80,),
+                      Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
                       Text('No leads.'),
                     ],
                   )));
             }
             return Padding(
-                padding: EdgeInsetsGeometry.only(top: 280),
+                padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
                 child:  Center(child: Column(
                   children: [
-                    Image.asset(CustomImage.emptyCart, height: 80,),
+                    Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
                     Text('No leads.'),
                   ],
                 )));

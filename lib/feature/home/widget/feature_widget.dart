@@ -37,65 +37,69 @@ class _FeatureWidgetState extends State<FeatureWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return Row(
-      children: [
-        /// Wallet Balance
-        BlocBuilder<WalletBloc, WalletState>(
-          builder: (context, state) {
-            if (state is WalletLoading) {
-              return  _buildShimmer();
-            } else if (state is WalletLoaded) {
-              final wallet = state.wallet;
-              return  _FeatureItem(
-                icon: Icons.wallet,
-                title: 'Wallet',
-                subtitle: '₹ ${wallet.balance}',
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
-              );
-            } else if (state is WalletError) {
-              return  _FeatureItem(
-                icon: Icons.wallet,
-                title: 'Wallet',
-                subtitle: '0.0',
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
+    Dimensions dimensions = Dimensions(context);
+    return Padding(
+      padding:  EdgeInsets.only(top: dimensions.screenHeight*0.002),
+      child: Row(
+        children: [
+          /// Wallet Balance
+          BlocBuilder<WalletBloc, WalletState>(
+            builder: (context, state) {
+              if (state is WalletLoading) {
+                return  _buildShimmer();
+              } else if (state is WalletLoaded) {
+                final wallet = state.wallet;
+                return  _FeatureItem(
+                  icon: Icons.wallet,
+                  title: 'Wallet',
+                  subtitle: '₹ ${wallet.balance}',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
+                );
+              } else if (state is WalletError) {
+                return  _FeatureItem(
+                  icon: Icons.wallet,
+                  title: 'Wallet',
+                  subtitle: '0.0',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
+                );
+              }
+              return const SizedBox();
+            },
+          ),
 
-        BlocBuilder<MyTeamBloc, MyTeamState>(
-          builder: (context, state) {
-            if (state is MyTeamLoading) {
-              return  _buildShimmer();
-            } else if (state is MyTeamLoaded) {
-              // final teamList = state.response.team;
-              final userCount = state.response.team.length;
-              return _FeatureItem(
-                icon: CupertinoIcons.person_2_fill,
-                title: 'My Team',
-                subtitle: '$userCount', // show count
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
-                ),
-              );
-            } else if (state is MyTeamError) {
-              print('"Error: ${state.message}"');
-              return _FeatureItem(
-                icon: CupertinoIcons.person_2_fill,
-                title: 'My Team',
-                subtitle: '0', // fallback
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
-                ),
-              );
-            }
-            return const SizedBox();
-          },
-        ),
-      ],
+          BlocBuilder<MyTeamBloc, MyTeamState>(
+            builder: (context, state) {
+              if (state is MyTeamLoading) {
+                return  _buildShimmer();
+              } else if (state is MyTeamLoaded) {
+                // final teamList = state.response.team;
+                final userCount = state.response.team.length;
+                return _FeatureItem(
+                  icon: CupertinoIcons.person_2_fill,
+                  title: 'My Team',
+                  subtitle: '$userCount', // show count
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
+                  ),
+                );
+              } else if (state is MyTeamError) {
+                print('"Error: ${state.message}"');
+                return _FeatureItem(
+                  icon: CupertinoIcons.person_2_fill,
+                  title: 'My Team',
+                  subtitle: '0', // fallback
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
+                  ),
+                );
+              }
+              return const SizedBox();
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -110,22 +114,18 @@ class _FeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
+
     return Expanded(
       child: CustomContainer(
         border: true,
         color: Colors.white,
          onTap: onTap,
-        margin: EdgeInsetsGeometry.symmetric(horizontal: 10),
+        margin: EdgeInsetsGeometry.symmetric(horizontal: dimensions.screenHeight*0.010),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            CircleAvatar(radius: 25.4,
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
-                child: Icon(icon, color: CustomColor.appColor),
-              ),
-            ),
-            10.width,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -133,6 +133,9 @@ class _FeatureItem extends StatelessWidget {
                 Text(subtitle, style: textStyle14(context, color: CustomColor.appColor)),
               ],
             ),
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Icon(icon, color: CustomColor.appColor))
           ],
         ),
       ),
@@ -143,22 +146,25 @@ class _FeatureItem extends StatelessWidget {
 
 Widget _buildShimmer(){
   return Expanded(child: CustomContainer(
+    padding: EdgeInsets.all(15),
     child: Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          CircleAvatar(backgroundColor: Colors.white,radius: 25,),
-          10.width,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ShimmerBox(height: 10, width: 100),
+              ShimmerBox(height: 15, width: 100),
               10.height,
               ShimmerBox(height: 10, width: 30),
             ],
           ),
+          Align(
+              alignment: Alignment.bottomRight,
+              child: ShimmerBox(height: 25, width: 25)),
         ],
       ),
     ),

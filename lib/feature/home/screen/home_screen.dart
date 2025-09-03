@@ -45,8 +45,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
-    final double searchBarHeight = 50;
+    final double searchBarHeight = dimensions.screenHeight*0.06;
 
     return NetworkWrapper(
       child: Scaffold(
@@ -55,9 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           slivers: [
             CustomHomeSliverAppbarWidget(
               isCollapsed: _isCollapsed,
-              searchBarHeight: searchBarHeight,
-              background: HomeBannerWidget(),
-            ),
+              searchBarHeight: searchBarHeight,),
 
             /// Futures
             if (userSession.isLoggedIn)
