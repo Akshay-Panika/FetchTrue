@@ -46,13 +46,13 @@ class MarketingCategoryWidget extends StatelessWidget {
               ),
               15.height,
               SizedBox(
-                height:  230,
+                height:  categories.length > 4? 115 :230,
                 child: GridView.builder(
                   itemCount: categories.length,
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                      crossAxisCount: categories.length > 4 ? 1:2,
                       childAspectRatio: 1 / 0.8,
                       crossAxisSpacing: 0,
                       mainAxisSpacing: 0

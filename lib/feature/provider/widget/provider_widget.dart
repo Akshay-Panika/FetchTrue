@@ -1,0 +1,211 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/text_style.dart';
+import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/shimmer_box.dart';
+import '../bloc/provider/provider_bloc.dart';
+import '../bloc/provider/provider_state.dart';
+import '../screen/provider__details_screen.dart';
+
+class ProviderWidget extends StatelessWidget {
+  final String moduleId;
+  const ProviderWidget({super.key, required this.moduleId});
+
+  @override
+  Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
+    return  BlocBuilder<ProviderBloc, ProviderState>(
+      builder: (context, state) {
+        if (state is ProviderLoading) {
+          return  _buildShimmer(dimensions);
+        } else if (state is ProvidersLoaded) {
+          final providers = state.providers.where((e) => e.kycCompleted == true && e.storeInfo!.module == moduleId).toList();
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text('Service Provider', style: textStyle12(context),),
+              ),
+              SizedBox(
+                height:  dimensions.screenHeight*0.22,
+                child: ListView.builder(
+                  itemCount: providers.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    final provider = providers[index];
+                    return CustomContainer(
+                      width: dimensions.screenHeight*0.38,
+                      color: Colors.white,
+                      margin: EdgeInsets.only(left: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                    backgroundImage: provider.storeInfo!.logo == null ? AssetImage(CustomImage.nullImage) :NetworkImage(provider.storeInfo!.logo.toString()),
+                                  ),
+                                  CustomContainer(
+                                      color: CustomColor.appColor,
+                                      margin: EdgeInsets.zero,
+                                      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                      child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                ],
+                              ),
+                              10.width,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(provider.storeInfo!.storeName,style: textStyle14(context),),
+                                  Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                  5.height,
+                                  Text(
+                                    '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
+                                    style: TextStyle(fontSize: 12, color: Colors.black),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          10.height,
+                          Divider(thickness: 0.3),
+
+                          if (provider.subscribedServices.isNotEmpty) ...[
+
+                            Builder(
+                              builder: (context) {
+                                final seenCategoryIds = <String>{};
+                                final uniqueServices = provider.subscribedServices.where((service) {
+                                  final id = service.category?.id;
+                                  if (id != null && !seenCategoryIds.contains(id)) {
+                                    seenCategoryIds.add(id);
+                                    return true;
+                                  }
+                                  return false;
+                                }).toList();
+
+                                // sirf 5 hi items show karna
+                                final limitedServices = uniqueServices.take(4).toList();
+
+                                return Wrap(
+                                  spacing: 15,
+                                  runSpacing: 10,
+                                  children: limitedServices.map((service) {
+                                    return Text('[ ${service.category?.name ?? 'Unknown'} ]',
+                                      style: textStyle12(
+                                        context,
+                                        fontWeight: FontWeight.w400,
+                                        color: CustomColor.appColor,
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              },
+                            )
+                          ]
+
+                        ],
+                      ),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName,),)),
+
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+        else if (state is ProviderError) {
+          print(state.message);
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+
+
+Widget _buildShimmer(Dimensions dimensions){
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding:  EdgeInsets.only(top: 10, left: 10),
+        child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: ShimmerBox(height: 10, width: dimensions.screenHeight*0.1)),
+      ),
+      SizedBox(
+        height: dimensions.screenHeight*0.22,
+        child: ListView.builder(
+          itemCount: 2,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            return CustomContainer(
+              margin: EdgeInsets.only(left: dimensions.screenHeight*0.010, top: dimensions.screenHeight*0.010, bottom: dimensions.screenHeight*0.010),
+              width: dimensions.screenHeight*0.38,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    5.height,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            CircleAvatar(radius: 28),
+                            5.height,
+                            ShimmerBox(height: 15, width: 80)
+                          ],
+                        ),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.10),
+                            5.height,
+                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
+                            5.height,
+                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                    5.height,
+
+                    Wrap(
+                       spacing: 20,
+                       runSpacing: 10,
+                      children: List.generate(4, (index) => ShimmerBox(height: 20, width: dimensions.screenHeight*0.09),)
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },),
+      ),
+    ],
+  );
+}

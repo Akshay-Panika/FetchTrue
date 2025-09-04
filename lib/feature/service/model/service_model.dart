@@ -177,8 +177,6 @@ class StoreInfo {
   }
 }
 
-
-
 class ServiceDetails {
   final String overview;
   final List<String> highlight;

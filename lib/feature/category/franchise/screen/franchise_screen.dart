@@ -9,8 +9,12 @@ import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/franchise_banner_widget.dart';
 import '../../../favorite/screen/favorite_screen.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
+import '../../../lead/widget/provider_card_widget.dart';
+import '../../../provider/widget/provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
+import '../widget/franchise_all_service_widget.dart';
 import '../widget/franchise_category_widget.dart';
+import '../widget/franchise_requirement_service_widget.dart';
 
 
 class FranchiseScreen extends StatefulWidget {
@@ -74,8 +78,16 @@ class _FranchiseScreenState extends State<FranchiseScreen> {
             child: FranchiseCategoryWidget(moduleIndexId: widget.moduleId),
           ),
 
+          SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(
+            child: FranchiseRequirementServiceWidget(moduleId: widget.moduleId,),
+          ),
+          SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
+          SliverToBoxAdapter(
+            child: FranchiseAllServiceWidget(moduleId: widget.moduleId,),
+          ),
 
-          SliverToBoxAdapter(child: 500.height,)
+          SliverToBoxAdapter(child: 100.height,)
         ],
       ),
     );

@@ -38,6 +38,7 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return BlocBuilder<SubcategoryBloc, SubcategoryState>(
       builder: (context, state) {
         if (state is SubcategoryLoading) {
@@ -60,24 +61,23 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
           }
 
           return  SizedBox(
-            height: 145,
+            height: dimensions.screenHeight*0.145,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(dimensions.screenHeight*0.005),
               children: List.generate(subcategories.length, (index) {
                 final sub = subcategories[index];
                 final isSelected = sub.id == _selectedId;
                 return Container(
-                  width: 80,
-                  margin: EdgeInsets.all(5),
+                  width: dimensions.screenHeight*0.09,
+                  margin: EdgeInsets.symmetric(horizontal: 5),
                   child: Column(
-                    spacing: 5,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CustomContainer(
                         border: true,
-                        height: 80,
+                        height: dimensions.screenHeight*0.08,
                         networkImg: sub.image,
                         margin: EdgeInsets.zero,
                         onTap: () {
@@ -85,6 +85,7 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
                           widget.onChanged?.call(sub.id);
                         },
                       ),
+                      5.height,
                       Text(sub.name,
                         style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,),
                         textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,),

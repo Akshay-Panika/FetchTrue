@@ -298,7 +298,7 @@ class RelationshipManagerSection extends StatelessWidget {
                         name: manager.fullName,
                         phone: manager.mobileNumber,
                         id: manager.userId,
-                        level: manager.packageActive == true ? 'GP' : 'Non-GP',
+                        level: manager.packageActive == true ? '${manager.packageStatus}' : 'Non-GP',
                         address: address.isNotEmpty ? address : null,
                       );
                     } else if (state is UserByIdError) {

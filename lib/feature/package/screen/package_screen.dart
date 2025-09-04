@@ -333,8 +333,8 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text(packages['includes']['title'].toString(), style: textStyle14(context, color: CustomColor.blackColor),),
-                Text(packages['includes']['des'].toString(), style: textStyle14(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+                Text(packages['includes']['title'].toString(), style: textStyle12(context, color: CustomColor.blackColor),),
+                Text(packages['includes']['des'].toString(), style: textStyle12(context, color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
             ],
           ),
         ),
@@ -413,7 +413,7 @@ Widget _buildEnhancedFeaturesSection(BuildContext context) {
           children: [
              Icon(Icons.star, color: CustomColor.appColor, size: 16),
             6.width,
-            Text('What’s Includes', style: textStyle14(context, color: CustomColor.appColor),),
+            Text('What’s Includes', style: textStyle12(context, color: CustomColor.appColor),),
           ],
         ),
         16.width,
@@ -460,7 +460,7 @@ class _PaymentCardState extends State<PaymentCard> {
           if(user.packageActive != true)
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
-              child: Center(child: Text('Unlock premium features and grow your team',style: textStyle14(context,color: CustomColor.descriptionColor),)),
+              child: Center(child: Text('Unlock premium features and grow your team',style: textStyle12(context,color: CustomColor.descriptionColor),)),
             ),
           10.height,
 
@@ -470,7 +470,7 @@ class _PaymentCardState extends State<PaymentCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Fetch True Growth Partner Package', style: textStyle14(context, color: CustomColor.blackColor),),
+                  Text('Fetch True Growth Partner Package', style: textStyle12(context, color: CustomColor.blackColor),),
                   10.height,
                   Column(
                     children: [
@@ -495,7 +495,7 @@ class _PaymentCardState extends State<PaymentCard> {
                                 5.height,
 
                                 Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,
-                                style: textStyle12(context),)
+                                style: textStyle12(context, fontWeight: FontWeight.w400),)
                               ],
                             ),
                           ),
@@ -505,7 +505,7 @@ class _PaymentCardState extends State<PaymentCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Your Extra Benefits', style: textStyle14(context),),
-                          Text('You’ve received ₹3,000 as your fixed monthly earning bonus for purchasing the package.', style: textStyle12(context),),
+                          Text('You’ve received ₹3,000 as your fixed monthly earning bonus for purchasing the package.', style: textStyle12(context, fontWeight: FontWeight.w400),),
                           
                           Text('Safe, secure, and assured returns on your investment.', style: textStyle12(context,color: CustomColor.appColor, fontWeight: FontWeight.w400),)
                         ],
@@ -841,9 +841,9 @@ Widget _labelText(
     children: [
       Row(
         children: [
-          Icon(Icons.check_circle_outline_outlined, size: 16, color: CustomColor.greenColor,),
+          Icon(Icons.verified_outlined, size: 16, color: CustomColor.greenColor,),
           const SizedBox(width: 10),
-          Text(headline.toUpperCase(), style: textStyle12(context)),
+          Text(headline.toUpperCase(), style: textStyle12(context, fontWeight: FontWeight.w400)),
         ],
       ),
       const SizedBox(height: 4),
@@ -862,7 +862,7 @@ Widget _labelText(
                 children: [
                    Padding(
                      padding: const EdgeInsets.only(top: 5.0,right: 5),
-                     child: Icon(Icons.circle, size: 8, color: CustomColor.iconColor,),
+                     child: Icon(Icons.circle, size: 8, color: Colors.grey[500],),
                    ),
 
                   Expanded(
@@ -871,6 +871,7 @@ Widget _labelText(
                       style: textStyle12(
                         context,
                         fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade600
                       ),
                     ),
                   ),

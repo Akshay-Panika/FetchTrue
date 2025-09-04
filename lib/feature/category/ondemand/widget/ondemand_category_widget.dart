@@ -45,7 +45,7 @@ class OnDemandCategoryWidget extends StatelessWidget {
               ),
               15.height,
               SizedBox(
-                height: 250,
+                height:  260,
                 child: GridView.builder(
                   itemCount:categories.length,
                   scrollDirection: Axis.horizontal,

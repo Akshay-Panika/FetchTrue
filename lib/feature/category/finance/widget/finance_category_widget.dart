@@ -47,13 +47,13 @@ class FinanceCategoryWidget extends StatelessWidget {
               ),
               15.height,
               SizedBox(
-                height: 300,
+                height: categories.length < 4 ? 125 : 250,
                 child: GridView.builder(
                   itemCount:categories.length,
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+                      crossAxisCount: categories.length < 4 ? 1:2,
                       // childAspectRatio: 1 / 0.9,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10

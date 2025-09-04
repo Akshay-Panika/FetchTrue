@@ -14,7 +14,7 @@ class CustomFavoriteButton extends StatelessWidget {
             color: Colors.white.withOpacity(0.5),
             spreadRadius: 1,
             blurRadius: 9,
-            offset: Offset(0, 2), // नीचे की तरफ हल्का शैडो
+            offset: Offset(0, 2),
           ),
         ],
       ),

@@ -27,6 +27,7 @@ class ApiUrls{
   static const String checkout = '${baseUrl}checkout';
   static const String leads = '${baseUrl}checkout/lead-by-user';
   static const String leadStatus = '${baseUrl}leads';
+  static const String understandingFetchTrue = '${baseUrl}academy/understandingfetchtrue';
 
   static const String myTeam = '${baseUrl}team-build/my-team';
   static const String upcomingLeadCommission = '${baseUrl}upcoming-lead-commission/find-by-checkoutId';

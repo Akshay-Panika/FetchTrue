@@ -54,6 +54,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       labelColor: CustomColor.appColor,
                       unselectedLabelColor: CustomColor.descriptionColor,
                       indicatorColor: CustomColor.appColor,
+                      physics: AlwaysScrollableScrollPhysics(),
                       tabs: const [
                         Tab(text: "Self Earning"),
                         Tab(text: "Team Build"),

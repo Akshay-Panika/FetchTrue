@@ -142,7 +142,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CustomContainer(
-                                height: 160,
+                                height: dimensions.screenHeight*0.16,
                                 margin: EdgeInsets.zero,
                                 padding: EdgeInsets.zero,
                                 networkImg: data.thumbnailImage,
@@ -157,7 +157,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                       CustomFavoriteButton(),
 
                                       Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                        padding:  EdgeInsets.symmetric(vertical: 5, horizontal: dimensions.screenHeight*0.01),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(10),

@@ -78,12 +78,13 @@ class ModuleWidget extends StatelessWidget {
                       children: [
                         Hero(
                           tag: module.id,
-                          child: Material( // 👈 ye add karo
+                          child: Material(
                             color: Colors.transparent,
-                            child: CustomNetworkImage(
-                              borderRadius: BorderRadius.circular(dimensions.screenHeight*0.010),
-                              imageUrl: module.image,
-                              fit: BoxFit.fill,
+                            child: CustomContainer(
+                              color: Colors.transparent,
+                              margin: EdgeInsets.zero,
+                              networkImg: module.image,
+                              // fit: BoxFit.fill,
                             ),
                           ),
                         ),

@@ -1,9 +1,12 @@
+import 'package:fetchtrue/feature/category/finance/widget/finance_all_service_widget.dart';
+import 'package:fetchtrue/feature/category/finance/widget/finance_requirement_service_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/dimension.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/finance_banner_widget.dart';
+import '../../../provider/widget/provider_widget.dart';
 import '../widget/finance_category_widget.dart';
 
 
@@ -64,6 +67,18 @@ class _FinanceServiceScreenState extends State<FinanceServiceScreen> {
           SliverToBoxAdapter(
             child: FinanceCategoryWidget(moduleId: widget.moduleId),
           ),
+
+          SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(
+            child: FinanceRequirementServiceWidget(moduleId: widget.moduleId,),
+          ),
+          SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
+
+          SliverToBoxAdapter(
+            child: FinanceAllServiceWidget(moduleId: widget.moduleId,),
+          ),
+
+          SliverToBoxAdapter(child: 100.height,)
         ],
       ),
     );

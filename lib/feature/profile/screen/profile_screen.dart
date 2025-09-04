@@ -153,10 +153,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     children:  [
                                       Icon(Icons.verified,
-                                          size: 20, color: user.packageActive == true ? CustomColor.greenColor :Colors.grey),
+                                          size: 20, color: user.packageActive == true ? CustomColor.appColor :Colors.grey),
                                       SizedBox(width: 10),
                                       Text(user.packageActive == true ? '${user.packageStatus}':'Package',
-                                          style: TextStyle(color: user.packageActive == true ? CustomColor.greenColor :Colors.grey)),
+                                          style: TextStyle(color: user.packageActive == true ? CustomColor.appColor :Colors.grey)),
                                     ],
                                   ),
                                 )

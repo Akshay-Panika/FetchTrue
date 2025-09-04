@@ -95,10 +95,10 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen()));
                     }),
         
-                    if(userSession.isLoggedIn)
-                    _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
-                    }),
+                    // if(userSession.isLoggedIn)
+                    // _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
+                    //   Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
+                    // }),
         
         
                     _buildTile(context, Icons.person_4_outlined, "Provider", () {
@@ -207,7 +207,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 15.0,top: 10),
-          child: Text(title, style: textStyle14(context)),
+          child: Text(title, style: textStyle12(context)),
         ),
         CustomContainer(
           border: false,
@@ -223,8 +223,8 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
   Widget _buildTile(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 15),
-      leading: Icon(icon, color: Colors.black54, size: 22),
-      title: Text(title, style: textStyle14(context)),
+      leading: Icon(icon, color: Colors.black54, size: 20),
+      title: Text(title, style: textStyle12(context,)),
       trailing: Icon(Icons.arrow_forward_ios, size: 14, color: CustomColor.iconColor),
       onTap: onTap,
     );

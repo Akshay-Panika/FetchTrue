@@ -151,10 +151,10 @@ class _LeadScreenState extends State<LeadScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(child: Text(lead.service.serviceName, style: textStyle14(context))),
+                                  Expanded(child: Text(lead.service.serviceName, style: textStyle12(context))),
                                   Text(
                                     '[ ${getLeadStatus(lead)} ]',
-                                    style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
+                                    style: textStyle12(context, color: getStatusColor(lead)),
                                   )
                                 ],
                               ),

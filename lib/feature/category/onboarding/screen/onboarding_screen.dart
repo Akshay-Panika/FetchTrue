@@ -1,10 +1,13 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/category/onboarding/widget/onboarding_all_service_widget.dart';
 import 'package:fetchtrue/feature/category/onboarding/widget/onboarding_category_widget.dart';
+import 'package:fetchtrue/feature/category/onboarding/widget/onboarding_requirement_service_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/onboarding_banner_widget.dart';
+import '../../../provider/widget/provider_widget.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final String moduleId;
@@ -60,8 +63,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           SliverToBoxAdapter(child: OnboardingCategoryWidget(moduleId: widget.moduleId,),),
 
-          SliverToBoxAdapter(child: 1000.height,)
+          SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(
+            child: OnboardingRequirementServiceWidget(moduleId: widget.moduleId,),
+          ),
+          SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
 
+          SliverToBoxAdapter(
+            child: OnboardingAllServiceWidget(moduleId: widget.moduleId,),
+          ),
+
+          SliverToBoxAdapter(child: 100.height,)
         ],
       ),
     );

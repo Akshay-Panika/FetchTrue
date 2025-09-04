@@ -28,7 +28,7 @@ class GiftPackageWidget extends StatelessWidget {
       children: [
         Text(
           'Welcome Gift',
-          style: textStyle14(context, color: CustomColor.appColor),
+          style: textStyle12(context, color: CustomColor.appColor),
         ),
         10.height,
         Wrap(
@@ -47,7 +47,7 @@ class GiftPackageWidget extends StatelessWidget {
                 children: [
                   Icon(giftItem['icon'], size: 16, color: CustomColor.appColor),
                   5.width,
-                  Text(giftItem['gift'], style: textStyle12(context)),
+                  Text(giftItem['gift'], style: textStyle12(context, color: Colors.grey.shade600, fontWeight: FontWeight.w400)),
                 ],
               ),
             );

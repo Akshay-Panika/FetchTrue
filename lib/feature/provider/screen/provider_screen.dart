@@ -9,15 +9,8 @@ import '../../../core/widgets/custom_container.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_state.dart';
 
-class ProviderScreen extends StatefulWidget {
+class ProviderScreen extends StatelessWidget {
   const ProviderScreen({super.key});
-
-  @override
-  State<ProviderScreen> createState() => _ProviderScreenState();
-}
-
-class _ProviderScreenState extends State<ProviderScreen> {
-
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +24,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
               return Center(child: CircularProgressIndicator());
             } else if (state is ProvidersLoaded) {
               final providers = state.providers.where((e) => e.kycCompleted == true).toList();
-        
+
               return ListView.builder(
                 itemCount: providers.length,
                 padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
@@ -67,7 +60,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                   ],
                                 ),
                                 10.width,
-        
+
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -83,10 +76,10 @@ class _ProviderScreenState extends State<ProviderScreen> {
                               ],
                             ),
                             10.height,
-        
+
                             if (provider.subscribedServices.isNotEmpty) ...[
                               Divider(thickness: 0.3),
-        
+
                               Builder(
                                 builder: (context) {
                                   final seenCategoryIds = <String>{};
@@ -98,7 +91,7 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                     }
                                     return false;
                                   }).toList();
-        
+
                                   return Wrap(
                                     spacing: 10,
                                     runSpacing: 10,
@@ -120,8 +113,8 @@ class _ProviderScreenState extends State<ProviderScreen> {
                                 },
                               )
                             ],
-        
-        
+
+
                           ],
                         ),
                         Positioned(

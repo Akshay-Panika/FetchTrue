@@ -1,4 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/category/business/widget/business_all_service_widget.dart';
+import 'package:fetchtrue/feature/category/business/widget/business_requirement_service_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/custom_color.dart';
@@ -9,6 +11,7 @@ import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/business_banner_widget.dart';
 import '../../../banner/widget/home_banner_widget.dart';
+import '../../../provider/widget/provider_widget.dart';
 import '../widget/business_category_widget.dart';
 
 class BusinessScreen extends StatefulWidget {
@@ -65,7 +68,16 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
           SliverToBoxAdapter(child: BusinessCategoryWidget(moduleId: widget.moduleId,),),
 
-          SliverToBoxAdapter(child: 500.height,)
+          SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(
+            child: BusinessRequirementServiceWidget(moduleId: widget.moduleId,),
+          ),
+          SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
+          SliverToBoxAdapter(
+            child: BusinessAllServiceWidget(moduleId: widget.moduleId,),
+          ),
+
+          SliverToBoxAdapter(child: 100.height,)
 
         ],
       ),
