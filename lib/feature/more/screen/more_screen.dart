@@ -1,4 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/five_x/screen/five_x_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -88,6 +89,10 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         
                     _buildTile(context, Icons.card_giftcard, "Package", () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen()));
+                    }),
+
+                    _buildTile(context, Icons.verified_outlined, "Five X", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
                     }),
         
         

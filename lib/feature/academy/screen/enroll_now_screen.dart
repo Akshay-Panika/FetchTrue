@@ -56,15 +56,13 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                 border: true,
                 color: CustomColor.whiteColor,
                 padding: EdgeInsets.zero,
-                height: dimensions.screenHeight * 0.25,
                 margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
                 child: Column(
                   children: [
-                    Expanded(
-                      child: CustomContainer(
-                        margin: EdgeInsets.zero,
-                        networkImg: widget.webinar.imageUrl,
-                      ),
+                    CustomContainer(
+                      margin: EdgeInsets.zero,
+                      networkImg: widget.webinar.imageUrl,
+                      height: dimensions.screenHeight * 0.18
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -74,43 +72,38 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    widget.webinar.name,
-                                    style: textStyle14(context),
-                                  ),
-                                  Text(
-                                    'Date: ${widget.webinar.date}',
-                                    style: textStyle12(context),
-                                  ),
-                                ],
+                              Text(
+                                widget.webinar.name,
+                                style: textStyle12(context),
                               ),
                               Text(
                                 widget.webinar.description,
                                 style: textStyle12(context,
-                                    color: CustomColor.descriptionColor),
+                                    color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis,maxLines: 2,
                               ),
                             ],
                           ),
+                          5.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Text(
+                                'Date: ${widget.webinar.date}',
+                                style: textStyle12(context, fontWeight: FontWeight.w400),
+                              ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Start: ${widget.webinar.startTime}',
-                                    style: textStyle12(context),
+                                    style: textStyle12(context,fontWeight: FontWeight.w400),
                                   ),
                                   SizedBox(
                                     width: dimensions.screenWidth * 0.03,
                                   ),
                                   Text(
                                     'End: ${widget.webinar.endTime}',
-                                    style: textStyle12(context),
+                                    style: textStyle12(context, fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),

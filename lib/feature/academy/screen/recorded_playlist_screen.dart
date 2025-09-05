@@ -257,10 +257,10 @@ class _RecordedPlaylistScreenState extends State<RecordedPlaylistScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(video.videoName, style: textStyle16(context)),
+                      Text(video.videoName, style: textStyle12(context)),
                       Text(
                         video.videoDescription,
-                        style: textStyle14(context, color: CustomColor.descriptionColor),
+                        style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400,),overflow: TextOverflow.ellipsis,maxLines: 3,
                       ),
                     ],
                   ),

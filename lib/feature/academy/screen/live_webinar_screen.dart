@@ -49,6 +49,15 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
 
               final webinars = snapshot.data!.data;
 
+              if(webinars.isEmpty){
+                return Column(
+                  children: [
+                    SizedBox(height: dimensions.screenHeight*0.4,),
+                    const Center(child: Text('No Webinars.')),
+                  ],
+                );
+              }
+
               return Column(
                 children: [
                   ListView.builder(
@@ -59,20 +68,18 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                     itemBuilder: (context, index) {
                       final webinar = webinars[index];
 
-                      final List<dynamic> userList = webinar.user;
+                      // final List<dynamic> userList = webinar.user;
 
                       return CustomContainer(
                         color: CustomColor.whiteColor,
                         padding: EdgeInsets.zero,
-                        height: dimensions.screenHeight * 0.25,
                         margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
                         child: Column(
                           children: [
-                            Expanded(
-                              child: CustomContainer(
-                                margin: EdgeInsets.zero,
-                                networkImg: webinar.imageUrl,
-                              ),
+                            CustomContainer(
+                              margin: EdgeInsets.zero,
+                              networkImg: webinar.imageUrl,
+                              height: dimensions.screenHeight * 0.18,
                             ),
 
                             Padding(
@@ -86,16 +93,16 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                       Expanded(
                                         child: Text(
                                           webinar.name,
-                                          style: textStyle14(context),
+                                          style: textStyle12(context),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      Text('Date: ${webinar.date}', style: textStyle12(context)),
+
                                     ],
                                   ),
-                                  Text(webinar.description, style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                  Text(webinar.description, style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis,maxLines: 2,),
 
-                                  const SizedBox(height: 8),
+                                  8.height,
 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,9 +110,9 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                       Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Start: ${webinar.startTime}', style: textStyle12(context)),
+                                          Text('Start: ${webinar.startTime}', style: textStyle12(context, fontWeight: FontWeight.w400)),
                                           SizedBox(width: dimensions.screenWidth * 0.03),
-                                          Text('End: ${webinar.endTime}', style: textStyle12(context)),
+                                          Text('End: ${webinar.endTime}', style: textStyle12(context, fontWeight: FontWeight.w400)),
                                         ],
                                       ),
 
@@ -127,15 +134,10 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                       ),
                                     ],
                                   ),
+                                  Text('Date: ${webinar.date}', style: textStyle12(context, fontWeight: FontWeight.w400)),
 
                                   const SizedBox(height: 8),
 
-                                  // // Optional: Show number of users enrolled or status summary
-                                  // if (userList.isNotEmpty)
-                                  //   Text(
-                                  //     'Users enrolled: ${userList.length}',
-                                  //     style: textStyle12(context, color: Colors.grey),
-                                  //   ),
                                 ],
                               ),
                             )
@@ -144,11 +146,11 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                       );
                     },
                   ),
-                   30.height,
+                  30.height,
 
-                   Text('-: Attend at least 3 live webinar to move forward :-', style: textStyle16(context),),
+                  Text('-: Attend at least 3 live webinar to move forward :-', style: textStyle16(context),),
                   ListView.builder(
-                    itemCount: 3,
+                    itemCount: webinars.length < 3 ? webinars.length : 3,
                     // itemCount: webinars.length,
                     shrinkWrap: true,
                     padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
@@ -163,7 +165,7 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                             border: false,
                             color: CustomColor.whiteColor,
                             padding: EdgeInsets.zero,
-                            height: dimensions.screenHeight * 0.1,
+                            height: dimensions.screenHeight * 0.12,
                             margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
                             child: Row(
                               children: [
@@ -171,6 +173,10 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                   width: dimensions.screenWidth * 0.35,
                                   margin: EdgeInsets.zero,
                                   networkImg: data.imageUrl,
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Icon(Icons.library_add_check_outlined, color: CustomColor.whiteColor),
+                                  ),
                                 ),
 
                                 Expanded(
@@ -179,29 +185,22 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('${data.name}', style: textStyle14(context)),
-                                        Text('${data.description}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                        Text('${data.name}', style: textStyle12(context)),
+                                        Text('${data.description}', style: textStyle12(context, color: CustomColor.greyColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis, maxLines: 2,),
                                       ],
                                     ),
                                   ),
                                 ),
 
-                                Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                                    )),
-
                               ],
                             ),
                           ),
 
-                           Positioned(
-                            top: 20,
-                            right: 20,
-                            child: Icon(Icons.library_add_check_outlined, color: CustomColor.appColor),
-                          )
+                          Positioned(
+                            bottom: 5,
+                            right: 5,
+                            child: Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
+                          ),
                         ],
                       );
                     },

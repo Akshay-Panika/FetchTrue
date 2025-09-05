@@ -1,4 +1,3 @@
-import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,14 +7,11 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../package/bloc/package_bloc.dart';
-import '../../package/bloc/package_event.dart';
-import '../../package/bloc/package_state.dart';
+import '../../package/bloc/package/package_bloc.dart';
+import '../../package/bloc/package/package_state.dart';
 import '../bloc/wallet_bloc.dart';
-import '../bloc/wallet_event.dart';
 import '../bloc/wallet_state.dart';
 import '../model/wallet_model.dart';
-import '../repository/wallet_repository.dart';
 
 class WalletScreen extends StatefulWidget {
   final String userId;

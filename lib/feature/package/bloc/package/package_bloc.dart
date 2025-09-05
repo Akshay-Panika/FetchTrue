@@ -1,7 +1,8 @@
+
+import 'package:fetchtrue/feature/package/bloc/package/package_event.dart';
+import 'package:fetchtrue/feature/package/bloc/package/package_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fetchtrue/feature/package/bloc/package_event.dart';
-import 'package:fetchtrue/feature/package/bloc/package_state.dart';
-import '../repository/package_repository.dart';
+import '../../repository/package_repository.dart';
 
 class PackageBloc extends Bloc<PackageEvent, PackageState> {
   PackageBloc() : super(PackageInitial()) {

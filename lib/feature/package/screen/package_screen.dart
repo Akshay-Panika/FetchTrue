@@ -5,6 +5,7 @@ import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
+import 'package:fetchtrue/feature/package/screen/widget/progressbar_widget.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
 import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,8 +20,8 @@ import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
 import '../../profile/widget/gift_package_widget.dart';
-import '../bloc/package_bloc.dart';
-import '../bloc/package_state.dart';
+import '../bloc/package/package_bloc.dart';
+import '../bloc/package/package_state.dart';
 import '../model/package_model.dart';
 import '../repository/package_buy_repository.dart';
 
@@ -341,11 +342,11 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
 
 
         if(user.packageActive == true)
-          CustomProgressBar(
-            value: 0.3, // 30%
-            leftLabel: "3",
-            rightLabel: "10",
+          ProgressbarWidget(
+            userId: user.id,
+            targetCount: 10,
           ),
+
 
         Column(
           children: List.generate(
@@ -885,78 +886,3 @@ Widget _labelText(
   );
 }
 
-class CustomProgressBar extends StatelessWidget {
-  final double value; // 0.0 - 1.0
-  final Color activeColor;
-  final String leftLabel;
-  final String rightLabel;
-
-  const CustomProgressBar({
-    super.key,
-    required this.value,
-    required this.leftLabel,
-    required this.rightLabel,
-    this.activeColor = Colors.green,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: LinearProgressIndicator(
-              value: value,
-              minHeight: 5,
-              backgroundColor: Colors.grey[200],
-              valueColor: AlwaysStoppedAnimation<Color>(activeColor),
-            ),
-          ),
-          10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _labelBox(context, leftLabel, CustomColor.greyColor),
-              _labelBox(context, rightLabel, CustomColor.greenColor),
-            ],
-          ),
-          15.height,
-
-          CustomContainer(
-            color: CustomColor.appColor,
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add, size: 20,color: CustomColor.whiteColor,),
-                10.width,
-                Text('Add Remining Partners', style: textStyle14(context, color: CustomColor.whiteColor),)
-              ],
-            ),
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _labelBox(BuildContext context, String text, Color activeColor) {
-    return Container(
-      height: 22,
-      width: 22,
-      decoration: BoxDecoration(
-        color: activeColor,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-      ),
-    );
-  }
-}

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../model/package_model.dart';
+import '../../model/package_model.dart';
 
 abstract class PackageState extends Equatable {
   @override

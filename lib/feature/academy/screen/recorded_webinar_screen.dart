@@ -55,16 +55,14 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
                 return  CustomContainer(
                   color: CustomColor.whiteColor,
                   padding: EdgeInsets.zero,
-                  height: dimensions.screenHeight*0.25,
                   margin: EdgeInsets.only(top: dimensions.screenHeight*0.015),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: CustomContainer(
-                          margin: EdgeInsets.zero,
-                          networkImg: webinar.imageUrl,
-                        ),
+                      CustomContainer(
+                        margin: EdgeInsets.zero,
+                        networkImg: webinar.imageUrl,
+                        height: dimensions.screenHeight*0.18,
                       ),
 
                       Padding(
@@ -74,14 +72,14 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
                           children: [
                             Text(
                               webinar.name,
-                              style: textStyle14(context),
+                              style: textStyle12(context),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
                               webinar.description,
-                              style: textStyle12(context, color: CustomColor.descriptionColor),
-                              maxLines: 2,
+                              style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
