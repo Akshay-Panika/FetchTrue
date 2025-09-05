@@ -5,10 +5,10 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../bloc/five_x/FiveXBloc.dart';
 import '../bloc/five_x/FiveXEvent.dart';
 import '../bloc/five_x/FiveXState.dart';
+import '../model/FiveXModel.dart';
 import '../repository/FiveXRepository.dart';
 
 
@@ -28,14 +28,14 @@ class FiveXScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is FiveXLoaded) {
 
-              final data = state.data.length;
+              final data = state.data.first;
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildProgressCard(),
+                      _buildProgressCard(data),
                       SizedBox(height: 16),
                       _buildTimelineCard(context),
                       SizedBox(height: 16),
@@ -58,7 +58,7 @@ class FiveXScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressCard() {
+  Widget _buildProgressCard(FiveXModel? fiveX) {
     return CustomContainer(
       color: Colors.white,
       padding: EdgeInsets.all(20.0),
@@ -246,19 +246,12 @@ class FiveXScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 12),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '$index',
-                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
+          Center(
+            child: Text(
+              '$index.',
+              style: TextStyle(color: CustomColor.appColor, fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
           SizedBox(width: 12),
