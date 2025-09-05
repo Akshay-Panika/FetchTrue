@@ -1,4 +1,4 @@
-import '../../ads/model/add_model.dart';
+import '../model/add_model.dart';
 
 abstract class AdsState {}
 

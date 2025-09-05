@@ -7,7 +7,7 @@ class OfferRepository {
 
   static Future<List<OfferModel>> fetchOffers() async {
     try {
-      final response = await _dio.get("${ApiUrls.baseUrl}/offer");
+      final response = await _dio.get("${ApiUrls.offer}");
 
       if (response.statusCode == 200) {
         final data = response.data;

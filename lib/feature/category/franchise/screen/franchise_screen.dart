@@ -9,6 +9,7 @@ import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/franchise_banner_widget.dart';
 import '../../../favorite/screen/favorite_screen.dart';
 import '../../../../core/widgets/custom_search_bar.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../lead/widget/provider_card_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 import '../../../search/screen/search_screen.dart';
@@ -79,6 +80,7 @@ class _FranchiseScreenState extends State<FranchiseScreen> {
           ),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
           SliverToBoxAdapter(
             child: FranchiseRequirementServiceWidget(moduleId: widget.moduleId,),
           ),

@@ -222,14 +222,21 @@ class _MemberLeads extends StatelessWidget {
                               return Column(
                                 children: [
 
-                                  if(leadCommission == 0)
+                                  if(leads.isAccepted == false)
                                     Text(
-                                      'Earning\nOpportunity ₹ ${data.share2}',
+                                      'After Accepted\n₹ __',
                                       style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
                                       textAlign: TextAlign.end,
                                     ),
 
-                                  if(leadCommission != 0)
+                                  if(leads.isAccepted == true && leads.isCompleted == false)
+                                    Text(
+                                      'Earning\nOpportunity ₹ ${data.share2.toStringAsFixed(2)}',
+                                      style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                      textAlign: TextAlign.end,
+                                    ),
+
+                                  if(leads.isCompleted == true)
                                     Text(
                                       'My Earning\n₹ ${leadCommission.commissionEarned ?? 0}',
                                       style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),

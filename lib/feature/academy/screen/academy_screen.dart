@@ -77,11 +77,22 @@ class AcademyScreen extends StatelessWidget {
           title: 'Academy',
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Banner Section
-            // const AcademyBannerWidget(),
-        
-            20.height,
+            SizedBox(height: dimensions.screenHeight*0.02),
+            CustomContainer(
+              height: dimensions.screenHeight*0.2,
+              color: WidgetStateColor.transparent,
+              padding: const EdgeInsets.all(20.0),
+              assetsImg: 'assets/image/academy_contact_for_biz.jpg',
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
+            ),
+
+            Padding(
+              padding:  EdgeInsets.only(top: dimensions.screenHeight*0.02,left: dimensions.screenHeight*0.01, bottom: dimensions.screenHeight*0.02),
+              child: Text('Learn, Grow & Build Your Business', style: textStyle14(context, fontWeight: FontWeight.w400),),
+            ),
+
             /// Grid of services
             GridView.builder(
               shrinkWrap: true,
@@ -147,31 +158,7 @@ class AcademyScreen extends StatelessWidget {
               },
             ),
         
-             SizedBox(height: dimensions.screenHeight*0.02),
-        
-            /// Flexible empty container (can be used for footer or other content)
-            CustomContainer(
-              color: CustomColor.whiteColor,
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('You Have Any Doubt For Your Business Ideas', style: TextStyle(fontSize: 16),),
-                        InkWell(
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdviserScreen(),)),
-                            child: Text('Contact Now', style: textStyle18(context, color: CustomColor.appColor),)),
-                      ],
-                    ),
-                  ),
-                  
-                  Image.asset(CustomImage.nullImage, height: 150,)
-                ],
-              ),
-            )
+
           ],
         ),
       ),

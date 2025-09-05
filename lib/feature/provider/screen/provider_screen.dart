@@ -76,10 +76,9 @@ class ProviderScreen extends StatelessWidget {
                               ],
                             ),
                             10.height,
+                            Divider(thickness: 0.3),
 
                             if (provider.subscribedServices.isNotEmpty) ...[
-                              Divider(thickness: 0.3),
-
                               Builder(
                                 builder: (context) {
                                   final seenCategoryIds = <String>{};
@@ -92,35 +91,85 @@ class ProviderScreen extends StatelessWidget {
                                     return false;
                                   }).toList();
 
-                                  return Wrap(
-                                    spacing: 10,
-                                    runSpacing: 10,
-                                    children: uniqueServices.map((service) {
-                                      return CustomContainer(
-                                        margin: EdgeInsets.zero,
-                                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                                        child: Text(
-                                          service.category?.name ?? 'Unknown',
-                                          style: textStyle12(
-                                            context,
-                                            fontWeight: FontWeight.w400,
-                                            color: CustomColor.descriptionColor,
-                                          ),
+                                  // sirf 4 items show karna
+                                  final limitedServices = uniqueServices.take(7).toList();
+
+                                  final children = limitedServices.map((service) {
+                                    return Text(
+                                      '[ ${service.category?.name ?? 'Unknown'} ]',
+                                      style: textStyle12(
+                                        context,
+                                        fontWeight: FontWeight.w400,
+                                        color: CustomColor.appColor,
+                                      ),
+                                    );
+                                  }).toList();
+
+                                  // agar 4 se jyada items hai to end me [etc] add karo
+                                  if (uniqueServices.length > 7) {
+                                    children.add(
+                                      Text(
+                                        '[etc]',
+                                        style: textStyle12(
+                                          context,
+                                          fontWeight: FontWeight.w400,
+                                          color: CustomColor.appColor,
                                         ),
-                                      );
-                                    }).toList(),
+                                      ),
+                                    );
+                                  }
+
+                                  return Wrap(
+                                    spacing: 15,
+                                    runSpacing: 10,
+                                    children: children,
                                   );
                                 },
                               )
-                            ],
+                            ]
 
+                            // Divider(thickness: 0.3),
+                            //
+                            // if (provider.subscribedServices.isNotEmpty) ...[
+                            //
+                            //   Builder(
+                            //     builder: (context) {
+                            //       final seenCategoryIds = <String>{};
+                            //       final uniqueServices = provider.subscribedServices.where((service) {
+                            //         final id = service.category?.id;
+                            //         if (id != null && !seenCategoryIds.contains(id)) {
+                            //           seenCategoryIds.add(id);
+                            //           return true;
+                            //         }
+                            //         return false;
+                            //       }).toList();
+                            //
+                            //       // sirf 5 hi items show karna
+                            //       final limitedServices = uniqueServices.take(4).toList();
+                            //
+                            //       return Wrap(
+                            //         spacing: 15,
+                            //         runSpacing: 10,
+                            //         children: limitedServices.map((service) {
+                            //           return Text('[ ${service.category?.name ?? 'Unknown'} ]',
+                            //             style: textStyle12(
+                            //               context,
+                            //               fontWeight: FontWeight.w400,
+                            //               color: CustomColor.appColor,
+                            //             ),
+                            //           );
+                            //         }).toList(),
+                            //       );
+                            //     },
+                            //   )
+                            // ]
 
                           ],
                         ),
                         Positioned(
                           top: 0,
                           right: 0,
-                          child: Icon(Icons.favorite_border, color: Colors.grey),
+                          child: Icon(Icons.favorite_border, color: Colors.white),
                         ),
                       ],
                     ),

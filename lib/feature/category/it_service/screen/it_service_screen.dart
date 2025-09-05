@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/it_service_banner_widget.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 
 class ItServiceScreen extends StatefulWidget {
@@ -64,6 +65,7 @@ class _ItServiceScreenState extends State<ItServiceScreen> {
           SliverToBoxAdapter(child: ItServiceCategoryWidget(moduleId: widget.moduleId,),),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
           SliverToBoxAdapter(
             child: ItRequirementServiceWidget(moduleId: widget.moduleId,),
           ),

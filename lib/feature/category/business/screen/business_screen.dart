@@ -11,6 +11,7 @@ import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/business_banner_widget.dart';
 import '../../../banner/widget/home_banner_widget.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 import '../widget/business_category_widget.dart';
 
@@ -69,6 +70,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
           SliverToBoxAdapter(child: BusinessCategoryWidget(moduleId: widget.moduleId,),),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
           SliverToBoxAdapter(
             child: BusinessRequirementServiceWidget(moduleId: widget.moduleId,),
           ),

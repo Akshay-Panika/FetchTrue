@@ -18,6 +18,12 @@ import 'feature/checkout/bloc/checkout/checkout_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_event.dart';
 import 'feature/checkout/repository/checkout_repository.dart';
+import 'feature/highlight_serive/bloc/ads_bloc.dart';
+import 'feature/highlight_serive/bloc/ads_event.dart';
+import 'feature/highlight_serive/repository/ads_repository.dart';
+import 'feature/home/bloc/understanding_ft/understanding_fetch_true_bloc.dart';
+import 'feature/home/bloc/understanding_ft/understanding_fetch_true_event.dart';
+import 'feature/home/repository/understanding_fetch_true_repository.dart';
 import 'feature/internet/network_wrapper_screen.dart';
 import 'feature/lead/bloc/lead/lead_bloc.dart';
 import 'feature/lead/bloc/leads_status/lead_status_bloc.dart';
@@ -88,6 +94,9 @@ void main() async {
             BlocProvider(create: (_) => UserByIdBloc(UserByIdRepository())),
             BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())),
             BlocProvider(create: (_) => OfferBloc()..add(FetchOffersEvent())),
+            BlocProvider(create: (_) => AdsBloc(AdsRepository())..add(LoadAdsEvent())),
+            BlocProvider(create: (_) => UnderstandingFetchTrueBloc(UnderstandingFetchTrueRepository())..add(LoadUnderstandingFetchTrue())),
+
           ],
           child: const MyApp(),
         ),
@@ -109,7 +118,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home:  SplashScreen(),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey[100],
+        scaffoldBackgroundColor: CustomColor.canvasColor,
         appBarTheme: AppBarTheme(
           color: Colors.white,
           foregroundColor: Colors.white,

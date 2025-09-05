@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../repository.dart';
+import '../repository/ads_repository.dart';
 import 'ads_event.dart';
 import 'ads_state.dart';
 

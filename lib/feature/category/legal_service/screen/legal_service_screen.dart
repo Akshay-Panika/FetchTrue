@@ -9,6 +9,7 @@ import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/legal_banner_widget.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 
 
@@ -71,6 +72,7 @@ class _LegalServiceScreenState extends State<LegalServiceScreen> {
           SliverToBoxAdapter(child: LegalCategoryWidget(moduleId: widget.moduleId,),),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
           SliverToBoxAdapter(
             child: LegalRequirementServiceWidget(moduleId: widget.moduleId,),
           ),

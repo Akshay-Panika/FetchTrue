@@ -27,6 +27,9 @@ class ProviderWidget extends StatelessWidget {
         } else if (state is ProvidersLoaded) {
           final providers = state.providers.where((e) => e.kycCompleted == true && e.storeInfo!.module == moduleId).toList();
 
+          if(providers.isEmpty){
+            return SizedBox.shrink();
+          }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -85,7 +88,6 @@ class ProviderWidget extends StatelessWidget {
                           Divider(thickness: 0.3),
 
                           if (provider.subscribedServices.isNotEmpty) ...[
-
                             Builder(
                               builder: (context) {
                                 final seenCategoryIds = <String>{};
@@ -98,25 +100,43 @@ class ProviderWidget extends StatelessWidget {
                                   return false;
                                 }).toList();
 
-                                // sirf 5 hi items show karna
+                                // sirf 4 items show karna
                                 final limitedServices = uniqueServices.take(4).toList();
 
-                                return Wrap(
-                                  spacing: 15,
-                                  runSpacing: 10,
-                                  children: limitedServices.map((service) {
-                                    return Text('[ ${service.category?.name ?? 'Unknown'} ]',
+                                final children = limitedServices.map((service) {
+                                  return Text(
+                                    '[ ${service.category?.name ?? 'Unknown'} ]',
+                                    style: textStyle12(
+                                      context,
+                                      fontWeight: FontWeight.w400,
+                                      color: CustomColor.appColor,
+                                    ),
+                                  );
+                                }).toList();
+
+                                // agar 4 se jyada items hai to end me [etc] add karo
+                                if (uniqueServices.length > 4) {
+                                  children.add(
+                                    Text(
+                                      '[etc]',
                                       style: textStyle12(
                                         context,
                                         fontWeight: FontWeight.w400,
                                         color: CustomColor.appColor,
                                       ),
-                                    );
-                                  }).toList(),
+                                    ),
+                                  );
+                                }
+
+                                return Wrap(
+                                  spacing: 15,
+                                  runSpacing: 10,
+                                  children: children,
                                 );
                               },
                             )
                           ]
+
 
                         ],
                       ),

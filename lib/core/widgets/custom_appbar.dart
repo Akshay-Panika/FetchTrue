@@ -63,7 +63,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: CustomSearchIcon(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(),)),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(moduleId: '',),)),
             ),
           ),
 

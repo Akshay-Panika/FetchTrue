@@ -7,6 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../provider/bloc/provider/provider_bloc.dart';
+import '../../provider/bloc/provider/provider_state.dart';
+import '../../provider/repository/provider_repository.dart';
+import '../../provider/screen/provider__details_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 
@@ -122,7 +126,7 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            Row(
+                            Column(
                               mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                               children: [
@@ -181,117 +185,87 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
   @override
   Widget build(BuildContext context) {
 
-    // return BlocProvider(
-    //   create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
-    //   // create: (_) => ProviderBloc(ProviderService())..add(GetProvider()),
-    //   child: BlocBuilder<ProviderBloc, ProviderState>(
-    //     builder: (context, state) {
-    //       if (state is ProviderLoading) {
-    //         return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
-    //       } else if (state is ProviderLoaded) {
-    //         final provider = state.providerModel
-    //             .where((p) => _favoriteProviderIds.contains(p.id))
-    //             .toList();
-    //
-    //         if (provider.isEmpty) {
-    //           return const Center(child: Text('No provider found.'));
-    //         }
-    //
-    //         return ListView.separated(
-    //           itemCount: provider.length,
-    //           separatorBuilder: (context, index) => const SizedBox(height: 10),
-    //           itemBuilder: (context, index) {
-    //             final data = provider[index];
-    //             final isRemoving = _removingProviderIds.contains(data.id);
-    //
-    //             return CustomContainer(
-    //               border: false,
-    //               color: Colors.white,
-    //               padding: EdgeInsets.zero,
-    //               margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-    //               height: 100,
-    //               child: Stack(
-    //                 children: [
-    //                   Row(
-    //                     children: [
-    //                       const SizedBox(width: 10),
-    //                       Stack(
-    //                         alignment: AlignmentDirectional.bottomEnd,
-    //                         children: [
-    //                           CircleAvatar(
-    //                             radius: 40,
-    //                             backgroundColor: Colors.white,
-    //                             backgroundImage:
-    //                             NetworkImage(data.storeInfo!.logo.toString()),
-    //                           ),
-    //                           CustomContainer(
-    //                             color: CustomColor.appColor,
-    //                             margin: EdgeInsets.zero,
-    //                             padding:
-    //                             const EdgeInsets.symmetric(horizontal: 25),
-    //                             child: const Text(
-    //                               'Open',
-    //                               style: TextStyle(color: Colors.white),
-    //                             ),
-    //                           )
-    //                         ],
-    //                       ),
-    //                       const SizedBox(width: 10),
-    //                       Expanded(
-    //                         child: Column(
-    //                           crossAxisAlignment: CrossAxisAlignment.start,
-    //                           children: [
-    //                             const SizedBox(height: 10),
-    //                             Text(
-    //                               data.storeInfo!.storeName,
-    //                               style: const TextStyle(
-    //                                 fontSize: 14,
-    //                                 fontWeight: FontWeight.w500,
-    //                               ),
-    //                             ),
-    //                             const Text("Onboarding",
-    //                                 style: TextStyle(fontSize: 14)),
-    //                             Text(
-    //                               '${data.storeInfo!.address} ${data.storeInfo!.city} ${data.storeInfo!.state}, ${data.storeInfo!.country}',
-    //                               style: const TextStyle(fontSize: 14),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                   Positioned(
-    //                     top: 10,
-    //                     right: 10,
-    //                     child: isRemoving
-    //                         ? const SizedBox(
-    //                       width: 20,
-    //                       height: 20,
-    //                       child:
-    //                       CircularProgressIndicator(strokeWidth: 3, color: Colors.red)
-    //                     )
-    //                         : InkWell(
-    //                       onTap: () {
-    //                         removeFavoriteProvider(data.id);
-    //                       },
-    //                       child: const Icon(Icons.favorite,
-    //                           color: Colors.red),
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName.toString(),),)),
-    //             );
-    //           },
-    //         );
-    //       } else if (state is ProviderError) {
-    //         return Center(child: Text(state.message));
-    //       }
-    //
-    //       return const SizedBox.shrink();
-    //     },
-    //   ),
-    // );
-    return Scaffold();
+    return BlocBuilder<ProviderBloc, ProviderState>(
+      builder: (context, state) {
+        if (state is ProviderLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is ProvidersLoaded) {
+          final providers = state.providers.where((e) => e.kycCompleted == true).toList();
+
+          return ListView.separated(
+            itemCount: providers.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final data = providers[index];
+
+              return CustomContainer(
+                border: false,
+                color: Colors.white,
+                padding: EdgeInsets.zero,
+                margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                height: 100,
+                child: Stack(
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        Stack(
+                          alignment: AlignmentDirectional.bottomEnd,
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                              NetworkImage(data.storeInfo!.logo.toString()),
+                            ),
+                            CustomContainer(
+                              color: CustomColor.appColor,
+                              margin: EdgeInsets.zero,
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 25),
+                              child: const Text(
+                                'Open',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 10),
+                              Text(
+                                data.storeInfo!.storeName,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const Text("Onboarding",
+                                  style: TextStyle(fontSize: 14)),
+                              Text(
+                                '${data.storeInfo!.address} ${data.storeInfo!.city} ${data.storeInfo!.state}, ${data.storeInfo!.country}',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName.toString(),),)),
+              );
+            },
+          );
+        }
+        else if (state is ProviderError) {
+          print(state.message);
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 }

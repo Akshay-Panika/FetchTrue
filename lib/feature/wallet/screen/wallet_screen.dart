@@ -158,7 +158,7 @@ Widget _buildSelfEarning(BuildContext context) {
   if (state is WalletLoaded) {
     transactions = state.wallet.transactions.where((tx) {
       return tx.description.toLowerCase().contains('self earning');
-    }).toList();
+    }).toList().reversed.toList();
   }
 
   if (transactions.isEmpty) {
@@ -233,7 +233,7 @@ Widget _buildTeamBuildEarning(BuildContext context) {
   if (state is WalletLoaded) {
     transactions = state.wallet.transactions.where((tx) {
       return tx.description.toLowerCase().contains('team build');
-    }).toList();
+    }).toList().reversed.toList();
   }
 
   if (transactions.isEmpty) {
@@ -308,7 +308,7 @@ Widget _buildTeamRevenueEarning(BuildContext context) {
   if (state is WalletLoaded) {
     transactions = state.wallet.transactions.where((tx) {
       return tx.description.toLowerCase().contains('team revenue');
-    }).toList();
+    }).toList().reversed.toList();
   }
 
   if (transactions.isEmpty) {

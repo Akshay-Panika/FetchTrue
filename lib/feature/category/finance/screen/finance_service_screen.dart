@@ -6,6 +6,7 @@ import '../../../../core/costants/dimension.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/finance_banner_widget.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 import '../widget/finance_category_widget.dart';
 
@@ -69,6 +70,7 @@ class _FinanceServiceScreenState extends State<FinanceServiceScreen> {
           ),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
           SliverToBoxAdapter(
             child: FinanceRequirementServiceWidget(moduleId: widget.moduleId,),
           ),

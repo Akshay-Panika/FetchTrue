@@ -553,8 +553,8 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(title, style: textStyle12(context,),),
-      Text(amount, style: textStyle12(context,),),
+      Text(title, style: textStyle12(context,fontWeight: FontWeight.w400),),
+      Text(amount, style: textStyle12(context,fontWeight: FontWeight.w400),),
     ],
   );
 }
@@ -591,7 +591,7 @@ Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
     child:  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('You Will Earn Commission', style: textStyle14(context, color: CustomColor.appColor),)  ,
+        Text('You Will Earn Commission', style: textStyle12(context, color: CustomColor.appColor),)  ,
         Row(
           children: [
             Text('Up To', style: textStyle12(context),),

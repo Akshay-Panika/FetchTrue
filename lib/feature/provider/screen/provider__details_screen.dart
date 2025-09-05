@@ -11,6 +11,9 @@ import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../model/provider_model.dart';
 import '../repository/provider_repository.dart';
+import '../widget/gallery_widget.dart';
+import '../widget/provider_all_service_widget.dart';
+import '../widget/provider_requirement_service_widget.dart';
 import '../widget/provider_review_widget.dart';
 
 class ProviderDetailsScreen extends StatefulWidget {
@@ -33,11 +36,11 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
+
       appBar: CustomAppBar(
         title: widget.storeName ?? 'Store Name',
         showBackButton: true,
-        showFavoriteIcon: true,
+        showFavoriteIcon: false,
       ),
       body: DefaultTabController(
         length: myTabs.length,
@@ -99,11 +102,12 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                       child: TabBarView(
                         children: [
                           /// Services
-                          Center(
-                            child: Text(
-                              'Services Coming Soon...',
-                              style: textStyle16(context),
-                            ),
+                          ListView(
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              ProviderRequirementServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
+                              ProviderAllServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
+                            ],
                           ),
 
                           /// Reviews
@@ -144,12 +148,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                           ),
 
                           /// Gallery
-                          Center(
-                            child: Text(
-                              'Gallery Section',
-                              style: textStyle16(context),
-                            ),
-                          ),
+                          GalleryWidget(providerId: provider.id,)
                         ],
                       ),
                     ),

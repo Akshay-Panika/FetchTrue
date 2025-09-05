@@ -1,6 +1,6 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/home/screen/understanding_fetch_true_widget.dart';
+import 'package:fetchtrue/feature/home/widget/understanding_fetch_true_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../auth/user_notifier/user_notifier.dart';

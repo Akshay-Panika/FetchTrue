@@ -23,14 +23,14 @@ Widget buildBookingCard(BuildContext context, { required BookingData lead}){
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(lead.service!.serviceName.toString(), style: textStyle14(context),)),
+            Expanded(child: Text(lead.service!.serviceName.toString(), style: textStyle12(context,fontWeight: FontWeight.w400),)),
             Text(
               '[ ${getLeadStatus(lead)} ]',
-              style: textStyle12(context, fontWeight: FontWeight.bold, color: getStatusColor(lead)),
+              style: textStyle12(context, fontWeight: FontWeight.w400, color: getStatusColor(lead)),
             )
           ],
         ),
-        Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor),),
+        Text('Lead Id: ${lead.bookingId}', style:  textStyle12(context,color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
         Divider(),
         _iconText(context,icon: Icons.calendar_month, text: 'Booking Date : ${formatDateTime(lead.createdAt)}'),
         _iconText(context,icon: Icons.calendar_month, text: 'Schedule Date: ${formatDateTime(lead.acceptedDate)}'),
@@ -38,7 +38,7 @@ Widget buildBookingCard(BuildContext context, { required BookingData lead}){
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('OTP: ${lead.otp}', style:  textStyle14(context,color: CustomColor.descriptionColor),),
+            Text('OTP: ${lead.otp}', style:  textStyle14(context,color: CustomColor.descriptionColor,fontWeight: FontWeight.w400),),
             InkWell(
               onTap: () async {
                 final url = Uri.parse('https://biz-booster.vercel.app/api/invoice/${lead.id}');
@@ -50,7 +50,7 @@ Widget buildBookingCard(BuildContext context, { required BookingData lead}){
               },
               child: Text(
                 'Invoice Download',
-                style: textStyle14(context, color: CustomColor.appColor),
+                style: textStyle12(context, color: CustomColor.appColor),
               ),
             )
           ],

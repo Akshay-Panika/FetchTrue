@@ -11,7 +11,8 @@ import 'custom_container.dart';
 import 'custom_search_icon.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key,});
+  final String moduleId;
+  const CustomSearchBar({super.key, required this.moduleId,});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class CustomSearchBar extends StatelessWidget {
                 ),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                  MaterialPageRoute(builder: (context) => SearchScreen(moduleId: moduleId,)),
                 ),
               ),
             ),

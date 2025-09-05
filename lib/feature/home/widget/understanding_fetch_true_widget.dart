@@ -15,39 +15,35 @@ class UnderstandingFetchTrueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return BlocProvider(
-      create: (_) => UnderstandingFetchTrueBloc(UnderstandingFetchTrueRepository())
-        ..add(LoadUnderstandingFetchTrue()),
-      child: BlocBuilder<UnderstandingFetchTrueBloc, UnderstandingFetchTrueState>(
-        builder: (context, state) {
-          if (state is UnderstandingFetchTrueLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is UnderstandingFetchTrueLoaded) {
-            if (state.data.isEmpty) {
-              return const Center(child: Text("No videos"));
-            }
-
-            return SizedBox(
-              height: dimensions.screenHeight * 0.2,
-              child: ListView.builder(
-                itemCount: state.data.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final item = state.data[index];
-                  return UnderstandingVideoCard(
-                    videoUrl: item.videoUrl,
-                    title: item.fullName,
-                  );
-                },
-              ),
-            );
-          } else if (state is UnderstandingFetchTrueError) {
-            print('Error: ${state.message}');
-            return SizedBox.shrink();
+    return BlocBuilder<UnderstandingFetchTrueBloc, UnderstandingFetchTrueState>(
+      builder: (context, state) {
+        if (state is UnderstandingFetchTrueLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is UnderstandingFetchTrueLoaded) {
+          if (state.data.isEmpty) {
+            return const Center(child: Text("No videos"));
           }
-          return const SizedBox.shrink();
-        },
-      ),
+
+          return SizedBox(
+            height: dimensions.screenHeight * 0.2,
+            child: ListView.builder(
+              itemCount: state.data.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final item = state.data[index];
+                return UnderstandingVideoCard(
+                  videoUrl: item.videoUrl,
+                  title: item.fullName,
+                );
+              },
+            ),
+          );
+        } else if (state is UnderstandingFetchTrueError) {
+          print('Error: ${state.message}');
+          return SizedBox.shrink();
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -91,6 +87,7 @@ class _UnderstandingVideoCardState extends State<UnderstandingVideoCard> {
     return SizedBox(
       width: dimensions.screenHeight * 0.3,
       child: CustomContainer(
+        border: true,
         color: Colors.white,
         padding: EdgeInsets.zero,
         margin: const EdgeInsets.symmetric(horizontal: 10),

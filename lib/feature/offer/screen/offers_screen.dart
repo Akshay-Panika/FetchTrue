@@ -28,7 +28,7 @@ class OfferScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final offer = offers[index];
                 return CustomContainer(
-                  height: dimensions.screenHeight*0.18,
+                  height: dimensions.screenHeight*0.2,
                   border: true,
                   color: CustomColor.whiteColor,
                   networkImg: offer.thumbnailImage,

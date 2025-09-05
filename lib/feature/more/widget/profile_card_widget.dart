@@ -1,6 +1,8 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -34,59 +36,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     final userSession = Provider.of<UserSession>(context);
 
     if(!userSession.isLoggedIn){
-      return CustomContainer(
-        color: CustomColor.whiteColor,
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                      backgroundImage: AssetImage(CustomImage.nullImage) as ImageProvider,
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Guest',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.clip,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'guest@test.com',
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-              ],
-            ),
-
-            const Divider(),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildStatus(value: '00', valueType: 'Joining date'),
-                _buildStatus(value: '00', valueType: 'Lead Completed'),
-                _buildStatus(value: '00', valueType: 'Total Earning'),
-              ],
-            ),
-          ],
-        ),
-      );
+      return _profileCard();
     }
 
     return CustomContainer(
@@ -162,13 +112,12 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       ),
                   ],
                 ),
-
                 const Divider(),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatus(
+                    _buildStatus(icon:CupertinoIcons.calendar,
                       value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
                           ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
                           ? user.createdAt as DateTime
@@ -180,18 +129,18 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                     BlocBuilder<LeadBloc, LeadState>(
                       builder: (context, state) {
                         if (state is LeadLoading) {
-                           return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                           return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                         } else if (state is LeadLoaded) {
                           final allLeads = state.leadModel.data ?? [];
                           final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
 
-                          return  _buildStatus(value: '${completedLeads.length}', valueType: 'Lead Completed');
+                          return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '${completedLeads.length}', valueType: 'Lead Completed');
 
                         } else if (state is LeadError) {
-                          return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                          return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                         }
-                        return  _buildStatus(value: '00', valueType: 'Lead Completed');
+                        return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                       },
                     ),
 
@@ -199,12 +148,12 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                     BlocBuilder<WalletBloc, WalletState>(
                       builder: (context, state) {
                         if (state is WalletLoading) {
-                         return  _buildStatus(value: '00', valueType: 'Total Earning');
+                         return  _buildStatus(icon: Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
                         } else if (state is WalletLoaded) {
                           final wallet = state.wallet;
-                          return  _buildStatus(value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
+                          return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
                         } else if (state is WalletError) {
-                          return  _buildStatus(value: '00', valueType: 'Total Earning');
+                          return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
                         }
                         return const SizedBox();
                       },
@@ -217,55 +166,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             );
           } else if (state is UserError) {
             print('Error: ${state.massage}');
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                          backgroundImage: AssetImage(CustomImage.nullImage) as ImageProvider,
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Guest',
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.clip,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'guest@test.com',
-                              style: const TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                  ],
-                ),
-
-                const Divider(),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildStatus(value: '00', valueType: 'Joining date'),
-                    _buildStatus(value: '00', valueType: 'Lead Completed'),
-                    _buildStatus(value: '00', valueType: 'Total Earning'),
-                  ],
-                ),
-              ],
-            );
+            return _profileCard();
           }
           return const SizedBox();
         },
@@ -273,20 +174,106 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     );
   }
 
-  Widget _buildStatus({required String value, required String valueType}) {
+
+  Widget _profileCard({
+    String? profile,
+    String? name,
+    String? email,
+    String? id,
+    String? label,
+    String? date,
+    String? lead,
+    String? earning,
+  }) {
+    return CustomContainer(
+      color: CustomColor.whiteColor,
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+
+          // Profile Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                    backgroundImage: profile != null && profile.isNotEmpty
+                        ? NetworkImage(profile) as ImageProvider
+                        : AssetImage(CustomImage.nullImage),
+                  ),
+                 10.width,
+
+                  // Name & Email
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name ?? 'Guest',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        email ?? 'guest@test.com',
+                        style: const TextStyle(color: Colors.grey),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        id ?? '#0000000',
+                        style: const TextStyle(color: Colors.grey),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          const Divider(),
+
+          // Status Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
+              _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
+              _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+  Widget _buildStatus({required String value, required IconData icon ,required String valueType}) {
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: CustomColor.appColor),
         ),
-        Text(
-          valueType,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: CustomColor.descriptionColor,
-          ),
+        Row(
+          children: [
+            Icon(icon, color: CustomColor.descriptionColor,size: 14,),
+            5.width,
+            Text(
+              valueType,
+              style: textStyle12(context,
+                fontWeight: FontWeight.w400,
+                color: CustomColor.descriptionColor,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -359,3 +346,5 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     );
   }
 }
+
+

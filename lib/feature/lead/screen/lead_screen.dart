@@ -151,14 +151,14 @@ class _LeadScreenState extends State<LeadScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(child: Text(lead.service.serviceName, style: textStyle12(context))),
+                                  Expanded(child: Text(lead.service.serviceName, style: textStyle12(context, fontWeight: FontWeight.w400))),
                                   Text(
                                     '[ ${getLeadStatus(lead)} ]',
-                                    style: textStyle12(context, color: getStatusColor(lead)),
+                                    style: textStyle12(context, color: getStatusColor(lead),fontWeight: FontWeight.w400),
                                   )
                                 ],
                               ),
-                              Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                              Text('Lead Id: ${lead.bookingId}', style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400)),
                               const Divider(),
                               5.height,
                               Row(

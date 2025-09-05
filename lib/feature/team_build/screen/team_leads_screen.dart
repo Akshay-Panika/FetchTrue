@@ -194,17 +194,43 @@ class _MemberLeads extends StatelessWidget {
                                       child:  Center(child: CircularProgressIndicator(strokeWidth: 3,color: CustomColor.appColor,)));
                                 } else if (state is UpcomingCommissionLoaded) {
                                   final data = state.commission.data!;
+                                  // return Column(
+                                  //   children: [
+                                  //
+                                  //     if(leadCommission == 0)
+                                  //       Text(
+                                  //         'Earning\nOpportunity ₹ ${data.share3}',
+                                  //         style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                  //         textAlign: TextAlign.end,
+                                  //       ),
+                                  //
+                                  //     if(leadCommission != 0)
+                                  //       Text(
+                                  //         'My Earning\n₹ ${leadCommission.commissionEarned ?? 0}',
+                                  //         style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                  //         textAlign: TextAlign.end,
+                                  //       ),
+                                  //   ],
+                                  // );
+
                                   return Column(
                                     children: [
 
-                                      if(leadCommission == 0)
+                                      if(leads.isAccepted == false)
                                         Text(
-                                          'Earning\nOpportunity ₹ ${data.share3}',
+                                          'After Accepted\n₹ __',
                                           style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
                                           textAlign: TextAlign.end,
                                         ),
 
-                                      if(leadCommission != 0)
+                                      if(leads.isAccepted == true && leads.isCompleted == false)
+                                        Text(
+                                          'Earning\nOpportunity ₹ ${data.share3.toStringAsFixed(2)}',
+                                          style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
+                                          textAlign: TextAlign.end,
+                                        ),
+
+                                      if(leads.isCompleted == true)
                                         Text(
                                           'My Earning\n₹ ${leadCommission.commissionEarned ?? 0}',
                                           style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),
@@ -212,6 +238,7 @@ class _MemberLeads extends StatelessWidget {
                                         ),
                                     ],
                                   );
+
                                 } else if (state is UpcomingCommissionError) {
                                   return Text('After Accepted\n₹ __', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor), textAlign: TextAlign.end,);
                                 }

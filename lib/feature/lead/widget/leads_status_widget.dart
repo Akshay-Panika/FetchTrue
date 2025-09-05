@@ -56,14 +56,14 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                       children: [
                         Text(
                           'Booking Status :',
-                          style: textStyle14(context),
+                          style: textStyle12(context),
                         ),
                         10.width,
                         Text(
                           '[ ${getLeadStatus(lead)} ]',
                           style: textStyle12(
                             context,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                             color: getStatusColor(lead),
                           ),
                         ),
@@ -326,7 +326,7 @@ Widget _iconText(
       Expanded(
         child: Text(
           text,
-          style: textStyle14(
+          style: textStyle12(
             context,
             color: textColor ?? CustomColor.descriptionColor,
             fontWeight: fontWeight ?? FontWeight.w400,

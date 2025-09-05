@@ -220,7 +220,7 @@ class _CustomHomeSliverAppbarWidgetState
         preferredSize: Size.fromHeight(widget.searchBarHeight),
         child:  Padding(
           padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.012, vertical: dimensions.screenHeight*0.006),
-          child: CustomSearchBar(),
+          child: CustomSearchBar(moduleId: '',),
         ),
       ),
     );
@@ -275,8 +275,8 @@ Widget _profileShimmer(Dimensions dimensions){
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: CustomSearchBar(),
+            padding:  EdgeInsets.symmetric(horizontal: 8.0),
+            child: CustomSearchBar(moduleId: '',),
           ),
         ],
       ),

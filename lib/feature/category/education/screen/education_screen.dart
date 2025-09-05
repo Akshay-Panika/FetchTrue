@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/education_banner_widget.dart';
+import '../../../highlight_serive/highlight_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
 import '../widget/education_all_service_widget.dart';
 
@@ -65,6 +66,8 @@ class _EducationScreenState extends State<EducationScreen> {
           SliverToBoxAdapter(child: EducationCategoryWidget(moduleId: widget.moduleId,),),
 
           SliverToBoxAdapter(child: 10.height,),
+          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
+
           SliverToBoxAdapter(
             child: EducationRequirementServiceWidget(moduleId: widget.moduleId,),
           ),
