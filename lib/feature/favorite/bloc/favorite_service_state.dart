@@ -1,15 +1,30 @@
-abstract class FavoriteServiceState {}
+import 'package:equatable/equatable.dart';
 
-class FavoriteServiceInitial extends FavoriteServiceState {}
+abstract class FavoriteState extends Equatable {
+  const FavoriteState();
 
-class FavoriteServiceLoading extends FavoriteServiceState {}
-
-class FavoriteServiceLoaded extends FavoriteServiceState {
-  final List<String> favoriteIds;
-  FavoriteServiceLoaded({required this.favoriteIds});
+  @override
+  List<Object> get props => [];
 }
 
-class FavoriteServiceError extends FavoriteServiceState {
+class FavoriteInitial extends FavoriteState {}
+
+class FavoriteLoading extends FavoriteState {}
+
+class FavoriteSuccess extends FavoriteState {
   final String message;
-  FavoriteServiceError(this.message);
+
+  const FavoriteSuccess(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class FavoriteFailure extends FavoriteState {
+  final String error;
+
+  const FavoriteFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
 }

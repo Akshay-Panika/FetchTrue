@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../five_x/screen/five_x_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
@@ -383,7 +384,6 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
         if (planKey == 'gp')
         GiftPackageWidget(),
 
-
       ],
     ),
   );
@@ -650,6 +650,9 @@ class _PaymentCardState extends State<PaymentCard> {
                         Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
+                    },
                   )
                 ],
               ),

@@ -11,6 +11,7 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
+import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/model/service_model.dart';
@@ -154,7 +155,10 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
 
-                                      CustomFavoriteButton(),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FavoriteServiceButtonWidget(serviceId: data.id,),
+                                      ),
 
                                       Container(
                                         padding:  EdgeInsets.symmetric(vertical: 5, horizontal: dimensions.screenHeight*0.01),

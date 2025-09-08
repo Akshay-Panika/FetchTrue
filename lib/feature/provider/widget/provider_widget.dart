@@ -9,6 +9,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
+import '../../favorite/widget/favorite_provider_button_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_state.dart';
 import '../screen/provider__details_screen.dart';
@@ -44,104 +45,111 @@ class ProviderWidget extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     final provider = providers[index];
-                    return CustomContainer(
-                      width: dimensions.screenHeight*0.38,
-                      color: Colors.white,
-                      margin: EdgeInsets.only(left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Row(
+                    return Stack(
+                      children: [
+                        CustomContainer(
+                          width: dimensions.screenHeight*0.38,
+                          color: Colors.white,
+                          margin: EdgeInsets.only(left: 10),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Column(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                    backgroundImage: provider.storeInfo!.logo == null ? AssetImage(CustomImage.nullImage) :NetworkImage(provider.storeInfo!.logo.toString()),
-                                  ),
-                                  CustomContainer(
-                                      color: CustomColor.appColor,
-                                      margin: EdgeInsets.zero,
-                                      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                                      child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
-                                ],
-                              ),
-                              10.width,
-                              Column(
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(provider.storeInfo!.storeName,style: textStyle14(context),),
-                                  Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
-                                  5.height,
-                                  Text(
-                                    '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
-                                    style: TextStyle(fontSize: 12, color: Colors.black),
+                                  Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                        backgroundImage: provider.storeInfo!.logo == null ? AssetImage(CustomImage.nullImage) :NetworkImage(provider.storeInfo!.logo.toString()),
+                                      ),
+                                      CustomContainer(
+                                          color: CustomColor.appColor,
+                                          margin: EdgeInsets.zero,
+                                          padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                          child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                    ],
+                                  ),
+                                  10.width,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(provider.storeInfo!.storeName,style: textStyle14(context),),
+                                      Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                      5.height,
+                                      Text(
+                                        '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
+                                        style: TextStyle(fontSize: 12, color: Colors.black),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
+                              ),
+                              10.height,
+                              Divider(thickness: 0.3),
+
+                              if (provider.subscribedServices.isNotEmpty) ...[
+                                Builder(
+                                  builder: (context) {
+                                    final seenCategoryIds = <String>{};
+                                    final uniqueServices = provider.subscribedServices.where((service) {
+                                      final id = service.category?.id;
+                                      if (id != null && !seenCategoryIds.contains(id)) {
+                                        seenCategoryIds.add(id);
+                                        return true;
+                                      }
+                                      return false;
+                                    }).toList();
+
+                                    // sirf 4 items show karna
+                                    final limitedServices = uniqueServices.take(4).toList();
+
+                                    final children = limitedServices.map((service) {
+                                      return Text(
+                                        '[ ${service.category?.name ?? 'Unknown'} ]',
+                                        style: textStyle12(
+                                          context,
+                                          fontWeight: FontWeight.w400,
+                                          color: CustomColor.appColor,
+                                        ),
+                                      );
+                                    }).toList();
+
+                                    // agar 4 se jyada items hai to end me [etc] add karo
+                                    if (uniqueServices.length > 4) {
+                                      children.add(
+                                        Text(
+                                          '[etc]',
+                                          style: textStyle12(
+                                            context,
+                                            fontWeight: FontWeight.w400,
+                                            color: CustomColor.appColor,
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    return Wrap(
+                                      spacing: 15,
+                                      runSpacing: 10,
+                                      children: children,
+                                    );
+                                  },
+                                )
+                              ]
+
+
                             ],
                           ),
-                          10.height,
-                          Divider(thickness: 0.3),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName,),)),
 
-                          if (provider.subscribedServices.isNotEmpty) ...[
-                            Builder(
-                              builder: (context) {
-                                final seenCategoryIds = <String>{};
-                                final uniqueServices = provider.subscribedServices.where((service) {
-                                  final id = service.category?.id;
-                                  if (id != null && !seenCategoryIds.contains(id)) {
-                                    seenCategoryIds.add(id);
-                                    return true;
-                                  }
-                                  return false;
-                                }).toList();
-
-                                // sirf 4 items show karna
-                                final limitedServices = uniqueServices.take(4).toList();
-
-                                final children = limitedServices.map((service) {
-                                  return Text(
-                                    '[ ${service.category?.name ?? 'Unknown'} ]',
-                                    style: textStyle12(
-                                      context,
-                                      fontWeight: FontWeight.w400,
-                                      color: CustomColor.appColor,
-                                    ),
-                                  );
-                                }).toList();
-
-                                // agar 4 se jyada items hai to end me [etc] add karo
-                                if (uniqueServices.length > 4) {
-                                  children.add(
-                                    Text(
-                                      '[etc]',
-                                      style: textStyle12(
-                                        context,
-                                        fontWeight: FontWeight.w400,
-                                        color: CustomColor.appColor,
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return Wrap(
-                                  spacing: 15,
-                                  runSpacing: 10,
-                                  children: children,
-                                );
-                              },
-                            )
-                          ]
-
-
-                        ],
-                      ),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName,),)),
-
+                        ),
+                        Positioned(
+                            top: 0,right: 0,
+                            child: FavoriteProviderButtonWidget(providerId: provider.id,))
+                      ],
                     );
                   },
                 ),

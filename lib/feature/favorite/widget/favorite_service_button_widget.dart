@@ -1,27 +1,83 @@
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class FavoriteServiceButtonWidget extends StatefulWidget {
-  const FavoriteServiceButtonWidget({super.key});
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
+import '../bloc/favorite_service_bloc.dart';
+import '../bloc/favorite_service_event.dart';
+import '../bloc/favorite_service_state.dart';
 
-  @override
-  State<FavoriteServiceButtonWidget> createState() => _FavoriteServiceButtonWidgetState();
-}
-
-class _FavoriteServiceButtonWidgetState extends State<FavoriteServiceButtonWidget> {
-  bool isFavorite = false;
+class FavoriteServiceButtonWidget extends StatelessWidget {
+  final String serviceId;
+  const FavoriteServiceButtonWidget({super.key, required this.serviceId});
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          isFavorite = !isFavorite;
-        });
+    final userSession = Provider.of<UserSession>(context);
+
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+         if (state is UserLoading) {
+          return const SizedBox.shrink();
+        } else if (state is UserLoaded) {
+          final user = state.user;
+          final isFavorite = user.favoriteServices.contains(serviceId);
+
+          return BlocConsumer<FavoriteBloc, FavoriteState>(
+            listenWhen: (previous, current) =>
+            current is FavoriteSuccess || current is FavoriteFailure,
+            listener: (context, favState) {
+              if (favState is FavoriteSuccess) {
+                // Reload user data only once after success
+                context.read<UserBloc>().add(GetUserById(userSession.userId!));
+
+                // showCustomToast('Is Favorite');
+              } else if (favState is FavoriteFailure) {
+                 print('Error ${favState.error}');
+              }
+            },
+            builder: (context, favState) {
+              if (favState is FavoriteLoading) {
+                return const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Center(child: CircularProgressIndicator(strokeWidth: 3, color: Colors.red,)),
+                );
+              }
+
+              return Container(
+                height: 20,width: 20,
+                child: InkWell(
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  onTap: () {
+                    if (isFavorite) {
+                      context.read<FavoriteBloc>().add(
+                        RemoveFavoriteEvent(user.id, serviceId),
+                      );
+                    } else {
+                      context.read<FavoriteBloc>().add(
+                        AddFavoriteEvent(user.id, serviceId),
+                      );
+                    }
+                  },
+
+                ),
+              );
+            },
+          );
+        } else if (state is UserError) {
+          debugPrint("Error: ${state.massage}");
+        }
+
+        return const SizedBox.shrink();
       },
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: isFavorite ? Colors.red : Colors.white,
-      ),
     );
   }
 }

@@ -1,43 +1,32 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../model/favorite_services_model.dart';
-import '../repository/favorite_service.dart';
+import '../repository/favorite_service_repository.dart';
 import 'favorite_service_event.dart';
 import 'favorite_service_state.dart';
 
-class FavoriteServiceBloc extends Bloc<FavoriteServiceEvent, FavoriteServiceState> {
-  FavoriteServiceBloc() : super(FavoriteServiceInitial()) {
-    on<LoadFavoriteServices>(_onLoadFavorites);
-    on<ToggleFavoriteService>(_onToggleFavorite);
-  }
+class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
+  final FavoriteRepository repository;
 
-  Future<void> _onLoadFavorites(
-      LoadFavoriteServices event, Emitter<FavoriteServiceState> emit) async {
-    emit(FavoriteServiceLoading());
-    try {
-      final result = await fetchFavoriteServices(event.userId);
-      if (result != null) {
-        emit(FavoriteServiceLoaded(favoriteIds: result.favoriteServices));
-      } else {
-        emit(FavoriteServiceError("Failed to load favorite services."));
+  FavoriteBloc(this.repository) : super(FavoriteInitial()) {
+    // Add to favorite
+    on<AddFavoriteEvent>((event, emit) async {
+      emit(FavoriteLoading());
+      try {
+        final response = await repository.addToFavorite(event.userId, event.serviceId);
+        emit(FavoriteSuccess(response.message));
+      } catch (e) {
+        emit(FavoriteFailure(e.toString()));
       }
-    } catch (e) {
-      emit(FavoriteServiceError("Something went wrong: $e"));
-    }
-  }
+    });
 
-  void _onToggleFavorite(
-      ToggleFavoriteService event, Emitter<FavoriteServiceState> emit) {
-    if (state is FavoriteServiceLoaded) {
-      final currentState = state as FavoriteServiceLoaded;
-      final currentFavorites = List<String>.from(currentState.favoriteIds);
-
-      if (currentFavorites.contains(event.serviceId)) {
-        currentFavorites.remove(event.serviceId);
-      } else {
-        currentFavorites.add(event.serviceId);
+    // Remove from favorite
+    on<RemoveFavoriteEvent>((event, emit) async {
+      emit(FavoriteLoading());
+      try {
+        final response = await repository.removeFromFavorite(event.userId, event.serviceId);
+        emit(FavoriteSuccess(response.message));
+      } catch (e) {
+        emit(FavoriteFailure(e.toString()));
       }
-
-      emit(FavoriteServiceLoaded(favoriteIds: currentFavorites));
-    }
+    });
   }
 }

@@ -12,6 +12,7 @@ import '../../../core/widgets/custom_favorite_button.dart';
 import '../../../core/widgets/custom_search_icon.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/shimmer_box.dart';
+import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/screen/service_details_screen.dart';
@@ -154,7 +155,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const CustomFavoriteButton(),
+                                     Padding(
+                                       padding: const EdgeInsets.all(8.0),
+                                       child: FavoriteServiceButtonWidget(serviceId: data.id,),
+                                     ),
                                     Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 5, horizontal: dimensions.screenHeight * 0.01),

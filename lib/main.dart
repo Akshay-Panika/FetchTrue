@@ -18,6 +18,11 @@ import 'feature/checkout/bloc/checkout/checkout_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_event.dart';
 import 'feature/checkout/repository/checkout_repository.dart';
+import 'feature/favorite/bloc/favorite_service_bloc.dart';
+import 'feature/favorite/repository/favorite_service_repository.dart';
+import 'feature/five_x/bloc/five_x/FiveXBloc.dart';
+import 'feature/five_x/bloc/five_x/FiveXEvent.dart';
+import 'feature/five_x/repository/FiveXRepository.dart';
 import 'feature/highlight_serive/bloc/ads_bloc.dart';
 import 'feature/highlight_serive/bloc/ads_event.dart';
 import 'feature/highlight_serive/repository/ads_repository.dart';
@@ -96,7 +101,8 @@ void main() async {
             BlocProvider(create: (_) => OfferBloc()..add(FetchOffersEvent())),
             BlocProvider(create: (_) => AdsBloc(AdsRepository())..add(LoadAdsEvent())),
             BlocProvider(create: (_) => UnderstandingFetchTrueBloc(UnderstandingFetchTrueRepository())..add(LoadUnderstandingFetchTrue())),
-
+            BlocProvider(create: (_) => FavoriteBloc(FavoriteRepository())),
+            BlocProvider(create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX())),
           ],
           child: const MyApp(),
         ),

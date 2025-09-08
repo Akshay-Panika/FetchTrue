@@ -59,7 +59,7 @@ class CustomSearchBar extends StatelessWidget {
           borderColor: CustomColor.appColor,
           color: CustomColor.whiteColor,
           padding: EdgeInsets.all(dimensions.screenHeight*0.008),
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId),)),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteScreen(userId: userSession.userId, status: 'service',),)),
           child: Icon(Icons.favorite, color: Colors.red,),),
       ],
     );

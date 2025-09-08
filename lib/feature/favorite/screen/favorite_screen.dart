@@ -1,22 +1,26 @@
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/feature/favorite/widget/favorite_service_button_widget.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_state.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_state.dart';
-import '../../provider/repository/provider_repository.dart';
 import '../../provider/screen/provider__details_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
 
 class FavoriteScreen extends StatelessWidget {
   final String? userId;
-  const FavoriteScreen({super.key, this.userId});
+  final String status;
+  const FavoriteScreen({super.key, this.userId, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -71,98 +75,117 @@ class FavoriteServiceWidget extends StatefulWidget {
 }
 
 class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
-
-
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, userState) {
+        if (userState is UserLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (userState is UserLoaded) {
+          final favoriteServiceIds = userState.user.favoriteServices;
 
-    return BlocBuilder<ServiceBloc, ServiceState>(
-      builder: (context, state) {
-        if (state is ServiceLoading) {
-          return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
-        } else if (state is ServiceLoaded) {
-          final services = state.services;
+          return BlocBuilder<ServiceBloc, ServiceState>(
+            builder: (context, serviceState) {
+              if (serviceState is ServiceLoading) {
+                return  Center(child: CircularProgressIndicator(color: CustomColor.appColor));
+              } else if (serviceState is ServiceLoaded) {
+                final allServices = serviceState.services;
 
-          if (services.isEmpty) {
-            return const Center(child: Text('No Service found.'));
-          }
+                /// Filter only favorite services
+                final favoriteServices = allServices.where((service) => favoriteServiceIds.contains(service.id)).toList();
 
-          return ListView.builder(
-            itemCount: services.length,
-            itemBuilder: (context, index) {
-              final data = services[index];
+                if (favoriteServices.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(CustomImage.emptyCart, height: 80),
+                      const Text('No Service')
+                    ],
+                  );
+                }
 
-              return CustomContainer(
-                border: false,
-                color: Colors.white,
-                padding: EdgeInsets.zero,
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                height: 100,
-                child: Row(
-                  children: [
-                    CustomContainer(
-                      networkImg: data.thumbnailImage,
-                      margin: EdgeInsets.zero,
-                      width: 180,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    data.serviceName,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    overflow: TextOverflow.clip,
+                return ListView.builder(
+                  itemCount: favoriteServices.length,
+                  itemBuilder: (context, index) {
+                    final data = favoriteServices[index];
+
+                    return CustomContainer(
+                      border: false,
+                      color: Colors.white,
+                      padding: EdgeInsets.zero,
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      height: 100,
+                      child: Row(
+                        children: [
+                          CustomContainer(
+                            networkImg: data.thumbnailImage,
+                            margin: EdgeInsets.zero,
+                            width: 180,
+                            child: Align(
+                                alignment: Alignment.topRight,
+                                child: FavoriteServiceButtonWidget(serviceId: data.id)),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          data.serviceName,
+                                          style: textStyle12(context),
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 5),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CustomAmountText(amount: '150', isLineThrough: true),
+                                          const SizedBox(width: 10),
+                                          CustomAmountText(amount: '150', isLineThrough: false),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text("Earn up to", style: textStyle12(context,color: CustomColor.greenColor)),
+                                          const SizedBox(width: 4),
+                                          CustomAmountText(amount: '50', color: CustomColor.greenColor),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(height: 5),
-                            Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    CustomAmountText(
-                                        amount: '150', isLineThrough: true),
-                                    const SizedBox(width: 10),
-                                    CustomAmountText(
-                                        amount: '150', isLineThrough: false),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text("Earn up to",
-                                        style: TextStyle(fontSize: 14)),
-                                    const SizedBox(width: 4),
-                                    CustomAmountText(amount: '50'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
+                        ],
+                      ),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ServiceDetailsScreen(serviceId: data.id),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id),)),
-              );
+                    );
+                  },
+                );
+              } else if (serviceState is ServiceError) {
+                return Center(child: Text(serviceState.message));
+              }
+              return const SizedBox.shrink();
             },
           );
-        } else if (state is ServiceError) {
-          return Center(child: Text(state.message));
+        } else if (userState is UserError) {
+          debugPrint("Error: ${userState.massage}");
         }
-
         return const SizedBox.shrink();
       },
     );

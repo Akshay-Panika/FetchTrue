@@ -1,11 +1,28 @@
-abstract class FavoriteServiceEvent {}
+import 'package:equatable/equatable.dart';
 
-class LoadFavoriteServices extends FavoriteServiceEvent {
-  final String userId;
-  LoadFavoriteServices(this.userId);
+abstract class FavoriteEvent extends Equatable {
+  const FavoriteEvent();
+
+  @override
+  List<Object> get props => [];
 }
 
-class ToggleFavoriteService extends FavoriteServiceEvent {
+class AddFavoriteEvent extends FavoriteEvent {
+  final String userId;
   final String serviceId;
-  ToggleFavoriteService(this.serviceId);
+
+  const AddFavoriteEvent(this.userId, this.serviceId);
+
+  @override
+  List<Object> get props => [userId, serviceId];
+}
+
+class RemoveFavoriteEvent extends FavoriteEvent {
+  final String userId;
+  final String serviceId;
+
+  const RemoveFavoriteEvent(this.userId, this.serviceId);
+
+  @override
+  List<Object> get props => [userId, serviceId];
 }

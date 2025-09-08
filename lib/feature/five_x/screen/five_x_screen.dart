@@ -3,8 +3,21 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../lead/bloc/lead/lead_bloc.dart';
+import '../../lead/bloc/lead/lead_state.dart';
+import '../../lead/model/lead_model.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
+import '../../profile/model/user_model.dart';
+import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_state.dart';
+import '../../wallet/model/wallet_model.dart';
 import '../bloc/five_x/FiveXBloc.dart';
 import '../bloc/five_x/FiveXEvent.dart';
 import '../bloc/five_x/FiveXState.dart';
@@ -17,342 +30,277 @@ class FiveXScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
+
     return Scaffold(
       appBar: CustomAppBar(title: '5X Guarantee',showBackButton: true,),
 
-      body:BlocProvider(
-        create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX()),
-        child: BlocBuilder<FiveXBloc, FiveXState>(
-          builder: (context, state) {
-            if (state is FiveXLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is FiveXLoaded) {
+      body:BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
 
-              final data = state.data.first;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildProgressCard(data),
-                      SizedBox(height: 16),
-                      _buildTimelineCard(context),
-                      SizedBox(height: 16),
-                      _buildFinancialInfoCard(context),
-                      SizedBox(height: 16),
-                      _buildExtraBenefitsCard(),
-                      SizedBox(height: 16),
-                      _buildEarningHistoryCard(),
-                    ],
-                  ),
-                ),
-              );
-            } else if (state is FiveXError) {
-              return Center(child: Text(state.message));
-            }
-            return const Center(child: Text("Press button to fetch data"));
-          },
-        )
+          if (state is UserInitial) {
+            context.read<UserBloc>().add(GetUserById(userSession.userId!));
+            return   CircularProgressIndicator();
+          }
+          else if(state is UserLoading){
+            return   CircularProgressIndicator();
+          }
+          else if (state is UserLoaded) {
+            final user = state.user;
+            return BlocBuilder<LeadBloc, LeadState>(
+              builder: (context, state) {
+                if (state is LeadLoading) {
+                  return CircularProgressIndicator();
+                } else if (state is LeadLoaded) {
+                  final allLeads = state.leadModel.data ?? [];
+                  final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+
+                  return BlocBuilder<WalletBloc, WalletState>(
+                    builder: (context, state) {
+                      if (state is WalletLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is WalletLoaded) {
+                        final wallet = state.wallet;
+                        return  BlocBuilder<FiveXBloc, FiveXState>(
+                          builder: (context, state) {
+                            if (state is FiveXLoading) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (state is FiveXLoaded) {
+
+                              final data = state.data.first;
+                              return SingleChildScrollView(
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      CustomContainer(
+                                        color: CustomColor.whiteColor,
+                                        margin: EdgeInsets.zero,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Package Activated', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                                            Text('📅 ${formatDateTime(user.packageActivateDate)}', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                                            20.height,
+
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                _buildLevelProgressCard(context,data, completedLeads,user),
+                                                _buildEarningProgressCard(context,data, completedLeads,user, wallet),
+                                              ],
+                                            ),
+                                            10.height,
+
+                                            _buildEligible(context,data),
+                                          ],
+                                        ),
+                                      ),
+
+                                      10.height,
+
+                                      _buildLEL(context, data,completedLeads,wallet)
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (state is FiveXError) {
+                              return Center(child: Text(state.message));
+                            }
+                            return const Center(child: Text("Press button to fetch data"));
+                          },
+                        );
+                      } else if (state is WalletError) {
+                        print('Error: ${state.message}');
+                        return SizedBox.shrink();
+                      }
+                      return const SizedBox();
+                    },
+                  );
+
+                } else if (state is LeadError) {
+                  print(state.message);
+                }
+                return SizedBox.shrink();
+              },
+            );
+          } else if (state is UserError) {
+            print('Error: ${state.massage}');
+
+          }
+          return const SizedBox();
+        },
       ),
     );
   }
 
-  Widget _buildProgressCard(FiveXModel? fiveX) {
-    return CustomContainer(
-      color: Colors.white,
-      padding: EdgeInsets.all(20.0),
-      margin: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('9 May 2025', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-          Row(
-            children: [
-              Icon(Icons.card_giftcard, color: Colors.orange, size: 20),
-              SizedBox(width: 8),
-              Text('Package Activated', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-              SizedBox(width: 8),
-              Spacer(),
-              _buildLegend(),
-            ],
-          ),
-          SizedBox(height: 30),
-          Center(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: CustomPaint(
-                    painter: CircularProgressPainter(),
-                  ),
-                ),
-                Column(
-                  children: [
-                    Text(
-                      '1X',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                    Text(
-                      'Current Level',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildLevelProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user) {
+    final count = completedLeads.length ?? 0; // actual count
+    final maxCount = fiveX?.leadcount ?? 1;
+    final progress = (count / maxCount).clamp(0.0, 1.0);
+    final percentage = (progress * 100).round();
 
-  Widget _buildLegend() {
+    final xLevel = (progress * 5).round().clamp(0, 5);
+
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Text('Level Progress', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.greenColor),),
+        20.height,
+
+        Stack(
+          alignment: Alignment.center,
           children: [
-            Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle)),
-            SizedBox(width: 4),
-            Text('Earning Target-5Lakh', style: TextStyle(fontSize: 10, color: Colors.grey[600])),
+            HalfCircleProgress(
+              progress: progress,
+              size: 150,
+              backgroundColor: Colors.grey.shade300,
+              progressColor: Colors.green,
+            ),
+            Text('${xLevel.toString()}X', style: textStyle12(context,color: CustomColor.greenColor),)
           ],
         ),
-        SizedBox(height: 4),
-        Row(
+
+        Center(child: Text('Progress: $percentage%', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor))),
+
+      ],
+    );
+  }
+  Widget _buildEarningProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user,  WalletModel wallet) {
+    final count = wallet.balance ?? 0; // actual count
+    final maxCount = fiveX?.fixearning ?? 1;
+    final progress = (count / maxCount).clamp(0.0, 1.0);
+    final percentage = (progress * 100).round();
+
+
+    return Column(
+      children: [
+        Text('Earning Progress', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),),
+        20.height,
+
+        Stack(
+          alignment: Alignment.center,
           children: [
-            Container(width: 12, height: 12, decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle)),
-            SizedBox(width: 4),
-            Text('Lead Target-900', style: TextStyle(fontSize: 10, color: Colors.grey[600])),
+            HalfCircleProgress(
+              progress: progress,
+              size: 150,
+              backgroundColor: Colors.grey.shade300,
+              progressColor: CustomColor.appColor,
+            ),
+            Text('₹ ${fiveX?.fixearning}', style: textStyle12(context,color: CustomColor.appColor),)
           ],
         ),
+
+        Center(child: Text('Progress: $percentage%', style: textStyle12(context, fontWeight: FontWeight.w400))),
+
       ],
     );
   }
 
-  Widget _buildTimelineCard(BuildContext context) {
+  Widget _buildEligible(BuildContext context,FiveXModel? fiveX){
     return CustomContainer(
-      color: WidgetStateColor.transparent,
-      child: Column(
-        children: [
-          LinearProgressIndicator(value: 0,color: CustomColor.appColor,),
-          10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Completed Months - 31', style: textStyle12(context,fontWeight: FontWeight.w400)),
-              Text('Remaining Months - 05', style: textStyle12(context,fontWeight: FontWeight.w400))
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFinancialInfoCard(BuildContext context) {
-    return CustomContainer(
+      border: true,
       color: CustomColor.whiteColor,
-      margin: EdgeInsets.zero,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildFinancialItem(context,'Franchise Fees', '₹10,000'),
-              _buildFinancialItem(context,'Franchise Deposit', '₹1,00,000'),
-              _buildFinancialItem(context,'Grand Total', '₹1,10,000'),
-            ],
-          ),
-          SizedBox(height: 20),
-          Divider(),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('We Assure Return Current', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  Text('Value', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                ],
-              ),
-              Text('1X = ₹1,00,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: CustomColor.appColor)),
-            ],
-          ),
-        ],
-      ),
+      child: Text('⏳ Are you eligible? — Yes, Remaining ${fiveX!.months} Months'),
     );
   }
 
-  Widget _buildFinancialItem(BuildContext context,String label, String amount) {
-    return Column(
+  Widget _buildLEL(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, WalletModel wallet){
+    final count = completedLeads.length ?? 0; // actual count
+    final maxCount = fiveX?.leadcount ?? 1;
+    final progress = (count / maxCount).clamp(0.0, 1.0);
+    final percentage = (progress * 100).round();
+
+    final xLevel = (progress * 5).round().clamp(0, 5);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-        SizedBox(height: 4),
-        Text(amount, style:textStyle12(context, color: CustomColor.appColor)),
+        _buildCard(context,'Current Level', '${xLevel}X', Colors.blue.shade50),
+        _buildCard(context,'Total Earnings', '₹ ${wallet.balance}/${fiveX!.fixearning}', Colors.green.shade50),
+        _buildCard(context,'Total Leads', '${completedLeads.length}/${fiveX.leadcount}', Colors.amber.shade50),
       ],
     );
   }
 
-  Widget _buildExtraBenefitsCard() {
-    return CustomContainer(
-      color: CustomColor.whiteColor,
+  Widget _buildCard(BuildContext context,String headline, String value, Color cardColor){
+    return  CustomContainer(
+      border: true,
       margin: EdgeInsets.zero,
+      color: cardColor,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Your Extra Benefits',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: CustomColor.appColor),
-          ),
-
-          Text(
-            'You\'ve received ₹3,000 as your fixed monthly earning bonus for purchasing the package.',
-            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEarningHistoryCard() {
-    return CustomContainer(
-      margin: EdgeInsets.zero,
-      color: CustomColor.whiteColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Monthly Earning History',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          ...List.generate(7, (index) => _buildEarningItem(index + 1)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEarningItem(int index) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              '$index.',
-              style: TextStyle(color: CustomColor.appColor, fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Transaction ID: FTF000049', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                Text('10:00 AM on 30 Aug 2025', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-              ],
-            ),
-          ),
-          Text('₹ 3,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green)),
+          Text(headline, style: textStyle12(context, fontWeight: FontWeight.w400),),
+          Text(value, style: textStyle12(context),)
         ],
       ),
     );
   }
 }
 
-class CircularProgressPainter extends CustomPainter {
+class HalfCircleProgress extends StatelessWidget {
+  final double progress; // 0.0 - 1.0
+  final double size;
+  final Color backgroundColor;
+  final Color progressColor;
+
+  const HalfCircleProgress({
+    super.key,
+    required this.progress,
+    this.size = 80,
+    this.backgroundColor = Colors.grey,
+    this.progressColor = Colors.green,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size / 2, // Half circle
+      child: CustomPaint(
+        painter: _HalfCirclePainter(
+          progress: progress,
+          backgroundColor: backgroundColor,
+          progressColor: progressColor,
+        ),
+      ),
+    );
+  }
+}
+
+class _HalfCirclePainter extends CustomPainter {
+  final double progress;
+  final Color backgroundColor;
+  final Color progressColor;
+
+  _HalfCirclePainter({
+    required this.progress,
+    required this.backgroundColor,
+    required this.progressColor,
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
-    double center = size.width / 2;
-    double radius = center - 20;
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
+    final startAngle = -3.14; // start from left
+    final sweepAngle = 3.14; // 180 degree half circle
 
-    Paint backgroundPaint = Paint()
-      ..color = Colors.grey[300]!
-      ..strokeWidth = 12
-      ..style = PaintingStyle.stroke;
-
-    Paint bluePaint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 12
+    // Background
+    final bgPaint = Paint()
+      ..color = backgroundColor
       ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+    canvas.drawArc(rect, startAngle, sweepAngle, false, bgPaint);
+
+    // Progress
+    final progressPaint = Paint()
+      ..color = progressColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10
       ..strokeCap = StrokeCap.round;
 
-    Paint greenPaint = Paint()
-      ..color = Colors.green
-      ..strokeWidth = 12
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    // Draw background circle
-    canvas.drawCircle(Offset(center, center), radius, backgroundPaint);
-
-    // Draw blue arc (10%)
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(center, center), radius: radius),
-      -1.5708, // Start from top
-      0.628, // 10% of circle (2π * 0.1)
-      false,
-      bluePaint,
-    );
-
-    // Draw green arc (62%)
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(center, center), radius: radius),
-      -1.5708 + 0.628, // Start after blue arc
-      3.896, // 62% of circle (2π * 0.62)
-      false,
-      greenPaint,
-    );
-
-    // Add percentage labels
-    TextPainter textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-
-    // 10% label
-    textPainter.text = TextSpan(
-      text: '10%',
-      style: TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold),
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(center + radius - 30, center - radius - 20));
-
-    // 62% label
-    textPainter.text = TextSpan(
-      text: '62%',
-      style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.bold),
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(center - radius - 10, center + radius - 30));
-
-    // ₹5000 label
-    textPainter.text = TextSpan(
-      text: '₹5000',
-      style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(center - radius - 20, center - radius + 10));
-
-    // 120 Leads label
-    textPainter.text = TextSpan(
-      text: '120 Leads',
-      style: TextStyle(color: Colors.green, fontSize: 10),
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(center - 30, center + 60));
+    canvas.drawArc(rect, startAngle, sweepAngle * progress, false, progressPaint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

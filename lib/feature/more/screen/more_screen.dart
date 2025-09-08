@@ -78,7 +78,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     if(userSession.isLoggedIn)
                     _buildTile(context, Icons.favorite_border, "Favorite", () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>
-                          FavoriteScreen(userId: userSession.userId)));
+                          FavoriteScreen(userId: userSession.userId, status: 'service',)));
                     }),
         
                     if(userSession.isLoggedIn)
@@ -91,6 +91,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  PackageScreen()));
                     }),
 
+                    if(userSession.isLoggedIn)
                     _buildTile(context, Icons.verified_outlined, "Five X", () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
                     }),
