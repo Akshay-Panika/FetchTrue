@@ -46,7 +46,7 @@ class FranchiseCategoryWidget extends StatelessWidget {
                ),
                15.height,
                SizedBox(
-                 height: 300,
+                 height: 350,
                  child: GridView.builder(
                    itemCount:categories.length,
                    scrollDirection: Axis.horizontal,

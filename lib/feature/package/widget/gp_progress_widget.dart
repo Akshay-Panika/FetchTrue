@@ -6,18 +6,17 @@ import 'package:fetchtrue/core/widgets/shimmer_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../team_build/screen/team_build_screen.dart';
+import '../bloc/referral/referral_bloc.dart';
+import '../bloc/referral/referral_event.dart';
+import '../bloc/referral/referral_state.dart';
+import '../repository/referral_repository.dart';
 
-import '../../../team_build/screen/team_build_screen.dart';
-import '../../bloc/referral/referral_bloc.dart';
-import '../../bloc/referral/referral_event.dart';
-import '../../bloc/referral/referral_state.dart';
-import '../../repository/referral_repository.dart';
-
-class ProgressbarWidget extends StatelessWidget {
+class GpProgressWidget extends StatelessWidget {
   final String userId;
   final int targetCount;
 
-  const ProgressbarWidget({
+  const GpProgressWidget({
     super.key,
     required this.userId,
     this.targetCount = 10,
@@ -33,6 +32,7 @@ class ProgressbarWidget extends StatelessWidget {
           if (state is ReferralLoading) {
             return _shimmerEffect(dimensions);
           } else if (state is ReferralLoaded) {
+
             final currentCount = state.referrals.length;
             final progress = (currentCount / targetCount).clamp(0.0, 1.0);
 
@@ -41,7 +41,7 @@ class ProgressbarWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// 🔹 Progress bar
+                  ///  Progress bar
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: LinearProgressIndicator(
@@ -51,10 +51,9 @@ class ProgressbarWidget extends StatelessWidget {
                       valueColor: AlwaysStoppedAnimation<Color>(CustomColor.greenColor),
                     ),
                   ),
-
                   10.height,
 
-                  /// 🔹 Labels
+                  ///  Labels
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -62,10 +61,12 @@ class ProgressbarWidget extends StatelessWidget {
                       _labelBox(context, "$targetCount", CustomColor.greenColor),
                     ],
                   ),
-
                   15.height,
 
-                  /// 🔹 Button
+                  Text('Almost there! Build your team with just 7 more partners, you’ll become a SGP.', style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400),),
+                  10.height,
+
+                  ///  Button
                   CustomContainer(
                     color: CustomColor.appColor,
                     margin: EdgeInsets.zero,
@@ -91,10 +92,11 @@ class ProgressbarWidget extends StatelessWidget {
                 ],
               ),
             );
+
           } else if (state is ReferralError) {
-            return Center(child: Text("Error: ${state.message}"));
+            print(state.message);
           }
-          return const Center(child: Text("No Data"));
+          return SizedBox.shrink();
         },
       ),
     );

@@ -5,10 +5,13 @@ import 'package:fetchtrue/feature/favorite/widget/favorite_service_button_widget
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/no_user_sign_widget.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
@@ -24,6 +27,14 @@ class FavoriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
+
+    if (!userSession.isLoggedIn) {
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Favorite', showBackButton: true,),
+        body: const Center(child: NoUserSignWidget()),
+      );
+    }
     return DefaultTabController(
       length: 2, // 2 Tabs
       child: Scaffold(

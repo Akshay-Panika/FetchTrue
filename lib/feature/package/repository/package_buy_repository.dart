@@ -36,11 +36,11 @@ Future<bool> packageBuyPaymentRepository({
       final result = await _openInAppWebView(context, paymentUrl);
       return result;
     } else {
-      showCustomSnackBar(context, 'Failed to generate payment link');
+      showCustomToast('Failed to generate payment link');
       return false;
     }
   } catch (e) {
-    showCustomSnackBar(context, 'Error: $e');
+    showCustomToast('Error: $e');
     return false;
   }
 }
@@ -48,7 +48,7 @@ Future<bool> packageBuyPaymentRepository({
 Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
   final uri = Uri.tryParse(paymentUrl);
   if (uri == null) {
-    showCustomSnackBar(context, 'Invalid Payment URL');
+    showCustomToast('Invalid Payment URL');
     return false;
   }
 
@@ -73,12 +73,12 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
                 if (currentUrl.contains("response")) {
                   isPaymentHandled = true;
                   isPaymentSuccess = true;
-                  showCustomSnackBar(context, 'Payment Successful!');
+                  showCustomToast('Payment Successful!');
                 } else if (currentUrl.contains("failed") ||
                     currentUrl.contains("cancel")) {
                   isPaymentHandled = true;
                   isPaymentSuccess = false;
-                  showCustomSnackBar(context, 'Payment Failed or Cancelled');
+                  showCustomToast('Payment Failed or Cancelled');
                 }
               }
             },

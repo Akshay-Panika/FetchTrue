@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
 
 import '../model/referral_user_model.dart';
 
@@ -7,8 +8,7 @@ class ReferralRepository {
 
   Future<List<ReferralUser>> fetchReferrals(String userId) async {
     try {
-      final response = await _dio.get(
-        "https://api.fetchtrue.com/api/users/$userId/referrals",
+      final response = await _dio.get("${ApiUrls.user}/$userId/referrals",
       );
 
       if (response.statusCode == 200 && response.data["success"] == true) {

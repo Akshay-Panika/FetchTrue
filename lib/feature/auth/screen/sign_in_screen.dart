@@ -104,14 +104,23 @@ class _SignInScreenState extends State<SignInScreen> {
 
         showCustomToast("Login Success: ${response.user.fullName}");
         Navigator.pop(context, true);
-      } else {
-        showCustomToast("Login failed. Please check your credentials.");
+      }
+      else {
+        showCustomToast("Login failed. Something went wrong.");
       }
     } catch (e) {
       setState(() => _isLoading = false);
       showCustomToast( "Login Error: ${e.toString()}");
     }
   }
+
+  @override
+  void dispose() {
+    _mainController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
 
   @override

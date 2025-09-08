@@ -5,7 +5,6 @@ import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
-import 'package:fetchtrue/feature/package/screen/widget/progressbar_widget.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
 import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +24,8 @@ import '../bloc/package/package_bloc.dart';
 import '../bloc/package/package_state.dart';
 import '../model/package_model.dart';
 import '../repository/package_buy_repository.dart';
+import '../widget/gp_progress_widget.dart';
+import '../widget/sgp_progress_widget.dart';
 
 class PackageScreen extends StatefulWidget {
   @override
@@ -223,6 +224,39 @@ class _PackageScreenState extends State<PackageScreen> {
                                        width: 200,
                                        color: CustomColor.appColor,
                                        child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                       onTap: () {
+                                         showDialog(
+                                           context: context,
+                                           builder: (context) {
+                                             return AlertDialog(
+                                               backgroundColor: CustomColor.whiteColor,
+                                               shape: RoundedRectangleBorder(
+                                                 borderRadius: BorderRadius.circular(16),
+                                               ),
+                                               title: const Text("🎉 Claim Reward"),
+                                               content: const Text(
+                                                 "Your claim feature will be available soon.\nStay tuned!",
+                                               ),
+                                               actions: [
+                                                 TextButton(
+                                                   onPressed: () => Navigator.pop(context),
+                                                   child: const Text("Close"),
+                                                 ),
+                                                 ElevatedButton(
+                                                   style: ElevatedButton.styleFrom(
+                                                     backgroundColor: CustomColor.appColor,
+                                                   ),
+                                                   onPressed: () {
+                                                     Navigator.pop(context);
+                                                     // Future claim logic yahan add karna
+                                                   },
+                                                   child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                 ),
+                                               ],
+                                             );
+                                           },
+                                         );
+                                       },
                                      )
                                    ],
                                  ),
@@ -233,6 +267,39 @@ class _PackageScreenState extends State<PackageScreen> {
                                       CustomContainer(
                                         width: 200,
                                         color: CustomColor.appColor,
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                backgroundColor: CustomColor.whiteColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(16),
+                                                ),
+                                                title: const Text("🎉 Claim Reward"),
+                                                content: const Text(
+                                                  "Your claim feature will be available soon.\nStay tuned!",
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(context),
+                                                    child: const Text("Close"),
+                                                  ),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: CustomColor.appColor,
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      // Future claim logic yahan add karna
+                                                    },
+                                                    child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
                                         child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
                                       )
                                     ],
@@ -296,14 +363,9 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(radius: 32,
-                    backgroundColor: CustomColor.appColor,
-                    child: CircleAvatar(radius: 31,backgroundColor: CustomColor.whiteColor,
-                    child: Text(planKey.toUpperCase()),),
-                  ),
-                  5.height,
-                  
+                  Text(user.packageStatus =='nonGP'?'Non-GP':user.packageStatus.toString(), style: textStyle16(context),),
                   Text('Current Level', style: textStyle12(context, color: CustomColor.appColor),)
                 ],
               ),
@@ -316,38 +378,42 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
                   Text('Assured Earnings', style: textStyle14(context, color: CustomColor.greenColor),),
                   Text('${packages['price']}', style: textStyle12(context, color: CustomColor.greenColor),),
                   CustomContainer(
-                    color: CustomColor.appColor,
                     margin: EdgeInsets.zero,
                       padding: EdgeInsets.symmetric(horizontal: 10,vertical: 2),
-                      child: Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle12(context, color: CustomColor.whiteColor),)),
+                      child: Text('Monthly Fix Earning: ₹ ${package.monthlyEarnings}/Month', style: textStyle12(context, color: CustomColor.blackColor),)),
                 ],
               )
             ],
           ),
         ),
-        20.height,
-
-        _buildEnhancedFeaturesSection(context),
-
+        10.height,
 
         Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text(packages['includes']['title'].toString(), style: textStyle12(context, color: CustomColor.blackColor),),
-                Text(packages['includes']['des'].toString(), style: textStyle12(context, color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                // Text(packages['includes']['title'].toString(), style: textStyle12(context, color: CustomColor.blackColor),),
+                Text(packages['includes']['des'].toString(), style: textStyle12(context, color: Colors.grey.shade600,),),
             ],
           ),
         ),
 
-
-        if(user.packageActive == true)
-          ProgressbarWidget(
+        if(user.packageActive == true && planKey == 'gp')
+          GpProgressWidget(
             userId: user.id,
             targetCount: 10,
           ),
 
+        if(user.packageActive == true && planKey == 'sgp')
+          SgpProgressWidget(
+            userId: user.id,
+            targetCount: 3,
+          ),
+        20.height,
+
+
+        _buildEnhancedFeaturesSection(context),
 
         Column(
           children: List.generate(
@@ -371,8 +437,9 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
         InkWell(
           child: Row(
             children: [
-              Icon(Icons.arrow_forward_ios, size: 16,color: CustomColor.appColor,),10.width,
-              Text('Benefit', style: textStyle14(context, color: CustomColor.appColor),)
+              Icon(Icons.arrow_forward_ios, size: 16,color: CustomColor.appColor,),
+              10.width,
+              Text('Explore Benefits', style: textStyle12(context, color: CustomColor.appColor),)
             ],
           ),
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PackageBenefitsScreen(package: package, planKey: planKey,),)),
@@ -452,215 +519,217 @@ class _PaymentCardState extends State<PaymentCard> {
   Widget build(BuildContext context) {
     final package = widget.package;
     final user = widget.user;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    return  CustomContainer(
+      color: CustomColor.whiteColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           if(user.packageActive != true)
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Center(child: Text('Unlock premium features and grow your team',style: textStyle12(context,color: CustomColor.descriptionColor),)),
+            Column(
+              children: [
+                Center(child: Text('Unlock premium features and grow your team', style: textStyle12(context, color: CustomColor.descriptionColor),)),
+                Divider()
+              ],
             ),
-          10.height,
-
-            CustomContainer(
-              margin: EdgeInsets.zero,
-              color: CustomColor.whiteColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Fetch True Growth Partner Package', style: textStyle12(context, color: CustomColor.blackColor),),
-                  10.height,
-                  Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(child: Image.asset('assets/image/package_active_img.png')),
-                          Expanded(flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text('We Assure You up to', style: textStyle14(context),),
-                                    Text(' 5X Return', style: textStyle14(context, color: CustomColor.appColor),),
-                                  ],
-                                ),
-                                5.height,
-
-                                Text('If you earn less than 5 Lakh in 3 year, we ‘ll refund up to 5X your initial amount', textAlign: TextAlign.right,
-                                style: textStyle12(context, fontWeight: FontWeight.w400),)
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Your Extra Benefits', style: textStyle14(context),),
-                          Text('You’ve received ₹3,000 as your fixed monthly earning bonus for purchasing the package.', style: textStyle12(context, fontWeight: FontWeight.w400),),
-                          
-                          Text('Safe, secure, and assured returns on your investment.', style: textStyle12(context,color: CustomColor.appColor, fontWeight: FontWeight.w400),)
-                        ],
-                      )
-                    ],
-                  ),
-                  10.height,
-
-                  Column(
-                    children: [
-                      if(user.packageActive != true)
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text('Franchise Fees'),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                                      Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
-                                    ],
-                                  ),
-                                  Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Divider(),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Franchise Deposit (Refundable)'),
-                              CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
-                            ],
-                          ),
-                          Divider(),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Growth Total'),
-                              CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
-                            ],
-                          ),
-                          Divider(),
-
-
-                        ],
-                      ),
-                      10.height,
-
-                      if(user.packageAmountPaid == 0 )
-                       CustomContainer(
-                          padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                          color: CustomColor.appColor,
-                          child: Text('Activate Now', style: textStyle16(context, color: CustomColor.whiteColor),),
-                          onTap: () {
-                            showActivateBottomSheet(context, package, user);
-                          },
-
-                        ),
-
-                      if(user.remainingAmount != 0)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                              Text('Paid Amount: ₹ ${user.packageAmountPaid}'),
-                              Text('Remaining Amount: ₹ ${user.remainingAmount}'),
-                              ],
-                            ),
-                            CustomContainer(
-                              color: CustomColor.appColor,
-                              margin: EdgeInsets.zero,
-                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-                              onTap: isLoading
-                                  ? null
-                                  : () async {
-                                setState(() => isLoading = true);
-                            
-                                DateTime now = DateTime.now();
-                                String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
-                            
-                            
-                                final isSuccess =
-                                await packageBuyPaymentRepository(
-                                  context: context,
-                                  orderId: 'package_${formattedDate}',
-                                  customerId: '${user.id}',
-                                  customerName: '${user.fullName}',
-                                  customerPhone: '${user.mobileNumber}',
-                                  customerEmail: '${user.email}',
-                                  amount: user.remainingAmount!,
-                                );
-                            
-                                setState(() => isLoading = false);
-                            
-                                if (isSuccess) {
-                                  // Payment successful → Refresh User
-                                  context.read<UserBloc>().add(GetUserById(user.id));
-                                  // if (context.mounted) {Navigator.pop(context);}
-                                }
-                              },
-                              child: isLoading
-                                  ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                                  : Text(
-                                'Pay Now',
-                                style: textStyle16(context,
-                                    color: CustomColor.whiteColor),
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-
-                  if(user.packageActive == true)
-                  CustomContainer(
-                    margin: EdgeInsets.zero,
-                    color: Color(0xffF2F7FF),
+                  Expanded(flex: 2,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Image.asset('assets/image/active_package_img.png',height: 100,),
-                        Text('Your package is active', style: textStyle16(context),),
-                        Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
+                        Text('Up to 5X Returns Guarantee!!!', style: textStyle12(context, color: CustomColor.appColor),),
+                        3.height,
+
+                        Text('Refund up to 5X if earning are less than 5L in 3 years', textAlign: TextAlign.start,
+                          style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400),),
+                        10.height,
+
+                        _buildIconText(context,
+                            Icons.security,
+                            'Secure'
+                        ),
+                        _buildIconText(context,
+                            Icons.safety_check_rounded,
+                            'Safe Investment'
+                        ),
+                        _buildIconText(context,
+                            Icons.currency_rupee,
+                            'Guaranteed Refund'
+                        ),
                       ],
                     ),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
-                    },
-                  )
+                  ),
+                  Expanded(child: Image.asset('assets/image/package_active_img.png')),
                 ],
               ),
-            ),
+              10.height,
+
+              Text('Your Extra Benefits', style: textStyle12(context, color: CustomColor.appColor),),
+              Text('You’ve received rs 3,000 as your fixed monthly earning bonus for purchasing the package the package.', style: textStyle12(context, color:CustomColor.descriptionColor,fontWeight: FontWeight.w400),)
+            ],
+          ),
+          10.height,
+
+          Column(
+            children: [
+              if(user.packageActive != true)
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('Franchise Fees'),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
+                                Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
+                              ],
+                            ),
+                            Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Divider(),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Franchise Deposit (Refundable)'),
+                        CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
+                      ],
+                    ),
+                    Divider(),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Growth Total'),
+                        CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
+                      ],
+                    ),
+                    Divider(),
+
+
+                  ],
+                ),
+              10.height,
+
+              if(user.packageAmountPaid == 0 )
+                CustomContainer(
+                  padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
+                  color: CustomColor.appColor,
+                  child: Text('Activate Now', style: textStyle14(context, color: CustomColor.whiteColor),),
+                  onTap: () {
+                    showActivateBottomSheet(context, package, user);
+                  },
+
+                ),
+
+              if(user.remainingAmount != 0)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Paid Amount: ₹ ${user.packageAmountPaid}'),
+                        Text('Remaining Amount: ₹ ${user.remainingAmount}'),
+                      ],
+                    ),
+                    CustomContainer(
+                      color: CustomColor.appColor,
+                      margin: EdgeInsets.zero,
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+                      onTap: isLoading
+                          ? null
+                          : () async {
+                        setState(() => isLoading = true);
+
+                        DateTime now = DateTime.now();
+                        String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
+
+
+                        final isSuccess =
+                        await packageBuyPaymentRepository(
+                          context: context,
+                          orderId: 'package_${formattedDate}',
+                          customerId: '${user.id}',
+                          customerName: '${user.fullName}',
+                          customerPhone: '${user.mobileNumber}',
+                          customerEmail: '${user.email}',
+                          amount: user.remainingAmount!,
+                        );
+
+                        setState(() => isLoading = false);
+
+                        if (isSuccess) {
+                          // Payment successful → Refresh User
+                          context.read<UserBloc>().add(GetUserById(user.id));
+                          // if (context.mounted) {Navigator.pop(context);}
+                        }
+                      },
+                      child: isLoading
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : Text(
+                        'Pay Now',
+                        style: textStyle14(context,
+                            color: CustomColor.whiteColor),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+
+          if(user.packageActive == true)
+            CustomContainer(
+              margin: EdgeInsets.zero,
+              color: Color(0xffF2F7FF),
+              child: Column(
+                children: [
+                  Image.asset('assets/image/active_package_img.png',height: 100,),
+                  Text('Your package is active', style: textStyle16(context),),
+                  Text('Congratulations! Your investment package has been successfully activated.', textAlign: TextAlign.center,)
+                ],
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
+              },
+            )
         ],
       ),
     );
   }
+}
+
+
+Widget _buildIconText(BuildContext context, IconData icon, String label){
+  return Row(
+    children: [
+     Icon(icon, size: 16, color: CustomColor.iconColor,),
+     5.width,
+     Text(label, style: textStyle12(context,fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),)
+    ],
+  );
 }
 
 void showActivateBottomSheet(BuildContext context, PackageModel package, UserModel user) {
@@ -769,7 +838,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                     Expanded(
                       child: CustomContainer(
                         color: CustomColor.appColor,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 6),
                         onTap: isLoading
                             ? null
                             : () async {

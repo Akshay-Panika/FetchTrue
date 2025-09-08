@@ -26,9 +26,16 @@ class GiftPackageWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Welcome Gift',
-          style: textStyle12(context, color: CustomColor.appColor),
+
+        Row(
+          children: [
+            Icon(CupertinoIcons.gift, size: 16,color: CustomColor.greenColor,),
+            10.width,
+            Text(
+              'Welcome Gift',
+              style: textStyle12(context, color: CustomColor.appColor),
+            ),
+          ],
         ),
         10.height,
         Wrap(
