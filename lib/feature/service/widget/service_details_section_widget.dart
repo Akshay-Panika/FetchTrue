@@ -12,6 +12,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../model/service_model.dart';
 
 class ServiceDetailsSectionWidget extends StatelessWidget {
@@ -107,8 +108,8 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
               ),
             ),
             Positioned(
-                top: 0,right: 10,
-                child:  CustomFavoriteButton(),)
+                top: 10,right: 15,
+                child:  FavoriteServiceButtonWidget(serviceId: data.id,),)
           ],
         ),
 

@@ -12,6 +12,8 @@ import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_state.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
@@ -209,6 +211,8 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
 
 void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
 
+  Dimensions dimensions = Dimensions(context);
+
   double fullAmount = lead.totalAmount!.toDouble();
   double halfAmount = fullAmount / 2;
   double walletBalance = 100.0;
@@ -254,46 +258,61 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                       const SizedBox(height: 10),
                       Text(
                         'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
-                        style: textStyle16(context),
+                        style: textStyle14(context),
                       ),
                       const SizedBox(height: 10),
 
                       /// Wallet Container
-                      CustomContainer(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomAmountText(
-                                  amount: '${walletBalance.toStringAsFixed(2)}',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: CustomColor.appColor,
-                                ),
-                                Text('Wallet Balance', style: textStyle12(context)),
-                              ],
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  isWalletApplied.value = !isWalletApplied.value;
-                                  if (isWalletApplied.value) {
-                                    payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
-                                  } else {
-                                    payableAmount.value = paymentType.value == 'full' ? fullAmount : halfAmount;
-                                  }
-                                });
-                              },
-                              child: Text(isWalletApplied.value ? 'Remove' : 'Apply'),
-                            )
-                          ],
-                        ),
+                      BlocBuilder<WalletBloc, WalletState>(
+                        builder: (context, state) {
+                          if (state is WalletLoading) {
+                            return  CircularProgressIndicator();
+                          } else if (state is WalletLoaded) {
+                            final wallet = state.wallet;
+                            return  CustomContainer(
+                              margin: EdgeInsets.zero,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      CustomAmountText(
+                                        amount: '${wallet.balance.toStringAsFixed(2)}',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: CustomColor.appColor,
+                                      ),
+                                      Text('Wallet Balance', style: textStyle12(context)),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isWalletApplied.value = !isWalletApplied.value;
+                                        if (isWalletApplied.value) {
+                                          payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+                                        } else {
+                                          payableAmount.value = paymentType.value == 'full' ? fullAmount : halfAmount;
+                                        }
+                                      });
+                                    },
+                                    child: Text(isWalletApplied.value ? 'Remove' : 'Apply'),
+                                  )
+                                ],
+                              ),
+                            );
+                          } else if (state is WalletError) {
+                           return SizedBox.shrink();
+                          }
+                          return const SizedBox();
+                        },
                       ),
+                      10.height,
 
                       /// Payment Type
                       CustomContainer(
+                        margin: EdgeInsets.zero,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -317,11 +336,11 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Full Payment', style: textStyle14(context)),
+                                    Text('Full Payment', style: textStyle12(context)),
                                     CustomAmountText(
                                       amount: fullAmount.toStringAsFixed(2),
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: CustomColor.appColor,
                                     ),
                                   ],
@@ -349,11 +368,11 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Partial Payment', style: textStyle14(context)),
+                                    Text('Partial Payment', style: textStyle12(context)),
                                     CustomAmountText(
                                       amount: halfAmount.toStringAsFixed(2),
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: CustomColor.appColor,
                                     ),
                                   ],
@@ -364,7 +383,7 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                         ),
                       ),
 
-                      const SizedBox(height: 100),
+                       SizedBox(height: dimensions.screenHeight*0.1),
 
                       /// Final Amount and Button
                       Row(
@@ -381,7 +400,7 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
                             },
                           ),
                           SizedBox(
-                            width: 150,
+                            width: dimensions.screenHeight*0.15,
                             child: StatefulBuilder(
                               builder: (context, innerSetState) {
                                 return CustomButton(

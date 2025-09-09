@@ -8,8 +8,12 @@ import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_icon.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../repojetory/advisor_service.dart';
+import '../bloc/adviser/advisor_bloc.dart';
+import '../bloc/adviser/advisor_state.dart';
+import '../repojetory/advisor_repository.dart';
+
 
 
 class AdviserScreen extends StatefulWidget {
@@ -20,41 +24,22 @@ class AdviserScreen extends StatefulWidget {
 }
 
 class _AdviserScreenState extends State<AdviserScreen> {
-  late Future<List<AdvisorModel>> advisorsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    advisorsFuture = AdvisorService().fetchAdvisors();
-  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-
       appBar: const CustomAppBar(title: 'Advisers', showBackButton: true),
-      body: SafeArea(
-        child: FutureBuilder<List<AdvisorModel>>(
-          future: advisorsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return LinearProgressIndicator(
-                backgroundColor: CustomColor.appColor,
-                color: CustomColor.whiteColor,
-                minHeight: 2.5,
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No advisors available'));
-            }
-
-            final advisers = snapshot.data!;
+      body: BlocBuilder<AdvisorBloc, AdvisorState>(
+        builder: (context, state) {
+          if (state is AdvisorLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is AdvisorLoaded) {
             return ListView.builder(
-              itemCount: advisers.length,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              itemCount: state.advisors.length,
+              padding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, index) {
-                final adviser = advisers[index];
+                final adviser = state.advisors[index];
                 return AdviserCard(
                   name: adviser.name,
                   imageUrl: adviser.imageUrl,
@@ -66,8 +51,14 @@ class _AdviserScreenState extends State<AdviserScreen> {
                 );
               },
             );
-          },
-        ),
+          } else if (state is AdvisorEmpty) {
+            return const Center(child: Text('No advisors found'));
+          } else if (state is AdvisorError) {
+            return Center(child: Text('Error: ${state.message}'));
+          }
+          // initial
+          return const SizedBox();
+        },
       ),
     );
   }

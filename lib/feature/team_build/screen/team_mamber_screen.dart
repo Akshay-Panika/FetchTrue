@@ -41,7 +41,9 @@ class TeamMemberScreen extends StatelessWidget {
               children: [
                 TeamCardWidget(
                   radius: 25,
-                  backgroundImage: AssetImage(CustomImage.nullImage),
+                  backgroundImage: member!.profilePhoto != null && member.profilePhoto!.isNotEmpty
+                      ? NetworkImage(member.profilePhoto!)
+                      :  AssetImage(CustomImage.nullImage) as ImageProvider,
                   id: member!.id,
                   memberId: member.userId,
                   name: member.fullName,
@@ -287,7 +289,9 @@ class _TeamMembers extends StatelessWidget {
           create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
           child: TeamCardWidget(
             radius: 25,
-            backgroundImage: AssetImage(CustomImage.nullImage),
+            backgroundImage: member!.profilePhoto != null && member.profilePhoto!.isNotEmpty
+                ? NetworkImage(member.profilePhoto!)
+                :  AssetImage(CustomImage.nullImage) as ImageProvider,
             id: member!.id,
             memberId: member.userId,
             name: member.fullName,

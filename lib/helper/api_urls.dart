@@ -29,6 +29,7 @@ class ApiUrls{
   static const String leadStatus = '${baseUrl}leads';
   static const String offer = '${baseUrl}offer';
   static const String ads = '${baseUrl}ads';
+  static const String advisor = '${baseUrl}advisor';
   static const String understandingFetchTrue = '${baseUrl}academy/understandingfetchtrue';
 
   static const String myTeam = '${baseUrl}team-build/my-team';

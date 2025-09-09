@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
+import 'feature/advisers/bloc/adviser/advisor_bloc.dart';
+import 'feature/advisers/bloc/adviser/advisor_event.dart';
+import 'feature/advisers/repojetory/advisor_repository.dart';
 import 'feature/auth/screen/splash_screen.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
 import 'feature/banner/bloc/banner/banner_bloc.dart';
@@ -103,6 +106,7 @@ void main() async {
             BlocProvider(create: (_) => UnderstandingFetchTrueBloc(UnderstandingFetchTrueRepository())..add(LoadUnderstandingFetchTrue())),
             BlocProvider(create: (_) => FavoriteBloc(FavoriteRepository())),
             BlocProvider(create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX())),
+            BlocProvider(create: (_) => AdvisorBloc(repository: AdvisorRepository())..add(const FetchAdvisors())),
           ],
           child: const MyApp(),
         ),

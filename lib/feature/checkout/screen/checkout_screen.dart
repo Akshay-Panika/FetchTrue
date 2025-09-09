@@ -117,6 +117,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     required VoidCallback onTap,
   }) {
     final bool isActive = isCurrent || isCompleted;
+    Dimensions dimensions = Dimensions(context);
     return Row(
       children: [
         InkWell(
@@ -131,7 +132,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         if (!isLast)
           Container(
-            width: 100,
+            width: dimensions.screenHeight*0.1,
             height: 2,
             color: isActive ? CustomColor.appColor : Colors.grey.shade400,
             margin: const EdgeInsets.symmetric(horizontal: 6),

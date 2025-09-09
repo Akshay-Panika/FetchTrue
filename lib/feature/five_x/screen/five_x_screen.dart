@@ -74,14 +74,25 @@ class FiveXScreen extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       CustomContainer(
+                                        border: true,
+                                        color: Colors.blue.withOpacity(0.1),
+                                        child:  Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text('📅  Package Activated:', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),),5.width,
+                                            Text('${formatDateTime(user.packageActivateDate)}', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.blackColor),),
+                                          ],
+                                        ),
+                                      ),
+                                      CustomContainer(
                                         color: CustomColor.whiteColor,
                                         margin: EdgeInsets.zero,
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text('Package Activated', style: textStyle12(context, fontWeight: FontWeight.w400),),
-                                            Text('📅 ${formatDateTime(user.packageActivateDate)}', style: textStyle12(context, fontWeight: FontWeight.w400),),
-                                            20.height,
+
+                                           20.height,
 
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -92,7 +103,7 @@ class FiveXScreen extends StatelessWidget {
                                             ),
                                             10.height,
 
-                                            _buildEligible(context,data),
+                                            _buildEligible(context,data, user),
                                           ],
                                         ),
                                       ),
@@ -135,13 +146,12 @@ class FiveXScreen extends StatelessWidget {
   }
 
   Widget _buildLevelProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user) {
-    final count = completedLeads.length ?? 0; // actual count
-    final maxCount = fiveX?.leadcount ?? 1;
-    final progress = (count / maxCount).clamp(0.0, 1.0);
-    final percentage = (progress * 100).round();
 
+    final lead = completedLeads.length; // Actual leads count
+    final target = fiveX?.leadcount ?? 1; // Target leads
+    final progress = (lead / target).clamp(0.0, 1.0);
+    final percentage = ((lead / target) * 100).clamp(0, 100).toStringAsFixed(1);
     final xLevel = (progress * 5).round().clamp(0, 5);
-
 
     return Column(
       children: [
@@ -153,7 +163,7 @@ class FiveXScreen extends StatelessWidget {
           children: [
             HalfCircleProgress(
               progress: progress,
-              size: 150,
+              size: 140,
               backgroundColor: Colors.grey.shade300,
               progressColor: Colors.green,
             ),
@@ -167,11 +177,12 @@ class FiveXScreen extends StatelessWidget {
     );
   }
   Widget _buildEarningProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user,  WalletModel wallet) {
-    final count = wallet.balance ?? 0; // actual count
-    final maxCount = fiveX?.fixearning ?? 1;
-    final progress = (count / maxCount).clamp(0.0, 1.0);
-    final percentage = (progress * 100).round();
+    final earning = wallet.balance ?? 0;
+    final target = fiveX?.fixearning ?? 1;
 
+    final progress = (earning / target).clamp(0.0, 1.0);
+
+    final percentage = ((earning / target) * 100).clamp(0, 100).toStringAsFixed(1);
 
     return Column(
       children: [
@@ -183,11 +194,11 @@ class FiveXScreen extends StatelessWidget {
           children: [
             HalfCircleProgress(
               progress: progress,
-              size: 150,
+              size: 140,
               backgroundColor: Colors.grey.shade300,
               progressColor: CustomColor.appColor,
             ),
-            Text('₹ ${fiveX?.fixearning}', style: textStyle12(context,color: CustomColor.appColor),)
+            Text('₹ ${wallet.balance}', style: textStyle12(context,color: CustomColor.appColor),)
           ],
         ),
 
@@ -197,13 +208,21 @@ class FiveXScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEligible(BuildContext context,FiveXModel? fiveX){
+  Widget _buildEligible(BuildContext context, FiveXModel? fiveX, UserModel user) {
+    final createdAt = DateTime.parse(user.createdAt.toString());
+    final targetMonths = fiveX?.months ?? 0;
+    final now = DateTime.now();
+    int completedMonths = (now.year - createdAt.year) * 12 + (now.month - createdAt.month);
+    int remainingMonths = targetMonths - completedMonths;
+    if (remainingMonths < 0) remainingMonths = 0;
+
     return CustomContainer(
       border: true,
       color: CustomColor.whiteColor,
-      child: Text('⏳ Are you eligible? — Yes, Remaining ${fiveX!.months} Months'),
+      child: Text('⏳ Are you eligible? — Yes, Remaining $remainingMonths Months'),
     );
   }
+
 
   Widget _buildLEL(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, WalletModel wallet){
     final count = completedLeads.length ?? 0; // actual count

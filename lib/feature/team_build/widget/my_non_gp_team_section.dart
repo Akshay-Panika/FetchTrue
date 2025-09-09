@@ -35,7 +35,9 @@ class MyNonGpTeamSection extends StatelessWidget {
           create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
           child: TeamCardWidget(
             radius: 25,
-            backgroundImage: member!.profilePhoto == null ? AssetImage(CustomImage.nullImage) :NetworkImage(member.profilePhoto!),
+            backgroundImage: member!.profilePhoto != null && member.profilePhoto!.isNotEmpty
+                ? NetworkImage(member.profilePhoto!)
+                :  AssetImage(CustomImage.nullImage) as ImageProvider,
             id: member.id,
             memberId: member.userId,
             name: member.fullName,

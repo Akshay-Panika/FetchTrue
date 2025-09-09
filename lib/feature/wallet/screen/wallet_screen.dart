@@ -9,7 +9,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
-import '../../../core/widgets/custom_container.dart';
 import '../../package/bloc/package/package_bloc.dart';
 import '../../package/bloc/package/package_state.dart';
 import '../bloc/wallet_bloc.dart';
