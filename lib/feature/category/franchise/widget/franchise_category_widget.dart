@@ -119,7 +119,7 @@ class _ShimmerGrid extends StatelessWidget {
 
 
         SizedBox(
-          height: 300,
+          height: 350,
           child: GridView.builder(
             itemCount: 15,
             scrollDirection: Axis.horizontal,

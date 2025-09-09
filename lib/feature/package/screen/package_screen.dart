@@ -19,7 +19,7 @@ import '../../five_x/screen/five_x_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../../profile/widget/gift_package_widget.dart';
+import '../widget/gift_package_widget.dart';
 import '../bloc/package/package_bloc.dart';
 import '../bloc/package/package_state.dart';
 import '../model/package_model.dart';
@@ -103,7 +103,7 @@ class _PackageScreenState extends State<PackageScreen> {
       },
     },
     'pgp': {
-      'packageName': 'Premium Growth Partner (SGP)',
+      'packageName': 'Premium Growth Partner (PGP)',
       'price': '₹70,000 - ₹1,00,000/Month ',
       'monthFixEarning':'Monthly Fix Earning: ₹4,000/Month',
       'des':[

@@ -50,7 +50,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   Container(
                     color: CustomColor.whiteColor,
                     child:TabBar(
-                      isScrollable: false,
+                      isScrollable: true,
                       labelColor: CustomColor.appColor,
                       unselectedLabelColor: CustomColor.descriptionColor,
                       indicatorColor: CustomColor.appColor,

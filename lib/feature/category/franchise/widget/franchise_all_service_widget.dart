@@ -4,18 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../../../../core/costants/custom_color.dart';
-import '../../../../core/costants/custom_image.dart';
 import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_amount_text.dart';
 import '../../../../core/widgets/custom_container.dart';
-import '../../../../core/widgets/custom_favorite_button.dart';
-import '../../../../core/widgets/formate_price.dart';
-import '../../../favorite/widget/favorite_service_button_widget.dart';
 import '../../../service/bloc/service/service_bloc.dart';
 import '../../../service/bloc/service/service_state.dart';
-import '../../../service/screen/service_details_screen.dart';
 import '../../../service/widget/service_card_widget.dart';
 
 class FranchiseAllServiceWidget extends StatelessWidget {
@@ -58,7 +50,6 @@ class FranchiseAllServiceWidget extends StatelessWidget {
                  children: List.generate(services.length, (index) {
                    final data = services[index];
                    return ServiceCardWidget(data: data,);
-
                  },),
                ),
              ),
