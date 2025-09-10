@@ -1,4 +1,6 @@
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
@@ -84,7 +86,7 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Date & Time', style: textStyle14(context, color: CustomColor.descriptionColor)),
-                            Text('${widget.dateTime}', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                            Text('${formatDateTime(widget.dateTime)}', style: textStyle14(context, color: CustomColor.descriptionColor)),
                           ],
                         ),
                         SizedBox(height: dimensions.screenHeight * 0.05),
@@ -102,10 +104,14 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
         ),
         100.height,
         CustomContainer(
-          width: 200,
-          color: CustomColor.appColor,
-          child: Center(child: Text("Back", style: textStyle16(context, color: CustomColor.whiteColor))),
-          onTap: () => Navigator.pop(context),
+          width: dimensions.screenHeight*0.2,
+          border: true,
+          color: Colors.transparent,
+          // color: CustomColor.whiteColor,
+          child: Center(child: Text("Go Back", style: textStyle16(context, color: CustomColor.appColor))),
+          onTap: () {
+            context.go('/dashboard');
+          },
         )
       ],
     );

@@ -2,6 +2,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
@@ -73,14 +74,8 @@ class FinanceCategoryWidget extends StatelessWidget {
                         ],
                       ),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubcategoryScreen(
-                              categoryName: category.name,
-                              categoryId: category.id,
-                            ),
-                          ),
+                        context.push(
+                          '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
                         );
                       },
                     );

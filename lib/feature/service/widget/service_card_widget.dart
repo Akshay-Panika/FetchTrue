@@ -1,6 +1,7 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
@@ -146,9 +147,7 @@ class ServiceCardWidget extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
-        serviceId: data.id,),
-      )),
+      onTap: () => context.push('/service/${data.id}'),
     );
   }
 }

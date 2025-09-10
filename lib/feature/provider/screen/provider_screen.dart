@@ -3,6 +3,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
@@ -36,7 +37,6 @@ class ProviderScreen extends StatelessWidget {
                     width: double.infinity,
                     color: Colors.white,
                     margin: EdgeInsets.only(top: 10),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName,),)),
                     child: Stack(
                       children: [
                         Column(
@@ -180,6 +180,11 @@ class ProviderScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      context.push(
+                        '/provider/${provider.id}?name=${Uri.encodeComponent(provider.storeInfo!.storeName)}',
+                      );
+                    },
                   );
                 },
               );

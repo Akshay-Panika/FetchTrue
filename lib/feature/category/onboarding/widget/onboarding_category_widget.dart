@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/dimension.dart';
@@ -63,14 +64,8 @@ class OnboardingCategoryWidget extends StatelessWidget {
                       margin: EdgeInsets.zero,
                       color: Colors.white,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubcategoryScreen(
-                              categoryName: category.name,
-                              categoryId: category.id,
-                            ),
-                          ),
+                        context.push(
+                          '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
                         );
                       },
                       child: Row(

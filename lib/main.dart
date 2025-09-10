@@ -2,6 +2,7 @@ import 'package:fetchtrue/feature/favorite/bloc/provider/favorite_provider_bloc.
 import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
 import 'package:fetchtrue/feature/team_build/bloc/user_confirm_referral/user_confirm_referral_bloc.dart';
+import 'package:fetchtrue/helper/navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,10 +141,11 @@ class MyApp extends StatelessWidget {
     // final userSession = Provider.of<UserSession>(context, listen: false).loadUserSession();
     // final userSession = Provider.of<UserSession>(context);
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Fetch True',
       debugShowCheckedModeBanner: false,
-      home:  SplashScreen(),
+      // home:  SplashScreen(),
+      routerConfig: router,
       theme: ThemeData(
         scaffoldBackgroundColor: CustomColor.canvasColor,
         appBarTheme: AppBarTheme(

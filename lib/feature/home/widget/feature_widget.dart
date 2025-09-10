@@ -5,6 +5,7 @@ import 'package:fetchtrue/feature/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
@@ -53,14 +54,14 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                   icon: Icons.wallet,
                   title: 'Wallet',
                   subtitle: '₹ ${wallet.balance}',
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
+                  onTap: () => context.push('/wallet/${widget.userId}',),
                 );
               } else if (state is WalletError) {
                 return  _FeatureItem(
                   icon: Icons.wallet,
                   title: 'Wallet',
                   subtitle: '0.0',
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WalletScreen(userId: widget.userId),)),
+                  onTap: () => context.push('/my-team'),
                 );
               }
               return const SizedBox();

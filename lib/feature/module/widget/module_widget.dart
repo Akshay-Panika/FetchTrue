@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
@@ -94,28 +95,52 @@ class ModuleWidget extends StatelessWidget {
                         ),
                       ],
                     ),
+                    // onTap: () {
+                    //   final Map<String, Widget> categoryWidgets = {
+                    //     'Franchise': FranchiseScreen(moduleId: module.id, imageUrl: module.image,),
+                    //     'Business': BusinessScreen(moduleId: module.id, imageUrl: module.image),
+                    //     'Marketing': MarketingScreen(moduleId: module.id, imageUrl: module.image, ),
+                    //     'Legal Services': LegalServiceScreen(moduleId: module.id, imageUrl: module.image,),
+                    //     'Finance': FinanceServiceScreen(moduleId: module.id, imageUrl: module.image,),
+                    //     'It Services': ItServiceScreen(moduleId: module.id,imageUrl: module.image,),
+                    //     'Education': EducationScreen(moduleId: module.id, imageUrl: module.image),
+                    //     'On-Demand Services': OnDemandScreen(moduleId: module.id, imageUrl: module.image),
+                    //     'Onboarding': OnboardingScreen(moduleId: module.id, imageUrl: module.image),
+                    //   };
+                    //
+                    //   final screen = categoryWidgets[module.name];
+                    //
+                    //   if (screen != null) {
+                    //     Navigator.push(context, MaterialPageRoute(builder: (context) => screen),);
+                    //   }
+                    //   else {
+                    //     showCustomToast('Module "${module.name}" not found');
+                    //   }
+                    // },
                     onTap: () {
-                      final Map<String, Widget> categoryWidgets = {
-                        'Franchise': FranchiseScreen(moduleId: module.id, imageUrl: module.image,),
-                        'Business': BusinessScreen(moduleId: module.id, imageUrl: module.image),
-                        'Marketing': MarketingScreen(moduleId: module.id, imageUrl: module.image, ),
-                        'Legal Services': LegalServiceScreen(moduleId: module.id, imageUrl: module.image,),
-                        'Finance': FinanceServiceScreen(moduleId: module.id, imageUrl: module.image,),
-                        'It Services': ItServiceScreen(moduleId: module.id,imageUrl: module.image,),
-                        'Education': EducationScreen(moduleId: module.id, imageUrl: module.image),
-                        'On-Demand Services': OnDemandScreen(moduleId: module.id, imageUrl: module.image),
-                        'Onboarding': OnboardingScreen(moduleId: module.id, imageUrl: module.image),
+                      // module name → route mapping
+                      final Map<String, String> moduleRoutes = {
+                        'Franchise': '/franchise',
+                        'Business': '/business',
+                        'Marketing': '/marketing',
+                        'Legal Services': '/legal',
+                        'Finance': '/finance',
+                        'It Services': '/it',
+                        'Education': '/education',
+                        'On-Demand Services': '/ondemand',
+                        'Onboarding': '/onboarding',
                       };
 
-                      final screen = categoryWidgets[module.name];
+                      final route = moduleRoutes[module.name];
 
-                      if (screen != null) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => screen),);
-                      }
-                      else {
+                      if (route != null) {
+                        // go_router navigation with moduleId as path parameter and image as query param
+                        context.push('$route/${module.id}?image=${Uri.encodeComponent(module.image)}');
+                      } else {
                         showCustomToast('Module "${module.name}" not found');
                       }
                     },
+
                   );
                 },
               );
