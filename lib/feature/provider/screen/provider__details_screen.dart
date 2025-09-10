@@ -2,10 +2,12 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../favorite/widget/favorite_provider_button_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
@@ -57,6 +59,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                 return CustomScrollView(
                   slivers: [
                     /// Cover Image
+                    if(provider.storeInfo!.cover != null)
                     SliverAppBar(
                       toolbarHeight: 200,
                       pinned: false,
@@ -66,10 +69,8 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                         background: Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(
-                                  provider.storeInfo!.cover ?? ''),
-                              fit: BoxFit.fill,
-                            ),
+                              image: provider.storeInfo!.cover == null ? AssetImage(CustomImage.nullBackImage):
+                              NetworkImage(provider.storeInfo!.cover ?? ''), fit: BoxFit.fill,),
                           ),
                         ),
                       ),
@@ -183,9 +184,12 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundColor: const Color(0xFFF2F2F2),
-                      backgroundImage:
-                      NetworkImage(data!.storeInfo!.logo.toString()),
+                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                      backgroundImage: (data!.storeInfo!.logo != null &&
+                          data!.storeInfo!.logo!.isNotEmpty &&
+                          Uri.tryParse(data!.storeInfo!.logo!)?.hasAbsolutePath == true)
+                          ? NetworkImage(data!.storeInfo!.logo!)
+                          : AssetImage(CustomImage.nullImage) as ImageProvider,
                     ),
                     CustomContainer(
                       color: CustomColor.appColor,
@@ -247,10 +251,10 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
           ),
 
           /// Favorite Button Top Right
-          const Positioned(
-            top: 0,
-            right: 0,
-            child: CustomFavoriteButton(),
+          Positioned(
+              top: 10,
+              right: 10,
+              child: FavoriteProviderButtonWidget(providerId: data.id,)
           ),
         ],
       ),

@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../repository/favorite_service_repository.dart';
+import '../../repository/favorite_service_repository.dart';
 import 'favorite_service_event.dart';
 import 'favorite_service_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-  final FavoriteRepository repository;
+  final FavoriteServiceRepository repository;
 
   FavoriteBloc(this.repository) : super(FavoriteInitial()) {
     // Add to favorite

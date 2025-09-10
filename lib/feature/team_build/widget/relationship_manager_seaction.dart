@@ -54,11 +54,18 @@ class RelationshipManagerSection extends StatelessWidget {
                   Padding(
                     padding:  EdgeInsets.all(dimensions.screenHeight*0.01),
                     child: DottedBorder(
-                      color: CustomColor.appColor,
-                      strokeWidth: 1,
-                      borderType: BorderType.RRect,
-                      radius: Radius.circular(8),
-                      dashPattern: [6, 3],
+                      // color: CustomColor.appColor,
+                      // strokeWidth: 1,
+                      // borderType: BorderType.RRect,
+                      // radius: Radius.circular(8),
+                      // dashPattern: [6, 3],
+                      options: RoundedRectDottedBorderOptions(
+                        dashPattern: [10, 5],
+                        strokeWidth: 2,
+                        radius: Radius.circular(16),
+                        color: Colors.indigo,
+                        padding: EdgeInsets.all(16),
+                      ),
                       child: CustomContainer(
                         margin: EdgeInsets.zero,
                         padding: EdgeInsets.zero,
@@ -75,7 +82,7 @@ class RelationshipManagerSection extends StatelessWidget {
                                 ),
                               ),
                             ),
-                        
+
                             /// Referral Bloc Section
                             CustomContainer(
                               color: CustomColor.appColor,
@@ -158,7 +165,7 @@ class RelationshipManagerSection extends StatelessWidget {
                               name: referralUser.fullName,
                               phone: referralUser.mobileNumber,
                               id: referralUser.userId,
-                              level: user.packageStatus,
+                              level: referralUser.packageStatus == 'nonGP' ? 'Non-GP':referralUser.packageStatus,
                               address: address.isNotEmpty ? address : null,
                             ),
 

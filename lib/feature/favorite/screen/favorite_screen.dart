@@ -19,6 +19,7 @@ import '../../provider/bloc/provider/provider_state.dart';
 import '../../provider/screen/provider__details_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_state.dart';
+import '../widget/favorite_provider_button_widget.dart';
 
 class FavoriteScreen extends StatelessWidget {
   final String? userId;
@@ -219,87 +220,113 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<ProviderBloc, ProviderState>(
-      builder: (context, state) {
-        if (state is ProviderLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is ProvidersLoaded) {
-          final providers = state.providers.where((e) => e.kycCompleted == true).toList();
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, userState) {
+        if (userState is UserLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (userState is UserLoaded) {
+          final favoriteProviderIds = userState.user.favoriteProviders;
 
-          return ListView.separated(
-            itemCount: providers.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final data = providers[index];
+          return BlocBuilder<ProviderBloc, ProviderState>(
+            builder: (context, state) {
+              if (state is ProviderLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is ProvidersLoaded) {
+                // final allProviders = state.providers.where((e) => e.kycCompleted == true).toList();
 
-              return CustomContainer(
-                border: false,
-                color: Colors.white,
-                padding: EdgeInsets.zero,
-                margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                height: 100,
-                child: Stack(
-                  children: [
-                    Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        Stack(
-                          alignment: AlignmentDirectional.bottomEnd,
-                          children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.white,
-                              backgroundImage:
-                              NetworkImage(data.storeInfo!.logo.toString()),
-                            ),
-                            CustomContainer(
-                              color: CustomColor.appColor,
-                              margin: EdgeInsets.zero,
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 25),
-                              child: const Text(
-                                'Open',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                final providers = state.providers.where((provider) => favoriteProviderIds.contains(provider.id)).toList();
+
+                return ListView.separated(
+                  itemCount: providers.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final data = providers[index];
+
+                    return CustomContainer(
+                      border: false,
+                      color: Colors.white,
+                      padding: EdgeInsets.zero,
+                      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                      height: 100,
+                      child: Stack(
+                        children: [
+                          Row(
                             children: [
-                              const SizedBox(height: 10),
-                              Text(
-                                data.storeInfo!.storeName,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              const SizedBox(width: 10),
+                              Stack(
+                                alignment: AlignmentDirectional.bottomEnd,
+                                children: [
+
+                                  CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                    backgroundImage: (data.storeInfo!.logo != null && data.storeInfo!.logo!.isNotEmpty && Uri.tryParse(data.storeInfo!.logo!)?.hasAbsolutePath == true)
+                                        ? NetworkImage(data.storeInfo!.logo!)
+                                        : AssetImage(CustomImage.nullImage) as ImageProvider,
+                                  ),
+                                  CustomContainer(
+                                    color: CustomColor.appColor,
+                                    margin: EdgeInsets.zero,
+                                    padding:
+                                    const EdgeInsets.symmetric(horizontal: 25),
+                                    child: const Text(
+                                      'Open',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                ],
                               ),
-                              const Text("Onboarding",
-                                  style: TextStyle(fontSize: 14)),
-                              Text(
-                                '${data.storeInfo!.address} ${data.storeInfo!.city} ${data.storeInfo!.state}, ${data.storeInfo!.country}',
-                                style: const TextStyle(fontSize: 14),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      data.storeInfo!.storeName,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Text("Onboarding",
+                                        style: TextStyle(fontSize: 14)),
+                                    Text(
+                                      '${data.storeInfo!.address} ${data.storeInfo!.city} ${data.storeInfo!.state}, ${data.storeInfo!.country}',
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName.toString(),),)),
-              );
+
+                          Positioned(
+                              top: 10,
+                              right: 10,
+                              child: FavoriteProviderButtonWidget(providerId: data.id)
+                          ),
+                        ],
+                      ),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName.toString(),),)),
+                    );
+                  },
+                );
+              }
+              else if (state is ProviderError) {
+                print(state.message);
+              }
+              return const SizedBox.shrink();
             },
           );
-        }
-        else if (state is ProviderError) {
-          print(state.message);
+
+
+        } else if (userState is UserError) {
+          debugPrint("Error: ${userState.massage}");
         }
         return const SizedBox.shrink();
       },
     );
+
   }
 }

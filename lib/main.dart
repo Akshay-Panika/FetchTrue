@@ -1,3 +1,4 @@
+import 'package:fetchtrue/feature/favorite/bloc/provider/favorite_provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/bloc/provider/provider_bloc.dart';
 import 'package:fetchtrue/feature/provider/repository/provider_repository.dart';
 import 'package:fetchtrue/feature/team_build/bloc/user_confirm_referral/user_confirm_referral_bloc.dart';
@@ -21,7 +22,8 @@ import 'feature/checkout/bloc/checkout/checkout_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_bloc.dart';
 import 'feature/checkout/bloc/commission/commission_event.dart';
 import 'feature/checkout/repository/checkout_repository.dart';
-import 'feature/favorite/bloc/favorite_service_bloc.dart';
+import 'feature/favorite/bloc/service/favorite_service_bloc.dart';
+import 'feature/favorite/repository/favorite_provider_repository.dart';
 import 'feature/favorite/repository/favorite_service_repository.dart';
 import 'feature/five_x/bloc/five_x/FiveXBloc.dart';
 import 'feature/five_x/bloc/five_x/FiveXEvent.dart';
@@ -40,6 +42,7 @@ import 'feature/lead/repository/lead_status_repository.dart';
 import 'feature/module/bloc/module_bloc.dart';
 import 'feature/module/bloc/module_event.dart';
 import 'feature/module/repository/module_repository.dart';
+import 'feature/notification/repository/fcm_token_repository.dart';
 import 'feature/offer/bloc/offer_bloc.dart';
 import 'feature/offer/bloc/offer_event.dart';
 import 'feature/package/bloc/package/package_bloc.dart';
@@ -65,7 +68,13 @@ import 'feature/wallet/bloc/wallet_bloc.dart';
 import 'feature/wallet/repository/wallet_repository.dart';
 import 'firebase_options.dart';
 
-
+// final fcmRepo = FcmTokenRepository();
+//
+// Future<void> initFcm(String userId) async {
+//   print("initFcm called with userId: $userId");
+//   await fcmRepo.fetchAndSaveFcmToken(userId);
+//   fcmRepo.listenTokenRefresh(userId);
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -75,6 +84,12 @@ void main() async {
   NetworkMonitor.init();
   final userSession = UserSession();
   await userSession.loadUserSession();
+
+  // if (userSession.userId != null && userSession.userId!.isNotEmpty) {
+  //   initFcm(userSession.userId!);
+  // } else {
+  //   print("❌ UserId not found in session");
+  // }
 
   runApp(
       MultiProvider(
@@ -104,7 +119,8 @@ void main() async {
             BlocProvider(create: (_) => OfferBloc()..add(FetchOffersEvent())),
             BlocProvider(create: (_) => AdsBloc(AdsRepository())..add(LoadAdsEvent())),
             BlocProvider(create: (_) => UnderstandingFetchTrueBloc(UnderstandingFetchTrueRepository())..add(LoadUnderstandingFetchTrue())),
-            BlocProvider(create: (_) => FavoriteBloc(FavoriteRepository())),
+            BlocProvider(create: (_) => FavoriteBloc(FavoriteServiceRepository())),
+            BlocProvider(create: (_) => FavoriteProviderBloc(FavoriteProviderRepository())),
             BlocProvider(create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX())),
             BlocProvider(create: (_) => AdvisorBloc(repository: AdvisorRepository())..add(const FetchAdvisors())),
           ],

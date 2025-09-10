@@ -5,9 +5,10 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../bloc/favorite_service_bloc.dart';
-import '../bloc/favorite_service_event.dart';
-import '../bloc/favorite_service_state.dart';
+import '../bloc/service/favorite_service_bloc.dart';
+import '../bloc/service/favorite_service_event.dart';
+import '../bloc/service/favorite_service_state.dart';
+
 
 class FavoriteServiceButtonWidget extends StatelessWidget {
   final String serviceId;

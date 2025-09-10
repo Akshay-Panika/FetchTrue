@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../helper/api_urls.dart';
 import '../model/wallet_model.dart';
 
 class WalletRepository {
@@ -7,7 +8,7 @@ class WalletRepository {
   WalletRepository([Dio? dio]) : _dio = dio ?? Dio();
 
   Future<WalletModel?> fetchWalletByUserId(String userId) async {
-    final url = 'https://biz-booster.vercel.app/api/wallet/fetch-by-user/$userId';
+    final url = '${ApiUrls.wallet}/$userId';
 
     try {
       final response = await _dio.get(url);

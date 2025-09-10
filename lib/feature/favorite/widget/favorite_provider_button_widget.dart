@@ -1,33 +1,71 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
-class FavoriteProviderButtonWidget extends StatefulWidget {
+import '../../auth/user_notifier/user_notifier.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
+import '../../profile/bloc/user/user_state.dart';
+import '../bloc/provider/favorite_provider_bloc.dart';
+import '../bloc/provider/favorite_provider_event.dart';
+import '../bloc/provider/favorite_provider_state.dart';
+
+class FavoriteProviderButtonWidget extends StatelessWidget {
   final String providerId;
-
-  const FavoriteProviderButtonWidget({
-    super.key,
-    required this.providerId,
-  });
-
-  @override
-  State<FavoriteProviderButtonWidget> createState() => _FavoriteProviderButtonWidgetState();
-}
-
-class _FavoriteProviderButtonWidgetState extends State<FavoriteProviderButtonWidget> {
+  const FavoriteProviderButtonWidget({super.key, required this.providerId});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 40,
-      child: IconButton(
-        onPressed: () {
+    final userSession = Provider.of<UserSession>(context);
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserLoading) {
+          return const SizedBox.shrink();
+        } else if (state is UserLoaded) {
+          final user = state.user;
+          final isFavorite = user.favoriteProviders.contains(providerId);
 
-        },
-        icon: Icon(
-         Icons.favorite_border,
-          color: Colors.red,
-        ),
-      ),
+          return BlocConsumer<FavoriteProviderBloc, FavoriteProviderState>(
+            listenWhen: (previous, current) =>
+            current is FavoriteProviderSuccess || current is FavoriteProviderFailure,
+            listener: (context, favState) {
+              if (favState is FavoriteProviderSuccess && favState.providerId == providerId) {
+                context.read<UserBloc>().add(GetUserById(userSession.userId!));
+              }
+            },
+            builder: (context, favState) {
+              if (favState is FavoriteProviderLoading && favState.providerId == providerId) {
+                return const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Center(
+                    child: CircularProgressIndicator(strokeWidth: 3, color: Colors.red),
+                  ),
+                );
+              }
+
+              return InkWell(
+                child: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.red,
+                ),
+                onTap: () {
+                  if (isFavorite) {
+                    context.read<FavoriteProviderBloc>().add(RemoveFavoriteProviderEvent(user.id, providerId));
+                  } else {
+                    context.read<FavoriteProviderBloc>().add(AddFavoriteProviderEvent(user.id, providerId));
+                  }
+                },
+              );
+            },
+          );
+        } else if (state is UserError) {
+          return Icon(Icons.favorite_border, color: Colors.red,);
+        }
+
+        return Icon(Icons.favorite_border, color: Colors.red,);
+      },
     );
   }
 }

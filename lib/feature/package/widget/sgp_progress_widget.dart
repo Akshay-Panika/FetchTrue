@@ -41,8 +41,10 @@ class SgpProgressWidget extends StatelessWidget {
 
           final currentCount = gpMembers.length;
           final progress = (currentCount / targetCount).clamp(0.0, 1.0);
+          final remaining = (targetCount - currentCount).clamp(0, targetCount);
 
           return currentCount ==10 ?
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: Column(
@@ -71,7 +73,17 @@ class SgpProgressWidget extends StatelessWidget {
                 ),
                 15.height,
 
-                Text('Almost there! Build your team with just 2 more partners, you’ll become a PGP.', style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400),),
+                Text(
+                  remaining > 0
+                      ? 'Almost there! Build your team with just $remaining more partners, you’ll become a PGP.'
+                      : '🎉 Congratulations! You have completed your team and become a SGP!',
+                  style: textStyle12(
+                    context,
+                    color: CustomColor.descriptionColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                // Text('Almost there! Build your team with just 2 more partners, you’ll become a PGP.', style: textStyle12(context, color: CustomColor.descriptionColor,fontWeight: FontWeight.w400),),
                 10.height,
 
                 /// 🔹 Button

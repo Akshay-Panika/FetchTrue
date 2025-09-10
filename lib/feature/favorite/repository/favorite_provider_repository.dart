@@ -4,13 +4,13 @@ import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/favorite_provider_model.dart';
 import '../model/favorite_services_model.dart';
 
-class FavoriteServiceRepository {
+class FavoriteProviderRepository {
   final Dio _dio = ApiClient.dio;
 
   Future<FavoriteResponse> addToFavorite(String userId, String serviceId) async {
     try {
       final response = await _dio.put(
-        '${ApiUrls.user}/favourite-services/$userId/$serviceId',
+        '${ApiUrls.user}/favourite-providers/$userId/$serviceId',
       );
 
       if (response.statusCode == 200) {
@@ -26,7 +26,7 @@ class FavoriteServiceRepository {
   Future<FavoriteResponse> removeFromFavorite(String userId, String serviceId) async {
     try {
       final response = await _dio.delete(
-        '${ApiUrls.user}/favourite-services/$userId/$serviceId',
+        '${ApiUrls.user}/favourite-providers/$userId/$serviceId',
       );
 
       if (response.statusCode == 200) {

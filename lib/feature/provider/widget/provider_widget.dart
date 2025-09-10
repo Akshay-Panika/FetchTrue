@@ -1,10 +1,8 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
@@ -146,8 +144,9 @@ class ProviderWidget extends StatelessWidget {
                           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName,),)),
 
                         ),
+
                         Positioned(
-                            top: 0,right: 0,
+                            top: 10,right: 10,
                             child: FavoriteProviderButtonWidget(providerId: provider.id,))
                       ],
                     );

@@ -1,3 +1,4 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../favorite/widget/favorite_provider_button_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_state.dart';
 
@@ -50,8 +52,13 @@ class ProviderScreen extends StatelessWidget {
                                     CircleAvatar(
                                       radius: 30,
                                       backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                      backgroundImage: NetworkImage(provider.storeInfo!.logo.toString()),
+                                      backgroundImage: (provider.storeInfo?.logo != null &&
+                                          provider.storeInfo!.logo!.isNotEmpty &&
+                                          Uri.tryParse(provider.storeInfo!.logo!)?.hasAbsolutePath == true)
+                                          ? NetworkImage(provider.storeInfo!.logo!)
+                                          : AssetImage(CustomImage.nullImage) as ImageProvider,
                                     ),
+
                                     CustomContainer(
                                         color: CustomColor.appColor,
                                         margin: EdgeInsets.zero,
@@ -169,7 +176,7 @@ class ProviderScreen extends StatelessWidget {
                         Positioned(
                           top: 0,
                           right: 0,
-                          child: Icon(Icons.favorite_border, color: Colors.white),
+                          child: FavoriteProviderButtonWidget(providerId: provider.id,)
                         ),
                       ],
                     ),
