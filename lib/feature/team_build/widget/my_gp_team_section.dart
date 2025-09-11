@@ -35,10 +35,12 @@ class MyGpTeamSection extends StatelessWidget {
               id: member!.id,
               memberId: member.userId,
               name: member.fullName,
-              level: member.packageStatus,
+              // level: member.packageStatus,
+              level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
               address: '_______',
               phone: member.mobileNumber,
-              earning: 'My Earning\n₹ ${earning?.toStringAsFixed(2)}',
+              earning: earning.toString(),
+              status: member.isDeleted,
               onTap: () {
                 Navigator.push(
                   context,

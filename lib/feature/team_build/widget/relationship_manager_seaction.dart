@@ -161,6 +161,7 @@ class RelationshipManagerSection extends StatelessWidget {
                               id: referralUser.userId,
                               level: referralUser.packageStatus == 'nonGP' ? 'Non-GP':referralUser.packageStatus,
                               address: address.isNotEmpty ? address : null,
+                              status: referralUser.isDeleted,
                             ),
 
                             Row(
@@ -301,6 +302,7 @@ class RelationshipManagerSection extends StatelessWidget {
                         id: manager.userId,
                         level: manager.packageActive == true ? '${manager.packageStatus}' : 'Non-GP',
                         address: address.isNotEmpty ? address : null,
+                        status: manager.isDeleted,
                       );
                     } else if (state is UserByIdError) {
                       return Center(child: Text("Error: ${state.message}"));

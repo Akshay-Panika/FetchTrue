@@ -19,7 +19,8 @@ class RelationshipManagerCardWidget extends StatelessWidget {
  final String? id;
  final String? address;
  final String? level;
-  const RelationshipManagerCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.address, this.radius});
+ final bool? status;
+  const RelationshipManagerCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.address, this.radius, this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class RelationshipManagerCardWidget extends StatelessWidget {
           ),
           Container(
               decoration: BoxDecoration(
-                color: CustomColor.appColor,
+                  color: status == true ? Colors.grey :CustomColor.appColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10),

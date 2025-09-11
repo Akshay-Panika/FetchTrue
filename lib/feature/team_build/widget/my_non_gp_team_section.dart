@@ -41,10 +41,11 @@ class MyNonGpTeamSection extends StatelessWidget {
             id: member.id,
             memberId: member.userId,
             name: member.fullName,
-            level: 'Non-GP',
+            level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
             address: '_______',
             phone: member.mobileNumber,
-            earning: 'Earning\n Opportunity ₹ ${earnings}',
+            earning: earnings.toString(),
+            status: member.isDeleted,
           ),
         );
       },),

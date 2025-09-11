@@ -18,9 +18,9 @@ class ProviderReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return BlocProvider(
-      create: (_) => ProviderReviewBloc(ProviderReviewRepository())
-        ..add(FetchProviderReviews(providerId)),
+      create: (_) => ProviderReviewBloc(ProviderReviewRepository())..add(FetchProviderReviews(providerId)),
       child: BlocBuilder<ProviderReviewBloc, ProviderReviewState>(
         builder: (context, state) {
           if (state is ProviderReviewLoading) {
@@ -35,12 +35,14 @@ class ProviderReviewScreen extends StatelessWidget {
             final reviews = reviewModel.reviews;
 
             if (reviews.isEmpty) {
-              return  Column(
-                children: [
-                  200.height,
-                  Text("No reviews", style: textStyle12(context, color: CustomColor.descriptionColor),),
-                ],
-              );
+              return Padding(
+                  padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
+                  child:  Center(child: Column(
+                    children: [
+                      Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
+                      Text('No Reviews.'),
+                    ],
+                  )));
             }
 
             return Padding(

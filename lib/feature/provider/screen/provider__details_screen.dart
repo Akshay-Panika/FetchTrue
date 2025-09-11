@@ -52,7 +52,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
           child: BlocBuilder<ProviderBloc, ProviderState>(
             builder: (context, state) {
               if (state is ProviderLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return  Center(child: CircularProgressIndicator( color: CustomColor.appColor,));
               } else if (state is ProviderLoaded) {
                 final provider = state.provider;
 

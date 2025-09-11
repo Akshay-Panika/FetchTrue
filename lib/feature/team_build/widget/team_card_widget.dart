@@ -24,10 +24,11 @@ class TeamCardWidget extends StatefulWidget {
  final String? id;
  final String? memberId;
  final String? level;
+ final bool? status;
  final String? address;
  final String? earning;
  final VoidCallback? onTap;
-  const TeamCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.radius, this.address, this.earning, this.memberId, this.onTap,
+  const TeamCardWidget({super.key, this.backgroundImage, this.name, this.phone, this.id, this.level, this.radius, this.address, this.earning, this.memberId, this.onTap, this.status,
   });
 
   @override
@@ -147,7 +148,7 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
           ),
           Container(
               decoration: BoxDecoration(
-                color: CustomColor.appColor,
+                color: widget.status == true ? Colors.grey :CustomColor.appColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10),
@@ -158,7 +159,7 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
 
           Positioned(
               right: 10,top: 10,
-              child:  Text(widget.earning ??'Earning', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.end,))
+              child:  Text(widget.level == 'Non-GP' ? 'Earning Opportunity\n\u20b9 ${widget.earning}' : 'My Earning\n₹ ${widget.earning}', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),textAlign: TextAlign.end,))
         ],
       ),
     );

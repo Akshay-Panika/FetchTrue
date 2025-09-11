@@ -10,6 +10,7 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
@@ -89,6 +90,31 @@ class FavoriteServiceWidget extends StatefulWidget {
 class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
   @override
   Widget build(BuildContext context) {
+
+    Dimensions dimensions = Dimensions(context);
+
+    String formatCommission(dynamic rawCommission, {bool half = false}) {
+      if (rawCommission == null) return '0';
+
+      final commissionStr = rawCommission.toString();
+
+      // Extract numeric value
+      final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+      final numeric = double.tryParse(numericStr) ?? 0;
+
+      // Extract symbol (₹, %, etc.)
+      final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+      final value = half ? (numeric / 2).round() : numeric.round();
+
+      // Format with symbol
+      if (symbol == '%') {
+        return '$value%';
+      } else {
+        return '$symbol$value';
+      }
+    }
+
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
         if (userState is UserLoading) {
@@ -133,47 +159,58 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                             networkImg: data.thumbnailImage,
                             margin: EdgeInsets.zero,
                             width: 180,
-                            child: Align(
-                                alignment: Alignment.topRight,
-                                child: FavoriteServiceButtonWidget(serviceId: data.id)),
                           ),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
+                              child:  Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          data.serviceName,
-                                          style: textStyle12(context),
-                                          overflow: TextOverflow.clip,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        children: [
-                                          CustomAmountText(amount: '150', isLineThrough: true),
-                                          const SizedBox(width: 10),
-                                          CustomAmountText(amount: '150', isLineThrough: false),
-                                        ],
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
+                                              child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
+                                            ),
+                                            Row(
+                                              children: [
+                                                CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
+                                                10.width,
+                                                CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
+                                                10.width,
+                                                Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text("Earn up to", style: textStyle12(context,color: CustomColor.greenColor)),
-                                          const SizedBox(width: 4),
-                                          CustomAmountText(amount: '50', color: CustomColor.greenColor),
-                                        ],
-                                      ),
+
                                     ],
                                   ),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
+                                          Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                        ],
+                                      ),
+
+                                      FavoriteServiceButtonWidget(serviceId: data.id),
+                                    ],
+                                  ),
+
                                 ],
                               ),
                             ),

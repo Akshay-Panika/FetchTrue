@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/costants/custom_image.dart';
 import '../bloc/gallery/gallery_bloc.dart';
 import '../bloc/gallery/gallery_event.dart';
 import '../bloc/gallery/gallery_state.dart';
@@ -25,6 +26,19 @@ class GalleryWidget extends StatelessWidget {
           if (state is GalleryLoading) {
             return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
           } else if (state is GalleryLoaded) {
+
+            if (state.gallery.galleryImages.isEmpty) {
+              return Padding(
+                  padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
+                  child:  Center(child: Column(
+                    children: [
+                      Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
+                      Text('No Image.'),
+                    ],
+                  )));
+            }
+
+
             return GridView.builder(
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

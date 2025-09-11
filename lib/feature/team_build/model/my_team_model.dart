@@ -130,6 +130,8 @@ class User {
   final String? packageStatus;
   final int packagePrice;
   final int packageAmountPaid;
+  final bool? isDeleted;
+
 
   User({
     required this.id,
@@ -145,6 +147,8 @@ class User {
     this.packageStatus,
     required this.packagePrice,
     required this.packageAmountPaid,
+    this.isDeleted,
+
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -162,6 +166,7 @@ class User {
       packageStatus: json['packageStatus'],
       packagePrice: json['packagePrice'] ?? 0,
       packageAmountPaid: json['packageAmountPaid'] ?? 0,
+      isDeleted: json['isDeleted'] ?? false,
     );
   }
 
@@ -180,6 +185,7 @@ class User {
       "packageStatus": packageStatus,
       "packagePrice": packagePrice,
       "packageAmountPaid": packageAmountPaid,
+      "isDeleted":isDeleted
     };
   }
 }

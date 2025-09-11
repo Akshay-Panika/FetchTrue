@@ -187,6 +187,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
   }) {
     return CustomContainer(
       color: CustomColor.whiteColor,
+      margin: EdgeInsets.zero,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

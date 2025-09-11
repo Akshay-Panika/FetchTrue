@@ -142,7 +142,7 @@ class _LeadScreenState extends State<LeadScreen> {
                       itemBuilder: (context, index) {
                         final lead = filteredList[index];
       
-      
+
                         return CustomContainer(
                           color: Colors.white,
                           margin: EdgeInsets.only(top: dimensions.screenHeight*0.010),
