@@ -1,5 +1,7 @@
+import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/feature/home/widget/understanding_fetch_true_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             /// Futures
             if (userSession.isLoggedIn)
             SliverToBoxAdapter(child: FeatureWidget(userId: userSession.userId!,)),
+
             /// Modules
             SliverToBoxAdapter(child: ModuleWidget()),
             SliverToBoxAdapter(child: 15.height),

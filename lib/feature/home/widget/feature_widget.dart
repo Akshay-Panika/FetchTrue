@@ -39,62 +39,143 @@ class _FeatureWidgetState extends State<FeatureWidget> {
   Widget build(BuildContext context) {
 
     Dimensions dimensions = Dimensions(context);
-    return Padding(
-      padding:  EdgeInsets.only(top: dimensions.screenHeight*0.002),
+    return Container(
+      height: dimensions.screenHeight * 0.08,
+      padding:  EdgeInsets.symmetric(horizontal:  dimensions.screenHeight*0.01),
       child: Row(
         children: [
           /// Wallet Balance
           BlocBuilder<WalletBloc, WalletState>(
             builder: (context, state) {
               if (state is WalletLoading) {
-                return  _buildShimmer();
+                return Expanded(child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: CustomContainer(
+                      color: CustomColor.whiteColor,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      margin: EdgeInsets.zero,
+                    )));
               } else if (state is WalletLoaded) {
                 final wallet = state.wallet;
-                return  _FeatureItem(
-                  icon: Icons.wallet,
-                  title: 'Wallet',
-                  subtitle: '₹ ${wallet.balance}',
-                  onTap: () => context.push('/wallet/${widget.userId}',),
+
+                return Expanded(
+                  child: InkWell(
+                    onTap: () => context.push('/wallet/${widget.userId}',),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset('assets/image/myEarningImg.jpg',),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("My Balance",
+                                  style: textStyle14(context).copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black87,
+                                  )),
+                              Text("₹ ${wallet.balance}",
+                                  style: textStyle12(context).copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.blueAccent,
+                                  )),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
+                
               } else if (state is WalletError) {
-                return  _FeatureItem(
-                  icon: Icons.wallet,
-                  title: 'Wallet',
-                  subtitle: '0.0',
-                  onTap: () => context.push('/my-team'),
-                );
+                return  SizedBox.shrink();
               }
               return const SizedBox();
             },
           ),
+
+          10.width,
 
           BlocBuilder<MyTeamBloc, MyTeamState>(
             builder: (context, state) {
               if (state is MyTeamLoading) {
-                return  _buildShimmer();
+                return Expanded(child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: CustomContainer(color: CustomColor.whiteColor,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      margin: EdgeInsets.zero,)));
               } else if (state is MyTeamLoaded) {
                 // final teamList = state.response.team;
                 final userCount = state.response.team.length;
-                return _FeatureItem(
-                  icon: CupertinoIcons.person_2_fill,
-                  title: 'My Team',
-                  subtitle: '$userCount', // show count
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
+
+                return   Expanded(
+                  child: InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("My Teams",
+                                  style: textStyle14(context).copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black87,
+                                  )),
+                              Text("${userCount}",
+                                  style: textStyle12(context).copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                  )),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset('assets/image/myTeamImg.jpg',),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
+
               } else if (state is MyTeamError) {
                 print('"Error: ${state.message}"');
-                return _FeatureItem(
-                  icon: CupertinoIcons.person_2_fill,
-                  title: 'My Team',
-                  subtitle: '0', // fallback
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
-                  ),
-                );
+                return SizedBox.shrink();
               }
               return const SizedBox();
             },
@@ -103,71 +184,4 @@ class _FeatureWidgetState extends State<FeatureWidget> {
       ),
     );
   }
-}
-
-class _FeatureItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
-
-  const _FeatureItem({Key? key, required this.icon, required this.title, required this.subtitle, this.onTap}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
-
-    return Expanded(
-      child: CustomContainer(
-        border: true,
-        color: Colors.white,
-         onTap: onTap,
-        margin: EdgeInsetsGeometry.symmetric(horizontal: dimensions.screenHeight*0.010),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: textStyle14(context, fontWeight: FontWeight.w400)),
-                Text(subtitle, style: textStyle14(context, color: CustomColor.appColor)),
-              ],
-            ),
-            Align(
-                alignment: Alignment.bottomRight,
-                child: Icon(icon, color: CustomColor.appColor))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-Widget _buildShimmer(){
-  return Expanded(child: CustomContainer(
-    padding: EdgeInsets.all(15),
-    child: Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ShimmerBox(height: 15, width: 100),
-              10.height,
-              ShimmerBox(height: 10, width: 30),
-            ],
-          ),
-          Align(
-              alignment: Alignment.bottomRight,
-              child: ShimmerBox(height: 25, width: 25)),
-        ],
-      ),
-    ),
-  ));
 }

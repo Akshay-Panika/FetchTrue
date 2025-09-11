@@ -98,15 +98,17 @@ class ServiceCardWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data.serviceName, style: textStyle12(context),),
+                          Padding(
+                            padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
+                            child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
+                          ),
                           Row(
                             children: [
-                              CustomAmountText(amount: data.price.toString(), color: CustomColor.descriptionColor,isLineThrough: true,fontSize: 14),
+                              CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
                               10.width,
-                              CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.descriptionColor, fontSize: 14),
+                              CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
                               10.width,
-                              Text('${data.discount} % Off', style: textStyle14(context, color: CustomColor.greenColor, fontWeight: FontWeight.w400),),
-
+                              Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
                             ],
                           ),
                         ],
@@ -115,33 +117,32 @@ class ServiceCardWidget extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('Earn up to ', style: textStyle14(context, color: CustomColor.appColor, fontWeight: FontWeight.w400),),
+                        Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
                         Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
-                        // Text('${data.franchiseDetails.commission}', style: textStyle14(context, color: CustomColor.greenColor,),),
                       ],
                     ),
                   ],
                 ),
-                5.height,
-                if (data.keyValues.isNotEmpty)
-                  ...data.keyValues.map((entry) => Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                        5.width,
-                        Expanded(
-                          child: Text(
-                            entry.value,
-                            style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
+                // 5.height,
+                // if (data.keyValues.isNotEmpty)
+                //   ...data.keyValues.map((entry) => Padding(
+                //     padding: const EdgeInsets.only(bottom: 6.0),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.start,
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                //         5.width,
+                //         Expanded(
+                //           child: Text(
+                //             entry.value,
+                //             style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                //             overflow: TextOverflow.ellipsis,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   )),
               ],
             ),
           ),

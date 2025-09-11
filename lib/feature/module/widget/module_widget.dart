@@ -34,14 +34,8 @@ class ModuleWidget extends StatelessWidget {
         Padding(
           padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.015),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Icon(Icons.apps, size: 19, color: CustomColor.appColor),
-              ),5.width,
-              Text('Modules', style: textStyle14(context, color: CustomColor.appColor),),
+              Text('Modules', style: textStyle12(context, color: CustomColor.appColor),),
               10.width,
               Expanded(child: Divider(color: CustomColor.appColor,))
             ],
