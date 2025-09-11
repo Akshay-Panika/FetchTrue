@@ -31,16 +31,25 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0.0, -1.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
 
-    _controller.forward();
+    _controller.forward().whenComplete(() {
+      if (!mounted) return;
+    });
   }
+
 
   @override
   void dispose() {
+    if (_controller.isAnimating) {
+      _controller.stop();
+    }
     _controller.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,9 +118,12 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
           color: Colors.transparent,
           // color: CustomColor.whiteColor,
           child: Center(child: Text("Go Back", style: textStyle16(context, color: CustomColor.appColor))),
-          onTap: () {
-            context.go('/dashboard');
-          },
+            onTap: () {
+              if (mounted) {
+                context.go('/dashboard');
+              }
+            }
+
         )
       ],
     );

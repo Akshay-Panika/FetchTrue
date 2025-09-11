@@ -9,6 +9,7 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../../banner/widget/home_banner_widget.dart';
 import '../../internet/network_wrapper_screen.dart';
 import '../../module/widget/module_widget.dart';
+import '../../offer/screen/offer_widget.dart';
 import '../widget/feature_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/refer_and_earn_widget.dart';
@@ -63,9 +64,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             /// Futures
             if (userSession.isLoggedIn)
             SliverToBoxAdapter(child: FeatureWidget(userId: userSession.userId!,)),
+            SliverToBoxAdapter(child: 15.height),
 
             /// Modules
             SliverToBoxAdapter(child: ModuleWidget()),
+            SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: OfferWidget()),
             SliverToBoxAdapter(child: 15.height),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
             SliverToBoxAdapter(child: 15.height),

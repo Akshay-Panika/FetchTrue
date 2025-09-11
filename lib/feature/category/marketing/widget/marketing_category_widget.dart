@@ -38,8 +38,7 @@ class MarketingCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: Colors.purple),5.width,
-                    Text('Category', style: textStyle14(context, color: Colors.purple),),
+                    Text('Category', style: textStyle12(context, color: Colors.purple),),
                     10.width,
                     Expanded(child: Divider(color: Colors.purple,))
                   ],
@@ -104,10 +103,9 @@ class _ShimmerGrid extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ShimmerBox(width: 80,height: 10,),
-                ShimmerBox(width: 20,height: 10,),
               ],
             ),
           ),

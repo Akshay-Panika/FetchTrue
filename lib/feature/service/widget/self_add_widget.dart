@@ -1,4 +1,6 @@
+import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/custom_logo.dart';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/service/widget/subscribed_provider_widget.dart';
@@ -28,11 +30,14 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
+
+      Dimensions dimensions = Dimensions(context);
+
       return StatefulBuilder(
         builder: (context, setState) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.75,
+          return IntrinsicHeight(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 /// Close button
@@ -47,7 +52,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                   ),
                 ),
 
-                Expanded(
+                Flexible(
                   child: CustomContainer(
                     color: CustomColor.whiteColor,
                     width: double.infinity,
@@ -75,6 +80,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                               }
 
                               return BlocBuilder<ProviderBloc, ProviderState>(
+                                bloc: BlocProvider.of<ProviderBloc>(context),
                                 builder: (context, state) {
                                   if (state is ProviderLoading) {
                                     return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
@@ -143,7 +149,9 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                   ...outServiceProvider.map((provider) {
                                                     return buildProviderCard(
                                                       context,
-                                                      backgroundImage: NetworkImage(provider.storeInfo!.logo.toString()),
+                                                      backgroundImage: provider.storeInfo!.logo != null
+                                                          ? NetworkImage(provider.storeInfo!.logo.toString())
+                                                          : AssetImage(CustomImage.nullImage) as ImageProvider,
                                                       name: provider.storeInfo!.storeName.toString(),
                                                       price: service.price.toString(),
                                                       newPrice: formatPrice(service.discountedPrice!),
@@ -168,33 +176,54 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
 
                                                   /// In Service Providers
                                                   ...service.providerPrices.map((inService) {
-                                                    return buildProviderCard(
+                                                    return (inService.provider?.id != null) ?
+                                                      buildProviderCard(
                                                       context,
-                                                      backgroundImage: NetworkImage(inService.provider!.storeInfo!.logo),
-                                                      name: inService.provider!.storeInfo!.storeName.toString(),
-                                                      price: inService.providerMRP.toString(),
-                                                      newPrice: inService.providerPrice?.toStringAsFixed(0),
-                                                      // newPrice: inService.providerPrice?.toStringAsFixed(2),
-                                                      // newPrice: inService.providerPrice.toString(),
-                                                      discount: inService.providerDiscount.toString(),
-                                                      // commission: inService.providerCommission.toString(),
-                                                      commission: formatCommission(inService.providerCommission.toString(), half: true),
-                                                       childRetting: BlocProvider(
-                                                         create: (_) => ProviderReviewBloc(ProviderReviewRepository())..add(FetchProviderReviews(inService.provider!.id)),
-                                                         child: BlocBuilder<ProviderReviewBloc, ProviderReviewState>(
-                                                           builder: (context, state) {
-                                                             if (state is ProviderReviewLoading) {
-                                                               return SizedBox(height:15,width:15,child:  Center(child: CircularProgressIndicator(color: CustomColor.appColor,strokeWidth: 0.5,)));
-                                                             } else if (state is ProviderReviewLoaded) {
-                                                               final rating = state.reviews;
-                                                               return Text('⭐ ${rating.averageRating} (${rating.totalReviews} Review)', style: TextStyle(fontSize: 12, color: Colors.black));
-                                                             } else if (state is ProviderReviewError) {
-                                                               print(state.message);
-                                                             }
-                                                             return Text('(No reviews yet)');
-                                                           },
-                                                         ),
-                                                       ),
+                                                      backgroundImage: inService.provider?.storeInfo?.logo != null
+                                                          ? NetworkImage(inService.provider!.storeInfo!.logo)
+                                                          : AssetImage(CustomImage.nullImage) as ImageProvider,
+                                                      name: inService.provider?.storeInfo?.storeName ?? "Unknown Provider",
+                                                      price: inService.providerMRP?.toString() ?? "0",
+                                                      newPrice: inService.providerPrice?.toStringAsFixed(0) ?? "-",
+                                                      discount: inService.providerDiscount?.toString() ?? "0",
+                                                      commission: formatCommission(
+                                                        inService.providerCommission?.toString(),
+                                                        half: true,
+                                                      ),
+
+                                                      childRetting: (inService.provider?.id != null)
+                                                          ? BlocProvider(
+                                                        create: (_) => ProviderReviewBloc(ProviderReviewRepository())
+                                                          ..add(FetchProviderReviews(inService.provider!.id)),
+                                                        child: BlocBuilder<ProviderReviewBloc, ProviderReviewState>(
+                                                          builder: (context, state) {
+                                                            if (state is ProviderReviewLoading) {
+                                                              return  SizedBox(
+                                                                height: 15,
+                                                                width: 15,
+                                                                child: Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    color: CustomColor.appColor,
+                                                                    strokeWidth: 0.5,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            } else if (state is ProviderReviewLoaded) {
+                                                              final rating = state.reviews;
+                                                              return Text(
+                                                                '⭐ ${rating.averageRating} (${rating.totalReviews} Review)',
+                                                                style: const TextStyle(fontSize: 12, color: Colors.black),
+                                                              );
+                                                            } else if (state is ProviderReviewError) {
+                                                              debugPrint(state.message);
+                                                              return SizedBox.shrink();
+                                                            }
+                                                            return   Text('(No reviews yet)',style: TextStyle(fontSize: 12, color: Colors.grey),);
+                                                          },
+                                                        ),
+                                                      )
+                                                          :   Text('(No reviews yet)',style: TextStyle(fontSize: 12, color: Colors.grey),),
+
                                                       checkBox: Checkbox(
                                                         activeColor: CustomColor.greenColor,
                                                         value: selectedType == "inService" &&
@@ -206,7 +235,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                           });
                                                         },
                                                       ),
-                                                    );
+                                                    ) : SizedBox.shrink();
                                                   }).toList(),
 
                                                 ],
@@ -225,12 +254,18 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                     print("Type: $selectedType | serviceId: $serviceId | providerId: $selectedProviderId");
                                                   }
 
+                                                  Navigator.pop(context);
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => CheckoutScreen(
+                                                        serviceId: serviceId,
+                                                        providerId: selectedProviderId ?? "",
+                                                        status: selectedType,
+                                                      ),
+                                                    ),
+                                                  );
 
-                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutScreen(
-                                                    serviceId: serviceId,
-                                                    providerId: selectedProviderId.toString(),
-                                                    status: selectedType,
-                                                  ))).then((value) => Navigator.pop(context),);
                                                 }
 
                                             ),

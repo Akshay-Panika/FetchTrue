@@ -39,8 +39,7 @@ class FinanceCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: Colors.teal),5.width,
-                    Text('Category', style: textStyle14(context, color: Colors.teal),),
+                    Text('Category', style: textStyle12(context, color: Colors.teal),),
                     10.width,
                     Expanded(child: Divider(color: Colors.teal,))
                   ],

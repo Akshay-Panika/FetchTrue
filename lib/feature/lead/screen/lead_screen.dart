@@ -71,7 +71,8 @@ class _LeadScreenState extends State<LeadScreen> {
           builder: (context, state) {
             if (state is LeadLoading) {
               return _buildShimmer();
-            } else if (state is LeadLoaded) {
+            }
+            else if (state is LeadLoaded) {
               // final allLeads = state.leadModel.data ?? [];
               final allLeads = (state.leadModel.data ?? [])
                 ..sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
@@ -195,7 +196,8 @@ class _LeadScreenState extends State<LeadScreen> {
                 ],
               );
       
-            } else if (state is LeadError) {
+            }
+            else if (state is LeadError) {
              print("❌ ${state.message}");
               return Padding(
                   padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),

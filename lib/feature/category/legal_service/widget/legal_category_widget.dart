@@ -36,8 +36,7 @@ class LegalCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: Color(0xff264A7D)),5.width,
-                    Text('Category', style: textStyle14(context, color: Color(0xff264A7D)),),
+                    Text('Category', style: textStyle12(context, color: Color(0xff264A7D)),),
                     10.width,
                     Expanded(child: Divider(color: Color(0xff264A7D),))
                   ],
@@ -102,10 +101,9 @@ class _ShimmerGrid extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ShimmerBox(width: 80,height: 10,),
-                ShimmerBox(width: 20,height: 10,),
               ],
             ),
           ),

@@ -38,8 +38,7 @@ class ItServiceCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: Colors.blue),5.width,
-                    Text('Category', style: textStyle14(context, color: Colors.blue),),
+                    Text('Category', style: textStyle12(context, color: Colors.blue),),
                     10.width,
                     Expanded(child: Divider(color: Colors.blue,))
                   ],
@@ -107,7 +106,6 @@ class _ShimmerGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ShimmerBox(width: 80,height: 10,),
-                ShimmerBox(width: 20,height: 10,),
               ],
             ),
           ),

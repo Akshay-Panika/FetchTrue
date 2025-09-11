@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_client.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/offer_model.dart';
 
 class OfferRepository {
-  static final Dio _dio = Dio();
+  static final Dio _dio = ApiClient.dio;
 
   static Future<List<OfferModel>> fetchOffers() async {
     try {

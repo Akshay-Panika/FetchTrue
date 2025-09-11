@@ -3,6 +3,7 @@ import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../bloc/offer_bloc.dart';
 import '../bloc/offer_state.dart';
@@ -20,7 +21,8 @@ class OfferScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is OfferLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is OfferLoaded) {
+          }
+          else if (state is OfferLoaded) {
             final offers = state.offers;
             return ListView.builder(
               padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
@@ -39,9 +41,23 @@ class OfferScreen extends StatelessWidget {
             );
           } else if (state is OfferError) {
             print('Error: ${state.message}');
-            return const Center(child: Text("No data"));
+            return Padding(
+                padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
+                child:  Center(child: Column(
+                  children: [
+                    Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
+                    Text('No Offer'),
+                  ],
+                )));
           }
-          return const Center(child: Text("No data"));
+          return Padding(
+              padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
+              child:  Center(child: Column(
+                children: [
+                  Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
+                  Text('No Offer'),
+                ],
+              )));
         },
       ),
     );

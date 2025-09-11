@@ -37,8 +37,7 @@ class OnDemandCategoryWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Icon(Icons.apps, size: 19, color: CustomColor.appColor),5.width,
-                    Text('Category', style: textStyle14(context, color: CustomColor.appColor),),
+                    Text('Category', style: textStyle12(context, color: CustomColor.appColor),),
                     10.width,
                     Expanded(child: Divider(color: CustomColor.appColor,))
                   ],
@@ -108,7 +107,6 @@ class _ShimmerGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ShimmerBox(width: 80,height: 10,),
-                ShimmerBox(width: 20,height: 10,),
               ],
             ),
           ),

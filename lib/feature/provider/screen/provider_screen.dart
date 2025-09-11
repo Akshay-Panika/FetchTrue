@@ -99,35 +99,38 @@ class ProviderScreen extends StatelessWidget {
                                   }).toList();
 
                                   // sirf 4 items show karna
-                                  final limitedServices = uniqueServices.take(7).toList();
+                                  final limitedServices = uniqueServices.take(5).toList();
 
                                   final children = limitedServices.map((service) {
-                                    return Text(
-                                      '[ ${service.category?.name ?? 'Unknown'} ]',
-                                      style: textStyle12(
-                                        context,
-                                        fontWeight: FontWeight.w400,
-                                        color: CustomColor.appColor,
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: Colors.grey.shade500,width: 0.3),
+                                      ),
+                                      child: Text(
+                                        '${service.category?.name ?? 'Unknown'}', style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                                       ),
                                     );
                                   }).toList();
 
                                   // agar 4 se jyada items hai to end me [etc] add karo
-                                  if (uniqueServices.length > 7) {
+                                  if (uniqueServices.length > 5) {
                                     children.add(
-                                      Text(
-                                        '[etc]',
-                                        style: textStyle12(
-                                          context,
-                                          fontWeight: FontWeight.w400,
-                                          color: CustomColor.appColor,
-                                        ),
-                                      ),
-                                    );
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: Colors.grey.shade500,width: 0.3),
+                                          ),
+                                          child:  Text(
+                                            'etc',style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                                          ),
+                                        ));
                                   }
 
                                   return Wrap(
-                                    spacing: 15,
+                                    spacing: 10,
                                     runSpacing: 10,
                                     children: children,
                                   );
@@ -135,41 +138,6 @@ class ProviderScreen extends StatelessWidget {
                               )
                             ]
 
-                            // Divider(thickness: 0.3),
-                            //
-                            // if (provider.subscribedServices.isNotEmpty) ...[
-                            //
-                            //   Builder(
-                            //     builder: (context) {
-                            //       final seenCategoryIds = <String>{};
-                            //       final uniqueServices = provider.subscribedServices.where((service) {
-                            //         final id = service.category?.id;
-                            //         if (id != null && !seenCategoryIds.contains(id)) {
-                            //           seenCategoryIds.add(id);
-                            //           return true;
-                            //         }
-                            //         return false;
-                            //       }).toList();
-                            //
-                            //       // sirf 5 hi items show karna
-                            //       final limitedServices = uniqueServices.take(4).toList();
-                            //
-                            //       return Wrap(
-                            //         spacing: 15,
-                            //         runSpacing: 10,
-                            //         children: limitedServices.map((service) {
-                            //           return Text('[ ${service.category?.name ?? 'Unknown'} ]',
-                            //             style: textStyle12(
-                            //               context,
-                            //               fontWeight: FontWeight.w400,
-                            //               color: CustomColor.appColor,
-                            //             ),
-                            //           );
-                            //         }).toList(),
-                            //       );
-                            //     },
-                            //   )
-                            // ]
 
                           ],
                         ),
