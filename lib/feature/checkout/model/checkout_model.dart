@@ -24,6 +24,7 @@ class CheckOutModel {
   final num? assurityChargesPrice;
   final num? extraServicePrice;
   final String? commission;
+  final String? couponDiscountType;
   final num? totalAmount;
   final num? grandTotal;
 
@@ -80,6 +81,7 @@ class CheckOutModel {
      this.assurityChargesPrice,
      this.extraServicePrice,
      this.commission,
+     this.couponDiscountType,
      this.totalAmount,
      this.grandTotal,
      this.paymentMethod,
@@ -135,6 +137,7 @@ class CheckOutModel {
       assurityChargesPrice: json["assurityChargesPrice"] ?? 0,
       extraServicePrice: json["extraServicePrice"] ?? 0,
       commission: json["commission"] ?? "",
+      couponDiscountType: json["couponDiscountType"] ?? "",
       totalAmount: json["totalAmount"] ?? 0,
       grandTotal: json["grandTotal"] ?? 0,
       paymentMethod: List<String>.from(json["paymentMethod"] ?? []),
@@ -190,6 +193,7 @@ class CheckOutModel {
       "assurityChargesPrice": assurityChargesPrice,
       "extraServicePrice": extraServicePrice,
       "commission": commission,
+      "couponDiscountType": couponDiscountType,
       "totalAmount": totalAmount,
       "grandTotal": grandTotal,
       "paymentMethod": paymentMethod,
@@ -245,6 +249,7 @@ class CheckOutModel {
     num? assurityChargesPrice,
     num? extraServicePrice,
     String? commission,
+    String? couponDiscountType,
     num? totalAmount,
     num? grandTotal,
     List<String>? paymentMethod,
@@ -297,6 +302,7 @@ class CheckOutModel {
       assurityChargesPrice: assurityChargesPrice ?? this.assurityChargesPrice,
       extraServicePrice: extraServicePrice ?? this.extraServicePrice,
       commission: commission ?? this.commission,
+      couponDiscountType: couponDiscountType ?? this.couponDiscountType,
       totalAmount: totalAmount ?? this.totalAmount,
       grandTotal: grandTotal ?? this.grandTotal,
       paymentMethod: paymentMethod ?? this.paymentMethod,

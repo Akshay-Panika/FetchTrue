@@ -38,6 +38,7 @@ class BookingData {
   final num? assurityChargesPrice;
   final num? extraServicePrice;
   final String? commission;
+  final String? couponDiscountType;
   final num? totalAmount;
   final num? grandTotal;
   final List<String>? paymentMethod;
@@ -91,6 +92,7 @@ class BookingData {
     this.assurityChargesPrice,
     this.extraServicePrice,
     this.commission,
+    this.couponDiscountType,
     this.totalAmount,
     this.grandTotal,
     this.paymentMethod,
@@ -148,6 +150,7 @@ class BookingData {
       assurityChargesPrice: (json['assurityChargesPrice'] as num?),
       extraServicePrice: (json['extraServicePrice'] as num?),
       commission: json['commission'] as String?,
+      couponDiscountType: json['couponDiscountType'] as String?,
       totalAmount: (json['totalAmount'] as num?),
       grandTotal: (json['grandTotal'] as num?),
       paymentMethod: (json['paymentMethod'] as List<dynamic>?)

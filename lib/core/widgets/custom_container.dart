@@ -52,9 +52,9 @@ class CustomContainer extends StatelessWidget {
           border: border ? Border.all(color: borderColor ?? CustomColor.strokeColor, width: 0.2):null,
           gradient: gradient,
           image: (networkImg != null)
-              ? DecorationImage(image: NetworkImage(networkImg!), fit: BoxFit.fill)
+              ? DecorationImage(image: NetworkImage(networkImg!), fit: BoxFit.cover)
               : (assetsImg != null)
-              ? DecorationImage(image: AssetImage(assetsImg!), fit: BoxFit.fill)
+              ? DecorationImage(image: AssetImage(assetsImg!), fit: BoxFit.cover)
               : null,
         ),
         child: child,

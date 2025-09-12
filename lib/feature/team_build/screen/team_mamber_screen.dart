@@ -52,7 +52,8 @@ class TeamMemberScreen extends StatelessWidget {
                   status: member.isDeleted,
                   address: '______',
                   phone: member.mobileNumber,
-                  earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
+                  earning: members.totalEarningsFromShare2?.toStringAsFixed(2),
+                  // earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
                 ),
         
         
@@ -302,7 +303,7 @@ class _TeamMembers extends StatelessWidget {
             status: member.isDeleted,
             address: '_______',
             phone: member.mobileNumber,
-            earning: 'My Earning\n₹ ${teamCommission}',
+            earning: teamCommission?.toStringAsFixed(2),
             onTap: () {
               Navigator.push(
                 context,
