@@ -37,15 +37,14 @@ class SgpProgressWidget extends StatelessWidget {
            return SizedBox.shrink();
           }
 
-          final gpMembers = team.where((e) => e.user?.packageActive == true && e.user?.packageStatus == 'GP').toList();
+          final gpMembers = team.where((e) => e.user?.packageActive == true).toList();
+          final sgpMembers = team.where((e) => e.user?.packageActive == true ).toList();
 
-          final currentCount = gpMembers.length;
+          final currentCount = sgpMembers.length;
           final progress = (currentCount / targetCount).clamp(0.0, 1.0);
           final remaining = (targetCount - currentCount).clamp(0, targetCount);
 
-          return currentCount ==10 ?
-
-          Padding(
+          return gpMembers.length < 9 ?  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,8 +110,7 @@ class SgpProgressWidget extends StatelessWidget {
                 )
               ],
             ),
-          )
-          :SizedBox.shrink();
+          ):SizedBox.shrink();
 
         } else if (state is MyTeamError) {
           print("Error: ${state.message}");

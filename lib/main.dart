@@ -69,28 +69,16 @@ import 'feature/wallet/bloc/wallet_bloc.dart';
 import 'feature/wallet/repository/wallet_repository.dart';
 import 'firebase_options.dart';
 
-// final fcmRepo = FcmTokenRepository();
-//
-// Future<void> initFcm(String userId) async {
-//   print("initFcm called with userId: $userId");
-//   await fcmRepo.fetchAndSaveFcmToken(userId);
-//   fcmRepo.listenTokenRefresh(userId);
-// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  NetworkMonitor.init();
   final userSession = UserSession();
   await userSession.loadUserSession();
 
-  // if (userSession.userId != null && userSession.userId!.isNotEmpty) {
-  //   initFcm(userSession.userId!);
-  // } else {
-  //   print("❌ UserId not found in session");
-  // }
 
   runApp(
       MultiProvider(
@@ -137,10 +125,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // final userSession = Provider.of<UserSession>(context, listen: false).loadUserSession();
-    // final userSession = Provider.of<UserSession>(context);
-
+    NetworkMonitor.init(context);
     return MaterialApp.router(
       title: 'Fetch True',
       debugShowCheckedModeBanner: false,

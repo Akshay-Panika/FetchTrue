@@ -53,7 +53,7 @@ class FiveXScreen extends StatelessWidget {
                   return CircularProgressIndicator();
                 } else if (state is LeadLoaded) {
                   final allLeads = state.leadModel.data ?? [];
-                  final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+                  // final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
                   return BlocBuilder<WalletBloc, WalletState>(
                     builder: (context, state) {
@@ -97,8 +97,8 @@ class FiveXScreen extends StatelessWidget {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               children: [
-                                                _buildLevelProgressCard(context,data, completedLeads,user),
-                                                _buildEarningProgressCard(context,data, completedLeads,user, wallet),
+                                                _buildLevelProgressCard(context,data, allLeads,user),
+                                                _buildEarningProgressCard(context,data, allLeads,user, wallet),
                                               ],
                                             ),
                                             10.height,
@@ -110,7 +110,7 @@ class FiveXScreen extends StatelessWidget {
 
                                       10.height,
 
-                                      _buildLEL(context, data,completedLeads,wallet)
+                                      _buildLEL(context, data,allLeads,wallet)
                                     ],
                                   ),
                                 ),
@@ -167,7 +167,7 @@ class FiveXScreen extends StatelessWidget {
               backgroundColor: Colors.grey.shade300,
               progressColor: Colors.green,
             ),
-            Text('${xLevel.toString()}X', style: textStyle12(context,color: CustomColor.greenColor),)
+            Text('${xLevel == 0 ? "1":xLevel}X', style: textStyle12(context,color: CustomColor.greenColor),)
           ],
         ),
 
@@ -234,7 +234,7 @@ class FiveXScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _buildCard(context,'Current Level', '${xLevel}X', Colors.blue.shade50),
+        _buildCard(context,'Current Level', '${xLevel==0?'1':xLevel}X', Colors.blue.shade50),
         _buildCard(context,'Total Earnings', '₹ ${wallet.balance}/${fiveX!.fixearning}', Colors.green.shade50),
         _buildCard(context,'Total Leads', '${completedLeads.length}/${fiveX.leadcount}', Colors.amber.shade50),
       ],

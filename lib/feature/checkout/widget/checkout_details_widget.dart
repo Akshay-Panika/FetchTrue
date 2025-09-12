@@ -320,11 +320,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             priceAfterDiscount: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
                             couponDiscountPrice: double.parse(couponDiscount.toStringAsFixed(2)),
                             couponDiscount: double.parse((selectedCoupon?.amount.toDouble() ?? 0.0).toStringAsFixed(2)),
-<<<<<<< HEAD
                             couponDiscountType: selectedCoupon?.discountAmountType == 'Percentage' ? '%' : '₹',
-=======
-                            couponDiscountType: selectedCoupon!.discountAmountType == 'Percentage' ? '%' : '₹',
->>>>>>> origin/master
                             // couponDiscount: '${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'}',
                             gst: double.parse(serviceGst.toStringAsFixed(2)),
                             serviceGSTPrice: double.parse(gstAmount.toStringAsFixed(2)),

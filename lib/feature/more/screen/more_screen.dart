@@ -92,7 +92,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     }),
 
                     if(userSession.isLoggedIn)
-                    _buildTile(context, Icons.verified_outlined, "Five X", () {
+                    _buildTile(context, Icons.verified_outlined, "5 X", () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
                     }),
         

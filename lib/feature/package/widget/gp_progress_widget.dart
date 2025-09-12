@@ -79,6 +79,7 @@ class GpProgressWidget extends StatelessWidget {
                   10.height,
 
                   ///  Button
+                  if(state.referrals.length !=10)
                   CustomContainer(
                     color: CustomColor.appColor,
                     margin: EdgeInsets.zero,
