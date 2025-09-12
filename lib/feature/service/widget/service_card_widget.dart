@@ -10,7 +10,6 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../model/service_model.dart';
-import '../screen/service_details_screen.dart';
 
 class ServiceCardWidget extends StatelessWidget {
   final ServiceModel data;

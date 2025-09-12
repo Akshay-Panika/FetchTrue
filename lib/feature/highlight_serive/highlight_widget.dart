@@ -30,104 +30,107 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return BlocBuilder<AdsBloc, AdsState>(
-      builder: (context, state) {
-        if (state is AdsLoading) {
-          return _adsShimmer(dimensions);
-        } else if (state is AdsLoaded) {
-          // final adsList = state.ads.data;
-          final adsList = state.ads.data.where((moduleService) =>
-          moduleService.category.module == widget.moduleId).toList();
+    return BlocProvider(
+      create: (_) => AdsBloc(AdsRepository())..add(LoadAdsEvent()),
+      child: BlocBuilder<AdsBloc, AdsState>(
+        builder: (context, state) {
+          if (state is AdsLoading) {
+            return _adsShimmer(dimensions);
+          } else if (state is AdsLoaded) {
+            // final adsList = state.ads.data;
+            final adsList = state.ads.data.where((moduleService) =>
+            moduleService.category.module == widget.moduleId).toList();
 
-          if(adsList.isEmpty){
-            return SizedBox.shrink();
-          }
+            if(adsList.isEmpty){
+              return SizedBox.shrink();
+            }
 
-          return Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Highlight For You', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                Column(
-                  children: [
-                    CarouselSlider.builder(
-                      options: CarouselOptions(
-                        height: dimensions.screenHeight*0.25,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        viewportFraction: 1,
-                        autoPlayInterval: const Duration(seconds: 4),
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _current = index;
-                          });
+            return Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Highlight For You', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                  Column(
+                    children: [
+                      CarouselSlider.builder(
+                        options: CarouselOptions(
+                          height: dimensions.screenHeight*0.25,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          viewportFraction: 1,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          },
+                        ),
+                        itemCount: adsList.length,
+                        itemBuilder: (context, index, realIndex) {
+                          final ads = adsList[index];
+                          return CustomContainer(
+                            border: true,
+                            padding: EdgeInsets.zero,
+                            color: CustomColor.whiteColor,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CustomContainer(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.zero,
+                                    margin: EdgeInsets.zero,
+                                    networkImg: ads.fileUrl,
+                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: ads.service.id),)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(ads.title,style: textStyle12(context),),
+                                      Text(
+                                        ads.description,style: textStyle12(context,fontWeight: FontWeight.w400),),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
-                      itemCount: adsList.length,
-                      itemBuilder: (context, index, realIndex) {
-                        final ads = adsList[index];
-                        return CustomContainer(
-                          border: true,
-                          padding: EdgeInsets.zero,
-                          color: CustomColor.whiteColor,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: CustomContainer(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.zero,
-                                  margin: EdgeInsets.zero,
-                                  networkImg: ads.fileUrl,
-                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: ads.service.id),)),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(ads.title,style: textStyle12(context),),
-                                    Text(
-                                      ads.description,style: textStyle12(context,fontWeight: FontWeight.w400),),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    5.height,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(adsList.length, (index) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          height: 5,
-                          width: _current == index ? 24 : 10,
-                          decoration: BoxDecoration(
-                            color: _current == index ? Colors.blueAccent : Colors.grey,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-        } else if (state is AdsError) {
-          print('error : ${state.message}');
-          return SizedBox.shrink();
-          // return Center(child: Text('Error: ${state.message}'));
-        }
-        return Center(child: Text('Press button to load ads'));
-      },
+                      5.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(adsList.length, (index) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            height: 5,
+                            width: _current == index ? 24 : 10,
+                            decoration: BoxDecoration(
+                              color: _current == index ? Colors.blueAccent : Colors.grey,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          } else if (state is AdsError) {
+            print('error : ${state.message}');
+            return SizedBox.shrink();
+            // return Center(child: Text('Error: ${state.message}'));
+          }
+          return Center(child: Text('Press button to load ads'));
+        },
+      ),
     );
   }
 }

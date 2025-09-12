@@ -9,7 +9,9 @@ import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/shimmer_box.dart';
 import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
+import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
+import '../../repository/category_repository.dart';
 
 
 class OnboardingCategoryWidget extends StatelessWidget {
@@ -19,81 +21,84 @@ class OnboardingCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return BlocBuilder<CategoryBloc, CategoryState>(
-      builder: (context, state) {
-        if (state is CategoryLoading) {
-          return _ShimmerGrid();
-        } else if (state is CategoryLoaded) {
-          // final categories = state.categories;
-          final categories = state.categories.where((moduleCategory) =>
-          moduleCategory.module.id == moduleId).toList();
+    return BlocProvider(
+      create: (_) => CategoryBloc(CategoryRepository())..add(GetCategories()),
+      child: BlocBuilder<CategoryBloc, CategoryState>(
+        builder: (context, state) {
+          if (state is CategoryLoading) {
+            return _ShimmerGrid();
+          } else if (state is CategoryLoaded) {
+            // final categories = state.categories;
+            final categories = state.categories.where((moduleCategory) =>
+            moduleCategory.module.id == moduleId).toList();
 
-          return  Column(
-            children: [
-              10.height,
-              Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('Category', style: textStyle12(context, color: CustomColor.appColor),),
-                    10.width,
-                    Expanded(child: Divider(color: CustomColor.appColor,))
-                  ],
-                ),
-              ),
-              15.height,
-              Container(
-                height: 150,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1 / 2.5,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+            return  Column(
+              children: [
+                10.height,
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('Category', style: textStyle12(context, color: CustomColor.appColor),),
+                      10.width,
+                      Expanded(child: Divider(color: CustomColor.appColor,))
+                    ],
                   ),
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    return CustomContainer(
-                      padding: EdgeInsets.zero,
-                      margin: EdgeInsets.zero,
-                      color: Colors.white,
-                      onTap: () {
-                        context.push(
-                          '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          CustomContainer(
-                            width: 80,
-                            networkImg: category.image ?? '',margin: EdgeInsets.zero,),
-
-                          Expanded(
-                            child: Text(
-                              category.name ?? '',
-                              style: textStyle12(context),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          10.width,
-                        ],
-                      ),
-                    );
-                  },
                 ),
-              ),
-            ],
-          );
-        } else if (state is CategoryError) {
-          print("Error: ${state.message}");
-        }
-        return const SizedBox();
-      },
+                15.height,
+                Container(
+                  height: 150,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1 / 2.5,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return CustomContainer(
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
+                        color: Colors.white,
+                        onTap: () {
+                          context.push(
+                            '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            CustomContainer(
+                              width: 80,
+                              networkImg: category.image ?? '',margin: EdgeInsets.zero,),
+
+                            Expanded(
+                              child: Text(
+                                category.name ?? '',
+                                style: textStyle12(context),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            10.width,
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else if (state is CategoryError) {
+            print("Error: ${state.message}");
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 }
