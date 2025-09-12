@@ -73,7 +73,7 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
                   child: CustomNetworkImage(
                     key: ValueKey(banner.id),
                     imageUrl: banner.file,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     onTap: () {
                       if (banner.selectionType == 'referralUrl') {
                         CustomUrlLaunch(banner.referralUrl);

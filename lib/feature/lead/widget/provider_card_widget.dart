@@ -58,7 +58,7 @@ class ProviderCardWidget extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundColor: Colors.blue,
+                          backgroundColor: CustomColor.appColor.withOpacity(0.3),
                           backgroundImage: provider.storeInfo?.logo != null &&
                               provider.storeInfo!.logo!.isNotEmpty
                               ? NetworkImage(provider.storeInfo!.logo!)

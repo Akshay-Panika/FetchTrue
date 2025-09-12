@@ -41,10 +41,11 @@ class TeamLeadsScreen extends StatelessWidget {
               id: member.id,
               memberId: member.userId,
               name: member.fullName,
-              level: 'GP',
+              level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
+              status: member.isDeleted,
               address: 'address',
               phone: member.mobileNumber,
-              earning: 'My Earning\n₹ ${earning}',
+              earning: earning.toString(),
             ),
 
             _MemberLeads(leadsData: leadsData,),

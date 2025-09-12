@@ -43,7 +43,6 @@ class FavoriteScreen extends StatelessWidget {
         appBar: const CustomAppBar(
           title: 'Favorite',
           showBackButton: true,
-          showSearchIcon: true,
         ),
         body: SafeArea(
           child: Column(
@@ -272,6 +271,16 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
                 // final allProviders = state.providers.where((e) => e.kycCompleted == true).toList();
 
                 final providers = state.providers.where((provider) => favoriteProviderIds.contains(provider.id)).toList();
+
+                if (providers.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(CustomImage.emptyCart, height: 80),
+                      const Text('No Provider')
+                    ],
+                  );
+                }
 
                 return ListView.separated(
                   itemCount: providers.length,

@@ -306,31 +306,6 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             return;
                           }
 
-                          // final checkoutData = CheckOutModel(
-                          //   user: userSession.userId.toString(),
-                          //   provider:widget.providerId,
-                          //   serviceCustomer: customer_Id.toString(),
-                          //   notes: message.toString(),
-                          //   service: widget.service!.id,
-                          //   commission: widget.commission,
-                          //   coupon:selectedCoupon?.id,
-                          //   listingPrice: listingPrice,
-                          //   serviceDiscount: serviceDiscount,
-                          //   serviceDiscountPrice: serviceDiscountPrice,
-                          //   priceAfterDiscount: serviceLessDiscountPrice,
-                          //   couponDiscount: couponDiscount,
-                          //   couponDiscountPrice: selectedCoupon?.amount.toDouble() ?? 0.0,
-                          //   gst: serviceGst.toDouble(),
-                          //   serviceGSTPrice: gstAmount,
-                          //   platformFee: platformFee.toDouble(),
-                          //   platformFeePrice: platformFeeAmount,
-                          //   assurityfee: assurityFee.toDouble(),
-                          //   assurityChargesPrice: assurityFeeAmount,
-                          //   subtotal: serviceLessDiscountPrice,
-                          //   totalAmount:grandTotal,
-                          //   champaignDiscount:0,
-                          //   termsCondition: _isAgree,
-                          // );
                           final checkoutData = CheckOutModel(
                             user: userSession.userId.toString(),
                             provider: widget.providerId,
@@ -345,6 +320,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             priceAfterDiscount: double.parse(serviceLessDiscountPrice.toStringAsFixed(2)),
                             couponDiscountPrice: double.parse(couponDiscount.toStringAsFixed(2)),
                             couponDiscount: double.parse((selectedCoupon?.amount.toDouble() ?? 0.0).toStringAsFixed(2)),
+                            couponDiscountType: selectedCoupon!.discountAmountType == 'Percentage' ? '%' : '₹',
                             // couponDiscount: '${selectedCoupon != null ? '${selectedCoupon!.amount}${selectedCoupon!.discountAmountType == 'Percentage' ? ' %' : ' ₹'}' : '₹ 0'}',
                             gst: double.parse(serviceGst.toStringAsFixed(2)),
                             serviceGSTPrice: double.parse(gstAmount.toStringAsFixed(2)),
