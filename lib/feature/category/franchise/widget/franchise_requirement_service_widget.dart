@@ -7,7 +7,9 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../../service/bloc/service/service_bloc.dart';
+import '../../../service/bloc/service/service_event.dart';
 import '../../../service/bloc/service/service_state.dart';
+import '../../../service/repository/service_repository.dart';
 import '../../../service/screen/service_details_screen.dart';
 import '../../../service/widget/service_card_widget.dart';
 
@@ -18,54 +20,57 @@ class FranchiseRequirementServiceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-   return  BlocBuilder<ServiceBloc, ServiceState>(
-     builder: (context, state) {
-       if (state is ServiceLoading) {
-         return _buildShimmer(dimensions);
-       }
-
-       else if(state is ServiceLoaded){
-
-         // final services = state.services;
-         final services = state.services.where((moduleService) =>
-         moduleService.category.module == moduleId && moduleService.recommendedServices == true
-         ).toList();
-
-
-         if (services.isEmpty) {
-           return SizedBox.shrink();
+      return  BlocProvider(
+      create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
+     child: BlocBuilder<ServiceBloc, ServiceState>(
+       builder: (context, state) {
+         if (state is ServiceLoading) {
+           return _buildShimmer(dimensions);
          }
 
+         else if(state is ServiceLoaded){
 
-         return  Column(
-           crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
-             Padding(
-               padding:  EdgeInsets.only(left: dimensions.screenHeight*0.010, top: dimensions.screenHeight*0.010),
-               child: Text('Recommended Service', style: textStyle12(context),),
-             ),
-             SizedBox(
-               height: dimensions.screenHeight*0.25,
-               child: ListView(
-                 scrollDirection: Axis.horizontal,
-                 children: List.generate(services.length, (index) {
-                   final data = services[index];
+           // final services = state.services;
+           final services = state.services.where((moduleService) =>
+           moduleService.category.module == moduleId && moduleService.recommendedServices == true
+           ).toList();
 
-                   return ServiceCardWidget(data: data,);
-                 },),
+
+           if (services.isEmpty) {
+             return SizedBox.shrink();
+           }
+
+
+           return  Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Padding(
+                 padding:  EdgeInsets.only(left: dimensions.screenHeight*0.010, top: dimensions.screenHeight*0.010),
+                 child: Text('Recommended Service', style: textStyle12(context),),
                ),
-             ),
-           ],
-         );
+               SizedBox(
+                 height: dimensions.screenHeight*0.25,
+                 child: ListView(
+                   scrollDirection: Axis.horizontal,
+                   children: List.generate(services.length, (index) {
+                     final data = services[index];
 
-       }
+                     return ServiceCardWidget(data: data,);
+                   },),
+                 ),
+               ),
+             ],
+           );
 
-       else if (state is ServiceError) {
-         // print('Dio Error: ${state.message}');
-         return Expanded(child: Center(child: Text('No Service')));
-       }
-       return const SizedBox.shrink();
-     },
+         }
+
+         else if (state is ServiceError) {
+           // print('Dio Error: ${state.message}');
+           return Expanded(child: Center(child: Text('No Service')));
+         }
+         return const SizedBox.shrink();
+       },
+     ),
    );
   }
 }

@@ -18,8 +18,10 @@ import '../../coupon/screen/coupon_screen.dart';
 import '../../customer/screen/add_customer_screen.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_event.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/model/service_model.dart';
+import '../../service/repository/service_repository.dart';
 import '../bloc/commission/commission_bloc.dart';
 import '../bloc/commission/commission_state.dart';
 import '../model/checkout_model.dart';
@@ -55,51 +57,54 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
           return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
         } else if (state is CommissionLoaded) {
           final commissionCharge = state.commission;
-          return BlocBuilder<ServiceBloc, ServiceState>(
-            builder: (context, serviceState) {
-              if (serviceState is ServiceLoading) {
-                return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
-              }
-              else if (serviceState is ServiceError) {
-                return Center(child: Text(serviceState.message));
+          return  BlocProvider(
+            create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
+            child: BlocBuilder<ServiceBloc, ServiceState>(
+              builder: (context, serviceState) {
+                if (serviceState is ServiceLoading) {
+                  return LinearProgressIndicator(backgroundColor: CustomColor.appColor, color: CustomColor.whiteColor ,minHeight: 2.5,);
+                }
+                else if (serviceState is ServiceError) {
+                  return Center(child: Text(serviceState.message));
 
-              } else if (serviceState is ServiceLoaded) {
-                final service = serviceState.services.firstWhereOrNull((s) => s.id == widget.serviceId,);
+                } else if (serviceState is ServiceLoaded) {
+                  final service = serviceState.services.firstWhereOrNull((s) => s.id == widget.serviceId,);
 
-                if (service == null) return const Text('No Service Found');
+                  if (service == null) return const Text('No Service Found');
 
-                if(widget.status == 'default' || widget.status == 'outService'){
-                  return CheckoutWidget(
-                    service: service,
-                    price: service.price.toString(),
-                    discountPrice: service.discountedPrice.toString(),
-                    discount: service.discount.toString(),
-                    commission: service.franchiseDetails.commission.toString(),
-                    providerId: widget.status == 'default' ? null : widget.providerId,
-                    commissionCharge: commissionCharge,
-                    onPaymentDone: widget.onPaymentDone,
-                  );
+                  if(widget.status == 'default' || widget.status == 'outService'){
+                    return CheckoutWidget(
+                      service: service,
+                      price: service.price.toString(),
+                      discountPrice: service.discountedPrice.toString(),
+                      discount: service.discount.toString(),
+                      commission: service.franchiseDetails.commission.toString(),
+                      providerId: widget.status == 'default' ? null : widget.providerId,
+                      commissionCharge: commissionCharge,
+                      onPaymentDone: widget.onPaymentDone,
+                    );
+                  }
+
+                  else if(widget.status == 'inService'){
+                    final providerPriceData = service.providerPrices.firstWhere((p) => p.provider?.id == widget.providerId,
+                      orElse: () => service.providerPrices.isNotEmpty ? service.providerPrices.first : throw Exception('No provider price found'),
+                    );
+                    return CheckoutWidget(
+                      service: service,
+                      price: providerPriceData.providerMRP.toString(),
+                      discountPrice: providerPriceData.providerPrice.toString(),
+                      discount: providerPriceData.providerDiscount.toString(),
+                      commission: providerPriceData.providerCommission.toString(),
+                      providerId: widget.status == 'default' ? null : widget.providerId,
+                      commissionCharge: commissionCharge,
+                      onPaymentDone: widget.onPaymentDone,
+                    );
+                  }
                 }
 
-                else if(widget.status == 'inService'){
-                  final providerPriceData = service.providerPrices.firstWhere((p) => p.provider?.id == widget.providerId,
-                    orElse: () => service.providerPrices.isNotEmpty ? service.providerPrices.first : throw Exception('No provider price found'),
-                  );
-                  return CheckoutWidget(
-                    service: service,
-                    price: providerPriceData.providerMRP.toString(),
-                    discountPrice: providerPriceData.providerPrice.toString(),
-                    discount: providerPriceData.providerDiscount.toString(),
-                    commission: providerPriceData.providerCommission.toString(),
-                    providerId: widget.status == 'default' ? null : widget.providerId,
-                    commissionCharge: commissionCharge,
-                    onPaymentDone: widget.onPaymentDone,
-                  );
-                }
-              }
-
-              return const SizedBox.shrink();
-            },
+                return const SizedBox.shrink();
+              },
+            ),
           );
         } else if (state is CommissionError) {
           print(state.message);

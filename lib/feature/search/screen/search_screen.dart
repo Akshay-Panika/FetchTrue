@@ -14,7 +14,9 @@ import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_event.dart';
 import '../../service/bloc/service/service_state.dart';
+import '../../service/repository/service_repository.dart';
 import '../../service/screen/service_details_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -84,195 +86,198 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
 
-          BlocBuilder<ServiceBloc, ServiceState>(
-            builder: (context, state) {
-              if (state is ServiceLoading) {
-                return _ShimmerList();
-              } else if (state is ServiceLoaded) {
+          BlocProvider(
+        create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
+            child: BlocBuilder<ServiceBloc, ServiceState>(
+              builder: (context, state) {
+                if (state is ServiceLoading) {
+                  return _ShimmerList();
+                } else if (state is ServiceLoaded) {
 
-                final filteredByModule = (widget.moduleId.isEmpty)
-                    ? state.services
-                    : state.services.where((service) =>
-                service.category?.module == widget.moduleId).toList();
+                  final filteredByModule = (widget.moduleId.isEmpty)
+                      ? state.services
+                      : state.services.where((service) =>
+                  service.category?.module == widget.moduleId).toList();
 
-                final services = filteredByModule.where((service) {
-                  return service.serviceName.toLowerCase().contains(searchQuery);
-                }).toList();
+                  final services = filteredByModule.where((service) {
+                    return service.serviceName.toLowerCase().contains(searchQuery);
+                  }).toList();
 
 
 
-                if (services.isEmpty) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(CustomImage.emptyCart, height: 80),
-                      const Text('No Service')
-                    ],
-                  );
-                }
+                  if (services.isEmpty) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(CustomImage.emptyCart, height: 80),
+                        const Text('No Service')
+                      ],
+                    );
+                  }
 
-                return Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    itemCount: services.length,
-                    itemBuilder: (context, index) {
-                      final data = services[index];
+                  return Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      itemCount: services.length,
+                      itemBuilder: (context, index) {
+                        final data = services[index];
 
-                      String formatCommission(dynamic rawCommission, {bool half = false}) {
-                        if (rawCommission == null) return '0';
-                        final commissionStr = rawCommission.toString();
-                        final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
-                        final numeric = double.tryParse(numericStr) ?? 0;
-                        final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
-                        final value = half ? (numeric / 2).round() : numeric.round();
-                        return symbol == '%' ? '$value%' : '$symbol$value';
-                      }
+                        String formatCommission(dynamic rawCommission, {bool half = false}) {
+                          if (rawCommission == null) return '0';
+                          final commissionStr = rawCommission.toString();
+                          final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+                          final numeric = double.tryParse(numericStr) ?? 0;
+                          final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+                          final value = half ? (numeric / 2).round() : numeric.round();
+                          return symbol == '%' ? '$value%' : '$symbol$value';
+                        }
 
-                      return CustomContainer(
-                        border: false,
-                        color: Colors.white,
-                        padding: EdgeInsets.zero,
-                        margin: const EdgeInsets.only(top: 10),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ServiceDetailsScreen(serviceId: data.id),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CustomContainer(
-                              height: dimensions.screenHeight * 0.16,
-                              margin: EdgeInsets.zero,
-                              padding: EdgeInsets.zero,
-                              networkImg: data.thumbnailImage,
-                              color: CustomColor.whiteColor,
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                     Padding(
-                                       padding: const EdgeInsets.all(8.0),
-                                       child: FavoriteServiceButtonWidget(serviceId: data.id,),
-                                     ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: dimensions.screenHeight * 0.01),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomRight: Radius.circular(10),
-                                        ),
-                                        color: CustomColor.blackColor.withOpacity(0.3),
-                                      ),
-                                      child: Text(
-                                        '⭐ ${data.averageRating} (${data.totalReviews} Reviews)',
-                                        style:  TextStyle(fontSize: 12, color: CustomColor.whiteColor),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                        return CustomContainer(
+                          border: false,
+                          color: Colors.white,
+                          padding: EdgeInsets.zero,
+                          margin: const EdgeInsets.only(top: 10),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ServiceDetailsScreen(serviceId: data.id),
                             ),
-                            10.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CustomContainer(
+                                height: dimensions.screenHeight * 0.16,
+                                margin: EdgeInsets.zero,
+                                padding: EdgeInsets.zero,
+                                networkImg: data.thumbnailImage,
+                                color: CustomColor.whiteColor,
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(data.serviceName, style: textStyle12(context)),
-                                          Row(
-                                            children: [
-                                              CustomAmountText(
-                                                amount: data.price.toString(),
-                                                color: CustomColor.descriptionColor,
-                                                isLineThrough: true,
-                                                fontSize: 14,
-                                              ),
-                                              10.width,
-                                              CustomAmountText(
-                                                amount: formatPrice(data.discountedPrice!),
-                                                color: CustomColor.descriptionColor,
-                                                fontSize: 14,
-                                              ),
-                                              10.width,
-                                              Text(
-                                                '${data.discount} % Off',
-                                                style: textStyle14(
-                                                    context,
-                                                    color: CustomColor.greenColor,
-                                                    fontWeight: FontWeight.w400),
-                                              ),
-                                            ],
+                                       Padding(
+                                         padding: const EdgeInsets.all(8.0),
+                                         child: FavoriteServiceButtonWidget(serviceId: data.id,),
+                                       ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: dimensions.screenHeight * 0.01),
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10),
                                           ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            'Earn up to ',
-                                            style: textStyle14(
-                                                context,
-                                                color: CustomColor.appColor,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                          Text(
-                                            formatCommission(data.franchiseDetails.commission, half: true),
-                                            style: textStyle14(context, color: CustomColor.greenColor),
-                                          ),
-                                        ],
+                                          color: CustomColor.blackColor.withOpacity(0.3),
+                                        ),
+                                        child: Text(
+                                          '⭐ ${data.averageRating} (${data.totalReviews} Reviews)',
+                                          style:  TextStyle(fontSize: 12, color: CustomColor.whiteColor),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  5.height,
-                                  if (data.keyValues.isNotEmpty)
-                                    ...data.keyValues.map((entry) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 6.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${entry.key} :',
-                                            style: textStyle12(context, color: CustomColor.descriptionColor),
-                                          ),
-                                          5.width,
-                                          Expanded(
-                                            child: Text(
-                                              entry.value,
-                                              style: textStyle12(context,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: CustomColor.descriptionColor),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else if (state is ServiceError) {
-                return const Expanded(child: Center(child: Text('No Service')));
-              }
-              return const SizedBox.shrink();
-            },
+                              10.height,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(data.serviceName, style: textStyle12(context)),
+                                            Row(
+                                              children: [
+                                                CustomAmountText(
+                                                  amount: data.price.toString(),
+                                                  color: CustomColor.descriptionColor,
+                                                  isLineThrough: true,
+                                                  fontSize: 14,
+                                                ),
+                                                10.width,
+                                                CustomAmountText(
+                                                  amount: formatPrice(data.discountedPrice!),
+                                                  color: CustomColor.descriptionColor,
+                                                  fontSize: 14,
+                                                ),
+                                                10.width,
+                                                Text(
+                                                  '${data.discount} % Off',
+                                                  style: textStyle14(
+                                                      context,
+                                                      color: CustomColor.greenColor,
+                                                      fontWeight: FontWeight.w400),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              'Earn up to ',
+                                              style: textStyle14(
+                                                  context,
+                                                  color: CustomColor.appColor,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            Text(
+                                              formatCommission(data.franchiseDetails.commission, half: true),
+                                              style: textStyle14(context, color: CustomColor.greenColor),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    5.height,
+                                    if (data.keyValues.isNotEmpty)
+                                      ...data.keyValues.map((entry) => Padding(
+                                        padding: const EdgeInsets.only(bottom: 6.0),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${entry.key} :',
+                                              style: textStyle12(context, color: CustomColor.descriptionColor),
+                                            ),
+                                            5.width,
+                                            Expanded(
+                                              child: Text(
+                                                entry.value,
+                                                style: textStyle12(context,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: CustomColor.descriptionColor),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                } else if (state is ServiceError) {
+                  return const Expanded(child: Center(child: Text('No Service')));
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ],
       ),
@@ -285,7 +290,7 @@ Widget _ShimmerList(){
   return Expanded(
     child: ListView(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-      children: List.generate(3, (index) => CustomContainer(
+      children: List.generate(5, (index) => CustomContainer(
         height: 200,
         margin: EdgeInsetsGeometry.only(top: 10),
         child:  Shimmer.fromColors(
