@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/core/widgets/shimmer_box.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ import '../bloc/wallet_event.dart';
 import '../bloc/wallet_state.dart';
 import '../model/wallet_model.dart';
 import '../repository/wallet_repository.dart';
+import 'history_screen.dart';
 
 class WalletScreen extends StatefulWidget {
   final String userId;
@@ -55,6 +57,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   children: [
 
                     _buildStatsCard(context, wallet),
+                    10.height,
 
                     Container(
                       color: CustomColor.whiteColor,
@@ -103,41 +106,58 @@ class _WalletScreenState extends State<WalletScreen> {
 /// wallet card
 Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
 
-  return Container(
-    margin: EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      color: CustomColor.whiteColor,
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: Colors.grey.shade200),
-      boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6, // softness
-            offset: const Offset(0, 2)
-        ),
-      ],
-    ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 10.0),
     child: Column(
       children: [
         15.height,
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
+        CustomContainer(
+          margin: EdgeInsets.zero,
+          gradient: LinearGradient(colors: [
+            Color(0xffE8E8E8),
+            Color(0xffF2F5FF),
+          ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomAmountText(
-                amount: '${wallet.balance}',
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('assets/image/walletImg.png',),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('My Earnings', style: textStyle14(context),),
+                      Text('Weekly Auto-Withdraw', style: TextStyle(fontSize: 10),),
+                    ],
+                  ),
+                ],
               ),
-              Text(
-                "Total Earnings",
-                style: textStyle12(context,
-                    color: CustomColor.appColor),
-              ),
+              Column(
+                children: [
+                  CustomAmountText(
+                    amount: '${wallet.balance}',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 22,
+                    color: CustomColor.greenColor
+                  ),
+
+                  TextButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionHistoryScreen(),)),
+                      icon: Icon(Icons.history, color: CustomColor.appColor,),
+                      label: Text('History', style: textStyle14(context, color: CustomColor.appColor),))
+                ],
+              )
             ],
           ),
         ),
+        10.height,
         BlocBuilder<PackageBloc, PackageState>(
           builder: (context, state) {
             if (state is PackageLoading) {
@@ -146,34 +166,79 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet ) {
               final data = state.packages.first;
               return Column(
                 children: [
-                  Align(alignment: Alignment.topRight,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-                        decoration: BoxDecoration(
-                          color: CustomColor.greenColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10),
-                          )
-                        ),
-                        child: Text('Lock In Period ${data.lockInPeriod}, Month', style: textStyle12(context, color: CustomColor.whiteColor),)),
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CustomContainer(
+                          margin: EdgeInsets.zero,
+                          gradient: LinearGradient(colors: [
+                            Color(0xffE8E8E8),
+                            Color(0xffF2F5FF),
+                          ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Total Earnings', style: textStyle12(context),),
+                                  Icon(Icons.currency_rupee, color: CustomColor.appColor,),
+                                ],
+                              ),
+                              CustomAmountText(
+                                  amount: '${wallet.totalCredits}',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 22,
+                                  color: CustomColor.greenColor
+                              ),
 
-                 Padding(
-                   padding: const EdgeInsets.all(15.0),
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     children: [
-                       _earningRow(context,"Franchise Deposit", "₹ ${formatPrice(data.deposit)}"),
-                       _earningRow(context,"Monthly Fix Earnings", "₹ ${formatPrice(data.monthlyEarnings)}"),
-                     ],
-                   ),
-                 ) // Placeholder
+                            ],
+                          ),
+                        ),
+                      ),
+                      10.width,
+                      Expanded(
+                        child: CustomContainer(
+                          margin: EdgeInsets.zero,
+                          gradient: LinearGradient(colors: [
+                            Color(0xffE8E8E8),
+                            Color(0xffF2F5FF),
+                          ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Monthly Fix Earnings', style: textStyle12(context),),
+                                  Icon(Icons.currency_rupee, color: CustomColor.appColor,),
+                                ],
+                              ),
+                              CustomAmountText(
+                                  amount: '${formatPrice(data.monthlyEarnings)}',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 22,
+                                  color: CustomColor.greenColor
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ) // Placeholder
                 ],
               );
             } else if (state is PackageError) {
-               print("Error: ${state.error}");
-               return SizedBox.shrink();
+              print("Error: ${state.error}");
+              return SizedBox.shrink();
             }
             return SizedBox.shrink();
           },

@@ -92,7 +92,7 @@ class ModuleWidget extends StatelessWidget {
                             'Finance': '/finance',
                             'It Services': '/it',
                             'Education': '/education',
-                            'On-Demand Services': '/ondemand',
+                            'On-Demand': '/ondemand',
                             'Onboarding': '/onboarding',
                           };
 

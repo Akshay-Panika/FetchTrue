@@ -42,7 +42,7 @@ Future<void> checkoutCashfreeRepository({
       final paymentUrl = data["paymentLink"];
       _openInAppWebView(context, paymentUrl, onPaymentSuccess);
     } else {
-      showCustomSnackBar(context, 'Failed to generate payment link');
+      // showCustomSnackBar(context, 'Failed to generate payment link');
     }
   } catch (e) {
     showCustomSnackBar(context, 'Error: $e');
@@ -82,10 +82,10 @@ void _openInAppWebView(BuildContext context, String paymentUrl, void Function() 
               if (!isPaymentHandled && currentUrl.contains("response")) {
                 // print("Current URL: $currentUrl");
                 isPaymentHandled = true;
-                showCustomSnackBar(context, 'Payment Successful!');
+                // showCustomSnackBar(context, 'Payment Successful!');
               } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
                 isPaymentHandled = true;
-                showCustomSnackBar(context, 'Payment Failed or Cancelled');
+                // showCustomSnackBar(context, 'Payment Failed or Cancelled');
               }
             },
           ),

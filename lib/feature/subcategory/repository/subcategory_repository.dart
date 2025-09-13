@@ -1,5 +1,6 @@
 // subcategory_repository.dart
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/subcategory_model.dart';
 
 class SubcategoryRepository {
@@ -7,7 +8,7 @@ class SubcategoryRepository {
 
   Future<List<SubcategoryModel>> getSubcategories() async {
     try {
-      final response = await _dio.get("https://biz-booster.vercel.app/api/subcategory");
+      final response = await _dio.get(ApiUrls.modulesSubcategory);
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         List data = response.data['data'];

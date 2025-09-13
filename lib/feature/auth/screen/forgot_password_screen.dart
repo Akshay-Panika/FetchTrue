@@ -263,17 +263,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         setState(() => _isLoading = true);
 
                         try {
-                          final response = await _forgotPasswordService.forgotPasswordUser(
+                          final forgotService = ForgotPasswordService(); // singleton ApiClient internally
+                          await forgotService.forgotPasswordUser(
                             mobileNumber: phone,
                             newPassword: password,
                           );
 
-                          if (response.statusCode == 200) {
-                            showCustomSnackBar(context, '🎉 Password reset successful');
-                            Navigator.pop(context); // Navigate to Sign In
-                          } else {
-                            showCustomSnackBar(context, 'Something went wrong');
-                          }
+                          showCustomToast('🎉 Password reset successful');
+                          Navigator.pop(context); // Navigate to Sign In
+
                         } catch (e) {
                           showCustomSnackBar(context, e.toString());
                         } finally {
