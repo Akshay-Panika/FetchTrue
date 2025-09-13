@@ -4,9 +4,9 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
+import 'package:fetchtrue/feature/package/repository/package_repository.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
-import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +24,17 @@ import '../../five_x/screen/five_x_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
+import '../../team_build/bloc/my_team/my_team_bloc.dart';
+import '../../team_build/bloc/my_team/my_team_event.dart';
+import '../../team_build/bloc/my_team/my_team_state.dart';
+import '../../team_build/model/my_team_model.dart';
+import '../../team_build/repository/my_team_repository.dart';
 import '../bloc/package/package_event.dart';
+import '../bloc/referral/referral_bloc.dart';
+import '../bloc/referral/referral_event.dart';
+import '../bloc/referral/referral_state.dart';
+import '../model/referral_user_model.dart';
+import '../repository/referral_repository.dart';
 import '../widget/gift_package_widget.dart';
 import '../bloc/package/package_bloc.dart';
 import '../bloc/package/package_state.dart';
@@ -161,201 +171,218 @@ class _PackageScreenState extends State<PackageScreen> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => PackageBloc()..add(FetchPackages())),
+        BlocProvider(create: (_) => PackageBloc(PackageRepository())..add(FetchPackages())),
         BlocProvider(create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX())),
+        BlocProvider(create: (_) => ReferralBloc(ReferralRepository())..add(LoadReferrals(userSession.userId!))),
+        BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())..add(FetchMyTeam(userSession.userId!))),
       ],
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: CustomAppBar(title: 'Package', showBackButton: true),
-      
-        body:BlocBuilder<UserBloc, UserState>(
-          builder: (context, userState) {
-            if (userState is UserInitial || userState is UserLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-      
-            else if (userState is UserLoaded) {
-              return BlocBuilder<PackageBloc, PackageState>(
-                builder: (context, state) {
-                  if (state is PackageLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  else if (state is PackageLoaded) {
-                    final PackageModel package = state.packages.first;
 
-                    return  BlocBuilder<FiveXBloc, FiveXState>(
-                      builder: (context, state) {
-                        if (state is FiveXLoading) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else if (state is FiveXLoaded) {
+        body: BlocBuilder<UserBloc, UserState>(
+            builder: (context, userState) {
+              if (userState is UserInitial || userState is UserLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (userState is UserError) {
+                debugPrint('Error: ${userState.massage}');
+              }
 
-                          final fiveX = state.data.first;
-                          return DefaultTabController(
-                            length: 3,
-                            child: SafeArea(
-                              child: CustomScrollView(
-                                slivers: [
-                                  /// Tabs
-                                  SliverAppBar(
-                                    pinned: false,
-                                    floating: true,
-                                    automaticallyImplyLeading: false,
-                                    backgroundColor: Colors.transparent,
-                                    elevation: 0,
-                                    toolbarHeight: 40,
-                                    flexibleSpace: Container(
-                                      color: Colors.white,
-                                      child: TabBar(
-                                        dividerColor: Colors.transparent,
-                                        indicatorColor: CustomColor.appColor,
-                                        labelColor: Colors.black,
-                                        onTap: (index) {
-                                          setState(() {
-                                            if (index == 0) selectedPlan = 'gp';
-                                            if (index == 1) selectedPlan = 'sgp';
-                                            if (index == 2) selectedPlan = 'pgp';
-                                          });
-                                        },
-                                        tabs: const [
-                                          Tab(text: "GP"),
-                                          Tab(text: "SGP"),
-                                          Tab(text: "PGP"),
+              if(userState is UserLoaded){
+                return MultiBlocListener(
+                  listeners: [
+                    BlocListener<PackageBloc, PackageState>(
+                      listener: (context, state) {
+                        if (state is PackageError) debugPrint('Package Error: ${state.error}');
+                      },
+                    ),
+                    BlocListener<FiveXBloc, FiveXState>(
+                      listener: (context, state) {
+                        if (state is FiveXError) debugPrint('Five X Error: ${state.message}');
+                      },
+                    ),
+                    BlocListener<ReferralBloc, ReferralState>(
+                      listener: (context, state) {
+                        if (state is ReferralError) debugPrint('Referral Error: ${state.message}');
+                      },
+                    ),
+                    BlocListener<MyTeamBloc, MyTeamState>(
+                      listener: (context, state) {
+                        if (state is MyTeamError) debugPrint('Team Error: ${state.message}');
+                      },
+                    ),
+                  ],
+
+                  child: Builder(builder: (context) {
+                    final packageState = context.watch<PackageBloc>().state;
+                    final fiveXState = context.watch<FiveXBloc>().state;
+                    final referralState = context.watch<ReferralBloc>().state;
+                    final teamState = context.watch<MyTeamBloc>().state;
+
+                    if (packageState is PackageLoading || fiveXState is FiveXLoading ||
+                        referralState is ReferralLoading || teamState is MyTeamLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if(packageState is PackageLoaded && fiveXState is FiveXLoaded && referralState is ReferralLoaded && teamState is MyTeamLoaded) {
+                      final package = packageState.packages.first;
+                      final fiveX = fiveXState.data.first;
+                      final referral = referralState.referrals;
+                      final teams = teamState.response;
+
+                      return DefaultTabController(
+                        length: 3,
+                        child: SafeArea(
+                          child: CustomScrollView(
+                            slivers: [
+                              /// Tabs
+                              SliverAppBar(
+                                pinned: false,
+                                floating: true,
+                                automaticallyImplyLeading: false,
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                toolbarHeight: 40,
+                                flexibleSpace: Container(
+                                  color: Colors.white,
+                                  child: TabBar(
+                                    dividerColor: Colors.transparent,
+                                    indicatorColor: CustomColor.appColor,
+                                    labelColor: Colors.black,
+                                    onTap: (index) {
+                                      setState(() {
+                                        if (index == 0) selectedPlan = 'gp';
+                                        if (index == 1) selectedPlan = 'sgp';
+                                        if (index == 2) selectedPlan = 'pgp';
+                                      });
+                                    },
+                                    tabs: const [
+                                      Tab(text: "GP"),
+                                      Tab(text: "SGP"),
+                                      Tab(text: "PGP"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              /// Body
+                              SliverToBoxAdapter(
+                                child: Column(
+                                  children: [
+                                    _buildEnhancedMainCard(context,
+                                        userState.user,
+                                        packages[selectedPlan]!,package, selectedPlan, referral, teams),
+
+                                    if (selectedPlan == 'gp')
+                                      PaymentCard(package: package, user: userState.user, fiveX: fiveX,),
+                                    if (selectedPlan == 'sgp')
+                                      Column(
+                                        children: [
+                                          Center(child: Image.asset('assets/image/pgp_img.png',height: 400,)),
+                                          CustomContainer(
+                                            width: 200,
+                                            color: CustomColor.appColor,
+                                            child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    backgroundColor: CustomColor.whiteColor,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                    title: const Text("🎉 Claim Reward"),
+                                                    content: const Text(
+                                                      "Your claim feature will be available soon.\nStay tuned!",
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(context),
+                                                        child: const Text("Close"),
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: CustomColor.appColor,
+                                                        ),
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                          // Future claim logic yahan add karna
+                                                        },
+                                                        child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          )
                                         ],
                                       ),
-                                    ),
-                                  ),
-
-                                  /// Body
-                                  SliverToBoxAdapter(
-                                    child: Column(
-                                      children: [
-                                        _buildEnhancedMainCard(context,
-                                            userState.user,
-                                            packages[selectedPlan]!,package, selectedPlan),
-
-                                        if (selectedPlan == 'gp')
-                                          PaymentCard(package: package, user: userState.user, fiveX: fiveX,),
-                                        if (selectedPlan == 'sgp')
-                                          Column(
-                                            children: [
-                                              Center(child: Image.asset('assets/image/pgp_img.png',height: 400,)),
-                                              CustomContainer(
-                                                width: 200,
-                                                color: CustomColor.appColor,
-                                                child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
-                                                onTap: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        backgroundColor: CustomColor.whiteColor,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(16),
+                                    if (selectedPlan == 'pgp')
+                                      Column(
+                                        children: [
+                                          Center(child: Image.asset('assets/image/sgp_img.png',height: 400,)),
+                                          CustomContainer(
+                                            width: 200,
+                                            color: CustomColor.appColor,
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    backgroundColor: CustomColor.whiteColor,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                    title: const Text("🎉 Claim Reward"),
+                                                    content: const Text(
+                                                      "Your claim feature will be available soon.\nStay tuned!",
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(context),
+                                                        child: const Text("Close"),
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: CustomColor.appColor,
                                                         ),
-                                                        title: const Text("🎉 Claim Reward"),
-                                                        content: const Text(
-                                                          "Your claim feature will be available soon.\nStay tuned!",
-                                                        ),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.pop(context),
-                                                            child: const Text("Close"),
-                                                          ),
-                                                          ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              backgroundColor: CustomColor.appColor,
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                              // Future claim logic yahan add karna
-                                                            },
-                                                            child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                          // Future claim logic yahan add karna
+                                                        },
+                                                        child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                      ),
+                                                    ],
                                                   );
                                                 },
-                                              )
-                                            ],
-                                          ),
-                                        if (selectedPlan == 'pgp')
-                                          Column(
-                                            children: [
-                                              Center(child: Image.asset('assets/image/sgp_img.png',height: 400,)),
-                                              CustomContainer(
-                                                width: 200,
-                                                color: CustomColor.appColor,
-                                                onTap: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        backgroundColor: CustomColor.whiteColor,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(16),
-                                                        ),
-                                                        title: const Text("🎉 Claim Reward"),
-                                                        content: const Text(
-                                                          "Your claim feature will be available soon.\nStay tuned!",
-                                                        ),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () => Navigator.pop(context),
-                                                            child: const Text("Close"),
-                                                          ),
-                                                          ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              backgroundColor: CustomColor.appColor,
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                              // Future claim logic yahan add karna
-                                                            },
-                                                            child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
-                                              )
-                                            ],
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SliverToBoxAdapter(child: 50.height),
-                                ],
+                                              );
+                                            },
+                                            child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                          )
+                                        ],
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
 
-                        } else if (state is FiveXError) {
-                          return Center(child: Text(state.message));
-                        }
-                        return const Center(child: Text("Press button to fetch data"));
-                      },
-                    );
+                              SliverToBoxAdapter(child: 50.height),
+                            ],
+                          ),
+                        ),
+                      );
 
-                  }
-                  else if (state is PackageError) {
-                    return Center(child: Text("Error: ${state.error}"));
-                  }
-                  return const SizedBox.shrink();
-                },
-              );
-            }
-      
-            else if (userState is UserError){
-              print('Error : ${userState.massage}');
-            }
-      
-            return SizedBox.shrink();
-      
-          },
+                    }
+
+                    return const SizedBox.shrink();
+
+                  },),
+                );
+              }
+
+              return SizedBox.shrink();
+          }
         ),
       ),
     );
@@ -363,7 +390,12 @@ class _PackageScreenState extends State<PackageScreen> {
 }
 
 /// Main Card with Pricing
-Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, dynamic> packages, PackageModel package, String planKey) {
+Widget _buildEnhancedMainCard(BuildContext context ,
+    UserModel user,Map<String, dynamic> packages,
+    PackageModel package, String planKey,
+    List<ReferralUser> referral,
+     List<MyTeamModel> team,
+    ) {
 
   return Container(
     margin: EdgeInsets.all(10),
@@ -431,12 +463,14 @@ Widget _buildEnhancedMainCard(BuildContext context , UserModel user,Map<String, 
           GpProgressWidget(
             userId: user.id,
             targetCount: 10,
+            currentCount: referral.length,
           ),
 
         if(user.packageActive == true && planKey == 'sgp')
           SgpProgressWidget(
             userId: user.id,
             targetCount: 3,
+            team: team,
           ),
         20.height,
 
@@ -546,8 +580,9 @@ class _PaymentCardState extends State<PaymentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final package = widget.package;
     final user = widget.user;
+    final package = widget.package;
+
     return  CustomContainer(
       color: CustomColor.whiteColor,
       child: Column(
@@ -621,10 +656,10 @@ class _PaymentCardState extends State<PaymentCard> {
                             Row(
                               children: [
                                 Text('${package.discount} %', style: textStyle14(context, color: CustomColor.greenColor),),10.width,
-                                Center(child: CustomAmountText(amount: '${formatPrice(package.price)}', isLineThrough: true)),
+                                Center(child: CustomAmountText(amount: '${package.price}', isLineThrough: true)),
                               ],
                             ),
-                            Center(child: CustomAmountText(amount: '${formatPrice(package.discountedPrice)}', color: CustomColor.appColor)),
+                            Center(child: CustomAmountText(amount: '${package.discountedPrice}', color: CustomColor.appColor)),
                           ],
                         ),
                       ],
@@ -635,7 +670,7 @@ class _PaymentCardState extends State<PaymentCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Franchise Deposit (Refundable)'),
-                        CustomAmountText(amount: '${formatPrice(package.deposit)}', color: CustomColor.appColor)
+                        CustomAmountText(amount: '${package.deposit}', color: CustomColor.appColor)
                       ],
                     ),
                     Divider(),
@@ -644,7 +679,7 @@ class _PaymentCardState extends State<PaymentCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Growth Total'),
-                        CustomAmountText(amount: '${formatPrice(package.grandtotal)}', color: CustomColor.appColor)
+                        CustomAmountText(amount: '${(package.discountedPrice+package.deposit)}', color: CustomColor.appColor)
                       ],
                     ),
                     Divider(),
@@ -782,7 +817,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
-                Text('Amount: ₹ ${package.grandtotal}',
+                Text('Amount: ₹ ${package.discountedPrice+package.deposit}',
                     style: textStyle16(context)),
                 15.height,
                 Text(
@@ -814,7 +849,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Full Payment'),
-                              CustomAmountText(amount: '${formatPrice(package.grandtotal)}'),
+                              CustomAmountText(amount: '${package.discountedPrice+package.deposit}'),
                             ],
                           ),
                         ],
@@ -837,7 +872,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Half Payment'),
-                              CustomAmountText(amount: '${formatPrice(package.grandtotal / 2)}'),
+                              CustomAmountText(amount: '${(package.discountedPrice+package.deposit)/2}'),
                             ],
                           ),
                         ],
@@ -863,7 +898,6 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                       ),
                     ),
 
-                    // ✅ Pay Now Button with Loader
                     Expanded(
                       child: CustomContainer(
                         color: CustomColor.appColor,
@@ -889,8 +923,9 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             customerEmail: '${user.email}',
                             // amount: selectedOption == "full" ? package.grandtotal : package.grandtotal / 2,
                             amount: selectedOption == "full"
-                                ? package.grandtotal.round()
-                                : (package.grandtotal / 2).round(),
+                                ? package.discountedPrice+package.deposit
+                                : (package.discountedPrice+package.deposit)/2,
+
                           );
 
                           setState(() => isLoading = false);
@@ -987,3 +1022,35 @@ Widget _labelText(
   );
 }
 
+
+
+class BlocBuilder4<B1 extends BlocBase<S1>, S1,
+B2 extends BlocBase<S2>, S2,
+B3 extends BlocBase<S3>, S3,
+B4 extends BlocBase<S4>, S4>
+    extends StatelessWidget {
+  final Widget Function(BuildContext context, S1 state1, S2 state2, S3 state3, S4 state4) builder;
+
+  const BlocBuilder4({required this.builder, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<B1, S1>(
+      builder: (context, state1) {
+        return BlocBuilder<B2, S2>(
+          builder: (context, state2) {
+            return BlocBuilder<B3, S3>(
+              builder: (context, state3) {
+                return BlocBuilder<B4, S4>(
+                  builder: (context, state4) {
+                    return builder(context, state1, state2, state3, state4);
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}

@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:fetchtrue/core/costants/custom_log_emoji.dart';
+import 'package:fetchtrue/feature/offer/repository/offer_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../bloc/offer_bloc.dart';
@@ -18,7 +18,7 @@ class OfferWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return BlocProvider(
-      create: (_) => OfferBloc()..add(FetchOffersEvent()),
+      create: (_) => OfferBloc(OfferRepository())..add(FetchOffersEvent()),
       child: BlocBuilder<OfferBloc, OfferState>(
         builder: (context, state) {
           if (state is OfferLoading) {
@@ -81,7 +81,7 @@ class OfferWidget extends StatelessWidget {
               ),
             );
           } else if (state is OfferError) {
-            print('Error: ${state.message}');
+            print('${CustomLogEmoji.error} Offer Error: ${state.message}');
           }
           return SizedBox.shrink();
         },

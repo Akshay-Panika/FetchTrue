@@ -1,28 +1,27 @@
-// my_team_repository.dart
 import 'dart:convert';
 import 'package:fetchtrue/helper/api_urls.dart';
 import 'package:http/http.dart' as http;
+import '../../../helper/api_client.dart';
 import '../model/my_team_model.dart';
 
 import 'package:dio/dio.dart';
 import '../model/my_team_model.dart';
 
 class MyTeamRepository {
-  final Dio _dio = Dio();
+  final ApiClient _apiClient = ApiClient();
 
-  Future<MyTeamModel> getMyTeam(String userId) async {
+  Future<List<MyTeamModel>> getMyTeam(String userId) async {
     try {
-      final response = await _dio.get(
-        "${ApiUrls.myTeam}/$userId",
-      );
-
-      if (response.statusCode == 200) {
-        return MyTeamModel.fromJson(response.data);
+      final response = await _apiClient.get("${ApiUrls.myTeam}/$userId",);
+      final result = TeamResponse.fromJson(response.data);
+      return result.team;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print("Team API Error [${e.response?.statusCode}]: ${e.response?.data}");
       } else {
-        throw Exception("Failed to load team data");
+        print("Team Network Error: ${e.message}");
       }
-    } catch (e) {
-      throw Exception("Error: $e");
+      rethrow;
     }
   }
 }

@@ -51,3 +51,33 @@ class CategoryModel {
     };
   }
 }
+
+
+class CategoryResponse {
+  final bool success;
+  final List<CategoryModel> data;
+  // final String newUpdatedAt;
+
+  CategoryResponse({
+    required this.success,
+    required this.data,
+    // required this.newUpdatedAt,
+  });
+
+  factory CategoryResponse.fromJson(Map<String, dynamic> json) {
+    return CategoryResponse(
+      success: json['success'] ?? false,
+      data: (json['data'] as List<dynamic>).map((e) => CategoryModel.fromJson(e)).toList(),
+      // newUpdatedAt: json['newUpdatedAt'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.map((e) => e.toJson()).toList(),
+      // 'newUpdatedAt': newUpdatedAt,
+    };
+  }
+}
+

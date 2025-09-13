@@ -76,13 +76,304 @@ class ServiceModel {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'serviceName': serviceName,
+      'price': price,
+      'discountedPrice': discountedPrice,
+      'gst': gst,
+      'discount': discount,
+      'thumbnailImage': thumbnailImage,
+      'bannerImages': bannerImages,
+      'tags': tags,
+      'category': category.toJson(),
+      'subcategory': subcategory?.toJson(),
+      'serviceDetails': serviceDetails.toJson(),
+      'franchiseDetails': franchiseDetails.toJson(),
+      'keyValues': keyValues.map((e) => e.toJson()).toList(),
+      'providerPrices': providerPrices.map((e) => e.toJson()).toList(),
+      'averageRating': averageRating,
+      'totalReviews': totalReviews,
+      'recommendedServices': recommendedServices,
+      'includeGst': includeGst,
+    };
+  }
+
   static num? _parseNum(dynamic value) {
     if (value == null) return null;
     if (value is num) return value;
     return num.tryParse(value.toString());
   }
 }
-
+// class Category {
+//   final String id;
+//   final String name;
+//   final String module;
+//   final String image;
+//
+//   Category({
+//     required this.id,
+//     required this.name,
+//     required this.module,
+//     required this.image,
+//   });
+//
+//   factory Category.fromJson(Map<String, dynamic> json) {
+//     return Category(
+//       id: json['_id'],
+//       name: json['name'],
+//       module: json['module'],
+//       image: json['image'],
+//     );
+//   }
+// }
+// class ProviderPrice {
+//   final ServiceProvider? provider;
+//   final double? providerPrice;
+//   final String? providerCommission;
+//   final String? providerDiscount;
+//   final String? providerMRP;
+//   final String status;
+//   final String id;
+//
+//   ProviderPrice({
+//     this.provider,
+//     this.providerPrice,
+//     this.providerCommission,
+//     this.providerDiscount,
+//     this.providerMRP,
+//     required this.status,
+//     required this.id,
+//   });
+//
+//   factory ProviderPrice.fromJson(Map<String, dynamic> json) {
+//     return ProviderPrice(
+//       provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
+//       providerPrice: (json['providerPrice'] is int) ? (json['providerPrice'] as int).toDouble() : (json['providerPrice'] as num).toDouble(),
+//       providerCommission: json['providerCommission']?.toString(),
+//       providerDiscount: json['providerDiscount']?.toString(),
+//       providerMRP: json['providerMRP']?.toString(),
+//       status: json['status'] ?? '',
+//       id: json['_id'] ?? '',
+//     );
+//   }
+// }
+// class ServiceProvider {
+//   final String id;
+//   final String fullName;
+//   final StoreInfo? storeInfo;
+//
+//   ServiceProvider({
+//     required this.id,
+//     required this.fullName,
+//     this.storeInfo,
+//   });
+//
+//   factory ServiceProvider.fromJson(Map<String, dynamic> json) {
+//     return ServiceProvider(
+//       id: json['_id'] ?? '',
+//       fullName: json['fullName'] ?? '',
+//       storeInfo: json['storeInfo'] != null
+//           ? StoreInfo.fromJson(json['storeInfo'])
+//           : null,
+//     );
+//   }
+// }
+// class StoreInfo {
+//   final String storeName;
+//   final String logo;
+//
+//   StoreInfo({
+//     required this.storeName,
+//     required this.logo,
+//   });
+//
+//   factory StoreInfo.fromJson(Map<String, dynamic> json) {
+//     return StoreInfo(
+//       storeName: json['storeName'] ?? '',
+//       logo: json['logo'] ?? '',
+//     );
+//   }
+// }
+// class ServiceDetails {
+//   final String overview;
+//   final List<String> highlight;
+//   final String benefits;
+//   final String howItWorks;
+//   final String termsAndConditions;
+//   final String document;
+//   final List<ExtraSection> extraSections;
+//   final List<WhyChoose> whyChoose;
+//   final List<Faq> faq;
+//
+//   ServiceDetails({
+//     required this.overview,
+//     required this.highlight,
+//     required this.benefits,
+//     required this.howItWorks,
+//     required this.termsAndConditions,
+//     required this.document,
+//     required this.extraSections,
+//     required this.whyChoose,
+//     required this.faq,
+//   });
+//
+//   factory ServiceDetails.fromJson(Map<String, dynamic> json) {
+//     return ServiceDetails(
+//       overview: json['overview'],
+//       highlight: List<String>.from(json['highlight'] ?? []),
+//       benefits: json['benefits'],
+//       howItWorks: json['howItWorks'],
+//       termsAndConditions: json['termsAndConditions'],
+//       document: json['document'],
+//       whyChoose: (json['whyChoose'] as List?)
+//           ?.map((x) => WhyChoose.fromJson(x))
+//           .toList() ??
+//           [],
+//       faq: (json['faq'] as List?)
+//           ?.map((x) => Faq.fromJson(x))
+//           .toList() ??
+//           [],
+//       extraSections: (json['extraSections'] as List?)
+//           ?.map((x) => ExtraSection.fromJson(x))
+//           .toList() ??
+//           [],
+//     );
+//   }
+// }
+// class FranchiseDetails {
+//   final String overview;
+//   final String commission;
+//   final String howItWorks;
+//   final String termsAndConditions;
+//   final List<ExtraSection> extraSections;
+//
+//   FranchiseDetails({
+//     required this.overview,
+//     required this.commission,
+//     required this.howItWorks,
+//     required this.termsAndConditions,
+//     required this.extraSections,
+//   });
+//
+//   factory FranchiseDetails.fromJson(Map<String, dynamic> json) {
+//     return FranchiseDetails(
+//       overview: json['overview'],
+//       commission: json['commission'].toString(),
+//       howItWorks: json['howItWorks'],
+//       termsAndConditions: json['termsAndConditions'],
+//       extraSections: (json['extraSections'] as List?)
+//           ?.map((x) => ExtraSection.fromJson(x))
+//           .toList() ??
+//           [],
+//     );
+//   }
+// }
+// class ExtraSection {
+//   final String title;
+//   final String? description;
+//   final String id;
+//
+//   ExtraSection({
+//     required this.title,
+//     this.description,
+//     required this.id,
+//   });
+//
+//   factory ExtraSection.fromJson(Map<String, dynamic> json) {
+//     return ExtraSection(
+//       title: json['title'] ?? '',
+//       description: json['description'],
+//       id: json['_id'],
+//     );
+//   }
+// }
+// class WhyChoose {
+//   final String? title;
+//   final String? description;
+//   final String? image;
+//   final List<ExtraSection> extraSections;
+//   final String id;
+//
+//   WhyChoose({
+//     this.title,
+//     this.description,
+//     this.image,
+//     this.extraSections = const [],
+//     required this.id,
+//   });
+//
+//   factory WhyChoose.fromJson(Map<String, dynamic> json) {
+//     return WhyChoose(
+//       title: json['title'],
+//       description: json['description'],
+//       image: json['image'],
+//       id: json['_id'],
+//       extraSections: (json['extraSections'] as List?)
+//           ?.map((x) => ExtraSection.fromJson(x))
+//           .toList() ??
+//           [],
+//     );
+//   }
+// }
+// class Faq {
+//   final String question;
+//   final String answer;
+//   final String id;
+//
+//   Faq({
+//     required this.question,
+//     required this.answer,
+//     required this.id,
+//   });
+//
+//   factory Faq.fromJson(Map<String, dynamic> json) {
+//     return Faq(
+//       question: json['question'],
+//       answer: json['answer'],
+//       id: json['_id'],
+//     );
+//   }
+// }
+// class KeyValue {
+//   final String key;
+//   final String value;
+//   final String id;
+//
+//   KeyValue({
+//     required this.key,
+//     required this.value,
+//     required this.id,
+//   });
+//
+//   factory KeyValue.fromJson(Map<String, dynamic> json) {
+//     return KeyValue(
+//       key: json['key'],
+//       value: json['value'],
+//       id: json['_id'],
+//     );
+//   }
+// }
+// class Subcategory {
+//   final String id;
+//   final String name;
+//   final String category;
+//
+//   Subcategory({
+//     required this.id,
+//     required this.name,
+//     required this.category,
+//   });
+//
+//   factory Subcategory.fromJson(Map<String, dynamic> json) {
+//     return Subcategory(
+//       id: json['_id'],
+//       name: json['name'],
+//       category: json['category'],
+//     );
+//   }
+// }
 
 class Category {
   final String id;
@@ -105,7 +396,45 @@ class Category {
       image: json['image'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'module': module,
+      'image': image,
+    };
+  }
 }
+
+class Subcategory {
+  final String id;
+  final String name;
+  final String category;
+
+  Subcategory({
+    required this.id,
+    required this.name,
+    required this.category,
+  });
+
+  factory Subcategory.fromJson(Map<String, dynamic> json) {
+    return Subcategory(
+      id: json['_id'],
+      name: json['name'],
+      category: json['category'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'category': category,
+    };
+  }
+}
+
 class ProviderPrice {
   final ServiceProvider? provider;
   final double? providerPrice;
@@ -128,13 +457,27 @@ class ProviderPrice {
   factory ProviderPrice.fromJson(Map<String, dynamic> json) {
     return ProviderPrice(
       provider: json['provider'] != null ? ServiceProvider.fromJson(json['provider']) : null,
-      providerPrice: (json['providerPrice'] is int) ? (json['providerPrice'] as int).toDouble() : (json['providerPrice'] as num).toDouble(),
+      providerPrice: (json['providerPrice'] is int)
+          ? (json['providerPrice'] as int).toDouble()
+          : (json['providerPrice'] as num?)?.toDouble(),
       providerCommission: json['providerCommission']?.toString(),
       providerDiscount: json['providerDiscount']?.toString(),
       providerMRP: json['providerMRP']?.toString(),
       status: json['status'] ?? '',
       id: json['_id'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'provider': provider?.toJson(),
+      'providerPrice': providerPrice,
+      'providerCommission': providerCommission,
+      'providerDiscount': providerDiscount,
+      'providerMRP': providerMRP,
+      'status': status,
+      '_id': id,
+    };
   }
 }
 
@@ -153,10 +496,16 @@ class ServiceProvider {
     return ServiceProvider(
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
-      storeInfo: json['storeInfo'] != null
-          ? StoreInfo.fromJson(json['storeInfo'])
-          : null,
+      storeInfo: json['storeInfo'] != null ? StoreInfo.fromJson(json['storeInfo']) : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'fullName': fullName,
+      'storeInfo': storeInfo?.toJson(),
+    };
   }
 }
 
@@ -174,6 +523,13 @@ class StoreInfo {
       storeName: json['storeName'] ?? '',
       logo: json['logo'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'storeName': storeName,
+      'logo': logo,
+    };
   }
 }
 
@@ -208,19 +564,24 @@ class ServiceDetails {
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
       document: json['document'],
-      whyChoose: (json['whyChoose'] as List?)
-          ?.map((x) => WhyChoose.fromJson(x))
-          .toList() ??
-          [],
-      faq: (json['faq'] as List?)
-          ?.map((x) => Faq.fromJson(x))
-          .toList() ??
-          [],
-      extraSections: (json['extraSections'] as List?)
-          ?.map((x) => ExtraSection.fromJson(x))
-          .toList() ??
-          [],
+      whyChoose: (json['whyChoose'] as List?)?.map((x) => WhyChoose.fromJson(x)).toList() ?? [],
+      faq: (json['faq'] as List?)?.map((x) => Faq.fromJson(x)).toList() ?? [],
+      extraSections: (json['extraSections'] as List?)?.map((x) => ExtraSection.fromJson(x)).toList() ?? [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'overview': overview,
+      'highlight': highlight,
+      'benefits': benefits,
+      'howItWorks': howItWorks,
+      'termsAndConditions': termsAndConditions,
+      'document': document,
+      'extraSections': extraSections.map((e) => e.toJson()).toList(),
+      'whyChoose': whyChoose.map((e) => e.toJson()).toList(),
+      'faq': faq.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -245,11 +606,18 @@ class FranchiseDetails {
       commission: json['commission'].toString(),
       howItWorks: json['howItWorks'],
       termsAndConditions: json['termsAndConditions'],
-      extraSections: (json['extraSections'] as List?)
-          ?.map((x) => ExtraSection.fromJson(x))
-          .toList() ??
-          [],
+      extraSections: (json['extraSections'] as List?)?.map((x) => ExtraSection.fromJson(x)).toList() ?? [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'overview': overview,
+      'commission': commission,
+      'howItWorks': howItWorks,
+      'termsAndConditions': termsAndConditions,
+      'extraSections': extraSections.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -270,6 +638,14 @@ class ExtraSection {
       description: json['description'],
       id: json['_id'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      '_id': id,
+    };
   }
 }
 
@@ -294,11 +670,18 @@ class WhyChoose {
       description: json['description'],
       image: json['image'],
       id: json['_id'],
-      extraSections: (json['extraSections'] as List?)
-          ?.map((x) => ExtraSection.fromJson(x))
-          .toList() ??
-          [],
+      extraSections: (json['extraSections'] as List?)?.map((x) => ExtraSection.fromJson(x)).toList() ?? [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'image': image,
+      '_id': id,
+      'extraSections': extraSections.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -320,6 +703,14 @@ class Faq {
       id: json['_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'question': question,
+      'answer': answer,
+      '_id': id,
+    };
+  }
 }
 
 class KeyValue {
@@ -340,24 +731,41 @@ class KeyValue {
       id: json['_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'key': key,
+      'value': value,
+      '_id': id,
+    };
+  }
 }
 
-class Subcategory {
-  final String id;
-  final String name;
-  final String category;
 
-  Subcategory({
-    required this.id,
-    required this.name,
-    required this.category,
+class ServiceResponse {
+  final bool success;
+  final List<ServiceModel> data;
+  final String newUpdatedAt;
+
+  ServiceResponse({
+    required this.success,
+    required this.data,
+    required this.newUpdatedAt,
   });
 
-  factory Subcategory.fromJson(Map<String, dynamic> json) {
-    return Subcategory(
-      id: json['_id'],
-      name: json['name'],
-      category: json['category'],
+  factory ServiceResponse.fromJson(Map<String, dynamic> json) {
+    return ServiceResponse(
+      success: json['success'] ?? false,
+      data: (json['data'] as List<dynamic>).map((e) => ServiceModel.fromJson(e)).toList(),
+      newUpdatedAt: json['newUpdatedAt'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.map((e) => e.toJson()).toList(),
+      'newUpdatedAt': newUpdatedAt,
+    };
   }
 }

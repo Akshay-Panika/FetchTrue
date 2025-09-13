@@ -11,7 +11,7 @@ class LeadInitial extends LeadState {}
 class LeadLoading extends LeadState {}
 
 class LeadLoaded extends LeadState {
-  final LeadModel leadModel;
+  final List<LeadModel> leadModel;
   LeadLoaded(this.leadModel);
 
   @override

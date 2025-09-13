@@ -85,3 +85,32 @@ class Category {
     };
   }
 }
+
+
+class SubcategoryResponse {
+  final bool success;
+  final List<SubcategoryModel> data;
+  final String newUpdatedAt;
+
+  SubcategoryResponse({
+    required this.success,
+    required this.data,
+    required this.newUpdatedAt,
+  });
+
+  factory SubcategoryResponse.fromJson(Map<String, dynamic> json) {
+    return SubcategoryResponse(
+      success: json['success'] ?? false,
+      data: (json['data'] as List<dynamic>).map((e) => SubcategoryModel.fromJson(e)).toList(),
+      newUpdatedAt: json['newUpdatedAt'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.map((e) => e.toJson()).toList(),
+      'newUpdatedAt': newUpdatedAt,
+    };
+  }
+}

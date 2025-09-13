@@ -20,7 +20,7 @@ class ModuleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return BlocProvider(
-      create: (_) => ModuleBloc(ModuleRepository())..add(GetModules()),
+      create: (_) => ModuleBloc(repository: ModuleRepository())..add(GetModules()),
       child: BlocBuilder<ModuleBloc, ModuleState>(
         builder: (context, state) {
           if (state is ModuleLoading) {
@@ -65,7 +65,7 @@ class ModuleWidget extends StatelessWidget {
                           alignment: AlignmentDirectional.bottomCenter,
                           children: [
                             Hero(
-                              tag: module.id,
+                              tag: module.id.toString(),
                               child: Material(
                                 color: Colors.transparent,
                                 child: CustomContainer(
@@ -78,7 +78,7 @@ class ModuleWidget extends StatelessWidget {
                             ),
                             Padding(
                               padding:  EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.008,vertical: dimensions.screenHeight*0.010),
-                              child: Text(module.name, style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
+                              child: Text(module.name.toString(), style: textStyle12(context),overflow: TextOverflow.clip,textAlign: TextAlign.center,),
                             ),
                           ],
                         ),
@@ -92,7 +92,7 @@ class ModuleWidget extends StatelessWidget {
                             'Finance': '/finance',
                             'It Services': '/it',
                             'Education': '/education',
-                            'On-Demand Services': '/ondemand',
+                            'On-Demand': '/ondemand',
                             'Onboarding': '/onboarding',
                           };
 
@@ -100,7 +100,7 @@ class ModuleWidget extends StatelessWidget {
 
                           if (route != null) {
                             // go_router navigation with moduleId as path parameter and image as query param
-                            context.push('$route/${module.id}?image=${Uri.encodeComponent(module.image)}');
+                            context.push('$route/${module.id}?image=${Uri.encodeComponent(module.image.toString())}');
                           } else {
                             showCustomToast('Module "${module.name}" not found');
                           }

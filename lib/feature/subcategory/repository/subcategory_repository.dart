@@ -1,22 +1,25 @@
-// subcategory_repository.dart
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/helper/api_urls.dart';
+import '../../../helper/api_client.dart';
 import '../model/subcategory_model.dart';
 
 class SubcategoryRepository {
-  final Dio _dio = Dio();
+  final ApiClient _apiClient = ApiClient();
 
   Future<List<SubcategoryModel>> getSubcategories() async {
     try {
-      final response = await _dio.get("https://biz-booster.vercel.app/api/subcategory");
-
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        List data = response.data['data'];
-        return data.map((e) => SubcategoryModel.fromJson(e)).toList();
-      } else {
-        throw Exception("Failed to load subcategories");
+      final response = await _apiClient.get(ApiUrls.modulesSubcategory);
+      final result = SubcategoryResponse.fromJson(response.data);
+      return result.data;
+    }
+    on DioException catch (e){
+      if (e.response != null) {
+        print("Subcategory API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
-    } catch (e) {
-      throw Exception("Error: $e");
+      else {
+        print("Subcategory Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

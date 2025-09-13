@@ -9,7 +9,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
 import '../model/lead_model.dart';
 
-Widget customerDetails(BuildContext context, BookingData lead){
+Widget customerDetails(BuildContext context, LeadModel lead){
   final phoneNumber = lead.serviceCustomer!.phone.toString();
   final message = 'Hello, I am contacting you from Fetch True.';
 

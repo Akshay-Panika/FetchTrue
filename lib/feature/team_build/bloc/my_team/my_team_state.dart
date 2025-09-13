@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../../model/my_team_model.dart';
 
 abstract class MyTeamState extends Equatable {
@@ -12,7 +11,7 @@ class MyTeamInitial extends MyTeamState {}
 class MyTeamLoading extends MyTeamState {}
 
 class MyTeamLoaded extends MyTeamState {
-  final MyTeamModel response;
+  final List<MyTeamModel> response;
 
   MyTeamLoaded(this.response);
 

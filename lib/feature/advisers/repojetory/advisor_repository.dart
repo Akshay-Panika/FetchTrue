@@ -4,7 +4,7 @@ import 'package:fetchtrue/helper/api_client.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
 
 class AdvisorRepository {
-  final Dio _dio = ApiClient.dio;
+  final Dio _dio = OldApiClient.dio;
 
   Future<List<AdvisorModel>> fetchAdvisors() async {
     try {

@@ -35,3 +35,12 @@ class UpdateProfilePhoto extends UserEvent {
 
 class ResetUser extends UserEvent {}
 
+class DeleteUser extends UserEvent {
+  final String userId;
+  DeleteUser(this.userId);
+
+  @override
+  List<Object?> get props => [userId];
+}
+
+

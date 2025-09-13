@@ -1,21 +1,23 @@
 import 'package:dio/dio.dart';
+import '../../../helper/api_client.dart';
+import '../../../helper/api_urls.dart';
 import '../model/gallery_model.dart';
 
 class GalleryRepository {
-  final Dio _dio = Dio();
-  final String baseUrl = "https://biz-booster.vercel.app/api/provider";
-
-  Future<GalleryModel> fetchGallery(String providerId) async {
+  final ApiClient _apiClient = ApiClient();
+  Future<GalleryModel?> getProviderGallery(String providerId) async {
     try {
-      final response = await _dio.get("$baseUrl/$providerId/gallery");
-
-      if (response.statusCode == 200) {
+      final response = await _apiClient.get('${ApiUrls.provider}/$providerId/gallery');
+      if (response.data != null) {
         return GalleryModel.fromJson(response.data);
-      } else {
-        throw Exception("Failed to load gallery");
       }
-    } catch (e) {
-      throw Exception("Error fetching gallery: $e");
+      return null;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print("Gallery API Error [${e.response?.statusCode}]: ${e.response?.data}");
+      } else {
+        print("Gallery Network Error: ${e.message}");
+      }
+      rethrow;
     }
-  }
-}
+  }}

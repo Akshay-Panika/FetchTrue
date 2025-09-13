@@ -133,7 +133,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                         margin: EdgeInsets.zero,)));
                 } else if (state is MyTeamLoaded) {
                   // final teamList = state.response.team;
-                  final userCount = state.response.team.length;
+                  final userCount = state.response.length;
       
                   return   Expanded(
                     child: InkWell(

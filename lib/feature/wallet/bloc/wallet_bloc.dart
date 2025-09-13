@@ -16,7 +16,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       ) async {
     emit(WalletLoading());
     try {
-      final wallet = await walletRepository.fetchWalletByUserId(event.userId);
+      final wallet = await walletRepository.getWallet(event.userId);
       if (wallet != null) {
         emit(WalletLoaded(wallet));
       } else {

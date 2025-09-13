@@ -4,11 +4,12 @@ import 'offer_event.dart';
 import 'offer_state.dart';
 
 class OfferBloc extends Bloc<OfferEvent, OfferState> {
-  OfferBloc() : super(OfferInitial()) {
+  final OfferRepository repository;
+  OfferBloc(this.repository) : super(OfferInitial()) {
     on<FetchOffersEvent>((event, emit) async {
       emit(OfferLoading());
       try {
-        final offers = await OfferRepository.fetchOffers();
+        final offers = await repository.getOffers();
         emit(OfferLoaded(offers));
       } catch (e) {
         emit(OfferError(e.toString()));

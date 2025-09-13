@@ -4,7 +4,7 @@ import 'package:fetchtrue/helper/api_urls.dart';
 import '../model/understanding_fetch_true_model.dart';
 
 class UnderstandingFetchTrueRepository {
-  final Dio dio = ApiClient.dio;
+  final Dio dio = OldApiClient.dio;
 
   Future<List<UnderstandingFetchTrueModel>> fetchData() async {
 

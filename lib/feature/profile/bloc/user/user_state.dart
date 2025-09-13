@@ -43,3 +43,4 @@ class UserError extends UserState {
 }
 
 
+class UserDeleted extends UserState {}

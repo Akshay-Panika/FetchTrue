@@ -9,7 +9,7 @@ class ForgotPasswordService {
     required String newPassword,
   }) async {
     try {
-      final response = await ApiClient.dio.post(ApiUrls.forgotPassword,
+      final response = await OldApiClient.dio.post(ApiUrls.forgotPassword,
         data: {
           "mobileNumber": mobileNumber,
           "newPassword": newPassword,

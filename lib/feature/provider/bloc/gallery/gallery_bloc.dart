@@ -10,11 +10,16 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     on<LoadGallery>((event, emit) async {
       emit(GalleryLoading());
       try {
-        final gallery = await repository.fetchGallery(event.providerId);
-        emit(GalleryLoaded(gallery));
+        final gallery = await repository.getProviderGallery(event.providerId);
+        if (gallery != null) {
+          emit(GalleryLoaded(gallery));
+        } else {
+          emit(GalleryError("Gallery not found"));
+        }
       } catch (e) {
         emit(GalleryError(e.toString()));
       }
     });
+
   }
 }

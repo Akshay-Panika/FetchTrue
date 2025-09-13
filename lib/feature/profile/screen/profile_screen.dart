@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../package/screen/package_screen.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
@@ -144,22 +145,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ],
                                 ),
-                                CustomContainer(
-                                  border: true,
-                                  color: CustomColor.whiteColor,
-                                  margin: EdgeInsets.zero,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 30, vertical: 5),
-                                  child: Row(
-                                    children:  [
-                                      Icon(Icons.verified,
-                                          size: 20, color: user.packageActive == true ? CustomColor.appColor :Colors.grey),
-                                      SizedBox(width: 10),
-                                      Text(user.packageActive == true ? '${user.packageStatus}':'Package',
-                                          style: TextStyle(color: user.packageActive == true ? CustomColor.appColor :Colors.grey)),
-                                    ],
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => PackageScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                                    decoration: BoxDecoration(
+                                      color: CustomColor.appColor,
+                                      border: Border.all(color: CustomColor.appColor, width: 0.5),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child:  Row(
+                                      children: [
+                                        Icon(Icons.verified_outlined, size: 16, color: CustomColor.whiteColor,),
+                                        SizedBox(width: 5),
+                                        Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.whiteColor)),
+                                      ],
+                                    ),
                                   ),
-                                )
+                                ),
+
                               ],
                             )
                           ],

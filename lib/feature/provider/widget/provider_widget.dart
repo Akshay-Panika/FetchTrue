@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_log_emoji.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
@@ -14,6 +15,7 @@ import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../repository/provider_repository.dart';
 import '../screen/provider__details_screen.dart';
+import 'module_name_widget.dart';
 
 class ProviderWidget extends StatelessWidget {
   final String moduleId;
@@ -96,8 +98,8 @@ class ProviderWidget extends StatelessWidget {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(provider.storeInfo!.storeName,style: textStyle14(context),),
-                                              Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                              Text(provider.storeInfo!.storeName,style: textStyle12(context),),
+                                              ModuleNameWidget(moduleId: provider.storeInfo!.module.toString(),),
                                               5.height,
                                               Text(
                                                 '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
@@ -188,7 +190,7 @@ class ProviderWidget extends StatelessWidget {
             );
           }
           else if (state is ProviderError) {
-            print(state.message);
+            debugPrint("${CustomLogEmoji.error} Provider Error ${state.message}");
           }
           return const SizedBox.shrink();
         },

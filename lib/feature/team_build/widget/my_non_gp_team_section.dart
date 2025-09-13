@@ -10,7 +10,7 @@ import '../../lead/bloc/lead/lead_event.dart';
 import '../../lead/repository/lead_repository.dart';
 
 class MyNonGpTeamSection extends StatelessWidget {
-  final List<TeamData> members;
+  final List<MyTeamModel> members;
   const MyNonGpTeamSection({super.key, required this.members});
 
   @override
@@ -24,12 +24,6 @@ class MyNonGpTeamSection extends StatelessWidget {
 
           final member = members[index].user;
           final earnings = members[index].totalEarningsFromShare2;
-
-
-          // final address = [
-          //   if (referralUser.homeAddress?.city?.isNotEmpty == true) referralUser.homeAddress!.city,
-          //   if (referralUser.homeAddress?.state?.isNotEmpty == true) referralUser.homeAddress!.state,
-          // ].join(", ");
 
         return BlocProvider(
           create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),

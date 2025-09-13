@@ -8,6 +8,7 @@ import '../../../core/widgets/custom_container.dart';
 import '../bloc/offer_bloc.dart';
 import '../bloc/offer_event.dart';
 import '../bloc/offer_state.dart';
+import '../repository/offer_repository.dart';
 import 'offers_details_screen.dart';
 
 class OfferScreen extends StatelessWidget {
@@ -17,7 +18,7 @@ class OfferScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return BlocProvider(
-      create: (_) => OfferBloc()..add(FetchOffersEvent()),
+      create: (_) => OfferBloc(OfferRepository())..add(FetchOffersEvent()),
       child: Scaffold(
         appBar: CustomAppBar(title: 'Offers',),
         body: BlocBuilder<OfferBloc, OfferState>(

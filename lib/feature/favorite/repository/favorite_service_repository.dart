@@ -5,7 +5,7 @@ import '../model/favorite_provider_model.dart';
 import '../model/favorite_services_model.dart';
 
 class FavoriteServiceRepository {
-  final Dio _dio = ApiClient.dio;
+  final Dio _dio = OldApiClient.dio;
 
   Future<FavoriteResponse> addToFavorite(String userId, String serviceId) async {
     try {

@@ -74,7 +74,7 @@ class _LeadScreenState extends State<LeadScreen> {
             }
             else if (state is LeadLoaded) {
               // final allLeads = state.leadModel.data ?? [];
-              final allLeads = (state.leadModel.data ?? [])
+              final allLeads = (state.leadModel ?? [])
                 ..sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       
               // Filter Logic

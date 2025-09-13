@@ -1,27 +1,26 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../core/costants/custom_log_emoji.dart';
+import '../../../helper/api_client.dart';
 import '../model/service_model.dart';
 
 class ServiceRepository {
-  final Dio _dio = Dio();
-  Future<List<ServiceModel>> fetchServices() async {
+  final ApiClient _apiClient = ApiClient();
+
+  Future<List<ServiceModel>> getServices() async {
     try {
-      final response = await _dio.get(ApiUrls.modulesService);
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-
-        if (data is Map<String, dynamic> && data['success'] == true) {
-          final List<dynamic> list = data['data'] ?? [];
-          return list.map((json) => ServiceModel.fromJson(json)).toList();
-        } else {
-          throw Exception('Invalid response format');
-        }
-      } else {
-        throw Exception('Failed to fetch services: ${response.statusCode}');
+      final response = await _apiClient.get(ApiUrls.modulesService);
+      final result = ServiceResponse.fromJson(response.data);
+      return result.data;
+    }  on DioException catch (e){
+      if (e.response != null) {
+        debugPrint("${CustomLogEmoji.error} Service API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
-    } catch (e) {
-      throw Exception('Error fetching services: $e');
+      else {
+        debugPrint("${CustomLogEmoji.network} Service Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

@@ -1,26 +1,26 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
+
 import '../../../helper/api_client.dart';
-import '../../banner/model/banner_model.dart';
-import '../../lead/repository/checkout_service_buy_repository.dart';
+import '../model/module_model.dart';
+
 
 class ModuleRepository {
-  final Dio _dio = ApiClient.dio;
+  final ApiClient _apiClient = ApiClient();
 
   Future<List<ModuleModel>> getModules() async {
     try {
-      final response =
-      await _dio.get(ApiUrls.modules);
-
-      if (response.statusCode == 200 && response.data["success"] == true && response.data["data"] != null) {
-        return (response.data["data"] as List).map((e) => ModuleModel.fromJson(e)).toList();
-      } else {
-        throw Exception("Failed to fetch modules: ${response.statusCode}");
+      final response = await _apiClient.get(ApiUrls.modules);
+      final result = ModuleResponse.fromJson(response.data);
+      return result.data;
+    } on DioException catch (e){
+      if (e.response != null) {
+        print("Module API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
-    } on DioException catch (dioError) {
-      throw Exception("Dio error: ${dioError.message}");
-    } catch (e) {
-      throw Exception("Unexpected error: $e");
+      else {
+        print("Module Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

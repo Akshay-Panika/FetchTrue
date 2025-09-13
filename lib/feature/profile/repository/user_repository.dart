@@ -37,6 +37,22 @@ class UserRepository {
     }
   }
 
+  Future<void> deleteUser(String userId) async {
+    try {
+      final response = await _dio.delete("${ApiUrls.user}/$userId");
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        // User deleted successfully
+        return;
+      } else {
+        throw Exception(response.data["message"] ?? "Failed to delete user");
+      }
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
+    }
+  }
+
+
   Future<UserModel> updateProfilePhoto(String userId, String filePath) async {
     try {
       final formData = FormData.fromMap({
@@ -57,7 +73,6 @@ class UserRepository {
       throw Exception(_handleDioError(e));
     }
   }
-
 
   String _handleDioError(DioException e) {
     if (e.type == DioExceptionType.connectionTimeout) {

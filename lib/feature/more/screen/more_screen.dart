@@ -59,7 +59,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
           slivers: [
             SliverAppBar(
               floating: true,
-              toolbarHeight: 200,
+              toolbarHeight: 190,
               backgroundColor: Colors.grey[100],
               flexibleSpace: FlexibleSpaceBar(
                 background: ProfileCardWidget(),
@@ -92,7 +92,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                     }),
 
                     if(userSession.isLoggedIn)
-                    _buildTile(context, Icons.verified_outlined, "5 X", () {
+                    _buildTile(context, Icons.verified_outlined, "5X Guarantee", () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  FiveXScreen()));
                     }),
         

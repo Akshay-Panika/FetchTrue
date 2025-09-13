@@ -6,7 +6,7 @@ import 'module_state.dart';
 class ModuleBloc extends Bloc<ModuleEvent, ModuleState> {
   final ModuleRepository repository;
 
-  ModuleBloc(this.repository) : super(ModuleInitial()) {
+  ModuleBloc({required this.repository}) : super(ModuleInitial()) {
     on<GetModules>((event, emit) async {
       emit(ModuleLoading());
       try {

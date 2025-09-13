@@ -40,9 +40,9 @@ class MyTeamSection extends StatelessWidget {
                           alignment: Alignment.topCenter,
                           child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
                     } else if (state is MyTeamLoaded) {
-                      final List<TeamData> team = state.response.team;
+                      final  myTeam = state.response;
 
-                      if (team.isEmpty) {
+                      if (myTeam.isEmpty) {
                         return  Center(child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -52,8 +52,8 @@ class MyTeamSection extends StatelessWidget {
                         ));
                       }
 
-                      final nonGpMembers = team.where((e) => e.user?.packageActive == false).toList();
-                      final gpMembers = team.where((e) => e.user?.packageActive == true).toList();
+                      final nonGpMembers = myTeam.where((e) => e.user?.packageActive == false).toList();
+                      final gpMembers = myTeam.where((e) => e.user?.packageActive == true).toList();
 
                       return Column(
                         children: [

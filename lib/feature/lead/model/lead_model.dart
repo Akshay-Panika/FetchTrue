@@ -1,20 +1,32 @@
-class LeadModel {
-  final bool? success;
-  final List<BookingData>? data;
+class LeadResponse {
+  final bool success;
+  final List<LeadModel> data;
+  final String newUpdatedAt;
 
-  LeadModel({this.success, this.data});
+  LeadResponse({
+    required this.success,
+    required this.data,
+    required this.newUpdatedAt,
+  });
 
-  factory LeadModel.fromJson(Map<String, dynamic> json) {
-    return LeadModel(
-      success: json['success'] as bool?,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => BookingData.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  factory LeadResponse.fromJson(Map<String, dynamic> json) {
+    return LeadResponse(
+      success: json['success'] ?? false,
+      data: (json['data'] as List<dynamic>).map((e) => LeadModel.fromJson(e)).toList(),
+      newUpdatedAt: json['newUpdatedAt'] ?? '',
     );
   }
+
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'success': success,
+  //     'data': data.map((e) => e.toJson()).toList(),
+  //     'newUpdatedAt': newUpdatedAt,
+  //   };
+  // }
 }
 
-class BookingData {
+class LeadModel {
   final String? id;
   final String? user;
   final Service? service;
@@ -68,7 +80,7 @@ class BookingData {
   final String? otp;
   final num? v;
 
-  BookingData({
+  LeadModel({
     this.id,
     this.user,
     this.service,
@@ -123,8 +135,8 @@ class BookingData {
     this.v,
   });
 
-  factory BookingData.fromJson(Map<String, dynamic> json) {
-    return BookingData(
+  factory LeadModel.fromJson(Map<String, dynamic> json) {
+    return LeadModel(
       id: json['_id'] as String?,
       user: json['user'] as String?,
       service: json['service'] != null ? Service.fromJson(json['service']) : null,

@@ -11,7 +11,7 @@ import '../../../core/widgets/formate_price.dart';
 import '../model/lead_model.dart';
 import 'leads_details_widget.dart';
 
-Widget buildBookingCard(BuildContext context, { required BookingData lead}){
+Widget buildBookingCard(BuildContext context, { required LeadModel lead}){
 
   return CustomContainer(
     border: true,

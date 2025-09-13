@@ -37,7 +37,7 @@ class LeadsDetailsWidget extends StatelessWidget {
         if (state is LeadLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is LeadLoaded) {
-          final lead = state.leadModel.data?.firstWhere((l) => l.id == leadId,);
+          final lead = state.leadModel.firstWhere((l) => l.id == leadId,);
 
           if (lead == null) {
             return const Center(child: Text("Lead not found"));
@@ -85,7 +85,7 @@ class LeadsDetailsWidget extends StatelessWidget {
 }
 
 /// Payment status
-Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
+Widget _buildPaymentStatus(BuildContext context, LeadModel lead) {
   final userSession = Provider.of<UserSession>(context);
 
   final paidAmount = lead.paidAmount!.toStringAsFixed(2);
@@ -451,7 +451,7 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
 // }
 
 void _showPaymentBottomSheet(
-    BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
+    BuildContext context, LeadModel lead, VoidCallback? onPaymentSuccess) {
   final userSession = Provider.of<UserSession>(context, listen: false);
   Dimensions dimensions = Dimensions(context);
 
@@ -715,7 +715,7 @@ void _showPaymentBottomSheet(
 
 
 class RemainingPaymentButton extends StatefulWidget {
-  final BookingData lead;
+  final LeadModel lead;
   const RemainingPaymentButton({super.key, required this.lead});
 
   @override
@@ -780,7 +780,7 @@ class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
   }
 }
 
-Widget _buildBookingSummary(BuildContext context, BookingData lead) {
+Widget _buildBookingSummary(BuildContext context, LeadModel lead) {
 
   return CustomContainer(
     border: true,
@@ -848,7 +848,7 @@ Widget _buildRow(BuildContext context, {required String title, required String a
   );
 }
 
-Widget _buildCommissionCard(BuildContext context, { required BookingData lead}){
+Widget _buildCommissionCard(BuildContext context, { required LeadModel lead}){
 
   String formatCommission(dynamic rawCommission, {bool half = false}) {
     if (rawCommission == null) return '0';

@@ -5,7 +5,7 @@ import '../../../helper/api_urls.dart';
 import '../model/customer_model.dart';
 
 class CustomerRepository {
-  static final _dio = ApiClient.dio;
+  static final _dio = OldApiClient.dio;
 
   /// Create a new customer
   static Future<AddCustomerModel?> createCustomer(AddCustomerModel model) async {

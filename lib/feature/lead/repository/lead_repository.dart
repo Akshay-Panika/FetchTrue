@@ -4,21 +4,22 @@ import '../../../helper/api_client.dart';
 import '../model/lead_model.dart';
 
 class LeadRepository {
-  final Dio _dio = ApiClient.dio;
+  final ApiClient _apiClient = ApiClient();
 
-  Future<LeadModel?> getBookingsByUser(String userId) async {
+  Future<List<LeadModel>> getLead(String userId) async {
     try {
-      final response = await _dio.get("${ApiUrls.leads}/$userId");
-
-      if (response.statusCode == 200) {
-        return LeadModel.fromJson(response.data);
-      } else {
-        print("❌ Error: ${response.statusCode}");
-        return null;
+      final response = await _apiClient.get("${ApiUrls.leads}/$userId");
+      final result = LeadResponse.fromJson(response.data);
+      return result.data;
+    }
+    on DioException catch (e){
+      if (e.response != null) {
+        print("Lead API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
-    } on DioException catch (e) {
-      print("❌ Dio Error: ${e.message}");
-      return null;
+      else {
+        print("Lead Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

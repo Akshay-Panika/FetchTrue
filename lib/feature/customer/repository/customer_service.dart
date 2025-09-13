@@ -5,7 +5,7 @@ import '../../../helper/api_urls.dart';
 import '../model/customer_model.dart';
 
 class CustomerService {
-  final Dio _dio = ApiClient.dio;
+  final Dio _dio = OldApiClient.dio;
 
 
   Future<List<CustomerModel>> fetchCustomer() async {

@@ -98,7 +98,7 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                           if (state is LeadLoading) {
                             return _leadShimmer();
                           } else if (state is LeadLoaded) {
-                            final allLeads = state.leadModel.data ?? [];
+                            final allLeads = state.leadModel ?? [];
 
                             final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
                             final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();

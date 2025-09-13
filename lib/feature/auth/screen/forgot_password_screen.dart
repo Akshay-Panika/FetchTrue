@@ -2,7 +2,6 @@ import 'package:fetchtrue/core/costants/custom_logo.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_button.dart';
-import 'package:fetchtrue/feature/auth/screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -151,47 +150,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 children: [
                   200.height,
                   if (!_isOtpVerified)
-                  CustomButton(
-                    isLoading: _isLoading,
-                    label: 'Verify Number',
-                    onPressed: () async {
-                      final phone = _phoneController.text.trim().replaceAll(" ", "");
-
-                      if (phone.isEmpty) {
-                        showCustomSnackBar(context, 'Please enter phone number ');
-                        return;
-                      }
-
-                      if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
-                        showCustomSnackBar(context, 'Please enter a valid 10-digit phone number');
-                        return;
-                      }
-
-                      setState(() => _isLoading = true);
-
-                      try {
-                        await _verifyNumberService.sendOtp(
-                          phone,
-                          onCodeSent: (verificationId) async {
-                            setState(() => _isLoading = false);
-                            final result = await Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => VerifyOtpScreen(
-                                phoneNumber: phone,
-                                verifyService: _verifyNumberService,
-                              ),
-                            ),
-                            );
-                            if (result == true) {
-                              setState(() => _isOtpVerified = true);
-                            }
-                          },
-                        );
-                      } catch (e) {
-                        setState(() => _isLoading = false);
-                        showCustomSnackBar(context, e.toString());
-                      }
-                    },
-                  ),
+                  // CustomButton(
+                  //   isLoading: _isLoading,
+                  //   label: 'Verify Number',
+                  //   onPressed: () async {
+                  //     final phone = _phoneController.text.trim().replaceAll(" ", "");
+                  //
+                  //     if (phone.isEmpty) {
+                  //       showCustomSnackBar(context, 'Please enter phone number ');
+                  //       return;
+                  //     }
+                  //
+                  //     if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+                  //       showCustomSnackBar(context, 'Please enter a valid 10-digit phone number');
+                  //       return;
+                  //     }
+                  //
+                  //     setState(() => _isLoading = true);
+                  //
+                  //     try {
+                  //       await _verifyNumberService.sendOtp(
+                  //         phone,
+                  //         onCodeSent: (verificationId) async {
+                  //           setState(() => _isLoading = false);
+                  //           final result = await Navigator.push(context, MaterialPageRoute(
+                  //             builder: (context) => VerifyOtpScreen(
+                  //               phoneNumber: phone,
+                  //               verifyService: _verifyNumberService,
+                  //             ),
+                  //           ),
+                  //           );
+                  //           if (result == true) {
+                  //             setState(() => _isOtpVerified = true);
+                  //           }
+                  //         },
+                  //       );
+                  //     } catch (e) {
+                  //       setState(() => _isLoading = false);
+                  //       showCustomSnackBar(context, e.toString());
+                  //     }
+                  //   },
+                  // ),
 
                   if (_isOtpVerified)
                   CustomButton(
@@ -263,17 +262,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         setState(() => _isLoading = true);
 
                         try {
-                          final response = await _forgotPasswordService.forgotPasswordUser(
+                          final forgotService = ForgotPasswordService(); // singleton ApiClient internally
+                          await forgotService.forgotPasswordUser(
                             mobileNumber: phone,
                             newPassword: password,
                           );
 
-                          if (response.statusCode == 200) {
-                            showCustomSnackBar(context, '🎉 Password reset successful');
-                            Navigator.pop(context); // Navigate to Sign In
-                          } else {
-                            showCustomSnackBar(context, 'Something went wrong');
-                          }
+                          showCustomToast('🎉 Password reset successful');
+                          Navigator.pop(context); // Navigate to Sign In
+
                         } catch (e) {
                           showCustomSnackBar(context, e.toString());
                         } finally {

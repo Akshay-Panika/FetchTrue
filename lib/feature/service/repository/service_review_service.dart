@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import '../../../core/costants/custom_log_emoji.dart';
 import '../model/service_review_model.dart';
 
 class ReviewService {
@@ -12,7 +14,7 @@ class ReviewService {
         return ServiceReviewResponse.fromJson(jsonData);
       }
     } catch (e) {
-      print("Error fetching reviews: $e");
+      debugPrint("${CustomLogEmoji.error} Error fetching reviews: $e");
     }
     return null;
   }

@@ -1,10 +1,10 @@
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/feature/provider/screen/provider__details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/costants/custom_color.dart';
+import '../../../core/costants/custom_log_emoji.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
@@ -13,6 +13,7 @@ import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../repository/provider_repository.dart';
+import '../widget/module_name_widget.dart';
 
 class ProviderScreen extends StatelessWidget {
   const ProviderScreen({super.key});
@@ -75,8 +76,8 @@ class ProviderScreen extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(provider.storeInfo!.storeName,style: textStyle14(context),),
-                                      Text('Module Name', style: textStyle14(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),),
+                                      Text(provider.storeInfo!.storeName,style: textStyle12(context),),
+                                      ModuleNameWidget(moduleId: provider.storeInfo!.module.toString(),),
                                       5.height,
                                       Text(
                                         '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
@@ -162,7 +163,7 @@ class ProviderScreen extends StatelessWidget {
                 );
               }
               else if (state is ProviderError) {
-                print(state.message);
+                debugPrint("${CustomLogEmoji.error} Provider Error ${state.message}");
               }
               return const SizedBox.shrink();
             },

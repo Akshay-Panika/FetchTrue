@@ -9,8 +9,8 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<GetProviders>((event, emit) async {
       emit(ProviderLoading());
       try {
-        final providers = await repository.getProviders();
-        emit(ProvidersLoaded(providers));
+        final provider = await repository.getProvider();
+        emit(ProvidersLoaded(provider));
       } catch (e) {
         emit(ProviderError(e.toString()));
       }
@@ -19,8 +19,8 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<GetProviderById>((event, emit) async {
       emit(ProviderLoading());
       try {
-        final provider = await repository.getProviderById(event.id);
-        emit(ProviderLoaded(provider));
+        final providerById = await repository.getProviderById(event.id);
+        emit(ProviderLoaded(providerById!));
       } catch (e) {
         emit(ProviderError(e.toString()));
       }

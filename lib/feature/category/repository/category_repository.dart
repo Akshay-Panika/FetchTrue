@@ -6,23 +6,21 @@ import '../../../helper/api_client.dart';
 import '../../banner/model/banner_model.dart';
 
 class CategoryRepository {
-  final Dio _dio = ApiClient.dio;
-
+  final ApiClient _apiClient = ApiClient();
   Future<List<CategoryModel>> getCategory() async {
-    try {
-      final response = await _dio.get(ApiUrls.modulesCategory);
-
-      if (response.statusCode == 200 && response.data["success"] == true && response.data["data"] != null) {
-        return (response.data["data"] as List).map((e) => CategoryModel.fromJson(e)).toList();
-      } else {
-        throw Exception("Failed to fetch category");
+    try{
+      final response = await _apiClient.get(ApiUrls.modulesCategory);
+      final result = CategoryResponse.fromJson(response.data);
+      return result.data;
+    }
+    on DioException catch (e){
+      if (e.response != null) {
+        print("Category API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
-    }
-    on DioException catch (dioError) {
-      throw Exception("Dio error: ${dioError.message}");
-    }
-    catch (e) {
-      throw Exception("Unexpected error: $e");
+      else {
+        print("Category Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

@@ -3,8 +3,6 @@ import '../repository/ads_repository.dart';
 import 'ads_event.dart';
 import 'ads_state.dart';
 
-
-
 class AdsBloc extends Bloc<AdsEvent, AdsState> {
   final AdsRepository repository;
 
@@ -12,7 +10,7 @@ class AdsBloc extends Bloc<AdsEvent, AdsState> {
     on<LoadAdsEvent>((event, emit) async {
       emit(AdsLoading());
       try {
-        final ads = await repository.fetchAds();
+        final ads = await repository.getAds();
         emit(AdsLoaded(ads));
       } catch (e) {
         emit(AdsError(e.toString()));

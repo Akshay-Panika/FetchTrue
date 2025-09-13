@@ -1,19 +1,19 @@
 import 'dart:convert';
 
-class MyTeamModel {
+class TeamResponse {
   final bool success;
-  final List<TeamData> team;
+  final List<MyTeamModel> team;
 
-  MyTeamModel({
+  TeamResponse({
     required this.success,
     required this.team,
   });
 
-  factory MyTeamModel.fromJson(Map<String, dynamic> json) {
-    return MyTeamModel(
+  factory TeamResponse.fromJson(Map<String, dynamic> json) {
+    return TeamResponse(
       success: json['success'] ?? false,
       team: (json['team'] as List<dynamic>? ?? [])
-          .map((e) => TeamData.fromJson(e))
+          .map((e) => MyTeamModel.fromJson(e))
           .toList(),
     );
   }
@@ -26,9 +26,9 @@ class MyTeamModel {
   }
 }
 
-class TeamData {
+class MyTeamModel {
   final User? user;
-  final double? totalEarningsFromShare2;
+  final double totalEarningsFromShare2;
   final List<Lead> leads;
   final int activeLeadCount;
   final int completeLeadCount;
@@ -36,9 +36,9 @@ class TeamData {
   final int inactiveTeamCount;
   final List<SubTeam> team;
 
-  TeamData({
+  MyTeamModel({
     this.user,
-    this.totalEarningsFromShare2,
+    required this.totalEarningsFromShare2,
     required this.leads,
     required this.activeLeadCount,
     required this.completeLeadCount,
@@ -47,10 +47,11 @@ class TeamData {
     required this.team,
   });
 
-  factory TeamData.fromJson(Map<String, dynamic> json) {
-    return TeamData(
+  factory MyTeamModel.fromJson(Map<String, dynamic> json) {
+    return MyTeamModel(
       user: json['user'] != null ? User.fromJson(json['user']) : null,
-      totalEarningsFromShare2: (json['totalEarningsFromShare_2'] ?? 0).toDouble(),
+      totalEarningsFromShare2:
+      (json['totalEarningsFromShare_2'] ?? 0).toDouble(),
       leads: (json['leads'] as List<dynamic>? ?? [])
           .map((e) => Lead.fromJson(e))
           .toList(),
@@ -80,14 +81,14 @@ class TeamData {
 
 class SubTeam {
   final User? user;
-  final double? totalEarningsFromShare3;
+  final double totalEarningsFromShare3;
   final List<Lead> leads;
   final int activeLeadCount;
   final int completeLeadCount;
 
   SubTeam({
     this.user,
-    this.totalEarningsFromShare3,
+    required this.totalEarningsFromShare3,
     required this.leads,
     required this.activeLeadCount,
     required this.completeLeadCount,
@@ -96,7 +97,8 @@ class SubTeam {
   factory SubTeam.fromJson(Map<String, dynamic> json) {
     return SubTeam(
       user: json['user'] != null ? User.fromJson(json['user']) : null,
-      totalEarningsFromShare3: (json['totalEarningsFromShare_3'] ?? 0).toDouble(),
+      totalEarningsFromShare3:
+      (json['totalEarningsFromShare_3'] ?? 0).toDouble(),
       leads: (json['leads'] as List<dynamic>? ?? [])
           .map((e) => Lead.fromJson(e))
           .toList(),
@@ -132,7 +134,6 @@ class User {
   final int packageAmountPaid;
   final bool? isDeleted;
 
-
   User({
     required this.id,
     required this.fullName,
@@ -148,7 +149,6 @@ class User {
     required this.packagePrice,
     required this.packageAmountPaid,
     this.isDeleted,
-
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -185,7 +185,7 @@ class User {
       "packageStatus": packageStatus,
       "packagePrice": packagePrice,
       "packageAmountPaid": packageAmountPaid,
-      "isDeleted":isDeleted
+      "isDeleted": isDeleted,
     };
   }
 }

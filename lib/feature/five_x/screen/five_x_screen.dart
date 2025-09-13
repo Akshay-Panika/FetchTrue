@@ -54,7 +54,7 @@ class FiveXScreen extends StatelessWidget {
                 if (state is LeadLoading) {
                   return CircularProgressIndicator();
                 } else if (state is LeadLoaded) {
-                  final allLeads = state.leadModel.data ?? [];
+                  final allLeads = state.leadModel ?? [];
                   // final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
                   return BlocProvider(
@@ -153,7 +153,7 @@ class FiveXScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLevelProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user) {
+  Widget _buildLevelProgressCard(BuildContext context, FiveXModel? fiveX, List<LeadModel> completedLeads, UserModel user) {
 
     final lead = completedLeads.length; // Actual leads count
     final target = fiveX?.leadcount ?? 1; // Target leads
@@ -184,7 +184,7 @@ class FiveXScreen extends StatelessWidget {
       ],
     );
   }
-  Widget _buildEarningProgressCard(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, UserModel user,  WalletModel wallet) {
+  Widget _buildEarningProgressCard(BuildContext context, FiveXModel? fiveX, List<LeadModel> completedLeads, UserModel user,  WalletModel wallet) {
     final earning = wallet.balance ?? 0;
     final target = fiveX?.fixearning ?? 1;
 
@@ -232,7 +232,7 @@ class FiveXScreen extends StatelessWidget {
   }
 
 
-  Widget _buildLEL(BuildContext context, FiveXModel? fiveX, List<BookingData> completedLeads, WalletModel wallet){
+  Widget _buildLEL(BuildContext context, FiveXModel? fiveX, List<LeadModel> completedLeads, WalletModel wallet){
     final count = completedLeads.length ?? 0; // actual count
     final maxCount = fiveX?.leadcount ?? 1;
     final progress = (count / maxCount).clamp(0.0, 1.0);

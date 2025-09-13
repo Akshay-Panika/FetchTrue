@@ -43,6 +43,22 @@ class OfferModel {
       serviceName: json["service"]?["serviceName"] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "_id": id,
+      "thumbnailImage": thumbnailImage,
+      "bannerImage": bannerImage,
+      "offerStartTime": offerStartTime.toIso8601String(),
+      "offerEndTime": offerEndTime.toIso8601String(),
+      "galleryImages": galleryImages,
+      "eligibilityCriteria": eligibilityCriteria,
+      "howToParticipate": howToParticipate,
+      "faq": faq.map((e) => e.toJson()).toList(),
+      "termsAndConditions": termsAndConditions,
+      "serviceName": serviceName,
+    };
+  }
 }
 
 class Faq {
@@ -56,5 +72,41 @@ class Faq {
       question: json["question"] ?? '',
       answer: json["answer"] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "question": question,
+      "answer": answer,
+    };
+  }
+}
+
+
+class OfferResponse {
+  final bool success;
+  final List<OfferModel> data;
+  final String newUpdatedAt;
+
+  OfferResponse({
+    required this.success,
+    required this.data,
+    required this.newUpdatedAt,
+  });
+
+  factory OfferResponse.fromJson(Map<String, dynamic> json) {
+    return OfferResponse(
+      success: json['success'] ?? false,
+      data: (json['data'] as List<dynamic>).map((e) => OfferModel.fromJson(e)).toList(),
+      newUpdatedAt: json['newUpdatedAt'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data.map((e) => e.toJson()).toList(),
+      'newUpdatedAt': newUpdatedAt,
+    };
   }
 }

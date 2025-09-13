@@ -10,7 +10,7 @@ import '../../lead/repository/lead_repository.dart';
 import '../model/my_team_model.dart';
 
 class MyGpTeamSection extends StatelessWidget {
-  final List<TeamData> members;
+  final List<MyTeamModel> members;
   const MyGpTeamSection({super.key, required this.members});
 
   @override

@@ -11,7 +11,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
-import '../repository/delete_user_service.dart';
+import '../../profile/bloc/user/user_state.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   final String userId;
@@ -23,90 +23,89 @@ class DeleteAccountScreen extends StatefulWidget {
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool _isConfirmed = false;
-  bool _isLoading = false;
 
-  Future<void> _handleDelete() async {
-    setState(() => _isLoading = true);
+  void _handleDelete() {
+    if (!_isConfirmed) return;
 
-    try {
-      final userSession = Provider.of<UserSession>(context, listen: false);
-
-      await deleteUser(widget.userId);
-
-      /// Reset state
-      context.read<UserBloc>().add(ResetUser());
-      await userSession.logout();
-
-      if (context.mounted) {
-        /// Navigate to AuthScreen after logout
-         Navigator.pop(context, true);
-
-        showCustomSnackBar(context, 'Account deleted successfully');
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showCustomSnackBar(context, 'Failed: $e');
-      }
-    } finally {
-      setState(() => _isLoading = false);
-    }
+    context.read<UserBloc>().add(DeleteUser(widget.userId));
   }
 
   @override
   Widget build(BuildContext context) {
 
-    if(widget.userId.isEmpty){
-      return Scaffold(
-        appBar: CustomAppBar(showBackButton: true,title: 'Delete Account',),
-
-        body: SafeArea(child: NoUserSignWidget()),
-      );
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Delete Account', showBackButton: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Icon(Icons.warning_amber_rounded, size: 100, color: Colors.red),
-            const SizedBox(height: 10),
-            Text(
-              "Are you sure you want to delete your account?",
-              style: textStyle18(context, color: CustomColor.redColor),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Deleting your account is permanent and will erase all your data including profile, history, and preferences from our servers.",
-              style: textStyle16(context, fontWeight: FontWeight.w400),
-            ),
-            const Spacer(),
-            Column(
+
+      body: BlocConsumer<UserBloc, UserState>(
+        listener: (context, state) async {
+          if (state is UserDeleted) {
+            final userSession = Provider.of<UserSession>(context, listen: false);
+            await userSession.logout();
+
+            if (context.mounted) {
+              Navigator.pop(context, true);
+              showCustomToast('Account deleted successfully');
+            }
+          } else if (state is UserError) {
+            if (context.mounted) {
+              showCustomToast('Failed: ${state.massage}');
+            }
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is UserLoading;
+
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
               children: [
-                CheckboxListTile(
-                  title: const Text("Yes, I want to delete my account."),
-                  value: _isConfirmed,
-                  onChanged: (value) => setState(() => _isConfirmed = value!),
+                const Icon(Icons.warning_amber_rounded, size: 80, color: Colors.red),
+                const SizedBox(height: 10),
+                Text(
+                  "Are you sure you want to delete your account?",
+                  style: textStyle16(context, color: CustomColor.redColor),
                 ),
-                const SizedBox(height: 20),
-                Opacity(
-                  opacity: _isConfirmed ? 1.0 : 0.5,
-                  child: IgnorePointer(
-                    ignoring: !_isConfirmed || _isLoading,
-                    child: CustomButton(
-                      label: _isLoading ? 'Deleting...' : 'Delete My Account',
-                      isLoading: _isLoading,
-                      onPressed: _handleDelete,
-                      buttonColor: CustomColor.appColor,
+                const SizedBox(height: 16),
+                Text(
+                  "Deleting your account is permanent and will erase all your data including profile, history, and preferences from our servers.",
+                  style: textStyle14(context, fontWeight: FontWeight.w400, color: Colors.grey.shade500),
+                ),
+                const Spacer(),
+                Column(
+                  children: [
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        splashFactory: NoSplash.splashFactory,
+                        highlightColor: Colors.transparent,
+                      ),
+                      child: CheckboxListTile(
+                        title: const Text("Yes, I want to delete my account."),
+                        value: _isConfirmed,
+                        activeColor: CustomColor.appColor,
+                        onChanged: (value) => setState(() => _isConfirmed = value!),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    Opacity(
+                      opacity: _isConfirmed ? 1.0 : 0.5,
+                      child: IgnorePointer(
+                        ignoring: !_isConfirmed || isLoading,
+                        child: CustomButton(
+                          label: isLoading ? 'Deleting...' : 'Delete My Account',
+                          isLoading: isLoading,
+                          onPressed: _handleDelete,
+                          buttonColor: CustomColor.appColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                50.height,
               ],
             ),
-            50.height,
-          ],
-        ),
+          );
+        },
       ),
     );
   }

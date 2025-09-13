@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
+import '../../../core/costants/custom_log_emoji.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_favorite_button.dart';
 import '../../favorite/widget/favorite_provider_button_widget.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
@@ -14,6 +14,7 @@ import '../bloc/provider/provider_state.dart';
 import '../model/provider_model.dart';
 import '../repository/provider_repository.dart';
 import '../widget/gallery_widget.dart';
+import '../widget/module_name_widget.dart';
 import '../widget/provider_all_service_widget.dart';
 import '../widget/provider_requirement_service_widget.dart';
 import '../widget/provider_review_widget.dart';
@@ -156,7 +157,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                   ],
                 );
               } else if (state is ProviderError) {
-                return Center(child: Text(state.message));
+                debugPrint("${CustomLogEmoji.error} Provider Error ${state.message}");
               }
               return const SizedBox.shrink();
             },
@@ -208,13 +209,8 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        data.storeInfo!.storeName,
-                        style: textStyle16(context),
-                      ),
-                      Text("Module Name",
-                          style: textStyle14(context,
-                              fontWeight: FontWeight.w400)),
+                      Text(data.storeInfo!.storeName,style: textStyle12(context),),
+                      ModuleNameWidget(moduleId: data.storeInfo!.module.toString(),),
                       Text(
                         '⭐ ${data.averageRating} (${data.totalReviews} Review)',
                         style:

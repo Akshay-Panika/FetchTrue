@@ -60,27 +60,25 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 30,
+                          radius: 35,
                           backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                           backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
                               ? NetworkImage(user.profilePhoto!)
                               : AssetImage(CustomImage.nullImage),
 
                         ),
-                        const SizedBox(width: 16),
+                       10.width,
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${user.fullName}',
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis,),
-
-                            Text('${user.email}', style: const TextStyle(color: Colors.grey),),
-                            Text('ID: ${user.userId}', style: const TextStyle(color: Colors.grey),),
+                            Text('${user.fullName}', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                            Text('${user.email}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                            Text('ID: ${user.userId}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
                           ],
                         ),
                       ],
@@ -98,14 +96,15 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           decoration: BoxDecoration(
+                            color: CustomColor.appColor,
                             border: Border.all(color: CustomColor.appColor, width: 0.5),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child:  Row(
                             children: [
-                              Icon(Icons.verified_outlined, size: 16),
+                              Icon(Icons.verified_outlined, size: 16, color: CustomColor.whiteColor,),
                               SizedBox(width: 5),
-                              Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context,fontWeight: FontWeight.w600)),
+                              Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.whiteColor)),
                             ],
                           ),
                         ),
@@ -115,7 +114,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                 const Divider(),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildStatus(icon:CupertinoIcons.calendar,
                       value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
@@ -126,12 +125,14 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       valueType: 'Joining date',
                     ),
 
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
+
                     BlocBuilder<LeadBloc, LeadState>(
                       builder: (context, state) {
                         if (state is LeadLoading) {
                            return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                         } else if (state is LeadLoaded) {
-                          final allLeads = state.leadModel.data ?? [];
+                          final allLeads = state.leadModel ?? [];
                           final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
 
@@ -143,6 +144,8 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                         return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                       },
                     ),
+
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
 
                     BlocProvider(
                       create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
@@ -200,7 +203,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 30,
+                    radius: 35,
                     backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                     backgroundImage: profile != null && profile.isNotEmpty
                         ? NetworkImage(profile) as ImageProvider
@@ -212,25 +215,9 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        name ?? 'Guest',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        email ?? 'guest@test.com',
-                        style: const TextStyle(color: Colors.grey),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        id ?? '#0000000',
-                        style: const TextStyle(color: Colors.grey),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      Text(name ?? 'Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                      Text(email ?? 'guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                      Text(id ?? '#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
                     ],
                   ),
                 ],
@@ -242,10 +229,12 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       
           // Status Row
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
+              Container(width: 1,height: 35,color: Colors.grey.shade500,),
               _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
+              Container(width: 1,height: 35,color: Colors.grey.shade500,),
               _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
             ],
           ),
@@ -261,18 +250,14 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       children: [
         Text(
           value,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: CustomColor.appColor),
+          style: textStyle12(context, fontWeight: FontWeight.w600, color: CustomColor.appColor),
         ),
         Row(
           children: [
-            Icon(icon, color: CustomColor.descriptionColor,size: 14,),
+            Icon(icon, color: CustomColor.descriptionColor,size: 12,),
             5.width,
             Text(
-              valueType,
-              style: textStyle12(context,
-                fontWeight: FontWeight.w400,
-                color: CustomColor.descriptionColor,
-              ),
+              valueType, style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor,),
             ),
           ],
         ),

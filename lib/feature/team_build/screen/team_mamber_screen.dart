@@ -23,7 +23,7 @@ import '../repository/upcoming_lead_commission_repository.dart';
 import '../widget/team_card_widget.dart';
 
 class TeamMemberScreen extends StatelessWidget {
-  final TeamData members;
+  final MyTeamModel members;
   const TeamMemberScreen({super.key, required this.members});
 
   @override
@@ -55,8 +55,8 @@ class TeamMemberScreen extends StatelessWidget {
                   earning: members.totalEarningsFromShare2?.toStringAsFixed(2),
                   // earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
                 ),
-        
-        
+
+
                 TabBar(
                   indicatorColor: CustomColor.appColor,
                   labelColor: Colors.black,
@@ -67,7 +67,7 @@ class TeamMemberScreen extends StatelessWidget {
                     Tab(text: 'Teams (${members.team.length})'),
                   ],
                 ),
-        
+
                 Expanded(
                   child: BlocProvider(
                     create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
@@ -132,7 +132,7 @@ class _MemberLeads extends StatelessWidget {
         if (state is LeadLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is LeadLoaded) {
-          final allLeads = state.leadModel.data ?? [];
+          final allLeads = state.leadModel ?? [];
 
           return ListView.builder(
             itemCount: allLeads.length,

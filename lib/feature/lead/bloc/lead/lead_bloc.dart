@@ -10,7 +10,7 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
     on<FetchLeadsByUser>((event, emit) async {
       emit(LeadLoading());
       try {
-        final result = await repository.getBookingsByUser(event.userId);
+        final result = await repository.getLead(event.userId);
         if (result != null) {
           emit(LeadLoaded(result));
         } else {

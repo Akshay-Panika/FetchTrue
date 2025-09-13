@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fetchtrue/core/costants/custom_log_emoji.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/shimmer_box.dart';
 import 'package:fetchtrue/feature/highlight_serive/repository/ads_repository.dart';
@@ -38,7 +39,7 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
             return _adsShimmer(dimensions);
           } else if (state is AdsLoaded) {
             // final adsList = state.ads.data;
-            final adsList = state.ads.data.where((moduleService) =>
+            final adsList = state.ads.where((moduleService) =>
             moduleService.category.module == widget.moduleId).toList();
 
             if(adsList.isEmpty){
@@ -124,9 +125,8 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
               ),
             );
           } else if (state is AdsError) {
-            print('error : ${state.message}');
+            debugPrint('${CustomLogEmoji.error} Ads Error : ${state.message}');
             return SizedBox.shrink();
-            // return Center(child: Text('Error: ${state.message}'));
           }
           return Center(child: Text('Press button to load ads'));
         },

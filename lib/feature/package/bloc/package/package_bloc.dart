@@ -5,11 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/package_repository.dart';
 
 class PackageBloc extends Bloc<PackageEvent, PackageState> {
-  PackageBloc() : super(PackageInitial()) {
+  final PackageRepository repository;
+  PackageBloc(this.repository) : super(PackageInitial()) {
     on<FetchPackages>((event, emit) async {
       emit(PackageLoading());
       try {
-        final packages = await PackageRepository.getPackages(); // returns List<PackageModel>
+        final packages = await repository.getPackages(); // returns List<PackageModel>
         emit(PackageLoaded(packages));
       } catch (e) {
         emit(PackageError(e.toString()));

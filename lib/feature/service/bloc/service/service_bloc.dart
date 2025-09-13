@@ -11,7 +11,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     on<GetServices>((event, emit) async {
       emit(ServiceLoading());
       try {
-        final services = await repository.fetchServices();
+        final services = await repository.getServices();
         emit(ServiceLoaded(services));
       } catch (e) {
         emit(ServiceError(e.toString()));
