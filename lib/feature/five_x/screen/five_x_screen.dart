@@ -16,8 +16,10 @@ import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
 import '../../profile/model/user_model.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_event.dart';
 import '../../wallet/bloc/wallet_state.dart';
 import '../../wallet/model/wallet_model.dart';
+import '../../wallet/repository/wallet_repository.dart';
 import '../bloc/five_x/FiveXBloc.dart';
 import '../bloc/five_x/FiveXEvent.dart';
 import '../bloc/five_x/FiveXState.dart';
@@ -55,78 +57,84 @@ class FiveXScreen extends StatelessWidget {
                   final allLeads = state.leadModel.data ?? [];
                   // final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
-                  return BlocBuilder<WalletBloc, WalletState>(
-                    builder: (context, state) {
-                      if (state is WalletLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is WalletLoaded) {
-                        final wallet = state.wallet;
-                        return  BlocBuilder<FiveXBloc, FiveXState>(
-                          builder: (context, state) {
-                            if (state is FiveXLoading) {
-                              return const Center(child: CircularProgressIndicator());
-                            } else if (state is FiveXLoaded) {
+                  return BlocProvider(
+                    create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
+                    child: BlocBuilder<WalletBloc, WalletState>(
+                      builder: (context, state) {
+                        if (state is WalletLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is WalletLoaded) {
+                          final wallet = state.wallet;
+                          return  BlocProvider(
+                            create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX()),
+                            child: BlocBuilder<FiveXBloc, FiveXState>(
+                              builder: (context, state) {
+                                if (state is FiveXLoading) {
+                                  return const Center(child: CircularProgressIndicator());
+                                } else if (state is FiveXLoaded) {
 
-                              final data = state.data.first;
-                              return SingleChildScrollView(
-                                child: Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Column(
-                                    children: [
-                                      CustomContainer(
-                                        border: true,
-                                        color: Colors.blue.withOpacity(0.1),
-                                        child:  Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text('📅  Package Activated:', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),),5.width,
-                                            Text('${formatDateTime(user.packageActivateDate)}', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.blackColor),),
-                                          ],
-                                        ),
-                                      ),
-                                      CustomContainer(
-                                        color: CustomColor.whiteColor,
-                                        margin: EdgeInsets.zero,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-
-                                           20.height,
-
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  final data = state.data.first;
+                                  return SingleChildScrollView(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Column(
+                                        children: [
+                                          CustomContainer(
+                                            border: true,
+                                            color: Colors.blue.withOpacity(0.1),
+                                            child:  Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
-                                                _buildLevelProgressCard(context,data, allLeads,user),
-                                                _buildEarningProgressCard(context,data, allLeads,user, wallet),
+                                                Text('📅  Package Activated:', style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.appColor),),5.width,
+                                                Text('${formatDateTime(user.packageActivateDate)}', style: textStyle12(context, fontWeight: FontWeight.w400,color: CustomColor.blackColor),),
                                               ],
                                             ),
-                                            10.height,
+                                          ),
+                                          CustomContainer(
+                                            color: CustomColor.whiteColor,
+                                            margin: EdgeInsets.zero,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
 
-                                            _buildEligible(context,data, user),
-                                          ],
-                                        ),
+                                               20.height,
+
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  children: [
+                                                    _buildLevelProgressCard(context,data, allLeads,user),
+                                                    _buildEarningProgressCard(context,data, allLeads,user, wallet),
+                                                  ],
+                                                ),
+                                                10.height,
+
+                                                _buildEligible(context,data, user),
+                                              ],
+                                            ),
+                                          ),
+
+                                          10.height,
+
+                                          _buildLEL(context, data,allLeads,wallet)
+                                        ],
                                       ),
-
-                                      10.height,
-
-                                      _buildLEL(context, data,allLeads,wallet)
-                                    ],
-                                  ),
-                                ),
-                              );
-                            } else if (state is FiveXError) {
-                              return Center(child: Text(state.message));
-                            }
-                            return const Center(child: Text("Press button to fetch data"));
-                          },
-                        );
-                      } else if (state is WalletError) {
-                        print('Error: ${state.message}');
-                        return SizedBox.shrink();
-                      }
-                      return const SizedBox();
-                    },
+                                    ),
+                                  );
+                                } else if (state is FiveXError) {
+                                  return Center(child: Text(state.message));
+                                }
+                                return const Center(child: Text("Press button to fetch data"));
+                              },
+                            ),
+                          );
+                        } else if (state is WalletError) {
+                          print('Error: ${state.message}');
+                          return SizedBox.shrink();
+                        }
+                        return const SizedBox();
+                      },
+                    ),
                   );
 
                 } else if (state is LeadError) {

@@ -13,118 +13,110 @@ import '../bloc/my_team/my_team_bloc.dart';
 import '../bloc/my_team/my_team_event.dart';
 import '../bloc/my_team/my_team_state.dart';
 import '../model/my_team_model.dart';
+import '../repository/my_team_repository.dart';
 
-class MyTeamSection extends StatefulWidget {
+class MyTeamSection extends StatelessWidget {
   const MyTeamSection({super.key});
-
-  @override
-  State<MyTeamSection> createState() => _MyTeamSectionState();
-}
-
-class _MyTeamSectionState extends State<MyTeamSection> {
-  bool _isLoaded = false;
-
-   @override
-  void initState() {
-    super.initState();
-    if (!_isLoaded) {
-      final userSession = Provider.of<UserSession>(context, listen: false);
-      context.read<MyTeamBloc>().add(FetchMyTeam(userSession.userId!));
-      _isLoaded = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
      Dimensions dimensions = Dimensions(context);
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: [
-          const RelationshipManagerSection(),
-          Expanded(
-            child: BlocBuilder<MyTeamBloc, MyTeamState>(
-              builder: (context, state) {
-                if (state is MyTeamLoading) {
-                  return Align(
-                      alignment: Alignment.topCenter,
-                      child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
-                } else if (state is MyTeamLoaded) {
-                  final List<TeamData> team = state.response.team;
+     final userSession = Provider.of<UserSession>(context, listen: false);
 
-                  if (team.isEmpty) {
-                    return  Center(child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(CupertinoIcons.person_2_fill, size: dimensions.screenHeight*0.05,color: CustomColor.iconColor,),
-                        Text("No Franchise"),
-                      ],
-                    ));
-                  }
+     return BlocProvider(
+      create: (_) => MyTeamBloc(MyTeamRepository())..add(FetchMyTeam(userSession.userId!)),
+      child: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            const RelationshipManagerSection(),
+            Expanded(
+              child:  BlocProvider(
+                create: (_) => MyTeamBloc(MyTeamRepository())..add(FetchMyTeam(userSession.userId!)),
+                child: BlocBuilder<MyTeamBloc, MyTeamState>(
+                  builder: (context, state) {
+                    if (state is MyTeamLoading) {
+                      return Align(
+                          alignment: Alignment.topCenter,
+                          child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
+                    } else if (state is MyTeamLoaded) {
+                      final List<TeamData> team = state.response.team;
 
-                  final nonGpMembers = team.where((e) => e.user?.packageActive == false).toList();
-                  final gpMembers = team.where((e) => e.user?.packageActive == true).toList();
-
-                  return Column(
-                    children: [
-                      TabBar(
-                        indicatorColor: CustomColor.appColor,
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.grey,
-                        dividerColor: WidgetStateColor.transparent,
-                        tabs: [
-                          Tab(text: 'Non GP (${nonGpMembers.length})'),
-                          Tab(text: 'GP (${gpMembers.length})'),
-                        ],
-                      ),
-
-
-                      Expanded(
-                        child: TabBarView(
+                      if (team.isEmpty) {
+                        return  Center(child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            /// Non GP Tab
-                            nonGpMembers.isEmpty
-                                ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: dimensions.screenHeight*0.05,),
-                                    Text("No Non-GP Member"),
-                                  ],
-                                )
-                                : MyNonGpTeamSection(members: nonGpMembers),
-
-                            /// GP Tab
-                            gpMembers.isEmpty
-                                ?  Column(
-                                 mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
-                                    Text("No GP Member"),
-                                  ],
-                                )
-                                : MyGpTeamSection(members: gpMembers),
+                            Icon(CupertinoIcons.person_2_fill, size: dimensions.screenHeight*0.05,color: CustomColor.iconColor,),
+                            Text("No Franchise"),
                           ],
-                        ),
-                      ),
+                        ));
+                      }
 
-                    ],
-                  );
-                } else if (state is MyTeamError) {
-                 print("Error: ${state.message}");
-                 return  Center(child: Column(
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   children: [
-                     Icon(CupertinoIcons.person_2_fill, size: 50,color: CustomColor.iconColor,),
-                     Text("No Franchise"),
-                   ],
-                 ));
+                      final nonGpMembers = team.where((e) => e.user?.packageActive == false).toList();
+                      final gpMembers = team.where((e) => e.user?.packageActive == true).toList();
 
-                }
-                return const SizedBox();
-              },
-            ),
-          )
-        ],
+                      return Column(
+                        children: [
+                          TabBar(
+                            indicatorColor: CustomColor.appColor,
+                            labelColor: Colors.black,
+                            unselectedLabelColor: Colors.grey,
+                            dividerColor: WidgetStateColor.transparent,
+                            tabs: [
+                              Tab(text: 'Non GP (${nonGpMembers.length})'),
+                              Tab(text: 'GP (${gpMembers.length})'),
+                            ],
+                          ),
+
+
+                          Expanded(
+                            child: TabBarView(
+                              children: [
+                                /// Non GP Tab
+                                nonGpMembers.isEmpty
+                                    ? Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: dimensions.screenHeight*0.05,),
+                                        Text("No Non-GP Member"),
+                                      ],
+                                    )
+                                    : MyNonGpTeamSection(members: nonGpMembers),
+
+                                /// GP Tab
+                                gpMembers.isEmpty
+                                    ?  Column(
+                                     mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(CupertinoIcons.person_2_fill, color: CustomColor.iconColor,size: 50,),
+                                        Text("No GP Member"),
+                                      ],
+                                    )
+                                    : MyGpTeamSection(members: gpMembers),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      );
+                    } else if (state is MyTeamError) {
+                     print("Error: ${state.message}");
+                     return  Center(child: Column(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Icon(CupertinoIcons.person_2_fill, size: 50,color: CustomColor.iconColor,),
+                         Text("No Franchise"),
+                       ],
+                     ));
+
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

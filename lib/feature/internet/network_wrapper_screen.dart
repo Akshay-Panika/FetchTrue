@@ -38,14 +38,14 @@ class NetworkMonitor {
       isConnected.value = connected;
 
       if (connected && userId != null) {
-        context.read<UserBloc>().add(GetUserById(userId));
-        context.read<ModuleBloc>().add(GetModules());
-        context.read<BannerBloc>().add(GetBanners());
-        context.read<WalletBloc>().add(FetchWalletByUserId(userId));
-        context.read<MyTeamBloc>().add(FetchMyTeam(userId));
-        context.read<OfferBloc>().add(FetchOffersEvent());
-        context.read<UnderstandingFetchTrueBloc>().add(LoadUnderstandingFetchTrue());
-        context.read<LeadBloc>().add(FetchLeadsByUser(userId));
+        // context.read<UserBloc>().add(GetUserById(userId));
+        // context.read<ModuleBloc>().add(GetModules());
+        // context.read<BannerBloc>().add(GetBanners());
+        // context.read<WalletBloc>().add(FetchWalletByUserId(userId));
+        // context.read<MyTeamBloc>().add(FetchMyTeam(userId));
+        // context.read<OfferBloc>().add(FetchOffersEvent());
+        // context.read<UnderstandingFetchTrueBloc>().add(LoadUnderstandingFetchTrue());
+        // context.read<LeadBloc>().add(FetchLeadsByUser(userId));
       }
     });
   }

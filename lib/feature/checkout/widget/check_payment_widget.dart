@@ -17,6 +17,7 @@ import '../bloc/checkout/checkout_event.dart';
 import '../bloc/checkout/checkout_state.dart';
 import '../model/checkout_model.dart';
 import '../repository/checkout_cashfree_repository.dart';
+import '../repository/checkout_repository.dart';
 import '../widget/wallet_card_widget.dart';
 
 
@@ -52,134 +53,138 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
         (selectedPayment == null ? 0 : selectedPayment == PaymentMethod.afterConsultation ? serviceAmount
             : selectedCashFreeOption == CashFreeOption.full ? serviceAmount : partialAmount) - walletAppliedAmount).clamp(0, double.infinity);
 
-    return BlocListener<CheckoutBloc, CheckoutState>(
-      listener: (context, state) {
-        if (state is CheckoutSuccess) {
-          final bookingId = state.model.bookingId ?? '';
-          final checkoutId = state.model.id ?? '';
-          final createdAt = state.model.createdAt?.toString() ?? '';
-          final paidAmount = state.model.paidAmount?.toStringAsFixed(2) ?? "0.00";
+    return BlocProvider(
+      create: (_) => CheckoutBloc(repository: CheckOutRepository()),
 
-          print('Booking confirmed. ID: $bookingId');
-
-          if (selectedPayment == PaymentMethod.cashFree) {
-            checkoutCashfreeRepository(
-              context: context,
-              orderId: 'checkout_$bookingId',
-              checkoutId: checkoutId,
-              amount: payableAmount,
-              customerId: userSession.userId!,
-              name: 'Customer',
-              phone: '9999999999',
-              email: 'customer@mail.com',
-              onPaymentSuccess: () {
-                widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
-              },
-            );
+      child: BlocListener<CheckoutBloc, CheckoutState>(
+        listener: (context, state) {
+          if (state is CheckoutSuccess) {
+            final bookingId = state.model.bookingId ?? '';
+            final checkoutId = state.model.id ?? '';
+            final createdAt = state.model.createdAt?.toString() ?? '';
+            final paidAmount = state.model.paidAmount?.toStringAsFixed(2) ?? "0.00";
+      
+            print('Booking confirmed. ID: $bookingId');
+      
+            if (selectedPayment == PaymentMethod.cashFree) {
+              checkoutCashfreeRepository(
+                context: context,
+                orderId: 'checkout_$bookingId',
+                checkoutId: checkoutId,
+                amount: payableAmount,
+                customerId: userSession.userId!,
+                name: 'Customer',
+                phone: '9999999999',
+                email: 'customer@mail.com',
+                onPaymentSuccess: () {
+                  widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
+                },
+              );
+            }
+            else {
+              widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
+            }
+      
+            context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+          } else if (state is CheckoutFailure) {
+            showCustomToast('❌ ${state.error}');
           }
-          else {
-            widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
-          }
-
-          context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
-        } else if (state is CheckoutFailure) {
-          showCustomToast('❌ ${state.error}');
-        }
-      },
-      child: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                children: [
-                  15.height,
-                  /// wallet
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Price: ₹ ${serviceAmount.toStringAsFixed(2)}', style: textStyle16(context)),
-                      10.height,
-                      WalletCardWidget(
-                        userId: userSession.userId!,
-                        onWalletApplied: (walletBalance) {
-                          setState(() {
-                            walletAppliedAmount = walletBalance >= serviceAmount ? serviceAmount.toDouble() : walletBalance.toDouble();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-
-                  20.height,
-
-                  /// Payment Options
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Choose Payment Method', style: textStyle14(context, color: CustomColor.descriptionColor)),
-                      10.height,
-                      _paymentOptionWidgets(serviceAmount, partialAmount),
-                    ],
-                  ),
-                ],
+        },
+        child: Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+      
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  children: [
+                    15.height,
+                    /// wallet
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Price: ₹ ${serviceAmount.toStringAsFixed(2)}', style: textStyle16(context)),
+                        10.height,
+                        WalletCardWidget(
+                          userId: userSession.userId!,
+                          onWalletApplied: (walletBalance) {
+                            setState(() {
+                              walletAppliedAmount = walletBalance >= serviceAmount ? serviceAmount.toDouble() : walletBalance.toDouble();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+      
+                    20.height,
+      
+                    /// Payment Options
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Choose Payment Method', style: textStyle14(context, color: CustomColor.descriptionColor)),
+                        10.height,
+                        _paymentOptionWidgets(serviceAmount, partialAmount),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-
-            /// Total + Pay Button
-            Padding(
-              padding: const EdgeInsets.all(50),
-              child: Column(
-                spacing: 20,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Total Price', style: textStyle16(context)),10.width,
-                      Text('₹ ${payableAmount.toStringAsFixed(2)}', style: textStyle16(context)),
-                    ],
-                  ),
-                  BlocBuilder<CheckoutBloc, CheckoutState>(
-                    builder: (context, state) {
-                      final isLoading = state is CheckoutLoading;
-                      return CustomButton(
-                        isLoading: isLoading,
-                        label: 'Pay Now',
-                        onPressed: () {
-                          if (selectedPayment == null) {
-                            showCustomToast('Please select a payment method');
-                            return;
-                          }
-
-                          /// prepare model
-                          final checkoutModel = widget.checkoutData.copyWith(
-                            paymentMethod: [
-                              if (selectedPayment == PaymentMethod.cashFree) 'cashfree',
-                              if (selectedPayment == PaymentMethod.afterConsultation) 'pac',
-                              if (walletAppliedAmount > 0) 'wallet',
-                            ],
-                            walletAmount: walletAppliedAmount,
-                            paidAmount: 0,
-                            // paidAmount: payableAmount,
-                            orderStatus: 'processing',
-                            remainingAmount: selectedPayment == PaymentMethod.afterConsultation ? serviceAmount.toDouble() : (serviceAmount - payableAmount - walletAppliedAmount).clamp(0, double.infinity).toDouble(),
-                            paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
-                            isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
-                          );
-
-                          context.read<CheckoutBloc>().add(CheckoutRequestEvent(checkoutModel));
-                        },
-                      );
-                    },
-                  ),
-                ],
+      
+              /// Total + Pay Button
+              Padding(
+                padding: const EdgeInsets.all(50),
+                child: Column(
+                  spacing: 20,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Total Price', style: textStyle16(context)),10.width,
+                        Text('₹ ${payableAmount.toStringAsFixed(2)}', style: textStyle16(context)),
+                      ],
+                    ),
+                    BlocBuilder<CheckoutBloc, CheckoutState>(
+                      builder: (context, state) {
+                        final isLoading = state is CheckoutLoading;
+                        return CustomButton(
+                          isLoading: isLoading,
+                          label: 'Pay Now',
+                          onPressed: () {
+                            if (selectedPayment == null) {
+                              showCustomToast('Please select a payment method');
+                              return;
+                            }
+      
+                            /// prepare model
+                            final checkoutModel = widget.checkoutData.copyWith(
+                              paymentMethod: [
+                                if (selectedPayment == PaymentMethod.cashFree) 'cashfree',
+                                if (selectedPayment == PaymentMethod.afterConsultation) 'pac',
+                                if (walletAppliedAmount > 0) 'wallet',
+                              ],
+                              walletAmount: walletAppliedAmount,
+                              paidAmount: 0,
+                              // paidAmount: payableAmount,
+                              orderStatus: 'processing',
+                              remainingAmount: selectedPayment == PaymentMethod.afterConsultation ? serviceAmount.toDouble() : (serviceAmount - payableAmount - walletAppliedAmount).clamp(0, double.infinity).toDouble(),
+                              paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
+                              isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
+                            );
+      
+                            context.read<CheckoutBloc>().add(CheckoutRequestEvent(checkoutModel));
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

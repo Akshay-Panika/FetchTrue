@@ -11,6 +11,7 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/adviser/advisor_bloc.dart';
+import '../bloc/adviser/advisor_event.dart';
 import '../bloc/adviser/advisor_state.dart';
 import '../repojetory/advisor_repository.dart';
 
@@ -28,37 +29,40 @@ class _AdviserScreenState extends State<AdviserScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Advisers', showBackButton: true),
-      body: BlocBuilder<AdvisorBloc, AdvisorState>(
-        builder: (context, state) {
-          if (state is AdvisorLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is AdvisorLoaded) {
-            return ListView.builder(
-              itemCount: state.advisors.length,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              itemBuilder: (context, index) {
-                final adviser = state.advisors[index];
-                return AdviserCard(
-                  name: adviser.name,
-                  imageUrl: adviser.imageUrl,
-                  rating: adviser.rating.toInt(),
-                  phoneNumber: adviser.phoneNumber,
-                  description: adviser.chat,
-                  language: adviser.language,
-                  tags: adviser.tags,
-                );
-              },
-            );
-          } else if (state is AdvisorEmpty) {
-            return const Center(child: Text('No advisors found'));
-          } else if (state is AdvisorError) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          // initial
-          return const SizedBox();
-        },
+    return BlocProvider(
+        create: (_) => AdvisorBloc(repository: AdvisorRepository())..add(const FetchAdvisors()),
+      child: Scaffold(
+        appBar: const CustomAppBar(title: 'Advisers', showBackButton: true),
+        body: BlocBuilder<AdvisorBloc, AdvisorState>(
+          builder: (context, state) {
+            if (state is AdvisorLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is AdvisorLoaded) {
+              return ListView.builder(
+                itemCount: state.advisors.length,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                itemBuilder: (context, index) {
+                  final adviser = state.advisors[index];
+                  return AdviserCard(
+                    name: adviser.name,
+                    imageUrl: adviser.imageUrl,
+                    rating: adviser.rating.toInt(),
+                    phoneNumber: adviser.phoneNumber,
+                    description: adviser.chat,
+                    language: adviser.language,
+                    tags: adviser.tags,
+                  );
+                },
+              );
+            } else if (state is AdvisorEmpty) {
+              return const Center(child: Text('No advisors found'));
+            } else if (state is AdvisorError) {
+              return Center(child: Text('Error: ${state.message}'));
+            }
+            // initial
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

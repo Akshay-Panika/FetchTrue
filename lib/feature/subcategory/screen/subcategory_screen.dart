@@ -13,8 +13,10 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../service/bloc/service/service_bloc.dart';
+import '../../service/bloc/service/service_event.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/model/service_model.dart';
+import '../../service/repository/service_repository.dart';
 import '../../service/screen/service_details_screen.dart';
 import '../widget/filter_widget.dart';
 import '../widget/subcategory_widget.dart';
@@ -66,195 +68,194 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
             ),
 
 
-            BlocBuilder<ServiceBloc, ServiceState>(
-              builder: (context, state) {
-                if (state is ServiceLoading) {
-                  return _ShimmerList();
-                }
-
-                else if(state is ServiceLoaded){
-
-                  // final services = state.services;
-                  // final services = state.services.where((moduleService) =>
-                  // moduleService.subcategory!.id == selectedSubcategoryId
-                  // ).toList();
-                  List<ServiceModel> services = state.services.where((service) {
-                    if (selectedSubcategoryId.isNotEmpty) {
-                      return service.subcategory?.id == selectedSubcategoryId;
-                    } else {
-                      return service.category.id == widget.categoryId;
-                    }
-                  }).toList();
-
-                  services = _applyFilter(services);
-
-
-                  if (services.isEmpty) {
-                    return Column(
-                      children: [
-                        200.height,
-                        Image.asset(CustomImage.emptyCart, height: 80,),
-                        Text('No Service')
-                      ],
-                    );
+            BlocProvider(
+              create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
+              child: BlocBuilder<ServiceBloc, ServiceState>(
+                builder: (context, state) {
+                  if (state is ServiceLoading) {
+                    return _ShimmerList();
                   }
 
+                  else if(state is ServiceLoaded){
 
-                  return  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      children: List.generate(services.length, (index) {
-                        final data = services[index];
+                    List<ServiceModel> services = state.services.where((service) {
+                      if (selectedSubcategoryId.isNotEmpty) {
+                        return service.subcategory?.id == selectedSubcategoryId;
+                      } else {
+                        return service.category.id == widget.categoryId;
+                      }
+                    }).toList();
+
+                    services = _applyFilter(services);
 
 
-                        String formatCommission(dynamic rawCommission, {bool half = false}) {
-                          if (rawCommission == null) return '0';
+                    if (services.isEmpty) {
+                      return Column(
+                        children: [
+                          200.height,
+                          Image.asset(CustomImage.emptyCart, height: 80,),
+                          Text('No Service')
+                        ],
+                      );
+                    }
 
-                          final commissionStr = rawCommission.toString();
 
-                          // Extract numeric value
-                          final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
-                          final numeric = double.tryParse(numericStr) ?? 0;
+                    return  Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        children: List.generate(services.length, (index) {
+                          final data = services[index];
 
-                          // Extract symbol (₹, %, etc.)
-                          final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
 
-                          final value = half ? (numeric / 2).round() : numeric.round();
+                          String formatCommission(dynamic rawCommission, {bool half = false}) {
+                            if (rawCommission == null) return '0';
 
-                          // Format with symbol
-                          if (symbol == '%') {
-                            return '$value%';
-                          } else {
-                            return '$symbol$value';
+                            final commissionStr = rawCommission.toString();
+
+                            // Extract numeric value
+                            final numericStr = commissionStr.replaceAll(RegExp(r'[^0-9.]'), '');
+                            final numeric = double.tryParse(numericStr) ?? 0;
+
+                            // Extract symbol (₹, %, etc.)
+                            final symbol = RegExp(r'[^\d.]').firstMatch(commissionStr)?.group(0) ?? '';
+
+                            final value = half ? (numeric / 2).round() : numeric.round();
+
+                            // Format with symbol
+                            if (symbol == '%') {
+                              return '$value%';
+                            } else {
+                              return '$symbol$value';
+                            }
                           }
-                        }
 
-                        return CustomContainer(
-                          border: false,
-                          color: Colors.white,
-                          padding: EdgeInsets.zero,
-                          margin: EdgeInsets.only(top: 10),
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
-                            serviceId: data.id,
-                          ),
-                          )),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CustomContainer(
-                                height: dimensions.screenHeight*0.16,
-                                margin: EdgeInsets.zero,
-                                padding: EdgeInsets.zero,
-                                networkImg: data.thumbnailImage,
-                                color: CustomColor.whiteColor,
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FavoriteServiceButtonWidget(serviceId: data.id,),
-                                      ),
-
-                                      Container(
-                                        padding:  EdgeInsets.symmetric(vertical: 5, horizontal: dimensions.screenHeight*0.01),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10),
-                                          ),
-                                          color: CustomColor.blackColor.withOpacity(0.3),
-                                        ),
-                                        child: Text('⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
-                                          style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                    
-                              10.height,
-                              Padding(
-                                padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                          return CustomContainer(
+                            border: false,
+                            color: Colors.white,
+                            padding: EdgeInsets.zero,
+                            margin: EdgeInsets.only(top: 10),
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
+                              serviceId: data.id,
+                            ),
+                            )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                CustomContainer(
+                                  height: dimensions.screenHeight*0.16,
+                                  margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.zero,
+                                  networkImg: data.thumbnailImage,
+                                  color: CustomColor.whiteColor,
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
-                                                child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
-                                                  10.width,
-                                                  CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
-                                                  10.width,
-                                                  Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: FavoriteServiceButtonWidget(serviceId: data.id,),
                                         ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
-                                            Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
-                                          ],
+
+                                        Container(
+                                          padding:  EdgeInsets.symmetric(vertical: 5, horizontal: dimensions.screenHeight*0.01),
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
+                                            ),
+                                            color: CustomColor.blackColor.withOpacity(0.3),
+                                          ),
+                                          child: Text('⭐ ${data.averageRating} (${data.totalReviews} ${'Reviews'})',
+                                            style: TextStyle(fontSize: 12, color:CustomColor.whiteColor ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    // 5.height,
-                                    // if (data.keyValues.isNotEmpty)
-                                    //   ...data.keyValues.map((entry) => Padding(
-                                    //     padding: const EdgeInsets.only(bottom: 6.0),
-                                    //     child: Row(
-                                    //       mainAxisAlignment: MainAxisAlignment.start,
-                                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                                    //       children: [
-                                    //         Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                                    //         5.width,
-                                    //         Expanded(
-                                    //           child: Text(
-                                    //             entry.value,
-                                    //             style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
-                                    //             overflow: TextOverflow.ellipsis,
-                                    //           ),
-                                    //         ),
-                                    //       ],
-                                    //     ),
-                                    //   )),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },),
-                    ),
-                  );
 
-                }
+                                10.height,
+                                Padding(
+                                  padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
+                                                  child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
+                                                    10.width,
+                                                    CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
+                                                    10.width,
+                                                    Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                              Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      // 5.height,
+                                      // if (data.keyValues.isNotEmpty)
+                                      //   ...data.keyValues.map((entry) => Padding(
+                                      //     padding: const EdgeInsets.only(bottom: 6.0),
+                                      //     child: Row(
+                                      //       mainAxisAlignment: MainAxisAlignment.start,
+                                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                                      //       children: [
+                                      //         Text('${entry.key} :', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                                      //         5.width,
+                                      //         Expanded(
+                                      //           child: Text(
+                                      //             entry.value,
+                                      //             style: textStyle12(context, fontWeight: FontWeight.w400, color: CustomColor.descriptionColor),
+                                      //             overflow: TextOverflow.ellipsis,
+                                      //           ),
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   )),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },),
+                      ),
+                    );
 
-                else if (state is ServiceError) {
-                  // print('Dio Error: ${state.message}');
-                  return Expanded(child: Center(child: Text('No Service')));
-                }
-                return const SizedBox.shrink();
-              },
+                  }
+
+                  else if (state is ServiceError) {
+                    // print('Dio Error: ${state.message}');
+                    return Expanded(child: Center(child: Text('No Service')));
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
         
           ],

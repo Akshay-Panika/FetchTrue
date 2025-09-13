@@ -13,7 +13,9 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_event.dart';
 import '../../wallet/bloc/wallet_state.dart';
+import '../../wallet/repository/wallet_repository.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
@@ -209,18 +211,260 @@ Widget _buildPaymentStatus(BuildContext context, BookingData lead) {
   );
 }
 
-void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
+// void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
+//   final userSession = Provider.of<UserSession>(context);
+//   Dimensions dimensions = Dimensions(context);
+//
+//   double fullAmount = lead.totalAmount!.toDouble();
+//   double halfAmount = fullAmount / 2;
+//   double walletBalance = 100.0;
+//
+//   ValueNotifier<String> paymentType = ValueNotifier('full');
+//   ValueNotifier<double> payableAmount = ValueNotifier(fullAmount);
+//   ValueNotifier<bool> isWalletApplied = ValueNotifier(false);
+//   bool _isLoading = false;
+//   final now = DateTime.now();
+//   final formattedOrderId =
+//       "${now.day.toString().padLeft(2, '0')}/"
+//       "${now.month.toString().padLeft(2, '0')}/"
+//       "${now.year.toString().substring(2)}/_"
+//       "${now.hour.toString().padLeft(2, '0')}:"
+//       "${now.minute.toString().padLeft(2, '0')}:"
+//       "${now.second.toString().padLeft(2, '0')}";
+//
+//   showModalBottomSheet(
+//     context: context,
+//     isScrollControlled: true,
+//     showDragHandle: false,
+//     backgroundColor: WidgetStateColor.transparent,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+//     ),
+//     builder: (BuildContext bottomSheetContext) {
+//       return DraggableScrollableSheet(
+//         initialChildSize: 0.5,
+//         minChildSize: 0.3,
+//         maxChildSize: 0.9,
+//         expand: false,
+//         builder: (context, scrollController) {
+//           return SingleChildScrollView(
+//             controller: scrollController,
+//             child: StatefulBuilder(
+//               builder: (context, setState) {
+//                 return CustomContainer(
+//                   color: CustomColor.whiteColor,
+//                   padding: EdgeInsets.all(20),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       const SizedBox(height: 10),
+//                       Text(
+//                         'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
+//                         style: textStyle14(context),
+//                       ),
+//                       const SizedBox(height: 10),
+//
+//                       /// Wallet Container
+//                       BlocProvider(
+//                         create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
+//                         child: BlocBuilder<WalletBloc, WalletState>(
+//                           builder: (context, state) {
+//                             if (state is WalletLoading) {
+//                               return  CircularProgressIndicator();
+//                             } else if (state is WalletLoaded) {
+//                               final wallet = state.wallet;
+//                               return  CustomContainer(
+//                                 margin: EdgeInsets.zero,
+//                                 child: Row(
+//                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                   children: [
+//                                     Column(
+//                                       crossAxisAlignment: CrossAxisAlignment.start,
+//                                       children: [
+//                                         CustomAmountText(
+//                                           amount: '${wallet.balance.toStringAsFixed(2)}',
+//                                           fontWeight: FontWeight.w500,
+//                                           fontSize: 14,
+//                                           color: CustomColor.appColor,
+//                                         ),
+//                                         Text('Wallet Balance', style: textStyle12(context)),
+//                                       ],
+//                                     ),
+//                                     TextButton(
+//                                       onPressed: () {
+//                                         setState(() {
+//                                           isWalletApplied.value = !isWalletApplied.value;
+//                                           if (isWalletApplied.value) {
+//                                             payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+//                                           } else {
+//                                             payableAmount.value = paymentType.value == 'full' ? fullAmount : halfAmount;
+//                                           }
+//                                         });
+//                                       },
+//                                       child: Text(isWalletApplied.value ? 'Remove' : 'Apply'),
+//                                     )
+//                                   ],
+//                                 ),
+//                               );
+//                             } else if (state is WalletError) {
+//                              return SizedBox.shrink();
+//                             }
+//                             return const SizedBox();
+//                           },
+//                         ),
+//                       ),
+//                       10.height,
+//
+//                       /// Payment Type
+//                       CustomContainer(
+//                         margin: EdgeInsets.zero,
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             /// Full Payment
+//                             Row(
+//                               children: [
+//                                 Radio<String>(
+//                                   value: 'full',
+//                                   groupValue: paymentType.value,
+//                                   activeColor: CustomColor.appColor,
+//                                   onChanged: (value) {
+//                                     setState(() {
+//                                       paymentType.value = value!;
+//                                       payableAmount.value = fullAmount;
+//                                       if (isWalletApplied.value) {
+//                                         payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+//                                       }
+//                                     });
+//                                   },
+//                                 ),
+//                                 Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Text('Full Payment', style: textStyle12(context)),
+//                                     CustomAmountText(
+//                                       amount: fullAmount.toStringAsFixed(2),
+//                                       fontWeight: FontWeight.w500,
+//                                       fontSize: 14,
+//                                       color: CustomColor.appColor,
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ],
+//                             ),
+//
+//                             /// Partial Payment
+//                             Row(
+//                               children: [
+//                                 Radio<String>(
+//                                   value: 'half',
+//                                   groupValue: paymentType.value,
+//                                   activeColor: CustomColor.appColor,
+//                                   onChanged: (value) {
+//                                     setState(() {
+//                                       paymentType.value = value!;
+//                                       payableAmount.value = halfAmount;
+//                                       if (isWalletApplied.value) {
+//                                         payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
+//                                       }
+//                                     });
+//                                   },
+//                                 ),
+//                                 Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Text('Partial Payment', style: textStyle12(context)),
+//                                     CustomAmountText(
+//                                       amount: halfAmount.toStringAsFixed(2),
+//                                       fontWeight: FontWeight.w500,
+//                                       fontSize: 14,
+//                                       color: CustomColor.appColor,
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//
+//                        SizedBox(height: dimensions.screenHeight*0.1),
+//
+//                       /// Final Amount and Button
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           ValueListenableBuilder<double>(
+//                             valueListenable: payableAmount,
+//                             builder: (context, value, _) {
+//                               return Text(
+//                                 'Pay Amount: ₹ ${value.toStringAsFixed(2)}',
+//                                 style: textStyle14(context),
+//                               );
+//                             },
+//                           ),
+//                           SizedBox(
+//                             width: dimensions.screenHeight*0.15,
+//                             child: StatefulBuilder(
+//                               builder: (context, innerSetState) {
+//                                 return CustomButton(
+//                                     isLoading: _isLoading,
+//                                     label: 'Pay Now',
+//                                     onPressed: () async {
+//                                       setState(() => _isLoading = true);
+//
+//                                       final result = await initiateCheckoutServicePayment(
+//                                         context: context,
+//                                         orderId: 'checkout_$formattedOrderId',
+//                                         checkoutId: lead.id.toString(),
+//                                         amount: double.parse(payableAmount.value.toStringAsFixed(2)),
+//                                         customerId: lead.serviceCustomer!.id.toString(),
+//                                         name: 'Akshay',
+//                                         phone: '8989207770',
+//                                         email: 'akshay@gmail.com',
+//                                       );
+//
+//                                       setState(() => _isLoading = false);
+//
+//                                       if (result == true) {
+//                                         onPaymentSuccess?.call();
+//                                         Navigator.pop(bottomSheetContext, true);
+//                                       }
+//                                     }
+//                                 );
+//                               },
+//                             ),
+//                           )
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
+//             ),
+//           );
+//         },
+//       );
+//     },
+//   );
+// }
 
+void _showPaymentBottomSheet(
+    BuildContext context, BookingData lead, VoidCallback? onPaymentSuccess) {
+  final userSession = Provider.of<UserSession>(context, listen: false);
   Dimensions dimensions = Dimensions(context);
 
-  double fullAmount = lead.totalAmount!.toDouble();
-  double halfAmount = fullAmount / 2;
-  double walletBalance = 100.0;
+  final fullAmount = lead.totalAmount!.toDouble();
+  final halfAmount = fullAmount / 2;
 
-  ValueNotifier<String> paymentType = ValueNotifier('full');
-  ValueNotifier<double> payableAmount = ValueNotifier(fullAmount);
-  ValueNotifier<bool> isWalletApplied = ValueNotifier(false);
-  bool _isLoading = false;
+  // 👇 Ye variables bottomSheet scope me rakho (StatefulBuilder ke bahar)
+  String paymentType = 'full';
+  double payableAmount = fullAmount;
+  bool isWalletApplied = false;
+  bool isLoading = false;
+  double walletBalance = 0;
+
   final now = DateTime.now();
   final formattedOrderId =
       "${now.day.toString().padLeft(2, '0')}/"
@@ -233,211 +477,235 @@ void _showPaymentBottomSheet(BuildContext context, BookingData lead, VoidCallbac
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    showDragHandle: false,
-    backgroundColor: WidgetStateColor.transparent,
-    shape: RoundedRectangleBorder(
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (BuildContext bottomSheetContext) {
+    builder: (bottomSheetContext) {
       return DraggableScrollableSheet(
         initialChildSize: 0.5,
         minChildSize: 0.3,
         maxChildSize: 0.9,
         expand: false,
         builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: StatefulBuilder(
-              builder: (context, setState) {
-                return CustomContainer(
-                  color: CustomColor.whiteColor,
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
-                        style: textStyle14(context),
-                      ),
-                      const SizedBox(height: 10),
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return BlocProvider(
+                create: (_) => WalletBloc(WalletRepository())
+                  ..add(FetchWalletByUserId(userSession.userId!)),
+                child: BlocBuilder<WalletBloc, WalletState>(
+                  builder: (context, state) {
+                    if (state is WalletLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is WalletLoaded) {
+                      walletBalance = state.wallet.balance;
 
-                      /// Wallet Container
-                      BlocBuilder<WalletBloc, WalletState>(
-                        builder: (context, state) {
-                          if (state is WalletLoading) {
-                            return  CircularProgressIndicator();
-                          } else if (state is WalletLoaded) {
-                            final wallet = state.wallet;
-                            return  CustomContainer(
-                              margin: EdgeInsets.zero,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      return SingleChildScrollView(
+                        controller: scrollController,
+                        child: CustomContainer(
+                          color: CustomColor.whiteColor,
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
+                                style: textStyle14(context),
+                              ),
+                              const SizedBox(height: 10),
+
+                              /// Wallet Container
+                              CustomContainer(
+                                margin: EdgeInsets.zero,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        CustomAmountText(
+                                          amount: walletBalance
+                                              .toStringAsFixed(2),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: CustomColor.appColor,
+                                        ),
+                                        Text('Wallet Balance',
+                                            style: textStyle12(context)),
+                                      ],
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isWalletApplied = !isWalletApplied;
+                                          if (isWalletApplied) {
+                                            payableAmount =
+                                                (payableAmount - walletBalance)
+                                                    .clamp(0, double.infinity);
+                                          } else {
+                                            payableAmount = paymentType == 'full'
+                                                ? fullAmount
+                                                : halfAmount;
+                                          }
+                                        });
+                                      },
+                                      child: Text(isWalletApplied
+                                          ? 'Remove'
+                                          : 'Apply'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+
+                              /// Payment Type
+                              CustomContainer(
+                                margin: EdgeInsets.zero,
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    /// Full Payment
+                                    Row(
+                                      children: [
+                                        Radio<String>(
+                                          value: 'full',
+                                          groupValue: paymentType,
+                                          activeColor: CustomColor.appColor,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              paymentType = value!;
+                                              payableAmount = fullAmount;
+                                              if (isWalletApplied) {
+                                                payableAmount =
+                                                    (payableAmount -
+                                                        walletBalance)
+                                                        .clamp(
+                                                        0, double.infinity);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Full Payment',
+                                                style: textStyle12(context)),
+                                            CustomAmountText(
+                                              amount:
+                                              fullAmount.toStringAsFixed(2),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                              color: CustomColor.appColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+
+                                    /// Partial Payment
+                                    Row(
+                                      children: [
+                                        Radio<String>(
+                                          value: 'half',
+                                          groupValue: paymentType,
+                                          activeColor: CustomColor.appColor,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              paymentType = value!;
+                                              payableAmount = halfAmount;
+                                              if (isWalletApplied) {
+                                                payableAmount =
+                                                    (payableAmount -
+                                                        walletBalance)
+                                                        .clamp(
+                                                        0, double.infinity);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Partial Payment',
+                                                style: textStyle12(context)),
+                                            CustomAmountText(
+                                              amount:
+                                              halfAmount.toStringAsFixed(2),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                              color: CustomColor.appColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(
+                                  height: dimensions.screenHeight * 0.1),
+
+                              /// Final Amount and Button
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceAround,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CustomAmountText(
-                                        amount: '${wallet.balance.toStringAsFixed(2)}',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                        color: CustomColor.appColor,
-                                      ),
-                                      Text('Wallet Balance', style: textStyle12(context)),
-                                    ],
+                                  Text(
+                                    'Pay Amount: ₹ ${payableAmount.toStringAsFixed(2)}',
+                                    style: textStyle14(context),
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isWalletApplied.value = !isWalletApplied.value;
-                                        if (isWalletApplied.value) {
-                                          payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
-                                        } else {
-                                          payableAmount.value = paymentType.value == 'full' ? fullAmount : halfAmount;
+                                  SizedBox(
+                                    width: dimensions.screenHeight * 0.15,
+                                    child: CustomButton(
+                                      isLoading: isLoading,
+                                      label: 'Pay Now',
+                                      onPressed: () async {
+                                        setState(() => isLoading = true);
+
+                                        final result =
+                                        await initiateCheckoutServicePayment(
+                                          context: context,
+                                          orderId: 'checkout_$formattedOrderId',
+                                          checkoutId: lead.id.toString(),
+                                          amount: payableAmount,
+                                          customerId: lead.serviceCustomer!.id
+                                              .toString(),
+                                          name: 'Akshay',
+                                          phone: '8989207770',
+                                          email: 'akshay@gmail.com',
+                                        );
+
+                                        setState(() => isLoading = false);
+
+                                        if (result == true) {
+                                          onPaymentSuccess?.call();
+                                          Navigator.pop(bottomSheetContext,
+                                              true);
                                         }
-                                      });
-                                    },
-                                    child: Text(isWalletApplied.value ? 'Remove' : 'Apply'),
-                                  )
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
-                            );
-                          } else if (state is WalletError) {
-                           return SizedBox.shrink();
-                          }
-                          return const SizedBox();
-                        },
-                      ),
-                      10.height,
-
-                      /// Payment Type
-                      CustomContainer(
-                        margin: EdgeInsets.zero,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            /// Full Payment
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: 'full',
-                                  groupValue: paymentType.value,
-                                  activeColor: CustomColor.appColor,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      paymentType.value = value!;
-                                      payableAmount.value = fullAmount;
-                                      if (isWalletApplied.value) {
-                                        payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
-                                      }
-                                    });
-                                  },
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Full Payment', style: textStyle12(context)),
-                                    CustomAmountText(
-                                      amount: fullAmount.toStringAsFixed(2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: CustomColor.appColor,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                            /// Partial Payment
-                            Row(
-                              children: [
-                                Radio<String>(
-                                  value: 'half',
-                                  groupValue: paymentType.value,
-                                  activeColor: CustomColor.appColor,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      paymentType.value = value!;
-                                      payableAmount.value = halfAmount;
-                                      if (isWalletApplied.value) {
-                                        payableAmount.value = (payableAmount.value - walletBalance).clamp(0, double.infinity);
-                                      }
-                                    });
-                                  },
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Partial Payment', style: textStyle12(context)),
-                                    CustomAmountText(
-                                      amount: halfAmount.toStringAsFixed(2),
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: CustomColor.appColor,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                       SizedBox(height: dimensions.screenHeight*0.1),
-
-                      /// Final Amount and Button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ValueListenableBuilder<double>(
-                            valueListenable: payableAmount,
-                            builder: (context, value, _) {
-                              return Text(
-                                'Pay Amount: ₹ ${value.toStringAsFixed(2)}',
-                                style: textStyle14(context),
-                              );
-                            },
+                            ],
                           ),
-                          SizedBox(
-                            width: dimensions.screenHeight*0.15,
-                            child: StatefulBuilder(
-                              builder: (context, innerSetState) {
-                                return CustomButton(
-                                    isLoading: _isLoading,
-                                    label: 'Pay Now',
-                                    onPressed: () async {
-                                      setState(() => _isLoading = true);
-
-                                      final result = await initiateCheckoutServicePayment(
-                                        context: context,
-                                        orderId: 'checkout_$formattedOrderId',
-                                        checkoutId: lead.id.toString(),
-                                        amount: double.parse(payableAmount.value.toStringAsFixed(2)),
-                                        customerId: lead.serviceCustomer!.id.toString(),
-                                        name: 'Akshay',
-                                        phone: '8989207770',
-                                        email: 'akshay@gmail.com',
-                                      );
-
-                                      setState(() => _isLoading = false);
-
-                                      if (result == true) {
-                                        onPaymentSuccess?.call();
-                                        Navigator.pop(bottomSheetContext, true);
-                                      }
-                                    }
-                                );
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                        ),
+                      );
+                    } else if (state is WalletError) {
+                      return const Center(
+                          child: Text("Failed to load wallet"));
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              );
+            },
           );
         },
       );

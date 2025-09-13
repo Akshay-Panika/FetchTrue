@@ -1,7 +1,5 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
-import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
-import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -190,7 +188,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
   }) {
     return CustomContainer(
       color: CustomColor.whiteColor,
-      margin: EdgeInsets.zero,
+      // margin: EdgeInsets.zero,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

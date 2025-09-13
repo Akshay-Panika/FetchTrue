@@ -14,6 +14,7 @@ import '../bloc/lead/lead_state.dart';
 import '../bloc/leads_status/lead_status_bloc.dart';
 import '../bloc/leads_status/lead_status_event.dart';
 import '../bloc/leads_status/lead_status_state.dart';
+import '../repository/lead_status_repository.dart';
 
 class LeadsStatusWidget extends StatefulWidget {
   final String checkoutId;
@@ -24,14 +25,7 @@ class LeadsStatusWidget extends StatefulWidget {
 }
 
 class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
-  @override
-  void initState() {
-    super.initState();
-    // Error-safe call
-    if (mounted) {
-      context.read<LeadStatusBloc>().add(FetchLeadStatusEvent(widget.checkoutId));
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,165 +79,172 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
               ),
 
               Expanded(
-                child: BlocBuilder<LeadStatusBloc, LeadStatusState>(
-                  builder: (context, state) {
-                    if (state is LeadStatusLoading) {
-                      return  Align(
-                          alignment: Alignment.topCenter,
-                          child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
-                    } else if (state is LeadStatusLoaded) {
-                      final leadData = state.leadStatus;
+                child: BlocProvider(
+                  create: (_) {
+                    final bloc = LeadStatusBloc(LeadStatusRepository());
+                    bloc.add(FetchLeadStatusEvent(widget.checkoutId));
+                    return bloc;
+                  },
+                  child: BlocBuilder<LeadStatusBloc, LeadStatusState>(
+                    builder: (context, state) {
+                      if (state is LeadStatusLoading) {
+                        return  Align(
+                            alignment: Alignment.topCenter,
+                            child: LinearProgressIndicator(color: CustomColor.appColor,minHeight: 2,));
+                      } else if (state is LeadStatusLoaded) {
+                        final leadData = state.leadStatus;
 
-                      if (leadData.leads.isEmpty) {
-                        return SizedBox.shrink();
-                      }
+                        if (leadData.leads.isEmpty) {
+                          return SizedBox.shrink();
+                        }
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(12),
-                        itemCount: leadData.leads.length,
-                        itemBuilder: (context, index) {
-                          final lead = leadData.leads[index];
-                          final isLast = index == leadData.leads.length - 1;
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(12),
+                          itemCount: leadData.leads.length,
+                          itemBuilder: (context, index) {
+                            final lead = leadData.leads[index];
+                            final isLast = index == leadData.leads.length - 1;
 
-                          return IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// Status Icon + Line
-                                Column(
-                                  children: [
-                                    const Icon(Icons.check_circle,
-                                        color: Colors.green, size: 18),
-                                    if (lead.statusType != 'Lead completed' && !isLast)
-                                      Expanded(
-                                        child: Container(
-                                          width: 3,
-                                          decoration: BoxDecoration(
-                                            color: CustomColor.appColor.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(5),
+                            return IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// Status Icon + Line
+                                  Column(
+                                    children: [
+                                      const Icon(Icons.check_circle,
+                                          color: Colors.green, size: 18),
+                                      if (lead.statusType != 'Lead completed' && !isLast)
+                                        Expanded(
+                                          child: Container(
+                                            width: 3,
+                                            decoration: BoxDecoration(
+                                              color: CustomColor.appColor.withOpacity(0.3),
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                  ],
-                                ),
-                                10.width,
-                                /// Status Content
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(lead.statusType, style: textStyle12(context)),
+                                    ],
+                                  ),
+                                  10.width,
+                                  /// Status Content
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(lead.statusType, style: textStyle12(context)),
 
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(lead.createdAt.toLocal())}",
-                                            style: textStyle12(
-                                              context,
-                                              color: CustomColor.descriptionColor,
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Date: ${DateFormat('dd MMM yyyy, hh:mm a').format(lead.createdAt.toLocal())}",
+                                              style: textStyle12(
+                                                context,
+                                                color: CustomColor.descriptionColor,
+                                              ),
+                                            ),
+                                            10.width,
+                                            Text(
+                                              '( Provider )',
+                                              style: textStyle12(
+                                                context,
+                                                color: CustomColor.descriptionColor,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        5.height,
+
+                                        if (lead.description.isNotEmpty)
+                                          Text(lead.description,
+                                              style: const TextStyle(fontSize: 14)),
+
+                                        if (lead.zoomLink != null && lead.zoomLink!.isNotEmpty)
+                                          InkWell(
+                                            onTap: () async {
+                                              final url = lead.zoomLink!;
+                                              if (await canLaunchUrl(Uri.parse(url))) {
+                                                await launchUrl(Uri.parse(url));
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Could not open Zoom link')),
+                                                );
+                                              }
+                                            },
+                                            child: CustomContainer(
+                                              width: 300,
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.videocam,
+                                                      color: CustomColor.appColor),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(
+                                                    child: Text(
+                                                      "Zoom: ${lead.zoomLink}",
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                          10.width,
-                                          Text(
-                                            '( Provider )',
-                                            style: textStyle12(
-                                              context,
-                                              color: CustomColor.descriptionColor,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      5.height,
+                                        5.height,
 
-                                      if (lead.description.isNotEmpty)
-                                        Text(lead.description,
-                                            style: const TextStyle(fontSize: 14)),
-
-                                      if (lead.zoomLink != null && lead.zoomLink!.isNotEmpty)
-                                        InkWell(
-                                          onTap: () async {
-                                            final url = lead.zoomLink!;
-                                            if (await canLaunchUrl(Uri.parse(url))) {
-                                              await launchUrl(Uri.parse(url));
-                                            } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Could not open Zoom link')),
-                                              );
-                                            }
-                                          },
-                                          child: CustomContainer(
+                                        if (lead.paymentLink != null && lead.paymentLink!.isNotEmpty)
+                                          CustomContainer(
                                             width: 300,
                                             child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Icon(Icons.videocam,
-                                                    color: CustomColor.appColor),
-                                                const SizedBox(width: 6),
-                                                Expanded(
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.payment,
+                                                        color: Colors.green),
+                                                    10.width,
+                                                    Text("Payment: ${lead.paymentType ?? ''}"),
+                                                  ],
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PaymentWebViewScreen(
+                                                              url: lead.paymentLink!,
+                                                            ),
+                                                      ),
+                                                    );
+                                                  },
                                                   child: Text(
-                                                    "Zoom: ${lead.zoomLink}",
-                                                    overflow: TextOverflow.ellipsis,
+                                                    "Pay Now",
+                                                    style: textStyle14(
+                                                      context,
+                                                      color: CustomColor.appColor,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ),
-                                      5.height,
 
-                                      if (lead.paymentLink != null && lead.paymentLink!.isNotEmpty)
-                                        CustomContainer(
-                                          width: 300,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.payment,
-                                                      color: Colors.green),
-                                                  10.width,
-                                                  Text("Payment: ${lead.paymentType ?? ''}"),
-                                                ],
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          PaymentWebViewScreen(
-                                                            url: lead.paymentLink!,
-                                                          ),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Text(
-                                                  "Pay Now",
-                                                  style: textStyle14(
-                                                    context,
-                                                    color: CustomColor.appColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                      15.height,
-                                    ],
+                                        15.height,
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else if (state is LeadStatusError) {
-                      // return Center(child: Text("Error: ${state.message}"));
-                      print(state.message);
-                    }
-                    return SizedBox.shrink();
-                  },
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else if (state is LeadStatusError) {
+                        // return Center(child: Text("Error: ${state.message}"));
+                        print(state.message);
+                      }
+                      return SizedBox.shrink();
+                    },
+                  ),
                 ),
               ),
             ],

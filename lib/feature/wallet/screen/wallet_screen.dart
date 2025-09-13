@@ -10,10 +10,14 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../package/bloc/package/package_bloc.dart';
+import '../../package/bloc/package/package_event.dart';
 import '../../package/bloc/package/package_state.dart';
+import '../../package/repository/package_repository.dart';
 import '../bloc/wallet_bloc.dart';
+import '../bloc/wallet_event.dart';
 import '../bloc/wallet_state.dart';
 import '../model/wallet_model.dart';
+import '../repository/wallet_repository.dart';
 
 class WalletScreen extends StatefulWidget {
   final String userId;
@@ -29,60 +33,67 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   Widget build(BuildContext context) {
     print('____________${widget.userId}');
-    return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
-      appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(widget.userId)),),
 
-      body: BlocBuilder<WalletBloc, WalletState>(
-        builder: (context, state) {
-          if (state is WalletLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is WalletLoaded) {
-            final wallet = state.wallet;
-            return DefaultTabController(
-              length: 3,
-              child: Column(
-                children: [
+        BlocProvider(create: (_) => PackageBloc()..add(FetchPackages()),),
+      ],
+      child: Scaffold(
+        backgroundColor: CustomColor.whiteColor,
+        appBar: CustomAppBar(title: 'Wallet', showBackButton: true,),
 
-                  _buildStatsCard(context, wallet),
+        body: BlocBuilder<WalletBloc, WalletState>(
+          builder: (context, state) {
+            if (state is WalletLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is WalletLoaded) {
+              final wallet = state.wallet;
+              return DefaultTabController(
+                length: 3,
+                child: Column(
+                  children: [
 
-                  Container(
-                    color: CustomColor.whiteColor,
-                    child:TabBar(
-                      isScrollable: true,
-                      labelColor: CustomColor.appColor,
-                      unselectedLabelColor: CustomColor.descriptionColor,
-                      indicatorColor: CustomColor.appColor,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      tabs: const [
-                        Tab(text: "Self Earning"),
-                        Tab(text: "Team Build"),
-                        Tab(text: "Team Revenue"),
-                      ],
-                    ),
-                  ),
+                    _buildStatsCard(context, wallet),
 
-                  Expanded(
-                    child: Container(
+                    Container(
                       color: CustomColor.whiteColor,
-                      child: TabBarView(
-                        children: [
-                          _buildSelfEarning(context),
-                          _buildTeamBuildEarning(context),
-                          _buildTeamRevenueEarning(context),
+                      child:TabBar(
+                        isScrollable: true,
+                        labelColor: CustomColor.appColor,
+                        unselectedLabelColor: CustomColor.descriptionColor,
+                        indicatorColor: CustomColor.appColor,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        tabs: const [
+                          Tab(text: "Self Earning"),
+                          Tab(text: "Team Build"),
+                          Tab(text: "Team Revenue"),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          } else if (state is WalletError) {
-            print('Error: ${state.message}');
-            return SizedBox.shrink();
-          }
-          return const SizedBox();
-        },
+
+                    Expanded(
+                      child: Container(
+                        color: CustomColor.whiteColor,
+                        child: TabBarView(
+                          children: [
+                            _buildSelfEarning(context),
+                            _buildTeamBuildEarning(context),
+                            _buildTeamRevenueEarning(context),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else if (state is WalletError) {
+              print('Error: ${state.message}');
+              return SizedBox.shrink();
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

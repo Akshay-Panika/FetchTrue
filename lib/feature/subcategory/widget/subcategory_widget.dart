@@ -8,7 +8,9 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../bloc/module_subcategory/subcategory_bloc.dart';
+import '../bloc/module_subcategory/subcategory_event.dart';
 import '../bloc/module_subcategory/subcategory_state.dart';
+import '../repository/subcategory_repository.dart';
 
 class SubcategoryWidget extends StatefulWidget {
   final String categoryId;
@@ -39,68 +41,71 @@ class _SubcategoryWidgetState extends State<SubcategoryWidget> {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    return BlocBuilder<SubcategoryBloc, SubcategoryState>(
-      builder: (context, state) {
-        if (state is SubcategoryLoading) {
-          return const ShimmerList();
-        } else if (state is SubcategoryLoaded) {
+    return BlocProvider(
+      create: (_) => SubcategoryBloc(SubcategoryRepository())..add(FetchSubcategories()),
+      child: BlocBuilder<SubcategoryBloc, SubcategoryState>(
+        builder: (context, state) {
+          if (state is SubcategoryLoading) {
+            return const ShimmerList();
+          } else if (state is SubcategoryLoaded) {
 
-          final subcategories = state.subcategories.where((sub) => sub.category.id == widget.categoryId).toList();
+            final subcategories = state.subcategories.where((sub) => sub.category.id == widget.categoryId).toList();
 
-          if (subcategories.isEmpty) {
-            return SizedBox.shrink();
+            if (subcategories.isEmpty) {
+              return SizedBox.shrink();
+            }
+
+
+            if (_selectedId.isEmpty && subcategories.isNotEmpty) {
+              _selectedId = subcategories.first.id;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                widget.onChanged?.call(_selectedId);
+                setState(() {});
+              });
+            }
+
+            return  SizedBox(
+              height: dimensions.screenHeight*0.145,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.all(dimensions.screenHeight*0.005),
+                children: List.generate(subcategories.length, (index) {
+                  final sub = subcategories[index];
+                  final isSelected = sub.id == _selectedId;
+                  return Container(
+                    width: dimensions.screenHeight*0.09,
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CustomContainer(
+                          border: true,
+                          height: dimensions.screenHeight*0.08,
+                          networkImg: sub.image,
+                          margin: EdgeInsets.zero,
+                          onTap: () {
+                            setState(() => _selectedId = sub.id);
+                            widget.onChanged?.call(sub.id);
+                          },
+                        ),
+                        5.height,
+                        Text(sub.name,
+                          style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,),
+                          textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                      ],
+                    ),
+                  );
+                },),
+              ),
+            );
+          } else if (state is SubcategoryError) {
+            print('Dio Error: ${state.message}');
+            // return Center(child: Text('Dio Error: ${state.message}'));
           }
-
-
-          if (_selectedId.isEmpty && subcategories.isNotEmpty) {
-            _selectedId = subcategories.first.id;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              widget.onChanged?.call(_selectedId);
-              setState(() {});
-            });
-          }
-
-          return  SizedBox(
-            height: dimensions.screenHeight*0.145,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(dimensions.screenHeight*0.005),
-              children: List.generate(subcategories.length, (index) {
-                final sub = subcategories[index];
-                final isSelected = sub.id == _selectedId;
-                return Container(
-                  width: dimensions.screenHeight*0.09,
-                  margin: EdgeInsets.symmetric(horizontal: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomContainer(
-                        border: true,
-                        height: dimensions.screenHeight*0.08,
-                        networkImg: sub.image,
-                        margin: EdgeInsets.zero,
-                        onTap: () {
-                          setState(() => _selectedId = sub.id);
-                          widget.onChanged?.call(sub.id);
-                        },
-                      ),
-                      5.height,
-                      Text(sub.name,
-                        style: textStyle12(context, color: isSelected ? CustomColor.appColor : Colors.black, fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,),
-                        textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,),
-                    ],
-                  ),
-                );
-              },),
-            ),
-          );
-        } else if (state is SubcategoryError) {
-          print('Dio Error: ${state.message}');
-          // return Center(child: Text('Dio Error: ${state.message}'));
-        }
-        return const SizedBox();
-      },
+          return const SizedBox();
+        },
+      ),
     );
   }
 }
