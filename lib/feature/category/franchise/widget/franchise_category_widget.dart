@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
+import '../../../../core/widgets/custom_cached_image.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/shimmer_box.dart';
 import '../../bloc/category_bloc.dart';
