@@ -1,47 +1,68 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../core/costants/custom_log_emoji.dart';
 import '../../../helper/api_client.dart';
 import '../model/add_customer_model.dart';
 import '../../../helper/api_urls.dart';
 import '../model/customer_model.dart';
 
 class CustomerRepository {
-  static final _dio = OldApiClient.dio;
+  final ApiClient _apiClient = ApiClient();
 
   /// Create a new customer
-  static Future<AddCustomerModel?> createCustomer(AddCustomerModel model) async {
+   Future<AddCustomerModel?> createCustomer(AddCustomerModel addCustomer) async {
     try {
-      final response = await _dio.post(
+      final response = await _apiClient.post(
         ApiUrls.serviceCustomer,
-        data: FormData.fromMap(model.toJson()),
+        data: addCustomer.toFormData(),
       );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return AddCustomerModel.fromJson(response.data['data']);
+      if (response.data["success"] == true) {
+        return AddCustomerModel.fromJson(response.data["data"]);
+      } else {
+        final errorMessage = response.data["message"] ?? "Something went wrong";
+        throw errorMessage;
       }
     } on DioException catch (e) {
-      print('Dio error: ${e.response?.data ?? e.message}');
-    } catch (e) {
-      print('Unexpected error: $e');
+      String errorMessage = "Something went wrong";
+      if (e.response != null) {
+        errorMessage = e.response?.data['message'] ?? "Unknown error";
+        debugPrint("${CustomLogEmoji.error} Customer API Error [${e.response?.statusCode}]: $errorMessage",);
+      }
+      else {
+        errorMessage = e.message ?? "Network Error";
+        debugPrint("${CustomLogEmoji.network} Register Network Error: $errorMessage",);
+      }
+      throw errorMessage;
     }
-    return null;
   }
 
   /// Fetch all customers
-  static Future<List<CustomerModel>> fetchCustomer() async {
+  Future<List<CustomerModel>> getCustomers() async {
     try {
-      final response = await _dio.get(ApiUrls.serviceCustomer);
+      final response = await _apiClient.get(ApiUrls.serviceCustomer);
 
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'];
+      if (response.data["success"] == true) {
+        final List<dynamic> data = (response.data["data"] as List?) ?? [];
         return data.map((json) => CustomerModel.fromJson(json)).toList();
       } else {
-        throw Exception('Invalid response or status: ${response.statusCode}');
+        final errorMessage = response.data["message"] ?? "Something went wrong";
+        throw errorMessage;
       }
     } on DioException catch (e) {
-      final errorMsg = e.response?.data ?? e.message;
-      throw Exception('Dio error: $errorMsg');
-    } catch (e) {
-      throw Exception('Unexpected error in fetching customers: $e');
+      String errorMessage = "Something went wrong";
+      if (e.response != null) {
+        errorMessage = e.response?.data['message'] ?? "Unknown error";
+        debugPrint(
+          "${CustomLogEmoji.error} Get Customers API Error [${e.response?.statusCode}]: $errorMessage",
+        );
+      } else {
+        errorMessage = e.message ?? "Network Error";
+        debugPrint(
+          "${CustomLogEmoji.network} Get Customers Network Error: $errorMessage",
+        );
+      }
+      throw errorMessage;
     }
   }
+
 }

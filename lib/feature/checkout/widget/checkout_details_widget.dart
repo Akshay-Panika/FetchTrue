@@ -15,6 +15,8 @@ import '../../../core/widgets/custom_favorite_button.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../coupon/model/coupon_model.dart';
 import '../../coupon/screen/coupon_screen.dart';
+import '../../customer/bloc/customer/customer_bloc.dart';
+import '../../customer/repository/customer_repository.dart';
 import '../../customer/screen/add_customer_screen.dart';
 import '../../customer/screen/customer_screen.dart';
 import '../../service/bloc/service/service_bloc.dart';
@@ -250,7 +252,16 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                    }
                  },
                  addCustomer: () async {
-                   final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userSession.userId),),);
+                   // final selectedCustomer = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddCustomerScreen(userId: userSession.userId),),);
+                   final selectedCustomer = await Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => BlocProvider(
+                         create: (_) => CustomerBloc(CustomerRepository()),
+                         child: AddCustomerScreen(userId: userSession.userId),
+                       ),
+                     ),
+                   );
 
                    if (selectedCustomer != null) {
                      setState(() {

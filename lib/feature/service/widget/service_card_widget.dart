@@ -7,6 +7,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../model/service_model.dart';
@@ -49,10 +50,10 @@ class ServiceCardWidget extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: CustomContainer(
-              networkImg: data.thumbnailImage,
+            child: CustomNetworkImage(
+              imageUrl: data.thumbnailImage,
               margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
+              borderRadius: BorderRadius.circular(10),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Column(

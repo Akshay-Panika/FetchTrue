@@ -7,8 +7,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
-import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
@@ -56,21 +56,23 @@ class EducationCategoryWidget extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount:  2 ,
-                        childAspectRatio: 1 / 0.9,
+                        childAspectRatio: 1 / 1,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10
                     ),
                     itemBuilder: (context, index) {
                       final category = categories[index];
-                      return CustomContainer(
-                        margin: EdgeInsets.zero,
-                        color: CustomColor.whiteColor,
-                        networkImg: category.image,
+                      return CustomNetworkImage(
+                        imageUrl: category.image,
+                        borderRadius: BorderRadius.circular(8),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                            ),
                           ],
                         ),
                         onTap: () {
@@ -124,7 +126,7 @@ class _ShimmerGrid extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 10),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1 / 0.9,
+                childAspectRatio: 1 / 1,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10
             ),

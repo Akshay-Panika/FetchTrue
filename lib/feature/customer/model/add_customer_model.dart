@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 
 class Otp {
   final bool verified;
@@ -44,7 +45,7 @@ class AddCustomerModel {
 
   factory AddCustomerModel.fromJson(Map<String, dynamic> json) {
     return AddCustomerModel(
-      otp: Otp.fromJson(json['otp']),
+      otp: json['otp'] != null ? Otp.fromJson(json['otp']) : null,
       id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
       phone: json['phone'] ?? '',
@@ -72,5 +73,18 @@ class AddCustomerModel {
     };
   }
 
-
+  /// ✅ Convert to FormData for API
+  FormData toFormData() {
+    return FormData.fromMap({
+      'fullName': fullName,
+      'phone': phone,
+      'email': email,
+      'description': description ?? '',
+      'address': address,
+      'city': city,
+      'state': state,
+      'country': country,
+      'user': user,
+    });
+  }
 }

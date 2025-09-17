@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../bloc/offer_bloc.dart';
 import '../bloc/offer_event.dart';
 import '../bloc/offer_state.dart';
@@ -33,11 +34,10 @@ class OfferScreen extends StatelessWidget {
                 itemCount: offers.length,
                 itemBuilder: (context, index) {
                   final offer = offers[index];
-                  return CustomContainer(
+                  return CustomNetworkImage(
                     height: dimensions.screenHeight*0.2,
-                    border: true,
-                    color: CustomColor.whiteColor,
-                    networkImg: offer.thumbnailImage,
+                    imageUrl: offer.thumbnailImage,
+                    borderRadius: BorderRadius.circular(10),
                     margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.010),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OffersDetailsScreen(offersFuture: offer,),)),
                   );

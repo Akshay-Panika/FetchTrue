@@ -41,9 +41,10 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // final userSession = Provider.of<UserSession>(context, listen: false);
     final userSession = Provider.of<UserSession>(context);
     final isLoggedIn = userSession.isLoggedIn;
+
+    Dimensions dimensions = Dimensions(context);
 
     return NetworkWrapper(
       child: Scaffold(
@@ -53,13 +54,12 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         //   showBackButton: false,
         //   showNotificationIcon: true,
         // ),
-      
-      
+
         body:CustomScrollView(
           slivers: [
             SliverAppBar(
               floating: true,
-              toolbarHeight: 190,
+              toolbarHeight: dimensions.screenHeight*0.22,
               backgroundColor: Colors.grey[100],
               flexibleSpace: FlexibleSpaceBar(
                 background: ProfileCardWidget(),

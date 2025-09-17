@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
-import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
@@ -21,7 +21,7 @@ class MarketingCategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    Dimensions dimensions = Dimensions(context);
     return BlocProvider(
       create: (_) => CategoryBloc(CategoryRepository())..add(GetCategories()),
       child: BlocBuilder<CategoryBloc, CategoryState>(
@@ -63,22 +63,24 @@ class MarketingCategoryWidget extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final category = categories[index];
-                      return InkWell(//color: Colors.grey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircleAvatar(radius: 35,backgroundColor: CustomColor.whiteColor,
-                              backgroundImage: NetworkImage(category.image),),
-                            5.height,
-                            Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,textAlign: TextAlign.center,),
-                          ],
-                        ),
-                        onTap: () {
-                          context.push(
-                            '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
-                          );
-                        },
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CustomNetworkImage(
+                            height: dimensions.screenHeight*0.075,
+                            width: dimensions.screenHeight*0.075,
+                            borderRadius: BorderRadius.circular(50),
+                            imageUrl: category.image,
+                            onTap: () {
+                              context.push(
+                                '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
+                              );
+                            },
+                          ),
+                          5.height,
+                          Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,textAlign: TextAlign.center,),
+                        ],
                       );
                     },),
                 ),

@@ -46,12 +46,12 @@ class _SettingScreenState extends State<SettingScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildSwitchTile(
-                      icon: Icons.brightness_6,
-                      title: "Dark Mode",
-                      value: isDarkMode,
-                      onChanged: (val) => setState(() => isDarkMode = val),
-                    ),
+                    // _buildSwitchTile(
+                    //   icon: Icons.brightness_6,
+                    //   title: "Dark Mode",
+                    //   value: isDarkMode,
+                    //   onChanged: (val) => setState(() => isDarkMode = val),
+                    // ),
                     // _buildLanguageTile(),
                     _buildSwitchTile(
                       icon: Icons.notifications,

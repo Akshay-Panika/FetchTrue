@@ -9,6 +9,7 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_favorite_button.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/custom_search_icon.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/shimmer_box.dart';
@@ -147,12 +148,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CustomContainer(
-                                height: dimensions.screenHeight * 0.16,
-                                margin: EdgeInsets.zero,
-                                padding: EdgeInsets.zero,
-                                networkImg: data.thumbnailImage,
-                                color: CustomColor.whiteColor,
+                              CustomNetworkImage(
+                                height: dimensions.screenHeight * 0.165,
+                                imageUrl: data.thumbnailImage,
+                                borderRadius: BorderRadius.circular(10),
                                 child: Align(
                                   alignment: Alignment.topRight,
                                   child: Column(
@@ -182,7 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                 ),
                               ),
-                              10.height,
+                              5.height,
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Column(

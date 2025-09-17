@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
-import '../../../../core/widgets/custom_cached_image.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
@@ -62,22 +62,24 @@ class FranchiseCategoryWidget extends StatelessWidget {
                      ),
                      itemBuilder: (context, index) {
                        final category = categories[index];
-                       return  CustomContainer(
-                         margin: EdgeInsets.zero,
-                         color: CustomColor.whiteColor,
-                         networkImg: category.image,
-                         child: Column(
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           children: [
-                             Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
-                           ],
-                         ),
+                       return CustomNetworkImage(
+                         borderRadius: BorderRadius.circular(8),
+                         imageUrl: category.image,
                          onTap: () {
                            context.push(
                              '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
                            );
                          },
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             Padding(
+                               padding: const EdgeInsets.all(8.0),
+                               child: Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                             ),
+                           ],
+                         ),
                        );
                      },),
                  ),

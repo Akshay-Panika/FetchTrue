@@ -6,6 +6,7 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../bloc/module_bloc.dart';
@@ -68,11 +69,9 @@ class ModuleWidget extends StatelessWidget {
                               tag: module.id.toString(),
                               child: Material(
                                 color: Colors.transparent,
-                                child: CustomContainer(
-                                  color: Colors.transparent,
-                                  margin: EdgeInsets.zero,
-                                  networkImg: module.image,
-                                  // fit: BoxFit.fill,
+                                child: CustomNetworkImage(
+                                   imageUrl: module.image.toString(),
+                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                             ),

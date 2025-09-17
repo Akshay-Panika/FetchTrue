@@ -7,8 +7,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
-import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
@@ -21,6 +21,7 @@ class OnDemandCategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return BlocProvider(
       create: (_) => CategoryBloc(CategoryRepository())..add(GetCategories()),
       child: BlocBuilder<CategoryBloc, CategoryState>(
@@ -66,11 +67,10 @@ class OnDemandCategoryWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CustomContainer(
+                          CustomNetworkImage(
                             height: 80,
-                            margin: EdgeInsets.zero,
-                            color: CustomColor.whiteColor,
-                            networkImg: category.image,
+                            imageUrl: category.image,
+                            borderRadius: BorderRadius.circular(8),
                             onTap: () {
                               context.push(
                                 '/subcategory/${category.id}?name=${Uri.encodeComponent(category.name)}',
@@ -119,14 +119,14 @@ class _ShimmerGrid extends StatelessWidget {
 
 
         SizedBox(
-          height: 250,
+          height: 260,
           child: GridView.builder(
             itemCount: 12,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 10),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1 / 0.9,
+                childAspectRatio: 1 / 0.7,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10
             ),
@@ -138,8 +138,13 @@ class _ShimmerGrid extends StatelessWidget {
                   children: [
                     Expanded(child: CustomContainer(
                       color: CustomColor.whiteColor,
+                      margin: EdgeInsets.zero,
+                      padding: EdgeInsets.zero,
                     )),
-                    ShimmerBox(height: 10,width: 50,),
+                    10.height,
+                    ShimmerBox(height: 10,width: 60,),
+                    5.height,
+                    ShimmerBox(height: 10,width: 60,),
                   ],
                 ),
               );

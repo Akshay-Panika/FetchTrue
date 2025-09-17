@@ -1,8 +1,9 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/feature/customer/repository/customer_repository.dart';
+import 'package:fetchtrue/feature/customer/screen/add_customer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
@@ -15,7 +16,6 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/customer/customer_bloc.dart';
 import '../bloc/customer/customer_event.dart';
 import '../bloc/customer/customer_state.dart';
-import '../repository/customer_service.dart';
 
 class CustomerScreen extends StatefulWidget {
   final bool? isMenu;
@@ -49,16 +49,15 @@ class _CustomerScreenState extends State<CustomerScreen> {
         body: const Center(child: NoUserSignWidget()),
       );
     }
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Customer List',
-        showBackButton: true,
-
-      ),
-      body: SafeArea(
-        child: BlocProvider(
-          create: (_) =>
-          CustomerBloc(CustomerService())..add(GetCustomer()),
+    return BlocProvider(
+      create: (_) => CustomerBloc(CustomerRepository())..add(GetCustomers()),
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Customer List',
+          showBackButton: true,
+      
+        ),
+        body: SafeArea(
           child: BlocBuilder<CustomerBloc, CustomerState>(
             builder: (context, state) {
               if (state is CustomerLoading) {
@@ -67,18 +66,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   color: CustomColor.whiteColor,
                   minHeight: 2.5,
                 );
-              } else if (state is CustomerLoaded) {
+              } else if (state is CustomersLoaded) {
                 // final customer = state.customers;
-                final customer = state.customers.where((customerId) =>
-                customerId.userId == widget.userId).toList();
 
+                final customer = state.customers.where((customerId) =>
+                customerId.user == widget.userId).toList();
+      
                 // Initialize _messageControllers safely
                 if (_messageControllers.length != customer.length) {
                   _messageControllers = List.generate(
                     customer.length, (index) => TextEditingController(),
                   );
                 }
-
+      
                 if (customer.isEmpty) {
                   return  Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +92,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     ],
                   ));
                 }
-
+      
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 8.0),
                   itemCount: customer.length,
@@ -134,7 +134,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                     ),
                                   ],
                                 ),
-
+      
                                 widget.isMenu == true ? SizedBox.shrink():
                                 Checkbox(
                                   activeColor: CustomColor.appColor,
@@ -186,19 +186,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               ],
                             ),
                             15.height,
-
+      
                             widget.isMenu == true ? SizedBox.shrink():
                             chatInputField(
                               context,
                               controller: _messageControllers[index],
                               onSend: () {
                                 final message = _messageControllers[index].text.trim();
-
+      
                                 if (_selectedCustomer != null) {
                                   final selectedCustomer = customer[_selectedCustomer!];
                                   final selectedCustomerData = {
                                     '_id': selectedCustomer.id,
-                                    'userId': selectedCustomer.userId,
+                                    'userId': selectedCustomer.user,
                                     'fullName': selectedCustomer.fullName,
                                     'phone': selectedCustomer.phone,
                                     'message': message,
@@ -210,20 +210,45 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               },
                               enabled: _selectedCustomer == index, /// Only selected row is active
                             ),
-
+      
                           ],
                         ),
                       ),
                     );
                   },
                 );
-              } else if (state is CustomerError) {
-                return Center(child: Text(state.errorMessage));
+              } else if (state is CustomerFailure) {
+                return Center(child: Text(state.error));
               }
               return const SizedBox.shrink();
             },
           ),
         ),
+
+        floatingActionButton: widget.isMenu == true
+            ? Builder(
+          builder: (context) {
+            return FloatingActionButton(
+              elevation: 1,
+              backgroundColor: CustomColor.whiteColor,
+              onPressed: () {
+                final customerBloc = context.read<CustomerBloc>();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: customerBloc,
+                      child: AddCustomerScreen(userId: userSession.userId),
+                    ),
+                  ),
+                );
+              },
+              child: Icon(Icons.person, color: CustomColor.appColor),
+            );
+          },
+        )
+            : SizedBox.shrink(),
+
       ),
     );
   }

@@ -50,11 +50,11 @@ class ProviderWidget extends StatelessWidget {
               final moduleState = context.watch<ModuleBloc>().state;
 
               if(providerState is ProviderLoading || moduleState is ModuleLoading){
-                return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
+                return  _buildShimmer(dimensions);
               }
 
               if(providerState is ProvidersLoaded && moduleState is ModuleLoaded){
-                final providers = providerState.providers.where((e) => e.kycCompleted == true).toList();
+                final providers = providerState.providers.where((e) => e.kycCompleted == true && e.storeInfo?.module== moduleId).toList();
                 final modules = moduleState.modules;
 
                 return SizedBox(
@@ -232,71 +232,91 @@ class ProviderWidget extends StatelessWidget {
 
 
 Widget _buildShimmer(Dimensions dimensions){
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding:  EdgeInsets.only(top: 10, left: 10),
-        child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: ShimmerBox(height: 10, width: dimensions.screenHeight*0.1)),
-      ),
-      SizedBox(
-        height: dimensions.screenHeight*0.22,
-        child: ListView.builder(
-          itemCount: 2,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return CustomContainer(
-              margin: EdgeInsets.only(left: dimensions.screenHeight*0.010, top: dimensions.screenHeight*0.010, bottom: dimensions.screenHeight*0.010),
-              width: dimensions.screenHeight*0.38,
+  return SizedBox(
+    height: dimensions.screenHeight*0.3,
+    child: Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Container(
+              width: double.infinity,
+              color: CustomColor.whiteColor,
               child: Shimmer.fromColors(
                 baseColor: Colors.grey.shade300,
                 highlightColor: Colors.grey.shade100,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    5.height,
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            CircleAvatar(radius: 28),
-                            5.height,
-                            ShimmerBox(height: 15, width: 80)
-                          ],
-                        ),
-
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.10),
-                            5.height,
-                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
-                            5.height,
-                            ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    5.height,
-
-                    Wrap(
-                       spacing: 20,
-                       runSpacing: 10,
-                      children: List.generate(4, (index) => ShimmerBox(height: 20, width: dimensions.screenHeight*0.09),)
-                    ),
+                    15.height,
+                   ShimmerBox(height: 10, width: dimensions.screenHeight*0.2),
+                   10.height,
+                   ShimmerBox(height: 10, width: dimensions.screenHeight*0.3),
                   ],
                 ),
               ),
-            );
-          },),
-      ),
-    ],
+            )),
+
+          ],
+        ),
+        SizedBox(
+          height: dimensions.screenHeight*0.22,
+          child: ListView.builder(
+            itemCount: 2,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return CustomContainer(
+                margin: EdgeInsets.only(left: dimensions.screenHeight*0.010, top: dimensions.screenHeight*0.010, bottom: dimensions.screenHeight*0.010),
+                width: dimensions.screenHeight*0.38,
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      5.height,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              CircleAvatar(radius: 28),
+                              5.height,
+                              ShimmerBox(height: 15, width: 80)
+                            ],
+                          ),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ShimmerBox(height: 10, width: dimensions.screenHeight*0.10),
+                              5.height,
+                              ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
+                              5.height,
+                              ShimmerBox(height: 10, width: dimensions.screenHeight*0.1),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Divider(),
+                      5.height,
+
+                      Wrap(
+                         spacing: 20,
+                         runSpacing: 10,
+                        children: List.generate(4, (index) => ShimmerBox(height: 20, width: dimensions.screenHeight*0.09),)
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },),
+        ),
+      ],
+    ),
   );
 }

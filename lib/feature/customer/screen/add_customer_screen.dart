@@ -1,16 +1,20 @@
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:fetchtrue/feature/customer/repository/customer_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_button.dart';
-import '../../../core/widgets/custom_dropdown_field.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../bloc/customer/customer_bloc.dart';
+import '../bloc/customer/customer_event.dart';
+import '../bloc/customer/customer_state.dart';
 import '../model/add_customer_model.dart';
+import '../widget/india_state_city_picker.dart';
 
 class AddCustomerScreen extends StatefulWidget {
   final String? userId;
@@ -28,73 +32,53 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
   final email = TextEditingController();
   final description = TextEditingController();
   final address = TextEditingController();
-  final country = TextEditingController();
-
-  final ValueNotifier<String> selectedState = ValueNotifier('');
-  final ValueNotifier<String> selectedCity = ValueNotifier('');
-  final ValueNotifier<List<String>> cityList = ValueNotifier([]);
-
-  final Map<String, List<String>> stateCityMap = {
-    'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
-    'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior'],
-    'Gujarat': ['Ahmedabad', 'Surat', 'Rajkot'],
-  };
+  final country = TextEditingController(text: "India");
 
 
-  bool _isLoading = false;
+  String? selectedState;
+  String? selectedCity;
 
-
-  @override
-  void initState() {
-    super.initState();
-    country.text = 'India';
-    selectedState.addListener(() {
-      cityList.value = stateCityMap[selectedState.value] ?? [];
-      selectedCity.value = '';
-    });
-  }
-
-  void _submitForm() async {
+  void _submitForm(BuildContext context) {
     if (fullName.text.trim().isEmpty) {
-      showCustomSnackBar(context, "Name is required");
+      showCustomToast("Name is required");
       return;
     } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(fullName.text.trim())) {
-      showCustomSnackBar(context, "Please enter valid name");
+      showCustomToast("Please enter valid name");
       return;
     }
 
     if (phone.text.trim().isEmpty) {
-      showCustomSnackBar(context, "Phone number is required");
+      showCustomToast("Phone number is required");
       return;
-    } else if (phone.text.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(phone.text.trim())) {
-      showCustomSnackBar(context, "Enter a valid 10-digit phone number");
+    } else if (phone.text.trim().length != 10 ||
+        !RegExp(r'^[0-9]+$').hasMatch(phone.text.trim())) {
+      showCustomToast("Enter a valid 10-digit phone number");
       return;
     }
 
     if (email.text.trim().isEmpty) {
-      showCustomSnackBar(context, "Email is required");
+      showCustomToast("Email is required");
       return;
-    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email.text.trim())) {
-      showCustomSnackBar(context, "Enter a valid email address");
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+        .hasMatch(email.text.trim())) {
+      showCustomToast("Enter a valid email address");
       return;
     }
 
     if (address.text.trim().isEmpty) {
-      showCustomSnackBar(context, "Address is required");
+      showCustomToast("Address is required");
       return;
     }
 
-    if (selectedState.value.isEmpty) {
-      showCustomSnackBar(context, "Please select a State");
+    if (selectedState == null || selectedState!.isEmpty) {
+      showCustomToast("Please select a State");
       return;
     }
 
-    if (selectedCity.value.isEmpty) {
-      showCustomSnackBar(context, "Please select a City");
+    if (selectedCity == null || selectedCity!.isEmpty) {
+      showCustomToast("Please select a City");
       return;
     }
-
-    setState(() => _isLoading = true);
 
     final newCustomer = AddCustomerModel(
       fullName: fullName.text.trim(),
@@ -102,35 +86,16 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       email: email.text.trim(),
       description: description.text.trim(),
       address: address.text.trim(),
-      city: selectedCity.value,
-      state: selectedState.value,
-      country: country.text.trim(),
+      city: selectedCity.toString(),
+      state: selectedState.toString(),
+      country: country.text.trim().isEmpty ? "India" : country.text.trim(),
       user: widget.userId.toString(),
     );
 
-    try {
-      final result = await CustomerRepository.createCustomer(newCustomer);
+    context.read<CustomerBloc>().add(CreateCustomer(newCustomer));
 
-      if (result != null) {
-        showCustomSnackBar(context, "Customer Created: ${result.fullName}");
-
-        Navigator.pop(context, {
-          "_id": result.id,
-          "userId": result.user,
-          "fullName": result.fullName,
-          "phone": result.phone,
-          "message": result.description,
-        });
-
-      } else {
-        showCustomSnackBar(context, "Failed to create customer");
-      }
-    } catch (e) {
-      showCustomSnackBar(context, "Error: ${e.toString()}");
-    } finally {
-      setState(() => _isLoading = false);
-    }
   }
+
 
   @override
   void dispose() {
@@ -139,6 +104,7 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     email.dispose();
     address.dispose();
     country.dispose();
+    description.dispose();
     super.dispose();
   }
 
@@ -160,91 +126,101 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
       backgroundColor: CustomColor.whiteColor,
       appBar: CustomAppBar(title: 'Customer Details', showBackButton: true,),
 
-      body: SafeArea(child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              15.height,
-              CustomLabelFormField(context, "Name", isRequired: true,
-                  hint: 'Enter Name...',
-                  controller: fullName,
-                  keyboardType: TextInputType.text),
-              10.height,
+      body:  BlocConsumer<CustomerBloc, CustomerState>(
+          listener: (context, state) {
+            if (state is CustomerSuccess) {
 
-              CustomLabelFormField(context, "Phone", isRequired: true,
-                  hint: 'Enter Phone No...',
-                  controller: phone,
-                  keyboardType: TextInputType.number),
-              15.height,
+              showCustomToast("Customer Created: ${state.customer.fullName}");
+              context.read<CustomerBloc>().add(const GetCustomers());
+              Navigator.pop(context, {
+                "_id": state.customer.id,
+                "userId": state.customer.user,
+                "fullName": state.customer.fullName,
+                "phone": state.customer.phone,
+                "message": state.customer.description,
+              });
 
-              CustomLabelFormField(context, "Email", isRequired: true,
-                hint: 'Enter Email Id...',
-                controller: email,
-                keyboardType: TextInputType.text,),
-              15.height,
-
-              CustomDescriptionField(context,
-                "Description (Optional)",
-                controller: description,
-                isRequired: false,
-                hint: "Enter full details here...",
-              ),
-              15.height,
-
-              CustomLabelFormField(context, "Address", isRequired: true,
-                  hint: 'Enter Service Address...',
-                  controller: address,
-                  keyboardType: TextInputType.text),
-              10.height,
-
-              Row(
+            } else if (state is CustomerFailure) {
+              showCustomToast(state.error);
+            }
+          },
+        builder:  (context, state) {
+          return SafeArea(child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: CustomDropdownField(
-                      headline: "State",
-                      label: "Select State",
-                      items: stateCityMap.keys.toList(),
-                      selectedValue: selectedState,
-                    ),
-                  ),
-                  10.width,
+                  15.height,
+                  CustomLabelFormField(context, "Name", isRequired: true,
+                      hint: 'Enter Name...',
+                      controller: fullName,
+                      keyboardType: TextInputType.text),
+                  10.height,
 
-                  Expanded(
-                    child: ValueListenableBuilder<List<String>>(
-                      valueListenable: cityList,
-                      builder: (context, cities, _) {
-                        return CustomDropdownField(
-                          headline: "City",
-                          label: "Select City",
-                          items: cities,
-                          selectedValue: selectedCity,
-                        );
-                      },
-                    ),
-                  )
+                  CustomLabelFormField(context, "Phone", isRequired: true,
+                      hint: 'Enter Phone No...',
+                      controller: phone,
+                      keyboardType: TextInputType.number),
+                  15.height,
+
+                  CustomLabelFormField(context, "Email", isRequired: true,
+                    hint: 'Enter Email Id...',
+                    controller: email,
+                    keyboardType: TextInputType.text,),
+                  15.height,
+
+                  CustomDescriptionField(context,
+                    "Description (Optional)",
+                    controller: description,
+                    isRequired: false,
+                    hint: "Enter full details here...",
+                  ),
+                  15.height,
+
+                  CustomLabelFormField(context, "Address", isRequired: true,
+                      hint: 'Enter Service Address...',
+                      controller: address,
+                      keyboardType: TextInputType.text),
+                  10.height,
+
+                  IndiaStateCityPicker(
+                    onStateChanged: (state) {
+                      setState(() {
+                        selectedState = state;
+                        selectedCity = null;
+                      });
+                    },
+                    onCityChanged: (city) {
+                      setState(() {
+                        selectedCity = city;
+                      });
+                    },
+                  ),
+                  10.height,
+
+                  CustomLabelFormField(context, "Country", isRequired: true,
+                      hint: 'India',
+                      enabled: false,
+                      controller: country,
+                      keyboardType: TextInputType.text),
+                  SizedBox(height: dimensions.screenHeight * 0.04,),
+
+                  CustomButton(
+                    label: 'Save Data',
+                    isLoading: state is CustomerLoading,
+                    onPressed: () {
+                      _submitForm(context);
+                    },
+                  ),
+
                 ],
               ),
-              10.height,
-
-              CustomLabelFormField(context, "Country", isRequired: true,
-                  hint: 'India',
-                  enabled: false,
-                  controller: country,
-                  keyboardType: TextInputType.text),
-              SizedBox(height: dimensions.screenHeight * 0.04,),
-
-              CustomButton(
-                label: 'Save Data',
-                isLoading: _isLoading,
-                onPressed: _submitForm,
-              )
-            ],
-          ),
-        ),
-      )),
+            ),
+          ));
+        }
+      ),
     );
   }
 }

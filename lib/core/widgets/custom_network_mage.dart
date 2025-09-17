@@ -10,6 +10,7 @@ class CustomNetworkImage extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final VoidCallback? onTap;
   final bool isLoader;
+  final Widget? child;
 
   const CustomNetworkImage({
     super.key,
@@ -21,71 +22,44 @@ class CustomNetworkImage extends StatelessWidget {
     this.margin,
     this.onTap,
     this.isLoader = false,
+    this.child,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: margin ?? EdgeInsets.zero,
-      child: InkWell(onTap: onTap,
-        child: ClipRRect(
-          borderRadius: borderRadius ?? BorderRadius.zero,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: fit,
-            width: width ?? double.infinity,
-            height: height,
-            placeholder: (context, url) => Container(
-              width: width ?? double.infinity,
-              height: height,
-              color: Colors.grey[200],
-              alignment: Alignment.center,
-              child: isLoader ? CircularProgressIndicator(strokeWidth: 2):null,
+    return Stack(
+      children: [
+        Container(
+          margin: margin ?? EdgeInsets.zero,
+          child: InkWell(onTap: onTap,
+            child: ClipRRect(
+              borderRadius: borderRadius ?? BorderRadius.zero,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: fit,
+                width: width ?? double.infinity,
+                height: height ?? double.infinity,
+                fadeInDuration: Duration.zero,
+                fadeOutDuration:Duration.zero,
+                memCacheHeight: 400,
+                memCacheWidth: 400,
+                placeholderFadeInDuration: Duration.zero,
+                placeholder: (context, url) => Container(
+                  width: width ?? double.infinity,
+                  height: height,
+                  color: Colors.grey[200],
+                  alignment: Alignment.center,
+                  child: isLoader ? CircularProgressIndicator(strokeWidth: 2):null,
+                ),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.error, color: Colors.red),
+              ),
             ),
-            errorWidget: (context, url, error) =>
-            const Icon(Icons.error, color: Colors.red),
           ),
         ),
-      ),
+
+        if (child != null) Positioned.fill(child: child!),
+      ],
     );
   }
 }
-
-// class CustomNetworkImage extends StatelessWidget {
-//   final String imageUrl;
-//   final BoxFit fit;
-//   final double? width;
-//   final double? height;
-//   final BorderRadius? borderRadius;
-//
-//   const CustomNetworkImage({
-//     super.key,
-//     required this.imageUrl,
-//     this.fit = BoxFit.cover,
-//     this.width,
-//     this.height,
-//     this.borderRadius,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ClipRRect(
-//       borderRadius: borderRadius ?? BorderRadius.zero,
-//       child: CachedNetworkImage(
-//         imageUrl: imageUrl,
-//         fit: fit,
-//         width: width ?? double.infinity,
-//         height: height,
-//         placeholder: (context, url) => Container(
-//           width: width ?? double.infinity,
-//           height: height,
-//           color: Colors.grey[200],
-//           alignment: Alignment.center,
-//           child: const CircularProgressIndicator(strokeWidth: 2),
-//         ),
-//         errorWidget: (context, url, error) =>
-//         const Icon(Icons.error, color: Colors.red),
-//       ),
-//     );
-//   }
-// }

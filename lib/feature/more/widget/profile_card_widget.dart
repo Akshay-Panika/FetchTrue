@@ -170,9 +170,54 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             );
           } else if (state is UserError) {
             print('Error: ${state.massage}');
-            return _profileCard();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+                // Profile Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 35,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                          backgroundImage:  AssetImage(CustomImage.nullImage),
+                        ),
+                        10.width,
+
+                        // Name & Email
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                            Text('guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                            Text('#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const Divider(),
+
+                // Status Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildStatus(icon: CupertinoIcons.calendar,value:  '00', valueType: 'Joining date'),
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                    _buildStatus(icon:Icons.check_circle_outline_outlined,value:  '00', valueType: 'Lead Completed'),
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                    _buildStatus(icon: Icons.currency_rupee_outlined,value:  '00', valueType: 'Total Earning'),
+                  ],
+                ),
+              ],
+            );
           }
-          return const SizedBox();
+          return SizedBox.shrink();
         },
       ),
     );
@@ -192,6 +237,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     return CustomContainer(
       color: CustomColor.whiteColor,
       // margin: EdgeInsets.zero,
+      // padding: EdgeInsets.zero,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -6,8 +6,8 @@ import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/dimension.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
-import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
@@ -73,9 +73,10 @@ class OnboardingCategoryWidget extends StatelessWidget {
                         },
                         child: Row(
                           children: [
-                            CustomContainer(
+                            CustomNetworkImage(
                               width: 80,
-                              networkImg: category.image ?? '',margin: EdgeInsets.zero,),
+                              borderRadius: BorderRadius.circular(8),
+                              imageUrl: category.image ?? '',),
 
                             Expanded(
                               child: Text(

@@ -6,8 +6,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/custom_network_mage.dart';
 import '../../../../core/widgets/shimmer_box.dart';
-import '../../../subcategory/screen/subcategory_screen.dart';
 import '../../bloc/category_bloc.dart';
 import '../../bloc/category_event.dart';
 import '../../bloc/category_state.dart';
@@ -61,15 +61,17 @@ class LegalCategoryWidget extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final category = categories[index];
-                      return CustomContainer(
-                        margin: EdgeInsets.zero,
-                        color: CustomColor.whiteColor,
-                        networkImg: category.image,
+                      return CustomNetworkImage(
+                        imageUrl: category.image,
+                        borderRadius: BorderRadius.circular(8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(category.name, style: textStyle12(context),overflow: TextOverflow.ellipsis,maxLines: 2,),
+                            ),
                           ],
                         ),
                         onTap: () {

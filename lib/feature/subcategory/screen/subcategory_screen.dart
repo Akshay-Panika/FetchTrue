@@ -10,6 +10,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/shimmer_box.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../../service/bloc/service/service_bloc.dart';
@@ -142,12 +143,11 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                CustomContainer(
-                                  height: dimensions.screenHeight*0.16,
+                                 CustomNetworkImage(
+                                  height: dimensions.screenHeight * 0.165,
                                   margin: EdgeInsets.zero,
-                                  padding: EdgeInsets.zero,
-                                  networkImg: data.thumbnailImage,
-                                  color: CustomColor.whiteColor,
+                                  imageUrl: data.thumbnailImage,
+                                  borderRadius: BorderRadius.circular(10),
                                   child: Align(
                                     alignment: Alignment.topRight,
                                     child: Column(
@@ -178,7 +178,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                                   ),
                                 ),
 
-                                10.height,
+
                                 Padding(
                                   padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
                                   child: Column(
