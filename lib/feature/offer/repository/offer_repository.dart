@@ -19,6 +19,7 @@ class OfferRepository {
     on DioException catch (e){
       if (e.response != null) {
         debugPrint("${CustomLogEmoji.error} Offer API Error [${e.response?.statusCode}]: ${e.response?.data}");
+        // throw Exception('Failed to load data');
       }
       else {
         debugPrint("${CustomLogEmoji.network}Offer Network Error: ${e.message}");

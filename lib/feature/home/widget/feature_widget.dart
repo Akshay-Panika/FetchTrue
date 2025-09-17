@@ -89,7 +89,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image.asset('assets/image/myEarningImg.jpg',),
+                            Image.asset('assets/image/my_earning_icon.png',fit: BoxFit.cover,),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -174,10 +174,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                                     )),
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset('assets/image/myTeamImg.jpg',),
-                            ),
+                            Image.asset('assets/image/my_team_icon.png',fit: BoxFit.cover,),
                           ],
                         ),
                       ),

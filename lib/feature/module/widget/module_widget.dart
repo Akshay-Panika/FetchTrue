@@ -20,7 +20,7 @@ class ModuleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
     return BlocProvider(
-      create: (_) => ModuleBloc(repository: ModuleRepository())..add(GetModules()),
+      create: (_) => ModuleBloc(ModuleRepository())..add(GetModules()),
       child: BlocBuilder<ModuleBloc, ModuleState>(
         builder: (context, state) {
           if (state is ModuleLoading) {

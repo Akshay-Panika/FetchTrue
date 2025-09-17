@@ -9,11 +9,16 @@ import '../../../core/costants/custom_logo.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_text_tield.dart';
 import '../../../core/costants/text_style.dart';
+import '../../profile/bloc/user/user_bloc.dart';
+import '../../profile/bloc/user/user_event.dart';
 import '../bloc/sign_up/sign_up_bloc.dart';
 import '../bloc/sign_up/sign_up_event.dart';
 import '../bloc/sign_up/sign_up_state.dart';
 import '../model/sign_up_model.dart';
 import '../repository/sign_up_repository.dart';
+import '../user_notifier/user_notifier.dart';
+import 'package:provider/provider.dart';
+
 
 class SignUpScreen extends StatefulWidget {
   final Function(bool) onToggle;
@@ -114,9 +119,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
         listener: (context, state) {
           if (state is SignUpFailure) {
             showCustomToast(state.error);
-          } else if (state is SignUpSuccess) {
-            showCustomToast(state.message);
-            widget.onToggle(false);
+          }
+          else if (state is SignUpSuccess) {
+            final response = state.response;
+            // showCustomToast(response.message);
+            showCustomToast("Sign UP Success: ${response.user.fullName}");
+
+            final userSession = Provider.of<UserSession>(context, listen: false);
+            userSession.login(response.user.id, response.token);
+
+            /// Reset UserBloc and get new user
+            final userBloc = context.read<UserBloc>();
+            userBloc.add(ResetUser());
+            userBloc.add(GetUserById(response.user.id));
+
+            // widget.onToggle(false);
+            Navigator.pop(context, true);
           }
         },
         builder: (context, state) {
@@ -343,6 +361,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
 
                             context.read<SignUpBloc>().add(SignUpButtonPressed(signUpData));
+
                           },
                         ),
                       ],

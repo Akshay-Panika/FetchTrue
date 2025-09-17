@@ -15,11 +15,11 @@ import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../five_x/bloc/five_x/FiveXBloc.dart';
-import '../../five_x/bloc/five_x/FiveXEvent.dart';
-import '../../five_x/bloc/five_x/FiveXState.dart';
+import '../../five_x/bloc/five_x/fivex_bloc.dart';
+import '../../five_x/bloc/five_x/fivex_event.dart';
+import '../../five_x/bloc/five_x/fivex_state.dart';
 import '../../five_x/model/FiveXModel.dart';
-import '../../five_x/repository/FiveXRepository.dart';
+import '../../five_x/repository/fivex_repository.dart';
 import '../../five_x/screen/five_x_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
@@ -222,7 +222,7 @@ class _PackageScreenState extends State<PackageScreen> {
 
                     if (packageState is PackageLoading || fiveXState is FiveXLoading ||
                         referralState is ReferralLoading || teamState is MyTeamLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
                     }
                     if(packageState is PackageLoaded && fiveXState is FiveXLoaded && referralState is ReferralLoaded && teamState is MyTeamLoaded) {
                       final package = packageState.packages.first;
@@ -817,7 +817,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
-                Text('Amount: ₹ ${package.discountedPrice+package.deposit}',
+                Text('Amount: ₹ ${formatPrice(package.discountedPrice+package.deposit)}',
                     style: textStyle16(context)),
                 15.height,
                 Text(
@@ -849,7 +849,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Full Payment'),
-                              CustomAmountText(amount: '${package.discountedPrice+package.deposit}'),
+                              CustomAmountText(amount: '${formatPrice(package.discountedPrice+package.deposit)}'),
                             ],
                           ),
                         ],
@@ -872,7 +872,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text('Half Payment'),
-                              CustomAmountText(amount: '${(package.discountedPrice+package.deposit)/2}'),
+                              CustomAmountText(amount: '${formatPrice((package.discountedPrice+package.deposit)/2)}'),
                             ],
                           ),
                         ],
@@ -921,11 +921,9 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             customerName: '${user.fullName}',
                             customerPhone: '${user.mobileNumber}',
                             customerEmail: '${user.email}',
-                            // amount: selectedOption == "full" ? package.grandtotal : package.grandtotal / 2,
                             amount: selectedOption == "full"
-                                ? package.discountedPrice+package.deposit
-                                : (package.discountedPrice+package.deposit)/2,
-
+                                ? (package.discountedPrice+package.deposit).round()
+                                : ((package.discountedPrice+package.deposit)/2).round(),
                           );
 
                           setState(() => isLoading = false);

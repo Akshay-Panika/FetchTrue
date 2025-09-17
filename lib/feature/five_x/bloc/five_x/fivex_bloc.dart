@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../repository/FiveXRepository.dart';
-import 'FiveXEvent.dart';
-import 'FiveXState.dart';
+import '../../repository/fivex_repository.dart';
+import 'fivex_event.dart';
+import 'fivex_state.dart';
 
 
 class FiveXBloc extends Bloc<FiveXEvent, FiveXState> {

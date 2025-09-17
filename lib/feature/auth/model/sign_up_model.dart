@@ -1,4 +1,3 @@
-// lib/models/signup_model.dart
 
 class SignUpModel {
   final String fullName;

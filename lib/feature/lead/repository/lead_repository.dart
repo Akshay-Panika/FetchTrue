@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../core/costants/custom_log_emoji.dart';
 import '../../../helper/api_client.dart';
 import '../model/lead_model.dart';
 
@@ -14,10 +16,10 @@ class LeadRepository {
     }
     on DioException catch (e){
       if (e.response != null) {
-        print("Lead API Error [${e.response?.statusCode}]: ${e.response?.data}");
+        debugPrint("${CustomLogEmoji.error} Lead API Error [${e.response?.statusCode}]: ${e.response?.data}");
       }
       else {
-        print("Lead Network Error: ${e.message}");
+        debugPrint("${CustomLogEmoji.network} Lead Network Error: ${e.message}");
       }
       rethrow;
     }

@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
-import '../../../core/costants/custom_log_emoji.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../favorite/widget/favorite_provider_button_widget.dart';
+import '../../module/bloc/module_bloc.dart';
+import '../../module/bloc/module_event.dart';
+import '../../module/bloc/module_state.dart';
+import '../../module/repository/module_repository.dart';
 import '../bloc/provider/provider_bloc.dart';
 import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../model/provider_model.dart';
 import '../repository/provider_repository.dart';
 import '../widget/gallery_widget.dart';
-import '../widget/module_name_widget.dart';
 import '../widget/provider_all_service_widget.dart';
 import '../widget/provider_requirement_service_widget.dart';
 import '../widget/provider_review_widget.dart';
+import 'package:fetchtrue/feature/module/model/module_model.dart';
+
 
 class ProviderDetailsScreen extends StatefulWidget {
   final String? providerId;
@@ -38,136 +42,175 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviderById(widget.providerId!))),
+        BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
 
-      appBar: CustomAppBar(
-        title: widget.storeName ?? 'Store Name',
-        showBackButton: true,
-        showFavoriteIcon: false,
-      ),
-      body: DefaultTabController(
-        length: myTabs.length,
-        child: BlocProvider(
-          create: (_) => ProviderBloc(ProviderRepository())
-            ..add(GetProviderById(widget.providerId!)),
-          child: BlocBuilder<ProviderBloc, ProviderState>(
-            builder: (context, state) {
-              if (state is ProviderLoading) {
-                return  Center(child: CircularProgressIndicator( color: CustomColor.appColor,));
-              } else if (state is ProviderLoaded) {
-                final provider = state.provider;
+      ],
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: widget.storeName ?? 'Store Name',
+          showBackButton: true,
+          showFavoriteIcon: false,
+        ),
 
-                return CustomScrollView(
-                  slivers: [
-                    /// Cover Image
-                    if(provider.storeInfo!.cover != null)
-                    SliverAppBar(
-                      toolbarHeight: 200,
-                      pinned: false,
-                      floating: false,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: provider.storeInfo!.cover == null ? AssetImage(CustomImage.nullBackImage):
-                              NetworkImage(provider.storeInfo!.cover ?? ''), fit: BoxFit.fill,),
-                          ),
-                        ),
-                      ),
-                    ),
+        body: DefaultTabController(
+          length: myTabs.length,
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<ProviderBloc, ProviderState>(listener: (context, state) {
+                if (state is ProviderError) debugPrint('Provider Error: ${state.message}');
+              },),
 
-                    /// Sticky Header with Profile + TabBar
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: _StickyHeaderDelegate(
-                        child: Column(
-                          children: [
-                            Center(child: _profileCard(data: provider)),
-                            TabBar(
-                              isScrollable: true,
-                              labelPadding:
-                              const EdgeInsets.symmetric(horizontal: 16),
-                              labelColor: Colors.blueAccent,
-                              unselectedLabelColor: Colors.black54,
-                              indicatorColor: Colors.blueAccent,
-                              tabAlignment: TabAlignment.start,
-                              tabs: myTabs,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+              BlocListener<ModuleBloc, ModuleState>(listener: (context, state) {
+                if (state is ModuleError) debugPrint('Module Error: ${state.message}');
+              },),
 
-                    /// TabBarView content
-                    SliverFillRemaining(
-                      child: TabBarView(
-                        children: [
-                          /// Services
-                          ListView(
-                            physics: NeverScrollableScrollPhysics(),
-                            children: [
-                              ProviderRequirementServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
-                              ProviderAllServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
-                            ],
-                          ),
+            ],
+            child: Builder(
+              builder: (context) {
+                final providerState = context.watch<ProviderBloc>().state;
+                final moduleState = context.watch<ModuleBloc>().state;
 
-                          /// Reviews
-                          ProviderReviewScreen(providerId: provider.id),
+                if(providerState is ProviderLoading || moduleState is ModuleLoading){
+                  return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
+                }
 
-                          /// About
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                 if(providerState is ProviderLoaded && moduleState is ModuleLoaded){
 
-                                // Text('ID: ${provider}', style: textStyle14(context), textAlign: TextAlign.center,),
-                                Text('Name: ${provider.fullName}', style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text('Email: ${provider.storeInfo!.storeEmail}', style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text('Phone: ${provider.storeInfo!.storePhone}', style: textStyle14(context, fontWeight: FontWeight.w400)),
-                                Text('Address: ${provider.storeInfo!.address}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                   ProviderModel? selectedProvider;
+                   ModuleModel? selectedModule;
 
-                                Divider(),
+                   final provider = providerState.provider;
+                   final modules = moduleState.modules;
 
-                                Text(
-                                  "Disclaimer: The information provided about this provider, "
-                                      "including services, pricing, reviews, and gallery, is sourced "
-                                      "from the provider or public data. While we strive to ensure "
-                                      "accuracy, FetchTrue does not guarantee completeness, reliability, "
-                                      "or availability of this information. Please verify details directly "
-                                      "with the provider before making any decisions.",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                    height: 2,
-                                  ),
-                                  textAlign: TextAlign.justify,
-                                )
-                              ],
-                            ),
-                          ),
+                   try {
+                      selectedModule = modules.firstWhere((m) => m.id == provider?.storeInfo?.module,);
 
-                          /// Gallery
-                          GalleryWidget(providerId: provider.id,)
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              } else if (state is ProviderError) {
-                debugPrint("${CustomLogEmoji.error} Provider Error ${state.message}");
+                     if (provider != null && provider.kycCompleted == true) {
+                       selectedProvider = provider;
+                     } else {
+                       selectedProvider = null;
+                     }
+                   } catch (e) {
+                     selectedProvider = null;
+                     selectedModule = null;
+                   }
+
+                   if (selectedProvider == null) {
+                     return Center(child: Text("Provider not available"));
+                   }
+
+                   return CustomScrollView(
+                     slivers: [
+                       /// Cover Image
+                         SliverAppBar(
+                           toolbarHeight: 200,
+                           pinned: false,
+                           floating: false,
+                           automaticallyImplyLeading: false,
+                           flexibleSpace: FlexibleSpaceBar(
+                             background: Container(
+                               decoration: BoxDecoration(
+                                 image: DecorationImage(
+                                   image: provider.storeInfo!.cover == null ? AssetImage(CustomImage.nullBackImage):
+                                   NetworkImage(provider.storeInfo!.cover ?? ''), fit: BoxFit.fill,),
+                               ),
+                             ),
+                           ),
+                         ),
+
+                       /// Sticky Header with Profile + TabBar
+                       SliverPersistentHeader(
+                         pinned: true,
+                         delegate: _StickyHeaderDelegate(
+                           child: Column(
+                             children: [
+                               Center(child: _profileCard(data: provider, moduleName: selectedModule?.name)),
+                               TabBar(
+                                 isScrollable: true,
+                                 labelPadding:
+                                 const EdgeInsets.symmetric(horizontal: 16),
+                                 labelColor: Colors.blueAccent,
+                                 unselectedLabelColor: Colors.black54,
+                                 indicatorColor: Colors.blueAccent,
+                                 tabAlignment: TabAlignment.start,
+                                 tabs: myTabs,
+                               ),
+                             ],
+                           ),
+                         ),
+                       ),
+
+                       /// TabBarView content
+                       SliverFillRemaining(
+                         child: TabBarView(
+                           children: [
+                             /// Services
+                             ListView(
+                               physics: NeverScrollableScrollPhysics(),
+                               children: [
+                                 ProviderRequirementServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
+                                 ProviderAllServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
+                               ],
+                             ),
+
+                             /// Reviews
+                             ProviderReviewScreen(providerId: provider.id),
+
+                             /// About
+                             Padding(
+                               padding: const EdgeInsets.all(10),
+                               child: Column(
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                 children: [
+
+                                   // Text('ID: ${provider}', style: textStyle14(context), textAlign: TextAlign.center,),
+                                   Text('Name: ${provider.fullName}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                   Text('Email: ${provider.storeInfo!.storeEmail}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                   Text('Phone: ${provider.storeInfo!.storePhone}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+                                   Text('Address: ${provider.storeInfo!.address}', style: textStyle14(context, fontWeight: FontWeight.w400)),
+
+                                   Divider(),
+
+                                   Text(
+                                     "Disclaimer: The information provided about this provider, "
+                                         "including services, pricing, reviews, and gallery, is sourced "
+                                         "from the provider or public data. While we strive to ensure "
+                                         "accuracy, FetchTrue does not guarantee completeness, reliability, "
+                                         "or availability of this information. Please verify details directly "
+                                         "with the provider before making any decisions.",
+                                     style: TextStyle(
+                                       fontSize: 14,
+                                       color: Colors.grey.shade600,
+                                       height: 2,
+                                     ),
+                                     textAlign: TextAlign.justify,
+                                   )
+                                 ],
+                               ),
+                             ),
+
+                             /// Gallery
+                             GalleryWidget(providerId: provider.id,)
+                           ],
+                         ),
+                       ),
+                     ],
+                   );
+                 }
+                 return SizedBox.shrink();
               }
-              return const SizedBox.shrink();
-            },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _profileCard({ProviderModel? data}) {
+  Widget _profileCard({ProviderModel? data, String? moduleName}) {
     return CustomContainer(
       color: Colors.white,
       margin: EdgeInsets.zero,
@@ -210,12 +253,13 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(data.storeInfo!.storeName,style: textStyle12(context),),
-                      ModuleNameWidget(moduleId: data.storeInfo!.module.toString(),),
+                      Text(moduleName ?? 'Unknown', style: textStyle12(context, color: CustomColor.descriptionColor)),
                       Text(
                         '⭐ ${data.averageRating} (${data.totalReviews} Review)',
                         style:
                         const TextStyle(fontSize: 12, color: Colors.black),
                       ),
+
                       5.height,
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../model/sign_up_response_model.dart';
 
 abstract class SignUpState extends Equatable {
   @override
@@ -10,18 +11,16 @@ class SignUpInitial extends SignUpState {}
 class SignUpLoading extends SignUpState {}
 
 class SignUpSuccess extends SignUpState {
-  final String message;
-
-  SignUpSuccess({required this.message});
+  final SignUpResponseModel response;
+  SignUpSuccess(this.response);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [response];
 }
 
 class SignUpFailure extends SignUpState {
   final String error;
-
-  SignUpFailure({required this.error});
+  SignUpFailure(this.error);
 
   @override
   List<Object?> get props => [error];

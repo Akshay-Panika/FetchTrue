@@ -6,18 +6,19 @@ import 'package:flutter/cupertino.dart';
 import '../../../core/costants/custom_log_emoji.dart';
 import '../../../helper/api_client.dart';
 import '../model/sign_up_model.dart';
+import '../model/sign_up_response_model.dart';
 
 
 class SignUpRepository {
   final ApiClient _apiClient = ApiClient();
 
-  Future<Response> registerUser(SignUpModel signUpData) async {
+  Future<SignUpResponseModel> registerUser(SignUpModel signUpData) async {
     try {
       final response = await _apiClient.post(
         ApiUrls.signUp,
         data: signUpData.toJson(),
       );
-      return response;
+      return SignUpResponseModel.fromJson(response.data);
     } on DioException catch (e) {
       String errorMessage = "Something went wrong";
       if (e.response != null) {

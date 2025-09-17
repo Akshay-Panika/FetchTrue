@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../../model/sign_up_model.dart';
 
 abstract class SignUpEvent extends Equatable {
@@ -9,7 +8,6 @@ abstract class SignUpEvent extends Equatable {
 
 class SignUpButtonPressed extends SignUpEvent {
   final SignUpModel signUpData;
-
   SignUpButtonPressed(this.signUpData);
 
   @override
