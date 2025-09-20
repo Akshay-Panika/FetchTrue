@@ -19,7 +19,8 @@ Widget CustomLabelFormField(
       required TextInputType  keyboardType,
       final TextEditingController? controller,
       String? Function(String?)? validator,
-      VoidCallback? onTap
+      VoidCallback? onTap,
+      Iterable<String>? autofillHints,
     }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,6 +65,7 @@ Widget CustomLabelFormField(
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         ),
         validator: validator,
+        autofillHints: autofillHints,
       ),
     ],
   );
@@ -85,7 +87,8 @@ Widget CustomFormField(
       required TextInputType  keyboardType,
       final TextEditingController? controller,
       String? Function(String?)? validator,
-      VoidCallback? onTap
+      VoidCallback? onTap,
+      Iterable<String>? autofillHints,
     }) {
   return TextFormField(
     onTap: onTap,
@@ -116,9 +119,9 @@ Widget CustomFormField(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     ),
     validator: validator,
+    autofillHints: autofillHints,
     maxLength: maxLength,
     maxLines: maxLines,
-    autofillHints: null,
     // autofillHints: const [AutofillHints.telephoneNumber],
     buildCounter: (
         BuildContext context, {

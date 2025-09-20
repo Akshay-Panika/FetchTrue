@@ -1,23 +1,32 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import '../../../core/costants/custom_log_emoji.dart';
+import '../../../helper/api_client.dart';
 import '../../../helper/api_urls.dart';
 import '../model/upcoming_lead_commission_model.dart';
 
 class UpcomingLeadCommissionRepository {
-  final Dio _dio = Dio();
+  final ApiClient _apiClient = ApiClient();
 
   Future<UpcomingLeadCommissionModel> fetchCommission(String checkoutId) async {
     try {
-      final response = await _dio.get(
+      final response = await _apiClient.get(
         "${ApiUrls.upcomingLeadCommission}/$checkoutId",
       );
-
-      if (response.statusCode == 200) {
-        return UpcomingLeadCommissionModel.fromJson(response.data);
-      } else {
-        throw Exception("Failed to load commission data");
+      if (response.data == null) {
+        debugPrint("${CustomLogEmoji.error} Empty response from server");
       }
-    } catch (e) {
-      throw Exception("Error: $e");
+
+      return UpcomingLeadCommissionModel.fromJson(response.data);
+    }   on DioException catch (e){
+      if (e.response != null) {
+        debugPrint("${CustomLogEmoji.error} Offer API Error [${e.response?.statusCode}]: ${e.response?.data}");
+        // throw Exception('Failed to load data');
+      }
+      else {
+        debugPrint("${CustomLogEmoji.network}Offer Network Error: ${e.message}");
+      }
+      rethrow;
     }
   }
 }

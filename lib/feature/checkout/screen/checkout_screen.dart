@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../service/model/service_model.dart';
 import '../model/checkout_model.dart';
 import '../widget/check_payment_widget.dart';
 import '../widget/checkout_details_widget.dart';

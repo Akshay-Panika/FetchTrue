@@ -17,13 +17,6 @@ class LeadResponse {
     );
   }
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'success': success,
-  //     'data': data.map((e) => e.toJson()).toList(),
-  //     'newUpdatedAt': newUpdatedAt,
-  //   };
-  // }
 }
 
 class LeadModel {

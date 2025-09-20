@@ -1,9 +1,10 @@
+import 'package:fetchtrue/feature/auth/screen/verify_otp_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/feature/auth/firebase_uth/verify_number_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_logo.dart';
 import '../../../core/widgets/custom_button.dart';
@@ -44,16 +45,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _isVerifyingNumber = false;
 
-
   @override
-  void dispose() {
-    _fullNameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _raffController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _phoneController.addListener(() {
+      final digits = _phoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
+      final last10 = digits.length > 10 ? digits.substring(digits.length - 10) : digits;
+      if (_phoneController.text != last10) {
+        _phoneController.value = TextEditingValue(
+          text: last10,
+          selection: TextSelection.collapsed(offset: last10.length),
+        );
+      }
+    });
   }
 
   Future<void> _verifyNumber() async {
@@ -109,6 +113,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() => _isVerifyingNumber = false);
       showCustomToast(e.toString());
     }
+  }
+
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _raffController.dispose();
+    super.dispose();
   }
 
   @override
@@ -200,12 +216,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               context,
                               hint: 'Enter phone number',
                               controller: _phoneController,
-                              maxLength: 10,
+                              maxLength: 12,
                               keyboardType: TextInputType.number,
                               isRequired: true,
                               enabled: !_isOtpVerified,
+                              autofillHints: const [AutofillHints.telephoneNumber],
                             ),
                           ),
+
                         ],
                       ),
                     ],
@@ -238,6 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           isRequired: true,
+                          autofillHints: const [AutofillHints.email],
                         ),
                         15.height,
 
@@ -388,122 +407,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-class VerifyOtpScreen extends StatefulWidget {
-  final String phoneNumber;
-  final VerifyNumberService verifyService;
-  const VerifyOtpScreen({super.key, required this.phoneNumber, required this.verifyService});
-
-  @override
-  State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();
-}
-
-class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
-  final List<TextEditingController> _controllers =
-  List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-  bool _isVerifying = false;
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
-    super.dispose();
-  }
-
-  void _onOtpChanged(String value, int index) {
-    if (value.isNotEmpty && index < _focusNodes.length - 1) {
-      _focusNodes[index + 1].requestFocus();
-    } else if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
-    }
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomColor.whiteColor,
-      appBar: const CustomAppBar(title: 'Verify OTP', showBackButton: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Image.asset('assets/image/otpImage.jpg', height: 280),
-            const SizedBox(height: 20),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'Enter the verification code sent to ',
-                    style: textStyle14(context, color: CustomColor.descriptionColor),
-                  ),
-                  TextSpan(
-                    text: '+91 ${widget.phoneNumber}',
-                    style: textStyle14(context, color: CustomColor.greenColor),
-                  ),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Wrong Number?", style: textStyle14(context)),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(6, (index) {
-                return SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Center(
-                    child: TextField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      maxLength: 1,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      onChanged: (value) => _onOtpChanged(value, index),
-                      decoration: const InputDecoration(counterText: '', border: OutlineInputBorder()),
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 50),
-            CustomButton(
-              label: 'Verify OTP',
-              isLoading: _isVerifying,
-              onPressed: () async {
-                final otp = _controllers.map((e) => e.text.trim()).join();
-
-                if (otp.length != 6 || otp.contains(RegExp(r'\D'))) {
-                  showCustomToast( 'Please enter a valid 6-digit OTP');
-                  return;
-                }
-
-                setState(() => _isVerifying = true);
-                try {
-                  final verified = await widget.verifyService.verifyOtp(otp);
-                  if (verified) {
-                    Navigator.pop(context, true);
-                  } else {
-                    showCustomToast( 'OTP verification failed');
-                  }
-                } catch (e) {
-                  showCustomToast('Something went wrong otp');
-                } finally {
-                  setState(() => _isVerifying = false);
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

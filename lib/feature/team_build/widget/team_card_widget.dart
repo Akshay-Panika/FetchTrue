@@ -15,6 +15,10 @@ import 'package:shimmer/shimmer.dart';
 import '../../lead/bloc/lead/lead_bloc.dart';
 import '../../lead/bloc/lead/lead_event.dart';
 import '../../lead/bloc/lead/lead_state.dart';
+import '../../lead/bloc/team_lead/team_lead_bloc.dart';
+import '../../lead/bloc/team_lead/team_lead_event.dart';
+import '../../lead/bloc/team_lead/team_lead_state.dart';
+import '../../lead/repository/lead_repository.dart';
 
 class TeamCardWidget extends StatefulWidget {
  final ImageProvider<Object>? backgroundImage;
@@ -37,14 +41,6 @@ class TeamCardWidget extends StatefulWidget {
 
 class _TeamCardWidgetState extends State<TeamCardWidget> {
 
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.id != null) {
-      context.read<LeadBloc>().add(FetchLeadsByUser(widget.id!));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,33 +89,36 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                   children: [
                     /// Leads
                     Expanded(flex: 2,
-                      child: BlocBuilder<LeadBloc, LeadState>(
-                        builder: (context, state) {
-                          if (state is LeadLoading) {
-                            return _leadShimmer();
-                          } else if (state is LeadLoaded) {
-                            final allLeads = state.leadModel ?? [];
+                      child: BlocProvider(
+                        create: (context) => TeamLeadBloc(LeadRepository())..add(GetTeamLeadsByUser(widget.id!)),
+                        child: BlocBuilder<TeamLeadBloc, TeamLeadState>(
+                          builder: (context, state) {
+                            if (state is TeamLeadLoading) {
+                              return _leadShimmer();
+                            } else if (state is TeamLeadLoaded) {
+                              final allLeads = state.leadModel ?? [];
 
-                            final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
-                            final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+                              final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
+                              final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
 
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('${allLeads.length}\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff3B82F6)),),
-                                Text('${acceptedLeads.length}\nActive', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff22C55E)),),
-                                Text('${completedLeads.length}\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
-                              ],
-                            );
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('${allLeads.length}\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff3B82F6)),),
+                                  Text('${acceptedLeads.length}\nActive', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff22C55E)),),
+                                  Text('${completedLeads.length}\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
+                                ],
+                              );
 
-                          } else if (state is LeadError) {
-                            print('"❌ ${state.message}"');
+                            } else if (state is TeamLeadError) {
+                              print('"❌ ${state.message}"');
+                              return SizedBox.shrink();
+                              // return Center(child: Text("❌ ${state.message}"));
+                            }
                             return SizedBox.shrink();
-                            // return Center(child: Text("❌ ${state.message}"));
-                          }
-                          return SizedBox.shrink();
-                        },
+                          },
+                        ),
                       ),
                     ),
 

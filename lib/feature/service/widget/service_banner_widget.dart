@@ -22,7 +22,7 @@ class _ServiceBannerWidgetState extends State<ServiceBannerWidget> {
   int _current = 0;
   @override
   Widget build(BuildContext context) {
-
+    Dimensions dimensions = Dimensions(context);
     final service = widget.services.first;
 
     /// Merge thumbnailImage with bannerImages
@@ -47,7 +47,7 @@ class _ServiceBannerWidgetState extends State<ServiceBannerWidget> {
               );
             } ,
             options: CarouselOptions(
-              height: 200,
+              height: dimensions.screenHeight * 0.2,
               scrollPhysics: mergedImages.length > 1
                   ? const AlwaysScrollableScrollPhysics()
                   : const NeverScrollableScrollPhysics(),

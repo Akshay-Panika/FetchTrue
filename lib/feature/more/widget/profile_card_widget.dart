@@ -41,7 +41,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
     return CustomContainer(
       color: CustomColor.whiteColor,
-      padding: const EdgeInsets.all(15),
+      padding: EdgeInsets.zero,
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
 
@@ -54,167 +54,175 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
           }
           else if (state is UserLoaded) {
             final user = state.user;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Stack(
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 35,
-                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                          backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
-                              ? NetworkImage(user.profilePhoto!)
-                              : AssetImage(CustomImage.nullImage),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                            backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
+                                ? NetworkImage(user.profilePhoto!)
+                                : AssetImage(CustomImage.nullImage),
 
-                        ),
-                       10.width,
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${user.fullName}', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                            Text('${user.email}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                            Text('ID: ${user.userId}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => PackageScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                          decoration: BoxDecoration(
-                            color: CustomColor.appColor,
-                            border: Border.all(color: CustomColor.appColor, width: 0.5),
-                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child:  Row(
+                         10.width,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.verified_outlined, size: 16, color: CustomColor.whiteColor,),
-                              SizedBox(width: 5),
-                              Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.whiteColor)),
+                              Text('${user.fullName}', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                              Text('${user.email}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                              Text('ID: ${user.userId}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                  ],
+                      const Divider(),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildStatus(icon:CupertinoIcons.calendar,
+                            value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
+                                ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
+                                ? user.createdAt as DateTime
+                                : DateTime.parse(user.createdAt.toString()))
+                                : 'Not available',
+                            valueType: 'Joining date',
+                          ),
+
+                          Container(width: 1,height: 35,color: Colors.grey.shade500,),
+
+                          BlocBuilder<LeadBloc, LeadState>(
+                            builder: (context, state) {
+                              if (state is LeadLoading) {
+                                 return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                              } else if (state is LeadLoaded) {
+                                final allLeads = state.leadModel ?? [];
+                                final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+
+
+                                return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '${completedLeads.length}', valueType: 'Lead Completed');
+
+                              } else if (state is LeadError) {
+                                return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                              }
+                              return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                            },
+                          ),
+
+                          Container(width: 1,height: 35,color: Colors.grey.shade500,),
+
+                          BlocProvider(
+                            create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
+                            child: BlocBuilder<WalletBloc, WalletState>(
+                              builder: (context, state) {
+                                if (state is WalletLoading) {
+                                 return  _buildStatus(icon: Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
+                                } else if (state is WalletLoaded) {
+                                  final wallet = state.wallet;
+                                  return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
+                                } else if (state is WalletError) {
+                                  return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
+                                }
+                                return const SizedBox();
+                              },
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const Divider(),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatus(icon:CupertinoIcons.calendar,
-                      value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
-                          ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
-                          ? user.createdAt as DateTime
-                          : DateTime.parse(user.createdAt.toString()))
-                          : 'Not available',
-                      valueType: 'Joining date',
-                    ),
-
-                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
-
-                    BlocBuilder<LeadBloc, LeadState>(
-                      builder: (context, state) {
-                        if (state is LeadLoading) {
-                           return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                        } else if (state is LeadLoaded) {
-                          final allLeads = state.leadModel ?? [];
-                          final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
-
-
-                          return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '${completedLeads.length}', valueType: 'Lead Completed');
-
-                        } else if (state is LeadError) {
-                          return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                        }
-                        return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                      },
-                    ),
-
-                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
-
-                    BlocProvider(
-                      create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
-                      child: BlocBuilder<WalletBloc, WalletState>(
-                        builder: (context, state) {
-                          if (state is WalletLoading) {
-                           return  _buildStatus(icon: Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
-                          } else if (state is WalletLoaded) {
-                            final wallet = state.wallet;
-                            return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
-                          } else if (state is WalletError) {
-                            return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
-                          }
-                          return const SizedBox();
-                        },
+                Positioned(
+                    top: 0,right: 0,
+                    child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PackageScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: CustomColor.appColor,
+                      border: Border.all(color: CustomColor.appColor, width: 0.5),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
                       ),
                     ),
-
-                  ],
-                ),
+                    child:  Row(
+                      children: [
+                        Icon(Icons.verified_outlined, size: 16, color: CustomColor.whiteColor,),
+                        SizedBox(width: 5),
+                        Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.whiteColor)),
+                      ],
+                    ),
+                  ),
+                ))
               ],
             );
           } else if (state is UserError) {
             print('Error: ${state.massage}');
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+            return Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
 
-                // Profile Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 35,
-                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                          backgroundImage:  AssetImage(CustomImage.nullImage),
-                        ),
-                        10.width,
+                  // Profile Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                            backgroundImage:  AssetImage(CustomImage.nullImage),
+                          ),
+                          10.width,
 
-                        // Name & Email
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                            Text('guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                            Text('#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          // Name & Email
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                              Text('guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                              Text('#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
 
-                const Divider(),
+                  const Divider(),
 
-                // Status Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatus(icon: CupertinoIcons.calendar,value:  '00', valueType: 'Joining date'),
-                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                    _buildStatus(icon:Icons.check_circle_outline_outlined,value:  '00', valueType: 'Lead Completed'),
-                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                    _buildStatus(icon: Icons.currency_rupee_outlined,value:  '00', valueType: 'Total Earning'),
-                  ],
-                ),
-              ],
+                  // Status Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildStatus(icon: CupertinoIcons.calendar,value:  '00', valueType: 'Joining date'),
+                      Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                      _buildStatus(icon:Icons.check_circle_outline_outlined,value:  '00', valueType: 'Lead Completed'),
+                      Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                      _buildStatus(icon: Icons.currency_rupee_outlined,value:  '00', valueType: 'Total Earning'),
+                    ],
+                  ),
+                ],
+              ),
             );
           }
           return SizedBox.shrink();

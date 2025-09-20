@@ -54,6 +54,7 @@ class ServiceCardWidget extends StatelessWidget {
               imageUrl: data.thumbnailImage,
               margin: EdgeInsets.zero,
               borderRadius: BorderRadius.circular(10),
+              fit: BoxFit.fill,
               child: Align(
                 alignment: Alignment.topRight,
                 child: Column(

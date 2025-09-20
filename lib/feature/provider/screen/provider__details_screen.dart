@@ -77,49 +77,45 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                   return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
                 }
 
-                 if(providerState is ProviderLoaded && moduleState is ModuleLoaded){
+                if (providerState is ProviderLoaded && moduleState is ModuleLoaded) {
+                  final provider = providerState.provider;
+                  final modules = moduleState.modules;
 
-                   ProviderModel? selectedProvider;
-                   ModuleModel? selectedModule;
+                  // module safe fetch
+                  final selectedModule = modules.firstWhere(
+                        (m) => m.id == provider?.storeInfo?.module,
+                    orElse: () => ModuleModel(id: '', name: 'Unknown'),
+                  );
 
-                   final provider = providerState.provider;
-                   final modules = moduleState.modules;
+                  // provider safe fetch
+                  final selectedProvider = (provider != null && provider.kycCompleted == true)
+                      ? provider
+                      : null;
 
-                   try {
-                      selectedModule = modules.firstWhere((m) => m.id == provider?.storeInfo?.module,);
+                  if (selectedProvider == null) {
+                    return const Center(child: Text("Provider not available"));
+                  }
 
-                     if (provider != null && provider.kycCompleted == true) {
-                       selectedProvider = provider;
-                     } else {
-                       selectedProvider = null;
-                     }
-                   } catch (e) {
-                     selectedProvider = null;
-                     selectedModule = null;
-                   }
 
-                   if (selectedProvider == null) {
-                     return Center(child: Text("Provider not available"));
-                   }
-
-                   return CustomScrollView(
+                  return CustomScrollView(
                      slivers: [
                        /// Cover Image
-                         SliverAppBar(
-                           toolbarHeight: 200,
-                           pinned: false,
-                           floating: false,
-                           automaticallyImplyLeading: false,
-                           flexibleSpace: FlexibleSpaceBar(
-                             background: Container(
-                               decoration: BoxDecoration(
-                                 image: DecorationImage(
-                                   image: provider.storeInfo!.cover == null ? AssetImage(CustomImage.nullBackImage):
-                                   NetworkImage(provider.storeInfo!.cover ?? ''), fit: BoxFit.fill,),
+                       SliverAppBar(
+                         toolbarHeight: 200,
+                         pinned: false,
+                         floating: false,
+                         automaticallyImplyLeading: false,
+                         flexibleSpace: FlexibleSpaceBar(
+                           background: Container(
+                             decoration: BoxDecoration(
+                               image: DecorationImage(
+                                 image: _getImageProvider(provider.storeInfo?.cover),
+                                 fit: BoxFit.cover,
                                ),
                              ),
                            ),
                          ),
+                       ),
 
                        /// Sticky Header with Profile + TabBar
                        SliverPersistentHeader(
@@ -323,4 +319,14 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
+}
+
+ImageProvider _getImageProvider(String? url) {
+  if (url != null && url.isNotEmpty) {
+    final uri = Uri.tryParse(url);
+    if (uri != null && (uri.hasScheme && (uri.isScheme("http") || uri.isScheme("https")))) {
+      return NetworkImage(url);
+    }
+  }
+  return AssetImage(CustomImage.nullBackImage);
 }

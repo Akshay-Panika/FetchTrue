@@ -144,9 +144,10 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                  CustomNetworkImage(
-                                  height: dimensions.screenHeight * 0.165,
+                                  height: dimensions.screenHeight * 0.18,
                                   margin: EdgeInsets.zero,
                                   imageUrl: data.thumbnailImage,
+                                  fit: BoxFit.fill,
                                   borderRadius: BorderRadius.circular(10),
                                   child: Align(
                                     alignment: Alignment.topRight,

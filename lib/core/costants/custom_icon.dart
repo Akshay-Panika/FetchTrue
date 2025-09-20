@@ -8,4 +8,5 @@ class CustomIcon{
   static String facebookIcon = '${icon}facebookIcon.png';
   static String googleIcon = '${icon}googleIcon.png';
   static String instagramIcon = '${icon}instagramIcon.png';
+  static String appleIcon = '${icon}appleIcon.png';
 }

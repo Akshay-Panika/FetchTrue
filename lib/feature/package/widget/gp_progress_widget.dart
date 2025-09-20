@@ -1,22 +1,34 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
 import 'package:flutter/material.dart';
 
-class GpProgressWidget extends StatelessWidget {
-  final String userId;
-  final int targetCount;
-  final int currentCount; // naya
+import '../../team_build/model/my_team_model.dart';
+import '../model/referral_user_model.dart';
 
+class GpProgressWidget extends StatelessWidget {
+  final List<ReferralUser> referral;
+  final List<MyTeamModel> team;
   const GpProgressWidget({
     super.key,
-    required this.userId,
-    this.targetCount = 10,
-    this.currentCount = 0,
+    required this.referral,
+    required this.team,
   });
 
   @override
   Widget build(BuildContext context) {
+    final targetCount = 10;
+    // final currentCount = team.where((gpMember) => gpMember.user?.packageStatus == "GP").length;
+    final currentCount = team
+        .where((gpMember) {
+      final status = gpMember.user?.packageStatus ?? "";
+      return status == "GP" || status == "SGP" || status == "PGP";
+    })
+        .length;
+    final displayCount = currentCount > targetCount ? targetCount : currentCount;
+
     final progress = (currentCount / targetCount).clamp(0.0, 1.0);
     final remaining = (targetCount - currentCount).clamp(0, targetCount);
 
@@ -38,7 +50,7 @@ class GpProgressWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _labelBox(context, "$currentCount", CustomColor.greyColor),
+              _labelBox(context, "$displayCount", CustomColor.greyColor),
               _labelBox(context, "$targetCount", CustomColor.greenColor),
             ],
           ),
@@ -50,6 +62,14 @@ class GpProgressWidget extends StatelessWidget {
             style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
           ),
           10.height,
+
+          remaining > 0 ?
+          CustomContainer(
+            border: false,
+            color: CustomColor.whiteColor,
+            child: Center(child: Text('Build Team And Grow Your Level', style: textStyle12(context, color: CustomColor.appColor),)),
+           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
+          ):SizedBox.shrink()
         ],
       ),
     );

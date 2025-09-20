@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_image.dart';
-import '../../lead/bloc/lead/lead_bloc.dart';
-import '../../lead/bloc/lead/lead_event.dart';
+import '../../lead/bloc/team_lead/team_lead_bloc.dart';
+import '../../lead/bloc/team_lead/team_lead_event.dart';
 import '../../lead/repository/lead_repository.dart';
 import '../model/my_team_model.dart';
 
@@ -25,31 +25,28 @@ class MyGpTeamSection extends StatelessWidget {
           final member = members[index].user;
           final earning = members[index].totalEarningsFromShare2;
 
-          return BlocProvider(
-            create: (context) => LeadBloc(LeadRepository())..add(FetchLeadsByUser(member.id)),
-            child: TeamCardWidget(
-              radius: 25,
-              backgroundImage: member!.profilePhoto != null && member.profilePhoto!.isNotEmpty
-                  ? NetworkImage(member.profilePhoto!)
-                  :  AssetImage(CustomImage.nullImage) as ImageProvider,
-              id: member!.id,
-              memberId: member.userId,
-              name: member.fullName,
-              // level: member.packageStatus,
-              level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
-              address: '_______',
-              phone: member.mobileNumber,
-              earning: earning?.toStringAsFixed(2),
-              status: member.isDeleted,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TeamMemberScreen(members: members[index],),
-                  ),
-                );
-              },
-            ),
+          return TeamCardWidget(
+            radius: 25,
+            backgroundImage: member!.profilePhoto != null && member.profilePhoto!.isNotEmpty
+                ? NetworkImage(member.profilePhoto!)
+                :  AssetImage(CustomImage.nullImage) as ImageProvider,
+            id: member!.id,
+            memberId: member.userId,
+            name: member.fullName,
+            // level: member.packageStatus,
+            level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
+            address: '_______',
+            phone: member.mobileNumber,
+            earning: earning?.toStringAsFixed(2),
+            status: member.isDeleted,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => TeamMemberScreen(members: members[index],),
+                ),
+              );
+            },
           );
         },),
     );

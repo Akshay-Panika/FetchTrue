@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/team_build/widget/my_gp_team_section.dart';
 import 'package:fetchtrue/feature/team_build/widget/my_non_gp_team_section.dart';
-import 'package:fetchtrue/feature/team_build/widget/relationship_manager_card_widget.dart';
 import 'package:fetchtrue/feature/team_build/widget/relationship_manager_seaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/my_team/my_team_bloc.dart';
 import '../bloc/my_team/my_team_event.dart';
 import '../bloc/my_team/my_team_state.dart';
-import '../model/my_team_model.dart';
 import '../repository/my_team_repository.dart';
 
 class MyTeamSection extends StatelessWidget {

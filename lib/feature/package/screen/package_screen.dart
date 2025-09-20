@@ -461,15 +461,12 @@ Widget _buildEnhancedMainCard(BuildContext context ,
 
         if(user.packageActive == true && planKey == 'gp')
           GpProgressWidget(
-            userId: user.id,
-            targetCount: 10,
-            currentCount: referral.length,
+            referral: referral,
+            team: team,
           ),
 
         if(user.packageActive == true && planKey == 'sgp')
           SgpProgressWidget(
-            userId: user.id,
-            targetCount: 3,
             team: team,
           ),
         20.height,
@@ -693,7 +690,7 @@ class _PaymentCardState extends State<PaymentCard> {
                 CustomContainer(
                   padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
                   color: CustomColor.appColor,
-                  child: Text('Activate Now', style: textStyle14(context, color: CustomColor.whiteColor),),
+                  child: Text('Active Now', style: textStyle14(context, color: CustomColor.whiteColor),),
                   onTap: () {
                     showActivateBottomSheet(context, package, user);
                   },

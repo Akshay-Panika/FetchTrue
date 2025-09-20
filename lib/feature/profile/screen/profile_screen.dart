@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
@@ -16,6 +19,8 @@ import '../../package/screen/package_screen.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -31,11 +36,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _pickAndUploadPhoto() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      context
-          .read<UserBloc>()
-          .add(UpdateProfilePhoto(widget.userId, pickedFile.path));
+      try {
+        // Compress the image before uploading
+        final compressedPath = await FlutterImageCompress.compressAndGetFile(
+          pickedFile.path,
+          '${pickedFile.path}_compressed.jpg',
+          quality: 70,
+        );
+
+        if (compressedPath != null) {
+          context.read<UserBloc>().add(
+            UpdateProfilePhoto(widget.userId, compressedPath.path),
+          );
+        } else {
+          // fallback if compression fails
+          context.read<UserBloc>().add(
+            UpdateProfilePhoto(widget.userId, pickedFile.path),
+          );
+        }
+      } catch (e) {
+        print('Error compressing/uploading image: $e');
+        // fallback if any error
+        context.read<UserBloc>().add(
+          UpdateProfilePhoto(widget.userId, pickedFile.path),
+        );
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

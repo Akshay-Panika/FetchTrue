@@ -44,6 +44,15 @@ class ApiClient {
     }
   }
 
+  Future<Response> patch(String path, {dynamic data}) async {
+    try {
+      return await _dio.patch(path, data: data);
+    } on SocketException {
+      throw Exception("No Internet connection. Please check your network.");
+    }
+  }
+
+
   Future<Response> delete(String path, {dynamic data}) async {
     try {
       return await _dio.delete(path, data: data);
