@@ -7,7 +7,9 @@ import '../../../core/costants/custom_color.dart';
 class IndiaStateCityPicker extends StatefulWidget {
   final Function(String?)? onStateChanged;
   final Function(String?)? onCityChanged;
-  const IndiaStateCityPicker({super.key, this.onStateChanged, this.onCityChanged});
+  final String? initialState;
+  final String? initialCity;
+  const IndiaStateCityPicker({super.key, this.onStateChanged, this.onCityChanged, this.initialState, this.initialCity});
 
   @override
   State<IndiaStateCityPicker> createState() => _IndiaStateCityPickerState();
@@ -840,6 +842,13 @@ class _IndiaStateCityPickerState extends State<IndiaStateCityPicker> {
 
   String? selectedState;
   String? selectedCity;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedState = widget.initialState;
+    selectedCity = widget.initialCity;
+  }
 
   Future<void> _showDialog({
     required List<String> items,

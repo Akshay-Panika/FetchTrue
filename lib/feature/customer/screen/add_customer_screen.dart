@@ -186,6 +186,8 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                   10.height,
 
                   IndiaStateCityPicker(
+                    initialState: selectedState,
+                    initialCity: selectedCity,
                     onStateChanged: (state) {
                       setState(() {
                         selectedState = state;

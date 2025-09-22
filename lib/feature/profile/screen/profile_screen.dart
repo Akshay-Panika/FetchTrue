@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/custom_image.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
@@ -220,21 +218,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdditionalDetailsScreen(user: user!.id.toString(),),)),
                       ),
-                      // 10.height,
-                      // CustomContainer(
-                      //   border: false,
-                      //   color: CustomColor.whiteColor,
-                      //   margin: EdgeInsets.zero,
-                      //   child: ListTile(
-                      //     minVerticalPadding: 0,
-                      //     minTileHeight: 0,
-                      //     contentPadding: EdgeInsets.all(0),
-                      //     title: const Text('Address'),
-                      //     subtitle: const Text('Add Address'),
-                      //     trailing: const Icon(Icons.add, color: Colors.grey),
-                      //   ),
-                      //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(userId: user!.id.toString(),),)),
-                      // ),
+                      10.height,
+                      CustomContainer(
+                        border: false,
+                        color: CustomColor.whiteColor,
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          minVerticalPadding: 0,
+                          minTileHeight: 0,
+                          contentPadding: EdgeInsets.all(0),
+                          title: const Text('Address'),
+                          subtitle: const Text('Add Address'),
+                          trailing: const Icon(Icons.add, color: Colors.grey),
+                        ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(user: user!),)),
+                      ),
                     ],
                   ),
                 ),

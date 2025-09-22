@@ -202,7 +202,7 @@ class _MemberLeads extends StatelessWidget {
                                           ),
                                         if ((leads.isAccepted ?? false) && !(leads.isCompleted ?? false))
                                           Text(
-                                            'Earning\nOpportunity ₹ ${data?.share2?.toStringAsFixed(2) ?? "__"}',
+                                            'Earning\nOpportunity ₹ ${data?.share3.toStringAsFixed(2) ?? "__"}',
                                             style: textStyle12(
                                               context,
                                               fontWeight: FontWeight.w400,

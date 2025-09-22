@@ -2,11 +2,7 @@ import 'package:fetchtrue/feature/team_build/screen/team_mamber_screen.dart';
 import 'package:fetchtrue/feature/team_build/widget/team_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/costants/custom_image.dart';
-import '../../lead/bloc/team_lead/team_lead_bloc.dart';
-import '../../lead/bloc/team_lead/team_lead_event.dart';
-import '../../lead/repository/lead_repository.dart';
 import '../model/my_team_model.dart';
 
 class MyGpTeamSection extends StatelessWidget {

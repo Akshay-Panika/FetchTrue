@@ -26,16 +26,16 @@ class CommissionData {
   final String id;
   final String? leadId;
   final String checkoutId;
-  final int share1;
-  final int share2;
-  final int share3;
-  final int adminCommission;
-  final int providerShare;
-  final int extraShare1;
-  final int extraShare2;
-  final int extraShare3;
-  final int extraAdminCommission;
-  final int extraProviderShare;
+  final double share1;
+  final double share2;
+  final double share3;
+  final double adminCommission;
+  final double providerShare;
+  final double extraShare1;
+  final double extraShare2;
+  final double extraShare3;
+  final double extraAdminCommission;
+  final double extraProviderShare;
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -61,13 +61,13 @@ class CommissionData {
     required this.v,
   });
 
-  /// helper function to safely cast to int
-  static int _toInt(dynamic value) {
-    if (value == null) return 0;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    if (value is String) return int.tryParse(value) ?? 0;
-    return 0;
+  /// helper function to safely cast to double
+  static double _toDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 
   factory CommissionData.fromJson(Map<String, dynamic> json) {
@@ -75,20 +75,20 @@ class CommissionData {
       id: json['_id'] ?? '',
       leadId: json['leadId'],
       checkoutId: json['checkoutId'] ?? '',
-      share1: _toInt(json['share_1']),
-      share2: _toInt(json['share_2']),
-      share3: _toInt(json['share_3']),
-      adminCommission: _toInt(json['admin_commission']),
-      providerShare: _toInt(json['provider_share']),
-      extraShare1: _toInt(json['extra_share_1']),
-      extraShare2: _toInt(json['extra_share_2']),
-      extraShare3: _toInt(json['extra_share_3']),
-      extraAdminCommission: _toInt(json['extra_admin_commission']),
-      extraProviderShare: _toInt(json['extra_provider_share']),
+      share1: _toDouble(json['share_1']),
+      share2: _toDouble(json['share_2']),
+      share3: _toDouble(json['share_3']),
+      adminCommission: _toDouble(json['admin_commission']),
+      providerShare: _toDouble(json['provider_share']),
+      extraShare1: _toDouble(json['extra_share_1']),
+      extraShare2: _toDouble(json['extra_share_2']),
+      extraShare3: _toDouble(json['extra_share_3']),
+      extraAdminCommission: _toDouble(json['extra_admin_commission']),
+      extraProviderShare: _toDouble(json['extra_provider_share']),
       status: json['status'] ?? '',
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
-      v: _toInt(json['__v']),
+      v: json['__v'] ?? 0,
     );
   }
 

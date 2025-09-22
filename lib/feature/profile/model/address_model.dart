@@ -1,6 +1,6 @@
 class AddressModel {
   final String addressType;
-  final Address address;
+  final UserAddress address;
 
   AddressModel({required this.addressType, required this.address});
 
@@ -12,7 +12,7 @@ class AddressModel {
   }
 }
 
-class Address {
+class UserAddress {
   final String houseNumber;
   final String landmark;
   final String state;
@@ -21,7 +21,7 @@ class Address {
   final String country;
   final String fullAddress;
 
-  Address({
+  UserAddress({
     required this.houseNumber,
     required this.landmark,
     required this.state,

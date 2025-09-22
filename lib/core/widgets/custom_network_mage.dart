@@ -31,7 +31,9 @@ class CustomNetworkImage extends StatelessWidget {
       children: [
         Container(
           margin: margin ?? EdgeInsets.zero,
-          child: InkWell(onTap: onTap,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: onTap?? null,
             child: ClipRRect(
               borderRadius: borderRadius ?? BorderRadius.zero,
               child: CachedNetworkImage(
