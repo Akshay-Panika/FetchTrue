@@ -3,10 +3,6 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/team_build/model/my_team_model.dart';
 import 'package:fetchtrue/feature/team_build/widget/team_card_widget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../lead/bloc/team_lead/team_lead_bloc.dart';
-import '../../lead/bloc/team_lead/team_lead_event.dart';
-import '../../lead/repository/lead_repository.dart';
 
 class MyNonGpTeamSection extends StatelessWidget {
   final List<MyTeamModel> members;

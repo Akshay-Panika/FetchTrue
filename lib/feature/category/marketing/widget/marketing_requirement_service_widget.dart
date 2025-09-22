@@ -31,7 +31,7 @@ class MarketingRequirementServiceWidget extends StatelessWidget {
 
            // final services = state.services;
            final services = state.services.where((moduleService) =>
-           moduleService.category.module == moduleId && moduleService.recommendedServices == true
+           moduleService.category?.module == moduleId && moduleService.recommendedServices == true
            ).toList();
 
 
@@ -65,7 +65,7 @@ class MarketingRequirementServiceWidget extends StatelessWidget {
 
          else if (state is ServiceError) {
            // print('Dio Error: ${state.message}');
-           return Expanded(child: Center(child: Text('No Service')));
+           return Center(child: Text('No Service'));
          }
          return const SizedBox.shrink();
        },

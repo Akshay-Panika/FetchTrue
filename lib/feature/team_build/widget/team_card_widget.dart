@@ -105,9 +105,9 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${allLeads.length}\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff3B82F6)),),
-                                  Text('${acceptedLeads.length}\nActive', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xff22C55E)),),
-                                  Text('${completedLeads.length}\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
+                                  Text('${allLeads.length}\nLeads', textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.appColor),),
+                                  Text('${acceptedLeads.length}\nAccepted', textAlign: TextAlign.center,style: textStyle12(context, color: Color(0xffFF9A55)),),
+                                  Text('${completedLeads.length}\nCompleted', textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.greenColor),),
                                 ],
                               );
 

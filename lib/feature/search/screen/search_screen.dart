@@ -273,7 +273,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   );
                 } else if (state is ServiceError) {
-                  return const Expanded(child: Center(child: Text('No Service')));
+                  return Center(child: Text('No Service'));
                 }
                 return const SizedBox.shrink();
               },

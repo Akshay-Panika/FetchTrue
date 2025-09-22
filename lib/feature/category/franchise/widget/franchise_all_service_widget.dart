@@ -31,7 +31,7 @@ class FranchiseAllServiceWidget extends StatelessWidget {
      
            // final services = state.services;
            final services = state.services.where((moduleService) =>
-           moduleService.category.module == moduleId
+           moduleService.category?.module == moduleId
            ).toList();
      
      
@@ -63,8 +63,8 @@ class FranchiseAllServiceWidget extends StatelessWidget {
          }
      
          else if (state is ServiceError) {
-           // print('Dio Error: ${state.message}');
-           return Expanded(child: Center(child: Text('No Service')));
+           debugPrint('Service Error: ${state.message}');
+           return Center(child: Text('No Service'));
          }
          return const SizedBox.shrink();
        },
