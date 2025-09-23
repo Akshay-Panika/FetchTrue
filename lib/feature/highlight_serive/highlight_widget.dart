@@ -57,8 +57,9 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
                     children: [
                       CarouselSlider.builder(
                         options: CarouselOptions(
-                          height: dimensions.screenHeight*0.25,
-                          autoPlay: true,
+                          height: dimensions.screenHeight*0.28,
+                          autoPlay: adsList.length == 1 ? false :true,
+                          scrollPhysics:adsList.length == 1 ? NeverScrollableScrollPhysics():AlwaysScrollableScrollPhysics(),
                           enlargeCenterPage: true,
                           viewportFraction: 1,
                           autoPlayInterval: const Duration(seconds: 4),
@@ -104,6 +105,8 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
                         },
                       ),
                       5.height,
+
+                      if(adsList.length != 1 )
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(adsList.length, (index) {

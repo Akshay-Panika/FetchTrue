@@ -11,13 +11,47 @@ class ProviderInitial extends ProviderState {}
 
 class ProviderLoading extends ProviderState {}
 
+// class ProvidersLoaded extends ProviderState {
+//   final List<ProviderModel> providers;
+//   ProvidersLoaded(this.providers);
+//
+//   @override
+//   List<Object?> get props => [providers];
+// }
+
 class ProvidersLoaded extends ProviderState {
-  final List<ProviderModel> providers;
-  ProvidersLoaded(this.providers);
+  final List<ProviderModel> providers; // Original list
+  final String selectedFilter;
+
+  ProvidersLoaded({
+    required this.providers,
+    this.selectedFilter = 'All',
+  });
+
+  List<ProviderModel> get filteredProviders {
+    List<ProviderModel> list = List.from(providers);
+
+    if (selectedFilter == 'Newly Joined') {
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    } else if (selectedFilter == 'Popular') {
+      list.sort((a, b) => b.totalReviews.compareTo(a.totalReviews));
+    } else if (selectedFilter == 'Top Rated') {
+      list.sort((a, b) => b.averageRating.compareTo(a.averageRating));
+    }
+    return list;
+  }
+
+  ProvidersLoaded copyWith({String? selectedFilter}) {
+    return ProvidersLoaded(
+      providers: providers,
+      selectedFilter: selectedFilter ?? this.selectedFilter,
+    );
+  }
 
   @override
-  List<Object?> get props => [providers];
+  List<Object?> get props => [providers, selectedFilter];
 }
+
 
 class ProviderLoaded extends ProviderState {
   final ProviderModel provider;

@@ -1,18 +1,19 @@
-import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/dimension.dart';
-import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/franchise_banner_widget.dart';
-import '../../../favorite/screen/favorite_screen.dart';
-import '../../../../core/widgets/custom_search_bar.dart';
 import '../../../highlight_serive/highlight_widget.dart';
-import '../../../lead/widget/provider_card_widget.dart';
+import '../../../module/bloc/module_bloc.dart';
+import '../../../module/bloc/module_event.dart';
+import '../../../module/repository/module_repository.dart';
+import '../../../provider/bloc/provider/provider_bloc.dart';
+import '../../../provider/bloc/provider/provider_event.dart';
+import '../../../provider/repository/provider_repository.dart';
+import '../../../provider/widget/provider_category_widget.dart';
 import '../../../provider/widget/provider_widget.dart';
-import '../../../search/screen/search_screen.dart';
 import '../widget/franchise_all_service_widget.dart';
 import '../widget/franchise_category_widget.dart';
 import '../widget/franchise_requirement_service_widget.dart';
@@ -58,40 +59,50 @@ class _FranchiseScreenState extends State<FranchiseScreen> {
     final userSession = Provider.of<UserSession>(context);
     final double searchBarHeight = dimensions.screenHeight*0.06;
 
-    return Scaffold(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
+        ),
+      ],
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
 
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
+            CustomSliverAppbar(
+              moduleId: widget.moduleId,
+              title: 'Franchise Service',
+              imageUrl: widget.imageUrl,
+              isCollapsed: _isCollapsed,
+              searchBarHeight: searchBarHeight,
+              background: FranchiseBannerWidget(moduleId: widget.moduleId),
+            ),
 
-          CustomSliverAppbar(
-            moduleId: widget.moduleId,
-            title: 'Franchise Service',
-            imageUrl: widget.imageUrl,
-            isCollapsed: _isCollapsed,
-            searchBarHeight: searchBarHeight,
-            background: FranchiseBannerWidget(moduleId: widget.moduleId),
-          ),
+            SliverToBoxAdapter(
+              child: FranchiseCategoryWidget(moduleIndexId: widget.moduleId),
+            ),
+
+            SliverToBoxAdapter(child: 10.height,),
+            SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
+            SliverToBoxAdapter(
+              child: FranchiseRequirementServiceWidget(moduleId: widget.moduleId,),
+            ),
+            SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
+            SliverToBoxAdapter(
+              child: FranchiseAllServiceWidget(moduleId: widget.moduleId,),
+            ),
+
+            /// Provider Store
+            ...ProviderCategoryWidget.slivers(widget.moduleId),
 
 
-          /// Category
-          SliverToBoxAdapter(
-            child: FranchiseCategoryWidget(moduleIndexId: widget.moduleId),
-          ),
-
-          SliverToBoxAdapter(child: 10.height,),
-          SliverToBoxAdapter(child: HighlightServiceWidget(moduleId: widget.moduleId,),),
-          SliverToBoxAdapter(
-            child: FranchiseRequirementServiceWidget(moduleId: widget.moduleId,),
-          ),
-          SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
-          SliverToBoxAdapter(
-            child: FranchiseAllServiceWidget(moduleId: widget.moduleId,),
-          ),
-
-          SliverToBoxAdapter(child: 100.height,)
-        ],
+            SliverToBoxAdapter(child: 100.height,)
+          ],
+        ),
       ),
     );
+
   }
 }
+

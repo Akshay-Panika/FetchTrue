@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
-import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_network_mage.dart';
 import '../bloc/offer_bloc.dart';
 import '../bloc/offer_event.dart';
@@ -60,6 +59,7 @@ class OfferWidget extends StatelessWidget {
                         return CustomNetworkImage(
                           width: dimensions.screenWidth*0.9,
                           imageUrl: offer.thumbnailImage,
+                          fit: BoxFit.fill,
                           borderRadius: BorderRadius.circular(10),
                           margin: EdgeInsets.only(
                             bottom: dimensions.screenHeight * 0.010,

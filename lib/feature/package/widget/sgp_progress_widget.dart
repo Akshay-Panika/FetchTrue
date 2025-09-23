@@ -22,7 +22,13 @@ class SgpProgressWidget extends StatelessWidget {
     final progress = (currentCount / targetCount).clamp(0.0, 1.0);
     final remaining = (targetCount - currentCount).clamp(0, targetCount);
 
-    return Padding(
+    final memberCount = team.where((gpMember) {
+      final status = gpMember.user?.packageStatus ?? "";
+      return status == "GP" || status == "SGP" || status == "PGP";
+    }).length;
+
+    return memberCount  >=  10 ?
+      Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +67,7 @@ class SgpProgressWidget extends StatelessWidget {
           ):SizedBox.shrink()
         ],
       ),
-    );
+    ):SizedBox();
   }
 
   Widget _labelBox(BuildContext context, String text, Color activeColor) {

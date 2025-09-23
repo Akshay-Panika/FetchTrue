@@ -14,3 +14,12 @@ class GetProviderById extends ProviderEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class FilterProvidersEvent extends ProviderEvent {
+  final String filter;
+  FilterProvidersEvent(this.filter);
+
+  @override
+  List<Object?> get props => [filter];
+}
+

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../core/costants/custom_color.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../../../core/widgets/custom_network_mage.dart';
@@ -30,8 +29,7 @@ class FranchiseCategoryWidget extends StatelessWidget {
              return _ShimmerGrid();
            } else if (state is CategoryLoaded) {
              // final categories = state.categories;
-            final categories = state.categories.where((moduleCategory) =>
-                  moduleCategory.module.id == moduleIndexId).toList();
+            final categories = state.categories.where((moduleCategory) => moduleCategory.module.id == moduleIndexId).toList();
 
              return  Column(
                children: [

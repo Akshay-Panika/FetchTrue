@@ -20,13 +20,11 @@ class GpProgressWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final targetCount = 10;
-    // final currentCount = team.where((gpMember) => gpMember.user?.packageStatus == "GP").length;
-    final currentCount = team
-        .where((gpMember) {
+    final currentCount = team.where((gpMember) {
       final status = gpMember.user?.packageStatus ?? "";
       return status == "GP" || status == "SGP" || status == "PGP";
-    })
-        .length;
+    }).length;
+
     final displayCount = currentCount > targetCount ? targetCount : currentCount;
 
     final progress = (currentCount / targetCount).clamp(0.0, 1.0);
