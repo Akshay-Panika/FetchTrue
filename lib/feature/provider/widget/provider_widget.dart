@@ -109,20 +109,24 @@ class ProviderWidget extends StatelessWidget {
                                               Column(
                                                 children: [
                                                   CircleAvatar(
-                                                    radius: 30,
-                                                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                                                      radius: 30.5,
+                                                      backgroundColor: CustomColor.appColor,
+                                                      child: CircleAvatar(
+                                                        radius: 30,
                                                     backgroundImage: (provider.storeInfo?.logo != null &&
                                                         provider.storeInfo!.logo!.isNotEmpty &&
                                                         Uri.tryParse(provider.storeInfo!.logo!)?.hasAbsolutePath == true)
                                                         ? NetworkImage(provider.storeInfo!.logo!)
                                                         : AssetImage(CustomImage.nullImage) as ImageProvider,
-                                                  ),
-
-                                                  CustomContainer(
-                                                      color: CustomColor.appColor,
-                                                      margin: EdgeInsets.zero,
-                                                      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                                                      child: Text('Open', style: textStyle12(context, color: CustomColor.whiteColor),))
+                                                  )),
+                                                  5.height,
+                                                  Container(
+                                                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                                      decoration: BoxDecoration(
+                                                          color: CustomColor.greenColor,
+                                                          borderRadius: BorderRadius.circular(5)
+                                                      ),
+                                                      child: Text('Open', style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
                                                 ],
                                               ),
                                               10.width,
@@ -130,20 +134,19 @@ class ProviderWidget extends StatelessWidget {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(provider.storeInfo!.storeName,style: textStyle12(context),),
-                                                  Text(module?.name ?? 'Unknown', style: textStyle12(context, color: CustomColor.descriptionColor)),
-                                                  5.height,
+                                                  2.height,
                                                   Text(
                                                     '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
-                                                    style: TextStyle(fontSize: 12, color: Colors.black),
-                                                  )
+                                                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                                                  ),
+                                                  Text(module?.name ?? 'Unknown',style: textStyle12(context,fontWeight: FontWeight.w400)),
                                                 ],
                                               )
                                             ],
                                           ),
-                                          10.height,
-                                          Divider(thickness: 0.3),
 
                                           if (provider.subscribedServices.isNotEmpty) ...[
+                                            10.height,
                                             Builder(
                                               builder: (context) {
                                                 final seenCategoryIds = <String>{};

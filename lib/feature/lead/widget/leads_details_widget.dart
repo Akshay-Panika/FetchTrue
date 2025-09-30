@@ -11,6 +11,7 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/model/user_model.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
@@ -128,7 +129,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
 
               ],
             ),
-            const Divider(),
+
 
             /// Paid / Remaining Amounts
             Column(
@@ -150,65 +151,80 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
                   ),
               ],
             ),
+            const Divider(),
+
+            CustomContainer(
+              color: CustomColor.appColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.call, color: CustomColor.whiteColor,size: 18,),
+                  Expanded(child: Text('Remaining Amount Pay After Contact Fetch True Member',textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.whiteColor),)),
+                ],
+              ),
+              onTap: () {
+                ContactHelper.call('9272003735');
+              },
+            ),
 
             /// Pay Now Button
-            if (status == 'unpaid')
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: InkWell(
-                  onTap: () {
-                    _showPaymentBottomSheet(
-                      context,
-                      lead, user,
-                          () {
-                        context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
-                      },
-                    );
-                  },
-                  child: Text(
-                    'Pay Now',
-                    style: textStyle14(context, color: CustomColor.appColor),
-                  ),
-                ),
-              ),
+            // if (status == 'unpaid')
+            //   Padding(
+            //     padding: const EdgeInsets.only(top: 10),
+            //     child: InkWell(
+            //       onTap: () {
+            //         _showPaymentBottomSheet(
+            //           context,
+            //           lead, user,
+            //               () {
+            //             context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+            //           },
+            //         );
+            //       },
+            //       child: Text(
+            //         'Pay Now',
+            //         style: textStyle14(context, color: CustomColor.appColor),
+            //       ),
+            //     ),
+            //   ),
 
 
-            /// Remaining Payment Button
-             if(status == 'pending')
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: RemainingPaymentButton(lead: lead, user: user,),
-              ),
+            // /// Remaining Payment Button
+            //  if(status == 'pending')
+            //   Padding(
+            //     padding: const EdgeInsets.only(top: 10),
+            //     child: RemainingPaymentButton(lead: lead, user: user,),
+            //   ),
           ],
         ),
       ),
 
       /// Share Button
-      if(status != 'paid')
-      Positioned(
-        top: -5,
-        right: 5,
-        child: IconButton(
-          onPressed: () {
-            final userSession = Provider.of<UserSession>(context, listen: false);
-            final serviceId = lead.service?.id;
-            final userId = (serviceId != null && serviceId.isNotEmpty)
-                ? userSession.userId
-                : null;
-
-            print('-----------serviceId: $serviceId------userId: $userId---------');
-
-            if (userId != null) {
-              final shareUrl =
-                  'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
-              Share.share('Check out this service on FetchTrue:\n$shareUrl');
-            } else {
-              showCustomSnackBar(context, 'Please wait data is loading.');
-            }
-          },
-          icon: Icon(Icons.share, color: CustomColor.appColor),
-        ),
-      ),
+      // if(status != 'paid')
+      // Positioned(
+      //   top: -5,
+      //   right: 5,
+      //   child: IconButton(
+      //     onPressed: () {
+      //       final userSession = Provider.of<UserSession>(context, listen: false);
+      //       final serviceId = lead.service?.id;
+      //       final userId = (serviceId != null && serviceId.isNotEmpty)
+      //           ? userSession.userId
+      //           : null;
+      //
+      //       print('-----------serviceId: $serviceId------userId: $userId---------');
+      //
+      //       if (userId != null) {
+      //         final shareUrl =
+      //             'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
+      //         Share.share('Check out this service on FetchTrue:\n$shareUrl');
+      //       } else {
+      //         showCustomSnackBar(context, 'Please wait data is loading.');
+      //       }
+      //     },
+      //     icon: Icon(Icons.share, color: CustomColor.appColor),
+      //   ),
+      // ),
     ],
   );
 }

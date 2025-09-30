@@ -118,6 +118,50 @@ class SubTeam {
   }
 }
 
+class Address {
+  final String houseNumber;
+  final String landmark;
+  final String state;
+  final String city;
+  final String pinCode;
+  final String country;
+  final String fullAddress;
+
+  Address({
+    required this.houseNumber,
+    required this.landmark,
+    required this.state,
+    required this.city,
+    required this.pinCode,
+    required this.country,
+    required this.fullAddress,
+  });
+
+  factory Address.fromJson(Map<String, dynamic> json) {
+    return Address(
+      houseNumber: json['houseNumber'] ?? '',
+      landmark: json['landmark'] ?? '',
+      state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      pinCode: json['pinCode'] ?? '',
+      country: json['country'] ?? '',
+      fullAddress: json['fullAddress'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "houseNumber": houseNumber,
+      "landmark": landmark,
+      "state": state,
+      "city": city,
+      "pinCode": pinCode,
+      "country": country,
+      "fullAddress": fullAddress,
+    };
+  }
+}
+
 class User {
   final String id;
   final String fullName;
@@ -133,6 +177,22 @@ class User {
   final int packagePrice;
   final int packageAmountPaid;
   final bool? isDeleted;
+  final bool? personalDetailsCompleted;
+  final bool? additionalDetailsCompleted;
+  final bool? addressCompleted;
+  final String? password;
+  final String? referredBy;
+  final List<String>? myTeams;
+  final bool? isAgree;
+  final List<String>? serviceCustomers;
+  final List<String>? favoriteServices;
+  final List<String>? favoriteProviders;
+  final List<String>? fcmTokens;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final Address? homeAddress;
+  final Address? workAddress;
+  final Address? otherAddress;
 
   User({
     required this.id,
@@ -149,6 +209,22 @@ class User {
     required this.packagePrice,
     required this.packageAmountPaid,
     this.isDeleted,
+    this.personalDetailsCompleted,
+    this.additionalDetailsCompleted,
+    this.addressCompleted,
+    this.password,
+    this.referredBy,
+    this.myTeams,
+    this.isAgree,
+    this.serviceCustomers,
+    this.favoriteServices,
+    this.favoriteProviders,
+    this.fcmTokens,
+    this.createdAt,
+    this.updatedAt,
+    this.homeAddress,
+    this.workAddress,
+    this.otherAddress,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -167,6 +243,22 @@ class User {
       packagePrice: json['packagePrice'] ?? 0,
       packageAmountPaid: json['packageAmountPaid'] ?? 0,
       isDeleted: json['isDeleted'] ?? false,
+      personalDetailsCompleted: json['personalDetailsCompleted'],
+      additionalDetailsCompleted: json['additionalDetailsCompleted'],
+      addressCompleted: json['addressCompleted'],
+      password: json['password'],
+      referredBy: json['referredBy'],
+      myTeams: (json['myTeams'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      isAgree: json['isAgree'],
+      serviceCustomers: (json['serviceCustomers'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      favoriteServices: (json['favoriteServices'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      favoriteProviders: (json['favoriteProviders'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      fcmTokens: (json['fcmTokens'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      homeAddress: json['homeAddress'] != null ? Address.fromJson(json['homeAddress']) : null,
+      workAddress: json['workAddress'] != null ? Address.fromJson(json['workAddress']) : null,
+      otherAddress: json['otherAddress'] != null ? Address.fromJson(json['otherAddress']) : null,
     );
   }
 
@@ -186,9 +278,97 @@ class User {
       "packagePrice": packagePrice,
       "packageAmountPaid": packageAmountPaid,
       "isDeleted": isDeleted,
+      "personalDetailsCompleted": personalDetailsCompleted,
+      "additionalDetailsCompleted": additionalDetailsCompleted,
+      "addressCompleted": addressCompleted,
+      "password": password,
+      "referredBy": referredBy,
+      "myTeams": myTeams,
+      "isAgree": isAgree,
+      "serviceCustomers": serviceCustomers,
+      "favoriteServices": favoriteServices,
+      "favoriteProviders": favoriteProviders,
+      "fcmTokens": fcmTokens,
+      "createdAt": createdAt?.toIso8601String(),
+      "updatedAt": updatedAt?.toIso8601String(),
+      "homeAddress": homeAddress?.toJson(),
+      "workAddress": workAddress?.toJson(),
+      "otherAddress": otherAddress?.toJson(),
     };
   }
 }
+
+// class User {
+//   final String id;
+//   final String fullName;
+//   final String email;
+//   final String mobileNumber;
+//   final String? userId;
+//   final String? referralCode;
+//   final String? profilePhoto;
+//   final bool isEmailVerified;
+//   final bool isMobileVerified;
+//   final bool packageActive;
+//   final String? packageStatus;
+//   final int packagePrice;
+//   final int packageAmountPaid;
+//   final bool? isDeleted;
+//
+//   User({
+//     required this.id,
+//     required this.fullName,
+//     required this.email,
+//     required this.mobileNumber,
+//     this.userId,
+//     this.referralCode,
+//     this.profilePhoto,
+//     required this.isEmailVerified,
+//     required this.isMobileVerified,
+//     required this.packageActive,
+//     this.packageStatus,
+//     required this.packagePrice,
+//     required this.packageAmountPaid,
+//     this.isDeleted,
+//   });
+//
+//   factory User.fromJson(Map<String, dynamic> json) {
+//     return User(
+//       id: json['_id'] ?? '',
+//       fullName: json['fullName'] ?? '',
+//       email: json['email'] ?? '',
+//       mobileNumber: json['mobileNumber'] ?? '',
+//       userId: json['userId'],
+//       referralCode: json['referralCode'],
+//       profilePhoto: json['profilePhoto'],
+//       isEmailVerified: json['isEmailVerified'] ?? false,
+//       isMobileVerified: json['isMobileVerified'] ?? false,
+//       packageActive: json['packageActive'] ?? false,
+//       packageStatus: json['packageStatus'],
+//       packagePrice: json['packagePrice'] ?? 0,
+//       packageAmountPaid: json['packageAmountPaid'] ?? 0,
+//       isDeleted: json['isDeleted'] ?? false,
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       "_id": id,
+//       "fullName": fullName,
+//       "email": email,
+//       "mobileNumber": mobileNumber,
+//       "userId": userId,
+//       "referralCode": referralCode,
+//       "profilePhoto": profilePhoto,
+//       "isEmailVerified": isEmailVerified,
+//       "isMobileVerified": isMobileVerified,
+//       "packageActive": packageActive,
+//       "packageStatus": packageStatus,
+//       "packagePrice": packagePrice,
+//       "packageAmountPaid": packageAmountPaid,
+//       "isDeleted": isDeleted,
+//     };
+//   }
+// }
 
 class Lead {
   final String checkoutId;

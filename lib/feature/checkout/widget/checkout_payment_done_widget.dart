@@ -76,13 +76,13 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                             style: textStyle18(context, color: CustomColor.appColor)),
                         Text('Thank you for your order with us',
                             style: textStyle14(context, color: CustomColor.descriptionColor)),
-                        10.height,
+                        SizedBox(height: dimensions.screenHeight*0.1,),
                         Divider(),
                         10.height,
-                        Center(child: Text('Total Payment')),
-                        10.height,
-                        Center(child: Text('₹ ${widget.amount}', style: textStyle22(context))),
-                        50.height,
+                        // Center(child: Text('Total Payment')),
+                        // 10.height,
+                        // Center(child: Text('₹ ${widget.amount}', style: textStyle22(context))),
+                        // 50.height,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

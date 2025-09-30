@@ -53,15 +53,16 @@ class _CustomHomeSliverAppbarWidgetState
     }
 
     return BlocBuilder<UserBloc, UserState>(
+      buildWhen: (previous, current) {
+        return !(previous is UserLoaded && current is UserLoading);
+      },
       builder: (context, state) {
-        if (state is UserInitial) {
-          if (userSession.userId != null) {
-            context.read<UserBloc>().add(GetUserById(userSession.userId!));
-          }
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
-        } else if (state is UserLoading) {
-          return SliverToBoxAdapter(child: _profileShimmer(dimensions));
-        } else if (state is UserLoaded) {
+
+        //  if (state is UserLoading) {
+        //   return SliverToBoxAdapter(child: _profileShimmer(dimensions));
+        // }
+
+          if (state is UserLoaded) {
           final user = state.user;
           return _buildSliverAppBar(
             context,

@@ -54,7 +54,7 @@ class CustomNetworkImage extends StatelessWidget {
                   child: isLoader ? CircularProgressIndicator(strokeWidth: 2):null,
                 ),
                 errorWidget: (context, url, error) =>
-                const Icon(Icons.error, color: Colors.red),
+                const Icon(Icons.image, color: Colors.grey, size: 40,),
               ),
             ),
           ),

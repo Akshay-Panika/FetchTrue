@@ -53,7 +53,10 @@ class RelationshipManagerCardWidget extends StatelessWidget {
                         _buildRow(context, 'ID:', id ?? '#XXXXX'),
                         _buildRow(context, 'Name:', name?? 'Guest'),
 
-                        _buildRow(context, 'Address:', address ?? '__________'),
+                        if(address != null && address != '')
+                        Text(address ??'', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,)
 
                       ],
                    )

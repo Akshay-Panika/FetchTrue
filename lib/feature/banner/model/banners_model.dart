@@ -1,3 +1,5 @@
+import '../../module/model/module_model.dart';
+
 class BannerModel {
   final String id;
   final String page;
@@ -45,37 +47,6 @@ class BannerModel {
   }
 }
 
-class ModuleModel {
-  final String id;
-  final String name;
-  final String image;
-  final int sortOrder;
-  final bool isDeleted;
-  final String createdAt;
-  final String updatedAt;
-
-  ModuleModel({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.sortOrder,
-    required this.isDeleted,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory ModuleModel.fromJson(Map<String, dynamic> json) {
-    return ModuleModel(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
-      image: json['image'] ?? '',
-      sortOrder: json['sortOrder'] ?? 0,
-      isDeleted: json['isDeleted'] ?? false,
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
-    );
-  }
-}
 
 class SubCategoryModel {
   final String id;

@@ -50,7 +50,7 @@ class TeamMemberScreen extends StatelessWidget {
                   // level: member.packageStatus,
                   level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
                   status: member.isDeleted,
-                  address: '______',
+                  address: _getMemberAddress(member),
                   phone: member.mobileNumber,
                   earning: members.totalEarningsFromShare2?.toStringAsFixed(2),
                   // earning: 'My Earning\n₹ ${members.totalEarningsFromShare2?.toStringAsFixed(2)}',
@@ -99,6 +99,44 @@ class TeamMemberScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getMemberAddress(User member) {
+    Address? address;
+
+    if (member.homeAddress != null &&
+        _isAddressValid(member.homeAddress!)) {
+      address = member.homeAddress;
+    } else if (member.workAddress != null &&
+        _isAddressValid(member.workAddress!)) {
+      address = member.workAddress;
+    } else if (member.otherAddress != null &&
+        _isAddressValid(member.otherAddress!)) {
+      address = member.otherAddress;
+    }
+
+    if (address != null) {
+      List<String> parts = [
+        address.houseNumber,
+        address.landmark,
+        address.city,
+        address.state,
+        address.pinCode,
+        address.country
+      ];
+      return parts.where((part) => part.isNotEmpty).join(", ");
+    }
+
+    return "";
+  }
+
+  bool _isAddressValid(Address address) {
+    return address.houseNumber.isNotEmpty ||
+        address.landmark.isNotEmpty ||
+        address.city.isNotEmpty ||
+        address.state.isNotEmpty ||
+        address.pinCode.isNotEmpty ||
+        address.country.isNotEmpty;
   }
 }
 
@@ -317,7 +355,7 @@ class _TeamMembers extends StatelessWidget {
           name: member.fullName,
           level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
           status: member.isDeleted,
-          address: '_______',
+          address: _getMemberAddress(member),
           phone: member.mobileNumber,
           earning: teamCommission?.toStringAsFixed(2),
           onTap: () {
@@ -334,6 +372,44 @@ class _TeamMembers extends StatelessWidget {
           },
         );
       },);
+  }
+
+  String _getMemberAddress(User member) {
+    Address? address;
+
+    if (member.homeAddress != null &&
+        _isAddressValid(member.homeAddress!)) {
+      address = member.homeAddress;
+    } else if (member.workAddress != null &&
+        _isAddressValid(member.workAddress!)) {
+      address = member.workAddress;
+    } else if (member.otherAddress != null &&
+        _isAddressValid(member.otherAddress!)) {
+      address = member.otherAddress;
+    }
+
+    if (address != null) {
+      List<String> parts = [
+        address.houseNumber,
+        address.landmark,
+        address.city,
+        address.state,
+        address.pinCode,
+        address.country
+      ];
+      return parts.where((part) => part.isNotEmpty).join(", ");
+    }
+
+    return "";
+  }
+
+  bool _isAddressValid(Address address) {
+    return address.houseNumber.isNotEmpty ||
+        address.landmark.isNotEmpty ||
+        address.city.isNotEmpty ||
+        address.state.isNotEmpty ||
+        address.pinCode.isNotEmpty ||
+        address.country.isNotEmpty;
   }
 }
 

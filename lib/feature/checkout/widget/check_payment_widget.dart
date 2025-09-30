@@ -127,9 +127,16 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             //   },
                             // ),
                             /// Payment Options
-                            Text('Choose Payment Method', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                            // Text('Choose Payment Method', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                            Row(
+                              children: [
+                                Text('Payment after consultation'),
+                                10.width,
+                                Icon(Icons.call, size: 18,color: Colors.green,),
+                              ],
+                            ),
                             15.height,
-                            _paymentOptionWidgets(serviceAmount, partialAmount),
+                            // _paymentOptionWidgets(serviceAmount, partialAmount),
                           ],
                         ),
                       ),
@@ -141,24 +148,24 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           spacing: 20,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Total Price', style: textStyle14(context)),10.width,
-                                Text('₹ ${payableAmount.toStringAsFixed(2)}', style: textStyle14(context)),
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     Text('Total Price', style: textStyle14(context)),10.width,
+                            //     Text('₹ ${payableAmount.toStringAsFixed(2)}', style: textStyle14(context)),
+                            //   ],
+                            // ),
                             BlocBuilder<CheckoutBloc, CheckoutState>(
                               builder: (context, state) {
                                 final isLoading = state is CheckoutLoading;
                                 return CustomButton(
                                   isLoading: isLoading,
-                                  label: 'Pay Now',
+                                  label: 'Book Now',
                                   onPressed: () {
-                                    if (selectedPayment == null) {
-                                      showCustomToast('Please select a payment method');
-                                      return;
-                                    }
+                                    // if (selectedPayment == null) {
+                                    //   showCustomToast('Please select a payment method');
+                                    //   return;
+                                    // }
 
                                     /// prepare model
                                     final checkoutModel = widget.checkoutData.copyWith(

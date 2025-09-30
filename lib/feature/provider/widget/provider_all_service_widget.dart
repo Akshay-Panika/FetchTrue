@@ -6,16 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/costants/text_style.dart';
 import '../../../../core/widgets/custom_container.dart';
+import '../../../core/costants/custom_image.dart';
 import '../../service/bloc/service/service_bloc.dart';
 import '../../service/bloc/service/service_event.dart';
 import '../../service/bloc/service/service_state.dart';
 import '../../service/repository/service_repository.dart';
 import '../../service/widget/service_card_widget.dart';
+import '../model/provider_model.dart';
 
 
 class ProviderAllServiceWidget extends StatelessWidget {
-  final String moduleId;
-  const ProviderAllServiceWidget({super.key, required this.moduleId});
+ final ProviderModel provider;
+  const ProviderAllServiceWidget({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +33,22 @@ class ProviderAllServiceWidget extends StatelessWidget {
          else if(state is ServiceLoaded){
 
            // final services = state.services;
-           final services = state.services.where((moduleService) =>
-           moduleService.category.module == moduleId
-           ).toList();
+           final subscribedServiceIds = provider.subscribedServices.map((s) => s.id).toList();
 
+           // final services = state.services.where((moduleService) => moduleService.id == subscribedServiceIds).toList();
+           final services = state.services
+               .where((moduleService) => subscribedServiceIds.contains(moduleService.id))
+               .toList();
 
            if (services.isEmpty) {
-             return SizedBox.shrink();
+             return Column(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 SizedBox(height: dimensions.screenHeight*0.2,),
+                 Image.asset(CustomImage.emptyCart, height: 80),
+                 const Text('No Service')
+               ],
+             );
            }
 
 

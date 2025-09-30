@@ -147,8 +147,8 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                              ListView(
                                physics: NeverScrollableScrollPhysics(),
                                children: [
-                                 ProviderRequirementServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
-                                 ProviderAllServiceWidget(moduleId: provider.storeInfo!.module.toString(),),
+                                 ProviderRequirementServiceWidget(provider: provider,),
+                                 ProviderAllServiceWidget(provider: provider,),
                                ],
                              ),
 
@@ -219,28 +219,27 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: AlignmentDirectional.bottomCenter,
+                Column(
                   children: [
                     CircleAvatar(
-                      radius: 40,
-                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                    radius: 30.5,
+                      backgroundColor: CustomColor.appColor,
+                      child: CircleAvatar(
+                        radius: 30,
                       backgroundImage: (data!.storeInfo!.logo != null &&
                           data!.storeInfo!.logo!.isNotEmpty &&
                           Uri.tryParse(data!.storeInfo!.logo!)?.hasAbsolutePath == true)
                           ? NetworkImage(data!.storeInfo!.logo!)
                           : AssetImage(CustomImage.nullImage) as ImageProvider,
-                    ),
-                    CustomContainer(
-                      color: CustomColor.appColor,
-                      margin: EdgeInsets.zero,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Text(
-                        'Open',
-                        style: textStyle12(context,
-                            color: CustomColor.whiteColor),
-                      ),
-                    ),
+                    ),),
+                    5.height,
+                    Container(
+                        padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: CustomColor.greenColor,
+                            borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: Text('Open', style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
                   ],
                 ),
                 10.width,
@@ -249,12 +248,13 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(data.storeInfo!.storeName,style: textStyle12(context),),
-                      Text(moduleName ?? 'Unknown', style: textStyle12(context, color: CustomColor.descriptionColor)),
+                      2.height,
                       Text(
                         '⭐ ${data.averageRating} (${data.totalReviews} Review)',
-                        style:
-                        const TextStyle(fontSize: 12, color: Colors.black),
+                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                       ),
+                      Text(moduleName ?? 'Unknown', style: textStyle12(context,fontWeight: FontWeight.w400)),
+
 
                       5.height,
                       Row(

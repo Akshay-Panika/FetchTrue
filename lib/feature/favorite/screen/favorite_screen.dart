@@ -13,8 +13,14 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../module/bloc/module_bloc.dart';
+import '../../module/bloc/module_event.dart';
+import '../../module/bloc/module_state.dart';
+import '../../module/model/module_model.dart';
+import '../../module/repository/module_repository.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
+import '../../profile/model/user_model.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
@@ -41,50 +47,67 @@ class FavoriteScreen extends StatelessWidget {
         body: const Center(child: NoUserSignWidget()),
       );
     }
-    return DefaultTabController(
-      length: 2, // 2 Tabs
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          title: 'Favorite',
-          showBackButton: true,
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                child: TabBar(
-                  dividerColor: Colors.transparent,
-                  indicatorColor: CustomColor.appColor,
-                  labelColor: Colors.black,
-                  tabs: [
-                    Tab(text: "Services"),
-                    Tab(text: "Providers"),
-                  ],
-                ),
+    return BlocBuilder<UserBloc, UserState>(
+      buildWhen: (previous, current) {
+        return !(previous is UserLoaded && current is UserLoading);
+      },
+      builder: (context, userState) {
+        if (userState is UserLoaded) {
+          final user = userState.user;
+
+          return DefaultTabController(
+            length: 2, // 2 Tabs
+            child: Scaffold(
+              appBar: const CustomAppBar(
+                title: 'Favorite',
+                showBackButton: true,
               ),
-              10.height,
-               Expanded(
-                child: TabBarView(
+              body: SafeArea(
+                child: Column(
                   children: [
-                    FavoriteServiceWidget(userId: userId,),
-                    FavoriteProviderWidget( userId: userId,),
+                    Container(
+                      color: Colors.white,
+                      child: TabBar(
+                        dividerColor: Colors.transparent,
+                        indicatorColor: CustomColor.appColor,
+                        labelColor: Colors.black,
+                        tabs: [
+                          Tab(text: "Services"),
+                          Tab(text: "Providers"),
+                        ],
+                      ),
+                    ),
+                    10.height,
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          FavoriteServiceWidget(user: user,),
+                          FavoriteProviderWidget( user: user,),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+
+        }
+        else if (userState is UserError) {
+          debugPrint("Error: ${userState.massage}");
+        }
+        return const SizedBox.shrink();
+      },
     );
+
   }
 }
 
 
 /// Favorite service
 class FavoriteServiceWidget extends StatefulWidget {
-  final String? userId;
-  const FavoriteServiceWidget({super.key, this.userId});
+  final UserModel user;
+  const FavoriteServiceWidget({super.key, required this.user,});
 
   @override
   State<FavoriteServiceWidget> createState() => _FavoriteServiceWidgetState();
@@ -118,140 +141,126 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
       }
     }
 
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, userState) {
-        if (userState is UserLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (userState is UserLoaded) {
-          final favoriteServiceIds = userState.user.favoriteServices;
+    return BlocProvider(
+      create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
+      child: BlocBuilder<ServiceBloc, ServiceState>(
+        builder: (context, serviceState) {
+          if (serviceState is ServiceLoading) {
+            return  Center(child: CircularProgressIndicator(color: CustomColor.appColor));
+          } else if (serviceState is ServiceLoaded) {
+            final allServices = serviceState.services;
+            final favoriteServiceIds = widget.user.favoriteServices;
+            /// Filter only favorite services
+            final favoriteServices = allServices.where((service) => favoriteServiceIds.contains(service.id)).toList();
 
-          return BlocProvider(
-            create: (_) => ServiceBloc(ServiceRepository())..add(GetServices()),
-            child: BlocBuilder<ServiceBloc, ServiceState>(
-              builder: (context, serviceState) {
-                if (serviceState is ServiceLoading) {
-                  return  Center(child: CircularProgressIndicator(color: CustomColor.appColor));
-                } else if (serviceState is ServiceLoaded) {
-                  final allServices = serviceState.services;
+            if (favoriteServices.isEmpty) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(CustomImage.emptyCart, height: 80),
+                  const Text('No Service')
+                ],
+              );
+            }
 
-                  /// Filter only favorite services
-                  final favoriteServices = allServices.where((service) => favoriteServiceIds.contains(service.id)).toList();
+            return ListView.builder(
+              itemCount: favoriteServices.length,
+              itemBuilder: (context, index) {
+                final data = favoriteServices[index];
 
-                  if (favoriteServices.isEmpty) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(CustomImage.emptyCart, height: 80),
-                        const Text('No Service')
-                      ],
-                    );
-                  }
-
-                  return ListView.builder(
-                    itemCount: favoriteServices.length,
-                    itemBuilder: (context, index) {
-                      final data = favoriteServices[index];
-
-                      return CustomContainer(
-                        border: false,
-                        color: Colors.white,
-                        padding: EdgeInsets.zero,
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        height: 100,
-                        child: Row(
-                          children: [
-                            CustomContainer(
-                              networkImg: data.thumbnailImage,
-                              margin: EdgeInsets.zero,
-                              width: 180,
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child:  Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
+                return CustomContainer(
+                  border: false,
+                  color: Colors.white,
+                  padding: EdgeInsets.zero,
+                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  height: 100,
+                  child: Row(
+                    children: [
+                      CustomContainer(
+                        networkImg: data.thumbnailImage,
+                        margin: EdgeInsets.zero,
+                        width: 180,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:  Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
-                                                child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
-                                                  10.width,
-                                                  CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
-                                                  10.width,
-                                                  Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                        Padding(
+                                          padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
+                                          child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
                                         ),
-
-                                      ],
-                                    ),
-
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                        Row(
                                           children: [
-                                            Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
-                                            Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                            CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
+                                            10.width,
+                                            CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
+                                            10.width,
+                                            Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
                                           ],
                                         ),
-
-                                        FavoriteServiceButtonWidget(serviceId: data.id),
                                       ],
                                     ),
+                                  ),
 
-                                  ],
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ServiceDetailsScreen(serviceId: data.id),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
+                                      Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                    ],
+                                  ),
+
+                                  FavoriteServiceButtonWidget(serviceId: data.id),
+                                ],
+                              ),
+
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  );
-                } else if (serviceState is ServiceError) {
-                  return Center(child: Text(serviceState.message));
-                }
-                return const SizedBox.shrink();
+                      ),
+                    ],
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ServiceDetailsScreen(serviceId: data.id),
+                    ),
+                  ),
+                );
               },
-            ),
-          );
-        } else if (userState is UserError) {
-          debugPrint("Error: ${userState.massage}");
-        }
-        return const SizedBox.shrink();
-      },
-    );
-  }
+            );
+          } else if (serviceState is ServiceError) {
+            return Center(child: Text(serviceState.message));
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+    );  }
 }
 
 
 /// Favorite provider
 class FavoriteProviderWidget extends StatefulWidget {
-  final String? userId;
-  const FavoriteProviderWidget({super.key, this.userId});
+  final UserModel user;
+  const FavoriteProviderWidget({super.key, required this.user,});
 
   @override
   State<FavoriteProviderWidget> createState() => _FavoriteProviderWidgetState();
@@ -263,125 +272,135 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, userState) {
-        if (userState is UserLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (userState is UserLoaded) {
-          final favoriteProviderIds = userState.user.favoriteProviders;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+        BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ProviderBloc, ProviderState>(listener: (context, state) {
+            if (state is ProviderError) debugPrint('Provider Error: ${state.message}');
+          },),
 
-          return BlocProvider(
-            create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
-            child: BlocBuilder<ProviderBloc, ProviderState>(
-              builder: (context, state) {
-                if (state is ProviderLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is ProvidersLoaded) {
-                  // final allProviders = state.providers.where((e) => e.kycCompleted == true).toList();
+          BlocListener<ModuleBloc, ModuleState>(listener: (context, state) {
+            if (state is ModuleError) debugPrint('Module Error: ${state.message}');
+          },),
 
-                  final providers = state.providers.where((provider) => favoriteProviderIds.contains(provider.id)).toList();
+        ],
+        child: Builder(
+          builder: (context) {
+            final providerState = context.watch<ProviderBloc>().state;
+            final moduleState = context.watch<ModuleBloc>().state;
 
-                  if (providers.isEmpty) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            if(providerState is ProviderLoading || moduleState is ModuleLoading){
+              return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
+            }
+
+            if(providerState is ProvidersLoaded && moduleState is ModuleLoaded){
+              final modules = moduleState.modules;
+             final favoriteProviderIds  = widget.user.favoriteProviders;
+              final providers = providerState.providers.where((provider) => favoriteProviderIds.contains(provider.id)).toList();
+
+              if (providers.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(CustomImage.emptyCart, height: 80),
+                    const Text('No Provider')
+                  ],
+                );
+              }
+
+              return ListView.separated(
+                itemCount: providers.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                itemBuilder: (context, index) {
+                  final provider = providers[index];
+                   final providerModuleId = provider.storeInfo?.module;
+                  final module = modules.firstWhere(
+                        (m) => m.id == providerModuleId,
+                    orElse: () => ModuleModel(id: '', name: 'Unknown Module'),
+                  );
+                  return CustomContainer(
+                    border: false,
+                    color: Colors.white,
+                    margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                    height: 120,
+                    child: Stack(
                       children: [
-                        Image.asset(CustomImage.emptyCart, height: 80),
-                        const Text('No Provider')
-                      ],
-                    );
-                  }
-
-                  return ListView.separated(
-                    itemCount: providers.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final data = providers[index];
-
-                      return CustomContainer(
-                        border: false,
-                        color: Colors.white,
-                        padding: EdgeInsets.zero,
-                        margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                        height: 100,
-                        child: Stack(
+                        Row(
                           children: [
-                            Row(
+                            Column(
                               children: [
-                                const SizedBox(width: 10),
-                                Stack(
-                                  alignment: AlignmentDirectional.bottomEnd,
-                                  children: [
-
-                                    CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                                      backgroundImage: (data.storeInfo!.logo != null && data.storeInfo!.logo!.isNotEmpty && Uri.tryParse(data.storeInfo!.logo!)?.hasAbsolutePath == true)
-                                          ? NetworkImage(data.storeInfo!.logo!)
+                                CircleAvatar(
+                                    radius: 30.5,
+                                    backgroundColor: CustomColor.appColor,
+                                    child: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: (provider.storeInfo?.logo != null &&
+                                          provider.storeInfo!.logo!.isNotEmpty &&
+                                          Uri.tryParse(provider.storeInfo!.logo!)?.hasAbsolutePath == true)
+                                          ? NetworkImage(provider.storeInfo!.logo!)
                                           : AssetImage(CustomImage.nullImage) as ImageProvider,
+                                    )),
+                                5.height,
+                                Container(
+                                    padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                        color: CustomColor.greenColor,
+                                        borderRadius: BorderRadius.circular(5)
                                     ),
-                                    CustomContainer(
-                                      color: CustomColor.appColor,
-                                      margin: EdgeInsets.zero,
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 25),
-                                      child: const Text(
-                                        'Open',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        data.storeInfo!.storeName,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const Text("Onboarding",
-                                          style: TextStyle(fontSize: 14)),
-                                      Text(
-                                        '${data.storeInfo!.address} ${data.storeInfo!.city} ${data.storeInfo!.state}, ${data.storeInfo!.country}',
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    child: Text('Open', style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
                               ],
                             ),
-
-                            Positioned(
-                                top: 10,
-                                right: 10,
-                                child: FavoriteProviderButtonWidget(providerId: data.id)
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    provider.storeInfo!.storeName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  2.height,
+                                  Text(
+                                    '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
+                                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                                  ),
+                                   Text(module.name.toString(),style: textStyle12(context,fontWeight: FontWeight.w400)),
+                                  Expanded(
+                                    child: Text(
+                                      '${provider.storeInfo!.address} ${provider.storeInfo!.city} ${provider.storeInfo!.state}, ${provider.storeInfo!.country}',
+                                      style: textStyle12(context, fontWeight: FontWeight.w400, color: Colors.grey.shade600),overflow: TextOverflow.ellipsis, maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: data.id, storeName: data.storeInfo!.storeName.toString(),),)),
-                      );
-                    },
+
+                        Positioned(
+                            top: 10,
+                            right: 10,
+                            child: FavoriteProviderButtonWidget(providerId: provider.id)
+                        ),
+                      ],
+                    ),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProviderDetailsScreen(providerId: provider.id, storeName: provider.storeInfo!.storeName.toString(),),)),
                   );
-                }
-                else if (state is ProviderError) {
-                  print(state.message);
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          );
+                },
+              );
+            }
 
-
-        } else if (userState is UserError) {
-          debugPrint("Error: ${userState.massage}");
-        }
-        return const SizedBox.shrink();
-      },
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
     );
 
   }

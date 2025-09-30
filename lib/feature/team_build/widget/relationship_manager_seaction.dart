@@ -15,6 +15,7 @@ import '../../profile/bloc/user/user_state.dart';
 import '../../profile/bloc/user_by_id/user_by_id_bloc.dart';
 import '../../profile/bloc/user_by_id/user_by_id_event.dart';
 import '../../profile/bloc/user_by_id/user_by_id_state.dart';
+import '../../profile/model/user_model.dart';
 import '../../profile/repository/user_by_id_repojetory.dart';
 import '../../profile/repository/user_repository.dart';
 import '../bloc/my_team/my_team_bloc.dart';
@@ -24,6 +25,7 @@ import '../bloc/user_confirm_referral/user_confirm_referral_state.dart';
 import '../bloc/user_referral/user_referral_bloc.dart';
 import '../bloc/user_referral/user_referral_event.dart';
 import '../bloc/user_referral/user_referral_state.dart';
+import '../model/my_team_model.dart' hide Address;
 import '../repository/my_team_repository.dart';
 import '../repository/user_referral_repository.dart';
 
@@ -58,7 +60,7 @@ class RelationshipManagerSection extends StatelessWidget {
       
           if (state is UserLoaded) {
             final user = state.user;
-      
+
             if(user.referredBy != null){
               context.read<UserByIdBloc>().add(FetchUserById(state.user.referredBy!));
             }
@@ -163,7 +165,7 @@ class RelationshipManagerSection extends StatelessWidget {
                       builder: (context, state) {
                         if (state is UserReferralLoaded) {
                           final referralUser = state.user;
-      
+
                           final address = [
                             if (referralUser.homeAddress?.city?.isNotEmpty == true) referralUser.homeAddress!.city,
                             if (referralUser.homeAddress?.state?.isNotEmpty == true) referralUser.homeAddress!.state,
@@ -308,11 +310,6 @@ class RelationshipManagerSection extends StatelessWidget {
                       } else if (state is UserByIdLoaded) {
                         final manager = state.user;
       
-                        final address = [
-                          if (manager.homeAddress?.city?.isNotEmpty == true) manager.homeAddress!.city,
-                          if (manager.homeAddress?.state?.isNotEmpty == true) manager.homeAddress!.state,
-                        ].join(", ");
-      
                         return    RelationshipManagerCardWidget(
                           backgroundImage: (manager.profilePhoto == null || manager.profilePhoto!.isEmpty)
                               ?  AssetImage(CustomImage.nullImage)
@@ -321,7 +318,7 @@ class RelationshipManagerSection extends StatelessWidget {
                           phone: manager.mobileNumber,
                           id: manager.userId,
                           level: manager.packageActive == true ? '${manager.packageStatus}' : 'Non-GP',
-                          address: address.isNotEmpty ? address : null,
+                          address: _getMemberAddress(manager),
                           status: manager.isDeleted,
                         );
                       } else if (state is UserByIdError) {
@@ -332,6 +329,7 @@ class RelationshipManagerSection extends StatelessWidget {
                   ),
               ],
             );
+
           }
       
           if (state is UserError) {
@@ -344,6 +342,42 @@ class RelationshipManagerSection extends StatelessWidget {
       ),
     );
   }
+
+  String _getMemberAddress(UserModel member) {
+    Address? address;
+
+    if (member.homeAddress != null && _isAddressValid(member.homeAddress!)) {
+      address = member.homeAddress;
+    } else if (member.workAddress != null && _isAddressValid(member.workAddress!)) {
+      address = member.workAddress;
+    } else if (member.otherAddress != null && _isAddressValid(member.otherAddress!)) {
+      address = member.otherAddress;
+    }
+
+    if (address != null) {
+      List<String> parts = [
+        address.houseNumber,
+        address.landmark,
+        address.city,
+        address.state,
+        address.pinCode,
+        address.country
+      ];
+      return parts.where((part) => part.isNotEmpty).join(", ");
+    }
+
+    return "";
+  }
+
+  bool _isAddressValid(Address address) {
+    return address.houseNumber.isNotEmpty ||
+        address.landmark.isNotEmpty ||
+        address.city.isNotEmpty ||
+        address.state.isNotEmpty ||
+        address.pinCode.isNotEmpty ||
+        address.country.isNotEmpty;
+  }
+
 }
 
 

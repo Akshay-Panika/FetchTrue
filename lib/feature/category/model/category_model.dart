@@ -1,4 +1,5 @@
-import '../../banner/model/banner_model.dart';
+import 'package:fetchtrue/feature/module/model/module_model.dart';
+
 
 class CategoryModel {
   final String id;

@@ -19,6 +19,7 @@ class ServiceCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
+
     String formatCommission(dynamic rawCommission, {bool half = false}) {
       if (rawCommission == null) return '0';
 

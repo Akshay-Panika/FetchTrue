@@ -69,15 +69,18 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                      backgroundImage: widget.backgroundImage,
                    ),
 
-                   Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildRow(context, 'ID:', widget.memberId ?? '#XXXXX'),
-                        _buildRow(context, 'Name:', widget.name?? 'Guest'),
-                        if(widget.address != null && widget.address != '')
-                        _buildRow(context, 'Address:', widget.address!),
-
-                      ],
+                   Expanded(
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildRow(context, 'ID:', widget.memberId ?? '#XXXXX'),
+                          _buildRow(context, 'Name:', widget.name?? 'Guest'),
+                          if(widget.address != null && widget.address != '')
+                          Text(widget.address ??'', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,)
+                        ],
+                     ),
                    )
                  ],
                ),
@@ -168,14 +171,21 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
 
 Widget _buildRow(BuildContext context ,String key, String value){
   return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(key, style: textStyle12(context, fontWeight: FontWeight.w400),),
       10.width,
-      Text(value, style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),),
+      Expanded(
+        child: Text(
+          value,
+          style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+        ),
+      ),
     ],
   );
 }
-
 
 
 Widget _leadShimmer(){
