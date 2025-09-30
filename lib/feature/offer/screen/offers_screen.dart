@@ -38,6 +38,7 @@ class OfferScreen extends StatelessWidget {
                     height: dimensions.screenHeight*0.2,
                     imageUrl: offer.thumbnailImage,
                     borderRadius: BorderRadius.circular(10),
+                    fit: BoxFit.fill,
                     margin: EdgeInsets.only(bottom: dimensions.screenHeight*0.010),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => OffersDetailsScreen(offersFuture: offer,),)),
                   );

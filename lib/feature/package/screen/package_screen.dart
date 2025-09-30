@@ -7,6 +7,7 @@ import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/package/repository/package_repository.dart';
 import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
+import 'package:fetchtrue/helper/Contact_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -698,9 +699,9 @@ class _PaymentCardState extends State<PaymentCard> {
                 ),
 
               if(user.remainingAmount != 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -709,53 +710,67 @@ class _PaymentCardState extends State<PaymentCard> {
                         Text('Remaining Amount: ₹ ${user.remainingAmount}'),
                       ],
                     ),
+                    
                     CustomContainer(
                       color: CustomColor.appColor,
-                      margin: EdgeInsets.zero,
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-                      onTap: isLoading
-                          ? null
-                          : () async {
-                        setState(() => isLoading = true);
-
-                        DateTime now = DateTime.now();
-                        String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
-
-
-                        final isSuccess =
-                        await packageBuyPaymentRepository(
-                          context: context,
-                          orderId: 'package_${formattedDate}',
-                          customerId: '${user.id}',
-                          customerName: '${user.fullName}',
-                          customerPhone: '${user.mobileNumber}',
-                          customerEmail: '${user.email}',
-                          amount: user.remainingAmount!,
-                        );
-
-                        setState(() => isLoading = false);
-
-                        if (isSuccess) {
-                          // Payment successful → Refresh User
-                          context.read<UserBloc>().add(GetUserById(user.id));
-                          // if (context.mounted) {Navigator.pop(context);}
-                        }
-                      },
-                      child: isLoading
-                          ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                          : Text(
-                        'Pay Now',
-                        style: textStyle14(context,
-                            color: CustomColor.whiteColor),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.call, color: CustomColor.whiteColor,size: 18,),
+                          Expanded(child: Text('Remaining Amount Pay For Contact Fetch True Member',textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.whiteColor),)),
+                        ],
                       ),
+                      onTap: () {
+                        ContactHelper.call('9272003735');
+                      },
                     ),
+                    // CustomContainer(
+                    //   color: CustomColor.appColor,
+                    //   margin: EdgeInsets.zero,
+                    //   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
+                    //   onTap: isLoading
+                    //       ? null
+                    //       : () async {
+                    //     setState(() => isLoading = true);
+                    //
+                    //     DateTime now = DateTime.now();
+                    //     String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
+                    //
+                    //
+                    //     final isSuccess =
+                    //     await packageBuyPaymentRepository(
+                    //       context: context,
+                    //       // orderId: 'package_${formattedDate}',
+                    //       customerId: '${user.id}',
+                    //       customerName: '${user.fullName}',
+                    //       customerPhone: '${user.mobileNumber}',
+                    //       customerEmail: '${user.email}',
+                    //       amount: user.remainingAmount!,
+                    //     );
+                    //
+                    //     setState(() => isLoading = false);
+                    //
+                    //     if (isSuccess) {
+                    //       // Payment successful → Refresh User
+                    //       context.read<UserBloc>().add(GetUserById(user.id));
+                    //       // if (context.mounted) {Navigator.pop(context);}
+                    //     }
+                    //   },
+                    //   child: isLoading
+                    //       ? const SizedBox(
+                    //     width: 20,
+                    //     height: 20,
+                    //     child: CircularProgressIndicator(
+                    //       strokeWidth: 2,
+                    //       color: Colors.white,
+                    //     ),
+                    //   )
+                    //       : Text(
+                    //     'Pay Now',
+                    //     style: textStyle14(context,
+                    //         color: CustomColor.whiteColor),
+                    //   ),
+                    // ),
                   ],
                 ),
             ],
@@ -814,69 +829,70 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 15.height,
-                Text('Amount: ₹ ${formatPrice(package.discountedPrice+package.deposit)}',
-                    style: textStyle16(context)),
-                15.height,
-                Text(
-                  'Select Payment Option',
-                  style: textStyle14(context,
-                      fontWeight: FontWeight.w400,
-                      color: CustomColor.descriptionColor),
-                ),
-
-                CustomContainer(
-                  border: true,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Full Payment Option
-                      Row(
-                        children: [
-                          Radio<String>(
-                            value: "full",
-                            activeColor: CustomColor.appColor,
-                            groupValue: selectedOption,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedOption = value!;
-                              });
-                            },
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Full Payment'),
-                              CustomAmountText(amount: '${formatPrice(package.discountedPrice+package.deposit)}'),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      // Half Payment Option
-                      Row(
-                        children: [
-                          Radio<String>(
-                            value: "half",
-                            activeColor: CustomColor.appColor,
-                            groupValue: selectedOption,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedOption = value!;
-                              });
-                            },
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Half Payment'),
-                              CustomAmountText(amount: '${formatPrice((package.discountedPrice+package.deposit)/2)}'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                Text('Amount: ₹ 10,000', style: textStyle16(context)),
+                Text('This time you pay only ₹ 10,000, and Remaining amount ₹ ${(package.discountedPrice+package.deposit)-10000} pay after process complete', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                // Text('Amount: ₹ ${formatPrice(package.discountedPrice+package.deposit)}', style: textStyle16(context)),
+                // 15.height,
+                // Text(
+                //   'Select Payment Option',
+                //   style: textStyle14(context,
+                //       fontWeight: FontWeight.w400,
+                //       color: CustomColor.descriptionColor),
+                // ),
+                //
+                // CustomContainer(
+                //   border: true,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       // Full Payment Option
+                //       Row(
+                //         children: [
+                //           Radio<String>(
+                //             value: "full",
+                //             activeColor: CustomColor.appColor,
+                //             groupValue: selectedOption,
+                //             onChanged: (value) {
+                //               setState(() {
+                //                 selectedOption = value!;
+                //               });
+                //             },
+                //           ),
+                //           Column(
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: [
+                //               const Text('Full Payment'),
+                //               CustomAmountText(amount: '${formatPrice(package.discountedPrice+package.deposit)}'),
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //
+                //       // Half Payment Option
+                //       Row(
+                //         children: [
+                //           Radio<String>(
+                //             value: "half",
+                //             activeColor: CustomColor.appColor,
+                //             groupValue: selectedOption,
+                //             onChanged: (value) {
+                //               setState(() {
+                //                 selectedOption = value!;
+                //               });
+                //             },
+                //           ),
+                //           Column(
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: [
+                //               const Text('Half Payment'),
+                //               CustomAmountText(amount: '${formatPrice((package.discountedPrice+package.deposit)/2)}'),
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ],
+                //   ),
+                // ),
 
                 15.height,
                 Row(
@@ -899,12 +915,9 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                       child: CustomContainer(
                         color: CustomColor.appColor,
                         padding: const EdgeInsets.symmetric(vertical: 6),
-                        onTap: isLoading
-                            ? null
+                        onTap: isLoading ? null
                             : () async {
                           setState(() => isLoading = true);
-
-                          debugPrint("Selected Option: $selectedOption");
 
                           DateTime now = DateTime.now();
                           String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
@@ -913,14 +926,13 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                           final isSuccess =
                           await packageBuyPaymentRepository(
                             context: context,
-                            orderId: 'package_${formattedDate}',
+                            // orderId: 'package_${formattedDate}',
                             customerId: '${user.id}',
                             customerName: '${user.fullName}',
                             customerPhone: '${user.mobileNumber}',
                             customerEmail: '${user.email}',
-                            amount: selectedOption == "full"
-                                ? (package.discountedPrice+package.deposit).round()
-                                : ((package.discountedPrice+package.deposit)/2).round(),
+                            amount: 10000,
+                            // amount: selectedOption == "full" ? (package.discountedPrice+package.deposit).round() : ((package.discountedPrice+package.deposit)/2).round(),
                           );
 
                           setState(() => isLoading = false);
@@ -1019,33 +1031,3 @@ Widget _labelText(
 
 
 
-class BlocBuilder4<B1 extends BlocBase<S1>, S1,
-B2 extends BlocBase<S2>, S2,
-B3 extends BlocBase<S3>, S3,
-B4 extends BlocBase<S4>, S4>
-    extends StatelessWidget {
-  final Widget Function(BuildContext context, S1 state1, S2 state2, S3 state3, S4 state4) builder;
-
-  const BlocBuilder4({required this.builder, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<B1, S1>(
-      builder: (context, state1) {
-        return BlocBuilder<B2, S2>(
-          builder: (context, state2) {
-            return BlocBuilder<B3, S3>(
-              builder: (context, state3) {
-                return BlocBuilder<B4, S4>(
-                  builder: (context, state4) {
-                    return builder(context, state1, state2, state3, state4);
-                  },
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}

@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/core/costants/custom_log_emoji.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../helper/api_client.dart';
 
-final dio = Dio();
+final ApiClient _apiClient = ApiClient();
 
 Future<bool> packageBuyPaymentRepository({
   required BuildContext context,
@@ -13,39 +16,52 @@ Future<bool> packageBuyPaymentRepository({
   required String customerName,
   required String customerEmail,
   required String customerPhone,
-  required String orderId,
+  // required String orderId,
 }) async {
   try {
-    final response = await dio.post(
-      "https://biz-booster.vercel.app/api/payment/generate-payment-link",
+    final response = await _apiClient.post(
+      "https://api.fetchtrue.com/api/payments/create-smepay-order",
       data: {
-        "orderId": orderId,
         "amount": amount,
         "customerId": customerId,
-        "customerName": customerName,
-        "customerEmail": customerEmail,
-        "customerPhone": customerPhone,
+        "customer_details": {
+          "name": customerName,
+          "email": customerEmail,
+          "phone": customerPhone,
+        }
       },
-      options: Options(headers: {"Content-Type": "application/json"}),
     );
 
     final data = response.data;
+    final paymentUrl = data["paylink"];
+    final orderSlug = data["order_slug"]; // 👈 verify के लिए इस्तेमाल होगा
 
-    if (response.statusCode == 200 && data["paymentLink"] != null) {
-      final paymentUrl = data["paymentLink"];
-      final result = await _openInAppWebView(context, paymentUrl);
+    if (response.statusCode == 200 && paymentUrl != null) {
+      final result = await _openInAppWebView(context, paymentUrl, orderSlug);
       return result;
     } else {
-      showCustomToast('Failed to generate payment link');
+      debugPrint(
+        "${CustomLogEmoji.error} Package Payment Failed to Generate Payment Link: "
+            "${response.statusCode} -> ${response.data}",
+      );
       return false;
     }
-  } catch (e) {
-    showCustomToast('Error: $e');
-    return false;
+  } on DioException catch (e) {
+    if (e.response != null) {
+      print("${CustomLogEmoji.error} Package Payment API Error "
+          "[${e.response?.statusCode}]: ${e.response?.data}");
+    } else {
+      print("${CustomLogEmoji.error} Package Payment Network Error: ${e.message}");
+    }
+    rethrow;
   }
 }
 
-Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
+Future<bool> _openInAppWebView(
+    BuildContext context,
+    String paymentUrl,
+    String orderSlug,
+    ) async {
   final uri = Uri.tryParse(paymentUrl);
   if (uri == null) {
     showCustomToast('Invalid Payment URL');
@@ -63,25 +79,69 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
           return false;
         },
         child: Scaffold(
-          appBar: CustomAppBar(title: 'Pay Now', showBackButton: true),
+          // appBar: CustomAppBar(title: 'Pay Now', showBackButton: true),
           body: InAppWebView(
             initialUrlRequest: URLRequest(url: WebUri.uri(uri)),
-            onLoadStop: (controller, url) {
-              final currentUrl = url?.toString() ?? "";
+            shouldOverrideUrlLoading: (controller, navigationAction) async {
+              final url = navigationAction.request.url.toString();
+              final uri = Uri.tryParse(url);
 
-              if (!isPaymentHandled) {
-                if (currentUrl.contains("response")) {
-                  isPaymentHandled = true;
-                  isPaymentSuccess = true;
-                  showCustomToast('Payment Successful!');
-                } else if (currentUrl.contains("failed") ||
-                    currentUrl.contains("cancel")) {
-                  isPaymentHandled = true;
-                  isPaymentSuccess = false;
-                  showCustomToast('Payment Failed or Cancelled');
+              if (uri != null) {
+                const upiSchemes = ['upi', 'tez', 'phonepe', 'paytm', 'gpay'];
+
+                if (upiSchemes.contains(uri.scheme)) {
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    showCustomToast("UPI app not installed");
+                  }
+                  return NavigationActionPolicy.CANCEL;
                 }
               }
+
+              // Payment webhook / success URL ko allow karo, WebView me hi process ho
+              if (url.contains("smepay-webhook") || url.contains("response") || url.contains("success") || url.contains("failed")) {
+                return NavigationActionPolicy.ALLOW;
+              }
+
+              return NavigationActionPolicy.ALLOW;
             },
+              onLoadStop: (controller, url) async {
+                final currentUrl = url?.toString() ?? "";
+                if (!isPaymentHandled) {
+                  if (currentUrl.contains("smepay-webhook") || currentUrl.contains("response") || currentUrl.contains("success")) {
+                    isPaymentHandled = true;
+
+                    // Backend verify
+                    try {
+                      final verifyResponse = await _apiClient.post(
+                        "https://api.fetchtrue.com/api/payments/verify-order",
+                        data: {"order_slug": orderSlug},
+                      );
+
+                      if (verifyResponse.data["status"] == true) {
+                        isPaymentSuccess = true;
+                        showCustomToast('Payment Successful ✅');
+                      } else {
+                        isPaymentSuccess = false;
+                        showCustomToast('Payment verification फेल ❌');
+                      }
+                    } catch (e) {
+                      isPaymentSuccess = false;
+                      showCustomToast('Payment Verification Error ❌');
+                    }
+
+                    // WebView close karna
+                    Navigator.pop(context, isPaymentSuccess);
+                  } else if (currentUrl.contains("failed") || currentUrl.contains("cancel")) {
+                    isPaymentHandled = true;
+                    isPaymentSuccess = false;
+                    showCustomToast('Payment Failed or Cancelled ❌');
+                    Navigator.pop(context, isPaymentSuccess);
+                  }
+                }
+              }
+
           ),
         ),
       ),
@@ -90,3 +150,4 @@ Future<bool> _openInAppWebView(BuildContext context, String paymentUrl) async {
 
   return result ?? false;
 }
+

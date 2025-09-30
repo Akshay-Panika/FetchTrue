@@ -4,15 +4,25 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/feature/home/widget/understanding_fetch_true_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../banner/widget/home_banner_widget.dart';
 import '../../internet/network_wrapper_screen.dart';
 import '../../module/widget/module_widget.dart';
 import '../../offer/screen/offer_widget.dart';
+import '../../service/bloc/trending_franchise/franchise_bloc.dart';
+import '../../service/bloc/trending_franchise/trending_franchise_event.dart';
+import '../../service/bloc/trending_franchise/trending_franchise_state.dart';
+import '../../service/model/service_model.dart';
+import '../../service/model/trending_franchise_model.dart';
+import '../../service/repository/trending_franchise_repository.dart';
 import '../widget/feature_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/refer_and_earn_widget.dart';
+import '../widget/trending_education_service_widget.dart';
+import '../widget/trending_franchise_service_widget.dart';
+import '../widget/trending_marketing_service_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key,});
@@ -70,8 +80,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SliverToBoxAdapter(child: ModuleWidget()),
             SliverToBoxAdapter(child: 15.height),
             SliverToBoxAdapter(child: OfferWidget()),
-            SliverToBoxAdapter(child: 15.height),
+            // SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: TrendingFranchiseServiceWidget()),
+            // SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: TrendingMarketingServiceWidget()),
+            // SliverToBoxAdapter(child: 15.height),
             SliverToBoxAdapter(child: ReferAndEarnWidget()),
+            // SliverToBoxAdapter(child: 15.height),
+            SliverToBoxAdapter(child: TrendingEducationServiceWidget()),
             SliverToBoxAdapter(child: 15.height),
             SliverToBoxAdapter(child: UnderstandingFetchTrueWidget()),
             SliverToBoxAdapter(child: 50.height),

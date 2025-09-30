@@ -46,7 +46,7 @@ class TeamLeadsScreen extends StatelessWidget {
               name: member.fullName,
               level: member.packageStatus== 'nonGP'?'Non-GP':member.packageStatus,
               status: member.isDeleted,
-              address: 'address',
+              address: _getMemberAddress(member),
               phone: member.mobileNumber,
               earning: earning.toString(),
             ),
@@ -56,6 +56,43 @@ class TeamLeadsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+  String _getMemberAddress(User member) {
+    Address? address;
+
+    if (member.homeAddress != null &&
+        _isAddressValid(member.homeAddress!)) {
+      address = member.homeAddress;
+    } else if (member.workAddress != null &&
+        _isAddressValid(member.workAddress!)) {
+      address = member.workAddress;
+    } else if (member.otherAddress != null &&
+        _isAddressValid(member.otherAddress!)) {
+      address = member.otherAddress;
+    }
+
+    if (address != null) {
+      List<String> parts = [
+        address.houseNumber,
+        address.landmark,
+        address.city,
+        address.state,
+        address.pinCode,
+        address.country
+      ];
+      return parts.where((part) => part.isNotEmpty).join(", ");
+    }
+
+    return "";
+  }
+
+  bool _isAddressValid(Address address) {
+    return address.houseNumber.isNotEmpty ||
+        address.landmark.isNotEmpty ||
+        address.city.isNotEmpty ||
+        address.state.isNotEmpty ||
+        address.pinCode.isNotEmpty ||
+        address.country.isNotEmpty;
   }
 }
 

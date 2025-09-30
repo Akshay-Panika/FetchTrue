@@ -20,25 +20,9 @@ class ReferAndEarnWidget extends StatelessWidget {
       padding: EdgeInsets.zero,
       color: Colors.white,
       borderRadius: false,
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: dimensions.screenHeight * 0.02,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Your Fetch True', style: textStyle16(context, color: CustomColor.appColor),),
-              Text('Your friend are going to love us tool', style: textStyle14(context, fontWeight: FontWeight.w400),),
-              5.height,
-              Text('Refer And Win up to ____', style: textStyle16(context,color: CustomColor.iconColor,),),
-            ],
-          ),
-
-          Image.asset('assets/image/inviteFrnd.png', height: dimensions.screenHeight*0.180, width: double.infinity,)
-        ],
-      ),
+      height: dimensions.screenHeight*0.35,
+      margin: EdgeInsets.zero,
+      assetsImg: 'assets/image/home_reffrerImg.jpg',
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TeamBuildScreen(),)),
     );
   }

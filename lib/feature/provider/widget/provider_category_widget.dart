@@ -258,7 +258,7 @@ class _FilterHeaderStaticState extends State<_FilterHeaderStatic> {
               ),
               const SizedBox(height: 5),
               SizedBox(
-                height: 35,
+                height: 30,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: providerFilter.length,
@@ -284,7 +284,7 @@ class _FilterHeaderStaticState extends State<_FilterHeaderStatic> {
                                 fontWeight: FontWeight.w400,
                                 color: isSelected
                                     ? CustomColor.whiteColor
-                                    : Colors.black),
+                                    : Colors.grey.shade600),
                           ),
                         ),
                       ),

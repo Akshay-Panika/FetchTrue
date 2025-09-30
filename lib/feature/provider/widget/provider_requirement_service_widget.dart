@@ -18,10 +18,11 @@ import '../../service/bloc/service/service_state.dart';
 import '../../service/repository/service_repository.dart';
 import '../../service/screen/service_details_screen.dart';
 import '../../service/widget/service_card_widget.dart';
+import '../model/provider_model.dart';
 
 class ProviderRequirementServiceWidget extends StatelessWidget {
-  final String moduleId;
-  const ProviderRequirementServiceWidget({super.key, required this.moduleId});
+  final ProviderModel provider;
+  const ProviderRequirementServiceWidget({super.key, required this.provider,});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +37,14 @@ class ProviderRequirementServiceWidget extends StatelessWidget {
 
          else if(state is ServiceLoaded){
 
-           // final services = state.services;
-           final services = state.services.where((moduleService) =>
-           moduleService.category.module == moduleId && moduleService.recommendedServices == true
-           ).toList();
+           final subscribedServiceIds = provider.subscribedServices.map((s) => s.id).toList();
+
+           final services = state.services
+               .where((moduleService) => subscribedServiceIds.contains(moduleService.id) && moduleService.recommendedServices == true).toList();
+
+           // final services = state.services.where((moduleService) =>
+           // moduleService.category.module == moduleId && moduleService.recommendedServices == true
+           // ).toList();
 
 
            if (services.isEmpty) {

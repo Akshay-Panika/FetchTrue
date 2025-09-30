@@ -1,5 +1,7 @@
 
 
+import '../../module/model/module_model.dart';
+
 /// ModuleCategoryModel.dart
 class ModuleCategoryModel {
   final String id;
@@ -37,17 +39,4 @@ class ModuleCategoryModel {
   }
 }
 
-class ModuleModel {
-  final String id;
-
-  ModuleModel({
-    required this.id,
-  });
-
-  factory ModuleModel.fromJson(Map<String, dynamic> json) {
-    return ModuleModel(
-      id: json['_id'],
-    );
-  }
-}
 

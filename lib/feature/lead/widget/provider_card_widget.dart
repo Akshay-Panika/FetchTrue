@@ -8,7 +8,6 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../helper/Contact_helper.dart';
-import '../../banner/model/banner_model.dart';
 import '../../module/bloc/module_bloc.dart';
 import '../../module/bloc/module_event.dart';
 import '../../module/bloc/module_state.dart';
@@ -16,7 +15,6 @@ import '../../module/repository/module_repository.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
 import '../../provider/bloc/provider/provider_state.dart';
-import '../../provider/model/provider_model.dart';
 import '../../provider/repository/provider_repository.dart';
 
 class ProviderCardWidget extends StatelessWidget {

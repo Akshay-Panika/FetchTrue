@@ -1,3 +1,6 @@
+import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/costants/text_style.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../core/costants/custom_color.dart';
@@ -16,6 +19,10 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  PersistentBottomSheetController? _sheetController;
+
   int _currentIndex = 0;
 
   final List<Widget> _screens =  [
@@ -29,17 +36,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: _currentIndex == 0,
+      canPop: false,
+      // canPop: _currentIndex == 0,
       onPopInvoked: (didPop) {
         if (!didPop) {
           if (_currentIndex != 0) {
             setState(() => _currentIndex = 0);
           } else {
-            SystemNavigator.pop(); // Exit app on Home tab
+            _showExitBottomSheet();
+            // SystemNavigator.pop();
+            // WidgetsBinding.instance.addPostFrameCallback((_) {
+            //   _showExitBottomSheet();
+            // });
           }
         }
       },
       child: Scaffold(
+        key: _scaffoldKey,
         body: IndexedStack(
           index: _currentIndex,
           children: _screens,
@@ -47,7 +60,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bottomNavigationBar: SafeArea(
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
-            onTap: (index) => setState(() => _currentIndex = index),
+            onTap: (index) {
+              _sheetController?.close();
+              setState(() => _currentIndex = index);
+            },
+            // onTap: (index) => setState(() => _currentIndex = index),
             type: BottomNavigationBarType.fixed,
             selectedItemColor: CustomColor.appColor,
             unselectedItemColor: CustomColor.strokeColor,
@@ -64,6 +81,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
+    );
+  }
+
+
+  void _showExitBottomSheet() {
+    _sheetController = _scaffoldKey.currentState!.showBottomSheet(
+          (context) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            _sheetController?.close();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade600, width: 0.3),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Wrap(
+              children: [
+                Row(
+                  children:  [
+                    Icon(Icons.exit_to_app, color: Colors.red),
+                    SizedBox(width: 10),
+                    Text(
+                      "Are you sure you want to close the app?",
+                      style: textStyle12(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => _sheetController?.close(),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    CustomContainer(
+                      width: 80,
+                      onTap: () {
+                        SystemNavigator.pop();
+                      },
+                      child: Center(
+                        child: Text(
+                          "Exit",
+                          style: textStyle12(context, color: CustomColor.appColor),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      backgroundColor: Colors.transparent,
     );
   }
 }
