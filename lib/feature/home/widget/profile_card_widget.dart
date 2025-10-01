@@ -58,9 +58,9 @@ class _CustomHomeSliverAppbarWidgetState
       },
       builder: (context, state) {
 
-        //  if (state is UserLoading) {
-        //   return SliverToBoxAdapter(child: _profileShimmer(dimensions));
-        // }
+         if (state is UserLoading) {
+          return SliverToBoxAdapter(child: _profileShimmer(dimensions));
+        }
 
           if (state is UserLoaded) {
           final user = state.user;
