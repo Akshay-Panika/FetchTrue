@@ -234,142 +234,156 @@ class _PackageScreenState extends State<PackageScreen> {
                       return DefaultTabController(
                         length: 3,
                         child: SafeArea(
-                          child: CustomScrollView(
-                            slivers: [
-                              /// Tabs
-                              SliverAppBar(
-                                pinned: false,
-                                floating: true,
-                                automaticallyImplyLeading: false,
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                toolbarHeight: 40,
-                                flexibleSpace: Container(
-                                  color: Colors.white,
-                                  child: TabBar(
-                                    dividerColor: Colors.transparent,
-                                    indicatorColor: CustomColor.appColor,
-                                    labelColor: Colors.black,
-                                    onTap: (index) {
-                                      setState(() {
-                                        if (index == 0) selectedPlan = 'gp';
-                                        if (index == 1) selectedPlan = 'sgp';
-                                        if (index == 2) selectedPlan = 'pgp';
-                                      });
-                                    },
-                                    tabs: const [
-                                      Tab(text: "GP"),
-                                      Tab(text: "SGP"),
-                                      Tab(text: "PGP"),
+                          child: RefreshIndicator(
+                            color: CustomColor.appColor,
+                            onRefresh: ()async {
+                              final userId = userState.user.id;
+                              context.read<UserBloc>().add(GetUserById(userId));
+                              context.read<PackageBloc>().add(FetchPackages());
+                              context.read<FiveXBloc>().add(FetchFiveX());
+                              context.read<ReferralBloc>().add(LoadReferrals(userId));
+                              context.read<MyTeamBloc>().add(FetchMyTeam(userId));
+                              await context.read<UserBloc>().stream
+                                  .firstWhere((state) => state is UserLoaded || state is UserError)
+                                  .timeout(const Duration(seconds: 5));
+                            },
+                            child: CustomScrollView(
+                              slivers: [
+                                /// Tabs
+                                SliverAppBar(
+                                  pinned: false,
+                                  floating: true,
+                                  automaticallyImplyLeading: false,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  toolbarHeight: 40,
+                                  flexibleSpace: Container(
+                                    color: Colors.white,
+                                    child: TabBar(
+                                      dividerColor: Colors.transparent,
+                                      indicatorColor: CustomColor.appColor,
+                                      labelColor: Colors.black,
+                                      onTap: (index) {
+                                        setState(() {
+                                          if (index == 0) selectedPlan = 'gp';
+                                          if (index == 1) selectedPlan = 'sgp';
+                                          if (index == 2) selectedPlan = 'pgp';
+                                        });
+                                      },
+                                      tabs: const [
+                                        Tab(text: "GP"),
+                                        Tab(text: "SGP"),
+                                        Tab(text: "PGP"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                /// Body
+                                SliverToBoxAdapter(
+                                  child: Column(
+                                    children: [
+                                      _buildEnhancedMainCard(context,
+                                          userState.user,
+                                          packages[selectedPlan]!,package, selectedPlan, referral, teams),
+
+                                      if (selectedPlan == 'gp')
+                                        PaymentCard(package: package, user: userState.user, fiveX: fiveX,),
+                                      if (selectedPlan == 'sgp')
+                                        Column(
+                                          children: [
+                                            Center(child: Image.asset('assets/image/pgp_img.png',height: 400,)),
+                                            CustomContainer(
+                                              width: 200,
+                                              color: CustomColor.appColor,
+                                              child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor: CustomColor.whiteColor,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      title: const Text("🎉 Claim Reward"),
+                                                      content: const Text(
+                                                        "Your claim feature will be available soon.\nStay tuned!",
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: const Text("Close"),
+                                                        ),
+                                                        ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: CustomColor.appColor,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                            // Future claim logic yahan add karna
+                                                          },
+                                                          child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                      if (selectedPlan == 'pgp')
+                                        Column(
+                                          children: [
+                                            Center(child: Image.asset('assets/image/sgp_img.png',height: 400,)),
+                                            CustomContainer(
+                                              width: 200,
+                                              color: CustomColor.appColor,
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor: CustomColor.whiteColor,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(16),
+                                                      ),
+                                                      title: const Text("🎉 Claim Reward"),
+                                                      content: const Text(
+                                                        "Your claim feature will be available soon.\nStay tuned!",
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: const Text("Close"),
+                                                        ),
+                                                        ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: CustomColor.appColor,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                            // Future claim logic yahan add karna
+                                                          },
+                                                          child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
+                                            )
+                                          ],
+                                        ),
                                     ],
                                   ),
                                 ),
-                              ),
 
-                              /// Body
-                              SliverToBoxAdapter(
-                                child: Column(
-                                  children: [
-                                    _buildEnhancedMainCard(context,
-                                        userState.user,
-                                        packages[selectedPlan]!,package, selectedPlan, referral, teams),
-
-                                    if (selectedPlan == 'gp')
-                                      PaymentCard(package: package, user: userState.user, fiveX: fiveX,),
-                                    if (selectedPlan == 'sgp')
-                                      Column(
-                                        children: [
-                                          Center(child: Image.asset('assets/image/pgp_img.png',height: 400,)),
-                                          CustomContainer(
-                                            width: 200,
-                                            color: CustomColor.appColor,
-                                            child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    backgroundColor: CustomColor.whiteColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(16),
-                                                    ),
-                                                    title: const Text("🎉 Claim Reward"),
-                                                    content: const Text(
-                                                      "Your claim feature will be available soon.\nStay tuned!",
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () => Navigator.pop(context),
-                                                        child: const Text("Close"),
-                                                      ),
-                                                      ElevatedButton(
-                                                        style: ElevatedButton.styleFrom(
-                                                          backgroundColor: CustomColor.appColor,
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                          // Future claim logic yahan add karna
-                                                        },
-                                                        child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          )
-                                        ],
-                                      ),
-                                    if (selectedPlan == 'pgp')
-                                      Column(
-                                        children: [
-                                          Center(child: Image.asset('assets/image/sgp_img.png',height: 400,)),
-                                          CustomContainer(
-                                            width: 200,
-                                            color: CustomColor.appColor,
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    backgroundColor: CustomColor.whiteColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(16),
-                                                    ),
-                                                    title: const Text("🎉 Claim Reward"),
-                                                    content: const Text(
-                                                      "Your claim feature will be available soon.\nStay tuned!",
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () => Navigator.pop(context),
-                                                        child: const Text("Close"),
-                                                      ),
-                                                      ElevatedButton(
-                                                        style: ElevatedButton.styleFrom(
-                                                          backgroundColor: CustomColor.appColor,
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                          // Future claim logic yahan add karna
-                                                        },
-                                                        child:  Text("Claim Now", style: textStyle12(context, color: CustomColor.whiteColor),),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: Center(child: Text('Claim Now', style: textStyle14(context, color: CustomColor.whiteColor),)),
-                                          )
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-
-                              SliverToBoxAdapter(child: 50.height),
-                            ],
+                                SliverToBoxAdapter(child: 50.height),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -931,7 +945,7 @@ void showActivateBottomSheet(BuildContext context, PackageModel package, UserMod
                             customerName: '${user.fullName}',
                             customerPhone: '${user.mobileNumber}',
                             customerEmail: '${user.email}',
-                            amount: 10000,
+                            amount: 1,
                             // amount: selectedOption == "full" ? (package.discountedPrice+package.deposit).round() : ((package.discountedPrice+package.deposit)/2).round(),
                           );
 
