@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:fetchtrue/feature/subcategory/screen/subcategory_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,13 +41,14 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions dimensions = Dimensions(context);
     return  BlocBuilder<BannerBloc, BannerState>(
       builder: (context, state) {
         if (state is BannerLoading) {
           return Container(color: Colors.grey[100]);
         } else if (state is BannerLoaded) {
           // final banners = state.banners;
-          final banners = state.banners.where((banner) => banner.module!.id == widget.moduleId).toList();
+          final banners = state.banners.where((banner) =>  banner.module?.id == widget.moduleId).toList();
           // final banners = state.banners.where((banner) => banner.page == "category").toList();
           if (banners.isEmpty) return const SizedBox.shrink();
           // start auto-slide timer only once
@@ -87,8 +89,8 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
               ),
               if (banners.length > 1)
                 Positioned(
-                  bottom: 70,
-                  left: 15,
+                  bottom: dimensions.screenHeight*0.07,
+                  left: dimensions.screenWidth*0.05,
                   child: Row(
                     children: List.generate(banners.length, (index) {
                       return Container(

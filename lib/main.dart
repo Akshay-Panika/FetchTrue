@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'core/costants/custom_color.dart';
+import 'feature/address/address_notifier.dart';
 import 'feature/auth/user_notifier/user_notifier.dart';
 import 'feature/banner/bloc/banner/banner_bloc.dart';
 import 'feature/banner/bloc/banner/banner_event.dart';
@@ -24,11 +25,13 @@ void main() async {
 
   final userSession = UserSession();
   await userSession.loadUserSession();
+  final addressNotifier = AddressNotifier();
 
   runApp(
       MultiProvider(
         providers: [
           ChangeNotifierProvider<UserSession>.value(value: userSession),
+          ChangeNotifierProvider<AddressNotifier>.value(value: addressNotifier),
         ],
         child: MultiBlocProvider(
           providers: [

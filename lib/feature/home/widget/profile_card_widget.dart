@@ -10,10 +10,11 @@ import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_search_bar.dart';
 import '../../../core/widgets/shimmer_box.dart';
+import '../../address/address_notifier.dart';
+import '../../address/screen/address_picker_screen.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
-import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
 
@@ -32,8 +33,7 @@ class CustomHomeSliverAppbarWidget extends StatefulWidget {
       _CustomHomeSliverAppbarWidgetState();
 }
 
-class _CustomHomeSliverAppbarWidgetState
-    extends State<CustomHomeSliverAppbarWidget> {
+class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWidget> {
   bool _bannerAvailable = true; // default false
 
   @override
@@ -43,12 +43,17 @@ class _CustomHomeSliverAppbarWidgetState
     final userSession = Provider.of<UserSession>(context);
     final _isLogIn = userSession.isLoggedIn;
 
+    final addressNotifier = Provider.of<AddressNotifier>(context);
+    final currentAddress = addressNotifier.confirmedAddress;
+
+
     if (!_isLogIn) {
       return _buildSliverAppBar(
         context,
         widget.isCollapsed,
         name: "Guest",
         photo: null,
+        currentAddress: currentAddress,
       );
     }
 
@@ -71,6 +76,7 @@ class _CustomHomeSliverAppbarWidgetState
             photo: user.profilePhoto,
             packageActive: user.packageActive,
             packageStatus: user.packageStatus,
+            currentAddress: currentAddress,
           );
         } else if (state is UserError) {
           debugPrint("Error: ${state.massage}");
@@ -79,6 +85,7 @@ class _CustomHomeSliverAppbarWidgetState
             widget.isCollapsed,
             name: "Guest",
             photo: null,
+            currentAddress: currentAddress,
           );
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -93,6 +100,7 @@ class _CustomHomeSliverAppbarWidgetState
         String? photo,
         bool? packageActive,
         String? packageStatus,
+        required String currentAddress
       }) {
     Dimensions dimensions = Dimensions(context);
 
@@ -121,27 +129,33 @@ class _CustomHomeSliverAppbarWidgetState
           ),
         ),
       ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 300),
-            style: textStyle14(
-              context,
-              color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
+      title: InkWell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: textStyle14(
+                context,
+                color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
+              ),
+              child: Text(name),
             ),
-            child: Text(name),
-          ),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 300),
-            style: textStyle12(
-              context,
-              color:
-              (!_bannerAvailable || isCollapsed) ? CustomColor.descriptionColor : Colors.white,
+            AnimatedDefaultTextStyle(
+              duration:  Duration(milliseconds: 300),
+              style: TextStyle(fontSize: 14, color:
+                (!_bannerAvailable || isCollapsed) ? CustomColor.descriptionColor : Colors.white,
+              ),
+              child:  Text('$currentAddress'),
             ),
-            child: const Text('Pune, Maharashtra'),
-          ),
-        ],
+          ],
+        ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddressPickerScreen()),
+            );
+          }
       ),
       titleSpacing: 15,
       leadingWidth: 50,

@@ -73,7 +73,7 @@ class CustomSliverAppbar extends StatelessWidget {
                   ? CustomColor.descriptionColor
                   : Colors.white,
             ),
-            child: const Text('Pune 411028, Maharashtra'),
+            child: const Text(''),
           ),
         ],
       ),

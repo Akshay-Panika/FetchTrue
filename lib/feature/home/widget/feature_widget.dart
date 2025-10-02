@@ -74,7 +74,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                     child: InkWell(
                       onTap: () => context.push('/wallet/${widget.userId}',),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -94,17 +94,10 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("My Balance",
-                                    style: textStyle14(context).copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black87,
-                                    )),
+                                Text("My Wallet",
+                                    style: textStyle12(context)),
                                 Text("₹ ${wallet.balance}",
-                                    style: textStyle12(context).copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.blueAccent,
-                                    )),
+                                    style: textStyle16(context, color: Colors.blueAccent)),
                               ],
                             ),
                           ],
@@ -142,7 +135,7 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                         MaterialPageRoute(builder: (context) => const TeamBuildScreen()),
                       ),
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -157,24 +150,18 @@ class _FeatureWidgetState extends State<FeatureWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Image.asset('assets/image/my_team_icon.png',fit: BoxFit.cover,),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("My Teams",
-                                    style: textStyle14(context).copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black87,
-                                    )),
-                                Text("${userCount}",
-                                    style: textStyle12(context).copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                    )),
+                                Text("My Team",
+                                    style: textStyle12(context)),
+                                Text("${userCount == 0 ? '___':userCount}",
+                                    style: textStyle16(context, color: Colors.blueAccent)),
                               ],
                             ),
-                            Image.asset('assets/image/my_team_icon.png',fit: BoxFit.cover,),
+
                           ],
                         ),
                       ),

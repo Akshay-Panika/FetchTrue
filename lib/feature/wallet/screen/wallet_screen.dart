@@ -125,14 +125,16 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel pac
       children: [
         15.height,
         CustomContainer(
+          border: true,
+          color: CustomColor.whiteColor,
           margin: EdgeInsets.zero,
-          gradient: LinearGradient(colors: [
-            Color(0xffE8E8E8),
-            Color(0xffF2F5FF),
-          ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          // gradient: LinearGradient(colors: [
+          //   Color(0xffE8E8E8),
+          //   Color(0xffF2F5FF),
+          // ],
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          // ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -176,14 +178,16 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel pac
           children: [
             Expanded(
               child: CustomContainer(
+                border: true,
+                color: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
-                gradient: LinearGradient(colors: [
-                  Color(0xffE8E8E8),
-                  Color(0xffF2F5FF),
-                ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+                // gradient: LinearGradient(colors: [
+                //   Color(0xffE8E8E8),
+                //   Color(0xffF2F5FF),
+                // ],
+                //   begin: Alignment.topCenter,
+                //   end: Alignment.bottomCenter,
+                // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -208,14 +212,16 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel pac
             10.width,
             Expanded(
               child: CustomContainer(
+                border: true,
+                color: CustomColor.whiteColor,
                 margin: EdgeInsets.zero,
-                gradient: LinearGradient(colors: [
-                  Color(0xffE8E8E8),
-                  Color(0xffF2F5FF),
-                ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+                // gradient: LinearGradient(colors: [
+                //   Color(0xffE8E8E8),
+                //   Color(0xffF2F5FF),
+                // ],
+                //   begin: Alignment.topCenter,
+                //   end: Alignment.bottomCenter,
+                // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

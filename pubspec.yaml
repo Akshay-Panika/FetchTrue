@@ -39,6 +39,11 @@ dependencies:
   pinput: ^5.0.2
   google_sign_in: ^7.2.0
 
+# Map
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+
   # File & PDF Handling
   file_picker: ^10.1.9
   image_picker: ^1.1.2
