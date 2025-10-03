@@ -3,7 +3,6 @@ import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:fetchtrue/feature/service/screen/service_review_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,7 +10,6 @@ import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_favorite_button.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../model/service_model.dart';
 
@@ -147,14 +145,30 @@ Widget _buildServiceCard({required List<ServiceModel> services}) {
   final index = services.first.serviceDetails;
 
   final sections = [
+
+    if(index.benefits != null && index.benefits.isNotEmpty)
     _Section('Benefits', index.benefits),
+
+    if(index.overview != null && index.overview.isNotEmpty)
     _Section('Overview', index.overview),
     // _Section('Highlight', index.highlight as String?),
+
+    if(index.highlight != null && index.highlight.isNotEmpty)
     _Section('Highlight', null, highlightImages: index.highlight),
+
+    if(index.document != null && index.document.isNotEmpty)
     _Section('Document', index.document),
+
+    if(index.whyChoose != null && index.whyChoose.isNotEmpty)
     _Section('Why Choose Fetch Ture', null, whyChoose: index.whyChoose),
+
+    if(index.howItWorks != null && index.howItWorks.isNotEmpty)
     _Section('How it work', index.howItWorks),
+
+    if(index.termsAndConditions != null && index.termsAndConditions.isNotEmpty)
     _Section('T&C', index.termsAndConditions),
+
+    if(index.faq != null && index.faq.isNotEmpty)
     _Section('FAQs', null, faqs: index.faq),
   ];
 

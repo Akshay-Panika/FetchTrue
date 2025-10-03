@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
@@ -65,10 +66,18 @@ class FavoriteProviderButtonWidget extends StatelessWidget {
             ),
           );
         } else if (state is UserError) {
-          return Icon(Icons.favorite_border, color: Colors.red,);
+          return InkWell(
+              onTap: () {
+                showCustomToast('Please first you sign in');
+              },
+              child: Icon(Icons.favorite_border, color: Colors.red,));
         }
 
-        return Icon(Icons.favorite_border, color: Colors.red,);
+        return InkWell(
+            onTap: () {
+              showCustomToast('Please first you sign in');
+            },
+            child: Icon(Icons.favorite_border, color: Colors.red,));
       },
     );
   }

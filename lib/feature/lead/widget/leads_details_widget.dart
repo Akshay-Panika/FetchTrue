@@ -40,7 +40,7 @@ class LeadsDetailsWidget extends StatelessWidget {
         if (state is LeadLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is LeadLoaded) {
-          final lead = state.leadModel.firstWhere((l) => l.id == leadId,);
+          final lead = state.allLeads.firstWhere((l) => l.id == leadId,);
 
           if (lead == null) {
             return const Center(child: Text("Lead not found"));

@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
-import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/custom_headline.dart';
 import '../model/live_webinar_model.dart';
 import '../repository/live_webinar_service.dart';
 import 'enroll_now_screen.dart';
@@ -159,18 +157,21 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
 
                       final data = webinars[index];
 
-                      return Stack(
-                        children: [
-                          CustomContainer(
-                            border: false,
-                            color: CustomColor.whiteColor,
-                            padding: EdgeInsets.zero,
-                            height: dimensions.screenHeight * 0.12,
-                            margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
-                            child: Row(
+                      return CustomContainer(
+                        border: false,
+                        color: CustomColor.whiteColor,
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomContainer(
-                                  width: dimensions.screenWidth * 0.35,
+                                  width: dimensions.screenWidth * 0.4,
+                                  height: dimensions.screenHeight * 0.1,
                                   margin: EdgeInsets.zero,
                                   networkImg: data.imageUrl,
                                   child: Align(
@@ -178,30 +179,27 @@ class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
                                     child: Icon(Icons.library_add_check_outlined, color: CustomColor.whiteColor),
                                   ),
                                 ),
-
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('${data.name}', style: textStyle12(context)),
-                                        Text('${data.description}', style: textStyle12(context, color: CustomColor.greyColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis, maxLines: 2,),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
 
                               ],
                             ),
-                          ),
 
-                          Positioned(
-                            bottom: 5,
-                            right: 5,
-                            child: Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-                          ),
-                        ],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all( 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text('${data.name}', style: textStyle12(context),overflow: TextOverflow.ellipsis, maxLines: 2,),
+                                    Text('${data.description}', style: textStyle12(context, color: CustomColor.greyColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis, maxLines: 2,),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                          ],
+                        ),
                       );
                     },
                   ),

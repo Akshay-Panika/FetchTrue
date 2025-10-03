@@ -2,6 +2,7 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/custom_button.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -133,11 +134,15 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: 'Address', showBackButton: true,),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Icon(Icons.map, size: 120,color: Colors.green,)),
-          50.height,
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: CustomFormField(context,
+                hint: 'Search Address', keyboardType: TextInputType.text),
+          ),
+
 
 
           CustomContainer(
@@ -148,7 +153,12 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('YOUR LOCATION', style: textStyle12(context, color: Colors.grey.shade600),),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_outlined, size: 18,color: Colors.grey.shade600,),5.width,
+                    Text('YOUR LOCATION', style: textStyle12(context, color: Colors.grey.shade600),),
+                  ],
+                ),
                 _isLoading ? Text('Address : Loading...')
                 : Text('Address: ${_currentCity != null ? _currentCity:""}, ${_currentState != null ? _currentState : ""}'),
               ],

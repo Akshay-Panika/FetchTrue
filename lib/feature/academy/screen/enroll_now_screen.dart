@@ -9,6 +9,7 @@ import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../../core/widgets/custom_url_launch.dart';
 import '../model/live_webinar_model.dart';
 
 class EnrollNowScreen extends StatefulWidget {
@@ -22,23 +23,6 @@ class EnrollNowScreen extends StatefulWidget {
 class _EnrollNowScreenState extends State<EnrollNowScreen> {
   bool _itEnroll = false;
 
-  void _copyUrl(String url) async {
-    await Clipboard.setData(ClipboardData(text: url));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Link copied to clipboard')),
-    );
-  }
-
-  void _openUrl(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the link')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +63,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                               Text(
                                 widget.webinar.description,
                                 style: textStyle12(context,
-                                    color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis,maxLines: 2,
+                                    color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)
                               ),
                             ],
                           ),
@@ -187,7 +171,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                               onTap: () {
                                 if (widget.webinar.displayVideoUrls
                                     .isNotEmpty) {
-                                  _copyUrl(widget
+                                  CopyUrl(widget
                                       .webinar.displayVideoUrls.first);
                                 }
                               },
@@ -199,7 +183,7 @@ class _EnrollNowScreenState extends State<EnrollNowScreen> {
                               onTap: () {
                                 if (widget.webinar.displayVideoUrls
                                     .isNotEmpty) {
-                                  _openUrl(widget
+                                  CustomUrlLaunch(widget
                                       .webinar.displayVideoUrls.first);
                                 }
                               },

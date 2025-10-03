@@ -146,12 +146,12 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
         
         
                     _buildTile(context, Icons.rule, "Terms And Conditions", () {
-                      CustomUrlLaunch('https://www.fetchtrue.com/termsandcondition');
+                      CustomUrlLaunch('https://www.fetchtrue.com/termscondition');
                       // Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen()));
                     }),
         
                     _buildTile(context, Icons.receipt_long, "Refund Policy", () {
-                      CustomUrlLaunch('https://www.fetchtrue.com/refund&returnpolicy');
+                      CustomUrlLaunch('https://www.fetchtrue.com/returnpolicy');
                       // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
                     }),
         

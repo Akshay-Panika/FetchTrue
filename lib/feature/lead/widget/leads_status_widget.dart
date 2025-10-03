@@ -34,7 +34,7 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
         if (state is LeadLoading) {
           return  LinearProgressIndicator(color: CustomColor.appColor,minHeight: 0.3,);
         } else if (state is LeadLoaded) {
-          final lead = state.leadModel.firstWhere((l) => l.id == widget.checkoutId,);
+          final lead = state.allLeads.firstWhere((l) => l.id == widget.checkoutId,);
 
           if (lead == null) {
             return const Center(child: Text("Lead not found"));

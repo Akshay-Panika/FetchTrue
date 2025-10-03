@@ -174,68 +174,68 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                   padding: EdgeInsets.zero,
                   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   height: 100,
-                  child: Row(
+                  child: Stack(
                     children: [
-                      CustomContainer(
-                        networkImg: data.thumbnailImage,
-                        margin: EdgeInsets.zero,
-                        width: 180,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:  Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+                      Row(
+                        children: [
+                          CustomContainer(
+                            networkImg: data.thumbnailImage,
+                            margin: EdgeInsets.zero,
+                            width: 180,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:  Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
-                                          child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
-                                        ),
-                                        Row(
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
-                                            10.width,
-                                            CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
-                                            10.width,
-                                            Text('(${data.discount}% Off)', style: textStyle12(context, color: Colors.red.shade400),),
+                                            Padding(
+                                              padding:  EdgeInsets.only(right: dimensions.screenHeight*0.02),
+                                              child: Text(data.serviceName, style: textStyle12(context,),overflow: TextOverflow.ellipsis, maxLines: 1,),
+                                            ),
+                                            Row(
+                                              children: [
+                                                CustomAmountText(amount: formatPrice(data.discountedPrice!), color: CustomColor.greenColor, fontSize: 14, fontWeight: FontWeight.w500),
+                                                10.width,
+                                                CustomAmountText(amount: data.price.toString(), color: Colors.grey[500],isLineThrough: true,fontSize: 14, fontWeight: FontWeight.w500),
+                                              ],
+                                            ),
+                                            Text('(${data.discount}% Off)', style: TextStyle(fontSize: 12, color: Colors.red.shade400),),
+                      
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-
-                                ],
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle14(context, color: CustomColor.greenColor,),),
-                                      Text('Earn up to ', style: TextStyle(fontSize: 12, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                      ),
+                      
                                     ],
                                   ),
-
-                                  FavoriteServiceButtonWidget(serviceId: data.id),
+                      
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text('Earn up to ', style: textStyle12(context, color: CustomColor.blackColor, fontWeight: FontWeight.w500),),
+                                      Text(formatCommission(data.franchiseDetails.commission, half: true), style: textStyle12(context, color: CustomColor.greenColor,),),
+                                    ],
+                                  ),
+                      
                                 ],
                               ),
-
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
+                      
+                      Positioned(
+                          right: 5,top: 5,
+                          child: FavoriteServiceButtonWidget(serviceId: data.id))
                     ],
                   ),
                   onTap: () => Navigator.push(

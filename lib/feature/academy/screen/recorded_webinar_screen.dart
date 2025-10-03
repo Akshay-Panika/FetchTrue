@@ -41,8 +41,13 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
               return _buildRecordedWebinarShimmer(context);
             }
 
-            if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text('No data available.'));
+            if (!snapshot.hasData || snapshot.data?.data.isEmpty == true) {
+              return const Center(
+                child: Text(
+                  'No data available.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              );
             }
 
             final webinars = snapshot.data!.data;
@@ -52,6 +57,7 @@ class _RecordedWebinarScreenState extends State<RecordedWebinarScreen> {
               padding: EdgeInsets.symmetric(horizontal: 10),
               itemBuilder: (context, index) {
                 final webinar = webinars[index];
+
                 return  CustomContainer(
                   color: CustomColor.whiteColor,
                   padding: EdgeInsets.zero,

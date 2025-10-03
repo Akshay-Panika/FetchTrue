@@ -72,11 +72,11 @@ class _CheckoutPaymentDoneWidgetState extends State<CheckoutPaymentDoneWidget> w
                     child: Column(
                       children: [
                         50.height,
-                        Text('Your place the lead successfully',
-                            style: textStyle18(context, color: CustomColor.appColor)),
+                        Text('Your lead has been successfully placed',
+                            style: textStyle18(context, color: CustomColor.appColor),textAlign: TextAlign.center,),
                         Text('Thank you for your order with us',
                             style: textStyle14(context, color: CustomColor.descriptionColor)),
-                        SizedBox(height: dimensions.screenHeight*0.1,),
+                        SizedBox(height: dimensions.screenHeight*0.08,),
                         Divider(),
                         10.height,
                         // Center(child: Text('Total Payment')),

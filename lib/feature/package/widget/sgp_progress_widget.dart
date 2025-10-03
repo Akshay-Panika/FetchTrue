@@ -33,21 +33,26 @@ class SgpProgressWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 5,
-              backgroundColor: Colors.grey[200],
-              valueColor: AlwaysStoppedAnimation<Color>(CustomColor.greenColor),
-            ),
-          ),
-          10.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          if(memberCount >=3)
+          Column(
             children: [
-              _labelBox(context, "$displayCount", CustomColor.greyColor),
-              _labelBox(context, "$targetCount", CustomColor.greenColor),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 5,
+                  backgroundColor: Colors.grey[200],
+                  valueColor: AlwaysStoppedAnimation<Color>(CustomColor.greenColor),
+                ),
+              ),
+              10.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _labelBox(context, "$displayCount", CustomColor.greyColor),
+                  _labelBox(context, "$targetCount", CustomColor.greenColor),
+                ],
+              ),
             ],
           ),
           15.height,

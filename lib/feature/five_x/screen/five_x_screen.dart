@@ -70,7 +70,7 @@ class FiveXScreen extends StatelessWidget {
 
                     if(fiveXState is FiveXLoaded && leadState is LeadLoaded && walletState is WalletLoaded){
                       final fiveX = fiveXState.data;
-                      final lead = leadState.leadModel;
+                      final lead = leadState.allLeads;
                       final wallet = walletState.wallet;
 
                       return SingleChildScrollView(
@@ -200,19 +200,58 @@ class FiveXScreen extends StatelessWidget {
   }
 
   Widget _buildEligible(BuildContext context, FiveXModel? fiveX, UserModel user) {
-    final createdAt = DateTime.parse(user.createdAt.toString());
+    DateTime? createdAt;
+    try {
+      createdAt = DateTime.parse(user.createdAt.toString());
+    } catch (e) {
+      createdAt = DateTime.now();
+    }
+
     final targetMonths = fiveX?.months ?? 0;
     final now = DateTime.now();
+
+    // Full months calculation (partial months ignored)
     int completedMonths = (now.year - createdAt.year) * 12 + (now.month - createdAt.month);
+
+    // If day of month not reached yet, reduce completedMonths by 1
+    if (now.day < createdAt.day) {
+      completedMonths--;
+    }
+
     int remainingMonths = targetMonths - completedMonths;
     if (remainingMonths < 0) remainingMonths = 0;
+
+    // Remaining days calculation
+    DateTime completionDate = DateTime(createdAt.year, createdAt.month + targetMonths, createdAt.day);
+    int remainingDays = completionDate.difference(now).inDays;
+    if (remainingDays < 0) remainingDays = 0;
 
     return CustomContainer(
       border: true,
       color: CustomColor.whiteColor,
-      child: Text('⏳ Are you eligible? — Yes, Remaining $remainingMonths Months'),
+      child: Text(
+        remainingMonths > 0
+            ? '⏳ Are you eligible? — Yes, Remaining $remainingMonths months'
+            : '✅ Eligibility period completed',
+        style: const TextStyle(fontSize: 14),
+      ),
     );
   }
+
+  // Widget _buildEligible(BuildContext context, FiveXModel? fiveX, UserModel user) {
+  //   final createdAt = DateTime.parse(user.createdAt.toString());
+  //   final targetMonths = fiveX?.months ?? 0;
+  //   final now = DateTime.now();
+  //   int completedMonths = (now.year - createdAt.year) * 12 + (now.month - createdAt.month);
+  //   int remainingMonths = targetMonths - completedMonths;
+  //   if (remainingMonths < 0) remainingMonths = 0;
+  //
+  //   return CustomContainer(
+  //     border: true,
+  //     color: CustomColor.whiteColor,
+  //     child: Text('⏳ Are you eligible? — Yes, Remaining $remainingMonths Months'),
+  //   );
+  // }
 
 
   Widget _buildLEL(BuildContext context, FiveXModel? fiveX, List<LeadModel> completedLeads, WalletModel wallet){

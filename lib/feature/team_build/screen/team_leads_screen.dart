@@ -10,8 +10,6 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/formate_price.dart';
-import '../../lead/bloc/lead/lead_bloc.dart';
-import '../../lead/bloc/lead/lead_state.dart';
 import '../../lead/bloc/team_lead/team_lead_bloc.dart';
 import '../../lead/bloc/team_lead/team_lead_event.dart';
 import '../../lead/bloc/team_lead/team_lead_state.dart';
@@ -148,136 +146,137 @@ class _MemberLeads extends StatelessWidget {
                   return CustomContainer(
                     color: CustomColor.whiteColor,
                     margin: EdgeInsetsGeometry.only(top: 10),
-                    child: Stack(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Booking ID: ${leads.bookingId}', style: textStyle12(context, fontWeight: FontWeight.w400),),
-                            Text(leads.service!.serviceName.toString(), style: textStyle12(context, fontWeight: FontWeight.w400),),
-                            Row(
-                              children: [
-                                CustomAmountText(amount: leads.service!.price.toString(),isLineThrough: true),10.width,
-                                CustomAmountText(amount: leads.service!.discountedPrice.toString(),isLineThrough: false),10.width,
-                                Text('${leads.service!.discount.toString()} %', style: textStyle12(context, color: CustomColor.greenColor),),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Status:', style: textStyle12(context, fontWeight: FontWeight.w400,),),10.width,
-                                Text('[ ${getLeadStatus(leads)} ]', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: getStatusColor(leads)),),
 
-                              ],
-                            ),
-                            10.height,
-
-                            DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [6, 3],
-                                strokeWidth: 1,
-                                radius: Radius.circular(8),
-                                color: CustomColor.appColor,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Booking ID: ${leads.bookingId}', style: textStyle12(context, fontWeight: FontWeight.w400),),
+                              Text(leads.service!.serviceName.toString(), style: textStyle12(context, fontWeight: FontWeight.w400),),
+                              Row(
+                                children: [
+                                  CustomAmountText(amount: leads.service!.price.toString(),isLineThrough: true),10.width,
+                                  CustomAmountText(amount: leads.service!.discountedPrice.toString(),isLineThrough: false),10.width,
+                                  Text('${leads.service!.discount.toString()} %', style: textStyle12(context, color: CustomColor.greenColor),),
+                                ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            ],
+                          ),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text('[ ${getLeadStatus(leads)} ]', style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: getStatusColor(leads)),),
+                              if (leadCommission != null && leadId != null)
+                                BlocProvider(
+                                  create: (context) => UpcomingCommissionBloc(UpcomingLeadCommissionRepository())
+                                    ..add(FetchUpcomingCommission(leadId)),
+                                  child: BlocBuilder<UpcomingCommissionBloc, UpcomingCommissionState>(
+                                    builder: (context, state) {
+                                      if (state is UpcomingCommissionLoading) {
+                                        return SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 3,
+                                              color: CustomColor.appColor,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      else if (state is UpcomingCommissionLoaded) {
+                                        final data = state.commission.data;
+                                        return Column(
+                                          children: [
+                                            if (!(leads.isAccepted ?? false))
+                                              Text(
+                                                'After Accepted\n₹ __',
+                                                style: textStyle12(
+                                                  context,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: CustomColor.appColor,
+                                                ),
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            if ((leads.isAccepted ?? false) && !(leads.isCompleted ?? false))
+                                              Text(
+                                                'Earning\nOpportunity ₹ ${data?.share3.toStringAsFixed(2) ?? "__"}',
+                                                style: textStyle12(
+                                                  context,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: CustomColor.appColor,
+                                                ),
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            if (leads.isCompleted ?? false)
+                                              Text(
+                                                'My Earning\n₹ ${leadCommission.commissionEarned?.toStringAsFixed(2) ?? "0"}',
+                                                style: textStyle12(
+                                                  context,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: CustomColor.appColor,
+                                                ),
+                                                textAlign: TextAlign.end,
+                                              ),
+                                          ],
+                                        );
+                                      }
+                                      else if (state is UpcomingCommissionError) {
+                                        return Text(
+                                          'After Accepted\n₹ __',
+                                          style: textStyle12(
+                                            context,
+                                            fontWeight: FontWeight.w400,
+                                            color: CustomColor.appColor,
+                                          ),
+                                          textAlign: TextAlign.end,
+                                        );
+                                      }
+                                      return SizedBox.shrink();
+                                    },
+                                  ),
+                                )
+                            ],
+                          ),
+                        ],
+                      ),
+                        10.height,
+
+
+                        DottedBorder(
+                          options: RoundedRectDottedBorderOptions(
+                            dashPattern: [6, 3],
+                            strokeWidth: 1,
+                            radius: Radius.circular(8),
+                            color: CustomColor.appColor,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text('Booking Date', style: textStyle12(context, color: CustomColor.descriptionColor),),
-                                        Text('${formatDateTime(leads.createdAt)}', style: textStyle12(context, fontWeight: FontWeight.w400),),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text('Schedule Date', style: textStyle12(context, color: CustomColor.descriptionColor),),
-                                        Text('${formatDateTime(leads.acceptedDate)}',style: textStyle12(context, fontWeight: FontWeight.w400),),
-                                      ],
-                                    ),
+                                    Text('Booking Date', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                                    Text('${formatDateTime(leads.createdAt)}', style: textStyle12(context, fontWeight: FontWeight.w400),),
                                   ],
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
-
-                        if (leadCommission != null && leadId != null)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: BlocProvider(
-                              create: (context) => UpcomingCommissionBloc(UpcomingLeadCommissionRepository())
-                                ..add(FetchUpcomingCommission(leadId)),
-                              child: BlocBuilder<UpcomingCommissionBloc, UpcomingCommissionState>(
-                                builder: (context, state) {
-                                  if (state is UpcomingCommissionLoading) {
-                                    return SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 3,
-                                          color: CustomColor.appColor,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  else if (state is UpcomingCommissionLoaded) {
-                                    final data = state.commission.data;
-                                    return Column(
-                                      children: [
-                                        if (!(leads.isAccepted ?? false))
-                                          Text(
-                                            'After Accepted\n₹ __',
-                                            style: textStyle12(
-                                              context,
-                                              fontWeight: FontWeight.w400,
-                                              color: CustomColor.appColor,
-                                            ),
-                                            textAlign: TextAlign.end,
-                                          ),
-                                        if ((leads.isAccepted ?? false) && !(leads.isCompleted ?? false))
-                                          Text(
-                                            'Earning\nOpportunity ₹ ${data?.share3.toStringAsFixed(2) ?? "__"}',
-                                            style: textStyle12(
-                                              context,
-                                              fontWeight: FontWeight.w400,
-                                              color: CustomColor.appColor,
-                                            ),
-                                            textAlign: TextAlign.end,
-                                          ),
-                                        if (leads.isCompleted ?? false)
-                                          Text(
-                                            'My Earning\n₹ ${leadCommission.commissionEarned?.toStringAsFixed(2) ?? "0"}',
-                                            style: textStyle12(
-                                              context,
-                                              fontWeight: FontWeight.w400,
-                                              color: CustomColor.appColor,
-                                            ),
-                                            textAlign: TextAlign.end,
-                                          ),
-                                      ],
-                                    );
-                                  }
-                                  else if (state is UpcomingCommissionError) {
-                                    return Text(
-                                      'After Accepted\n₹ __',
-                                      style: textStyle12(
-                                        context,
-                                        fontWeight: FontWeight.w400,
-                                        color: CustomColor.appColor,
-                                      ),
-                                      textAlign: TextAlign.end,
-                                    );
-                                  }
-                                  return SizedBox.shrink();
-                                },
-                              ),
+                                Column(
+                                  children: [
+                                    Text('Schedule Date', style: textStyle12(context, color: CustomColor.descriptionColor),),
+                                    Text('${formatDateTime(leads.acceptedDate)}',style: textStyle12(context, fontWeight: FontWeight.w400),),
+                                  ],
+                                ),
+                              ],
                             ),
-                          )
-
-
+                          ),
+                        )
                       ],
                     ),
                   );

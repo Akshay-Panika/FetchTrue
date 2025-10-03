@@ -86,59 +86,25 @@ class _LeadScreenState extends State<LeadScreen> {
                     return _buildShimmer();
                   }
                   else if (state is LeadLoaded) {
-                    // final allLeads = state.leadModel.data ?? [];
-                    final allLeads = (state.leadModel ?? [])
-                      ..sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
-
-                    // Filter Logic
-                    final pendingLeads = allLeads.where((e) => e.isAccepted == false && e.isCompleted == false && e.isCanceled == false).toList();
-
-                    final acceptedLeads = allLeads.where((e) => e.isAccepted == true && e.isCompleted == false && e.isCanceled == false).toList();
-
-                    final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
-
-                    final cancelLeads = allLeads.where((e) => e.isCanceled == true).toList();
-
-                    // 🔹 Filtered List According to Tab
-                    List filteredList;
-                    switch (selectedFilter) {
-                      case 'Pending':
-                        filteredList = pendingLeads;
-                        break;
-                      case 'Accepted':
-                        filteredList = acceptedLeads;
-                        break;
-                      case 'Completed':
-                        filteredList = completedLeads;
-                        break;
-                      case 'Cancel':
-                        filteredList = cancelLeads;
-                        break;
-                      default:
-                        filteredList = allLeads;
-                    }
 
                     return  CustomScrollView(
                       slivers: [
                         SliverAppBar(
                           floating: true,
-                          toolbarHeight: dimensions.screenHeight*0.035,
+                          toolbarHeight: dimensions.screenHeight * 0.035,
                           backgroundColor: CustomColor.whiteColor,
                           flexibleSpace: FlexibleSpaceBar(
                             background: ListView(
                               scrollDirection: Axis.horizontal,
-                              children: [
-                                _buildFilterChip('All', allLeads.length),
-                                _buildFilterChip('Pending', pendingLeads.length),
-                                _buildFilterChip('Accepted', acceptedLeads.length),
-                                _buildFilterChip('Completed', completedLeads.length),
-                                _buildFilterChip('Cancel', cancelLeads.length),
-                              ],
-                            ),),
+                              children: filters
+                                  .map((filter) => _buildFilterChip(context, filter, state))
+                                  .toList(),
+                            ),
+                          ),
                         ),
 
                         SliverToBoxAdapter(
-                          child:  filteredList.isEmpty
+                          child:   state.filteredLeads.isEmpty
                               ? Padding(
                               padding: EdgeInsetsGeometry.only(top: 280),
                               child:  Center(child: Column(
@@ -150,10 +116,10 @@ class _LeadScreenState extends State<LeadScreen> {
                               : ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: filteredList.length,
+                            itemCount: state.filteredLeads.length,
                             padding: EdgeInsetsGeometry.symmetric(horizontal: dimensions.screenHeight*0.010),
                             itemBuilder: (context, index) {
-                              final lead = filteredList[index];
+                              final lead = state.filteredLeads[index];
 
                               return CustomContainer(
                                 color: Colors.white,
@@ -164,7 +130,7 @@ class _LeadScreenState extends State<LeadScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(child: Text(lead.service.serviceName, style: textStyle12(context, fontWeight: FontWeight.w400))),
+                                        Expanded(child: Text(lead.service!.serviceName.toString(), style: textStyle12(context, fontWeight: FontWeight.w400))),
                                         Text(
                                           '[ ${getLeadStatus(lead)} ]',
                                           style: textStyle12(context, color: getStatusColor(lead),fontWeight: FontWeight.w400),
@@ -188,7 +154,7 @@ class _LeadScreenState extends State<LeadScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Text("Amount", style: textStyle12(context, fontWeight: FontWeight.w500)),
-                                            CustomAmountText(amount: '${lead.totalAmount.toStringAsFixed(2)}'),
+                                            CustomAmountText(amount: '${lead.totalAmount!.toStringAsFixed(2)}'),
                                           ],
                                         ),
                                       ],
@@ -196,8 +162,8 @@ class _LeadScreenState extends State<LeadScreen> {
                                   ],
                                 ),
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LeadsDetailsScreen(
-                                  leadName: lead.service.serviceName,
-                                  leadId: lead.id,
+                                  leadName: lead.service!.serviceName,
+                                  leadId: lead.id.toString(),
                                   user: user,
                                 ),)),
                               );
@@ -243,25 +209,52 @@ class _LeadScreenState extends State<LeadScreen> {
 
 
   /// Filter
-  Widget _buildFilterChip(String label, int count) {
-    final isSelected = label == selectedFilter;
+  Widget _buildFilterChip(BuildContext context, String label, LeadLoaded state) {
+    final isSelected = label == state.selectedFilter;
+    int count;
+    switch (label) {
+      case 'Pending':
+        count = state.allLeads
+            .where((e) =>
+        !(e.isAccepted ?? false) &&
+            !(e.isCompleted ?? false) &&
+            !(e.isCanceled ?? false))
+            .length;
+        break;
+      case 'Accepted':
+        count = state.allLeads
+            .where((e) =>
+        (e.isAccepted ?? false) &&
+            !(e.isCompleted ?? false) &&
+            !(e.isCanceled ?? false))
+            .length;
+        break;
+      case 'Completed':
+        count =
+            state.allLeads.where((e) => (e.isCompleted ?? false)).length;
+        break;
+      case 'Cancel':
+        count = state.allLeads.where((e) => (e.isCanceled ?? false)).length;
+        break;
+      default:
+        count = state.allLeads.length;
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
-        onTap: () {
-          setState(() {
-            selectedFilter = label;
-          });
-        }, child: Text(
-        '$label ($count)',
-        style: TextStyle(
-          color: isSelected ? CustomColor.appColor : CustomColor.blackColor,
-          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+        onTap: () =>
+            context.read<LeadBloc>().add(FilterLeads(label)),
+        child: Text(
+          '$label ($count)',
+          style: TextStyle(
+            color: isSelected ? CustomColor.appColor : CustomColor.blackColor,
+            fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+          ),
         ),
-      ),),
+      ),
     );
   }
 }

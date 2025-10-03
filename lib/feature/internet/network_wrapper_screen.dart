@@ -30,23 +30,25 @@ class NetworkMonitor {
   static final ValueNotifier<bool> isConnected = ValueNotifier(true);
 
   static void init(BuildContext context) {
-    final userSession = Provider.of<UserSession>(context);
+    final userSession = Provider.of<UserSession>(context, listen: false);
+    // final userSession = Provider.of<UserSession>(context);
     final userId = userSession.userId;
 
     InternetConnectionChecker.instance.onStatusChange.listen((status) {
       final connected = status == InternetConnectionStatus.connected;
       isConnected.value = connected;
 
-      if (connected && userId != null) {
-        // context.read<UserBloc>().add(GetUserById(userId));
-        // context.read<ModuleBloc>().add(GetModules());
-        // context.read<BannerBloc>().add(GetBanners());
-        // context.read<WalletBloc>().add(FetchWalletByUserId(userId));
-        // context.read<MyTeamBloc>().add(FetchMyTeam(userId));
-        // context.read<OfferBloc>().add(FetchOffersEvent());
-        // context.read<UnderstandingFetchTrueBloc>().add(LoadUnderstandingFetchTrue());
-        // context.read<LeadBloc>().add(FetchLeadsByUser(userId));
-      }
+      // if (connected && userId != null) {
+      //   context.read<UserBloc>().add(GetUserById(userId));
+      //   context.read<ModuleBloc>().add(GetModules());
+      //   context.read<BannerBloc>().add(GetBanners());
+      //
+      //   context.read<WalletBloc>().add(FetchWalletByUserId(userId));
+      //   context.read<MyTeamBloc>().add(FetchMyTeam(userId));
+      //   context.read<OfferBloc>().add(FetchOffersEvent());
+      //   context.read<UnderstandingFetchTrueBloc>().add(LoadUnderstandingFetchTrue());
+      //   context.read<LeadBloc>().add(FetchLeadsByUser(userId));
+      // }
     });
   }
 }

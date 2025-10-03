@@ -104,7 +104,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                               if (state is LeadLoading) {
                                  return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
                               } else if (state is LeadLoaded) {
-                                final allLeads = state.leadModel ?? [];
+                                final allLeads = state.allLeads ?? [];
                                 final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
 
 

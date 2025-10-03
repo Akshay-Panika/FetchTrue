@@ -180,7 +180,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
               onStatus: (status) {
                 if (_bannerAvailable != status) {
                   setState(() {
-                    _bannerAvailable = status; // yahan control ho raha hai
+                    _bannerAvailable = status;
                   });
                 }
               },

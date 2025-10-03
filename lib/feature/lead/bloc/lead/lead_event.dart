@@ -15,3 +15,12 @@ class FetchLeadsByUser extends LeadEvent {
 
 class ClearLeadData extends LeadEvent {}
 
+class FilterLeads extends LeadEvent {
+  final String filter;
+  FilterLeads(this.filter);
+
+  @override
+  List<Object?> get props => [filter];
+}
+
+

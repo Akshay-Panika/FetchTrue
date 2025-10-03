@@ -73,8 +73,8 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                      child: Column(
                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildRow(context, 'ID:', widget.memberId ?? '#XXXXX'),
                           _buildRow(context, 'Name:', widget.name?? 'Guest'),
+                          _buildRow(context, 'ID:', widget.memberId ?? '#XXXXX'),
                           if(widget.address != null && widget.address != '')
                           Text(widget.address ??'', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
                             overflow: TextOverflow.ellipsis,
