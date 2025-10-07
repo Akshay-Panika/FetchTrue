@@ -184,7 +184,6 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
               )
             ],
           ),
-
         ],
       ),
     );

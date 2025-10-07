@@ -36,6 +36,7 @@ class UnderstandingFetchTrueWidget extends StatelessWidget {
                   return UnderstandingVideoCard(
                     videoUrl: item.videoUrl,
                     title: item.fullName,
+                    coverImg: item.imageUrl,
                   );
                 },
               ),
@@ -54,11 +55,13 @@ class UnderstandingFetchTrueWidget extends StatelessWidget {
 class UnderstandingVideoCard extends StatefulWidget {
   final String videoUrl;
   final String title;
+  final String coverImg;
 
   const UnderstandingVideoCard({
     super.key,
     required this.videoUrl,
     required this.title,
+    required this.coverImg,
   });
 
   @override
@@ -106,8 +109,8 @@ class _UnderstandingVideoCardState extends State<UnderstandingVideoCard> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.network(
-                        YoutubePlayer.getThumbnail(videoId: videoId),
+                      Image.network('${widget.coverImg}',
+                        // YoutubePlayer.getThumbnail(videoId: videoId),
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),

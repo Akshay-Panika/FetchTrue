@@ -25,6 +25,11 @@ class OfferWidget extends StatelessWidget {
             return _buildShimmer(dimensions);
           } else if (state is OfferLoaded) {
             final offers = state.offers;
+
+            if(offers.isEmpty){
+              return SizedBox.shrink();
+            }
+
             return SizedBox(
               height: dimensions.screenHeight*0.26,
               child: Stack(

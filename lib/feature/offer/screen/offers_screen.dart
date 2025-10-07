@@ -29,6 +29,19 @@ class OfferScreen extends StatelessWidget {
             }
             else if (state is OfferLoaded) {
               final offers = state.offers;
+
+              if(offers.isEmpty){
+                return Padding(
+                    padding: EdgeInsetsGeometry.only(top: dimensions.screenHeight*0.25),
+                    child:  Center(child: Column(
+                      children: [
+                        Image.asset(CustomImage.emptyCart, height: dimensions.screenHeight*0.1,),
+                        Text('No Offer'),
+                      ],
+                    )));
+              }
+
+
               return ListView.builder(
                 padding:  EdgeInsets.all(dimensions.screenHeight*0.010),
                 itemCount: offers.length,

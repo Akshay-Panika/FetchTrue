@@ -58,8 +58,8 @@ class SgpProgressWidget extends StatelessWidget {
           15.height,
           Text(
             remaining > 0
-                ? 'Almost there! Build your team with just $remaining more partners, you’ll become a SGP.'
-                : '🎉 Congratulations! You have completed your team and become a SGP!',
+                ? 'Almost there! Build your team with just $remaining more partners, you’ll become a PGP.'
+                : '🎉 Congratulations! You have completed your team and become a PGP!',
             style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
           ),
           10.height,

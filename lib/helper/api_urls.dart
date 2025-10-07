@@ -15,6 +15,7 @@ class ApiUrls{
 
   /// Module Api
   static const String wallet = '${baseUrl}wallet/fetch-by-user';
+  static const String bankKyc = '${baseUrl}wallet/payout/add-beneficiary';
   static const String packages = '${baseUrl}packages';
   static const String fiveX = '${baseUrl}fivex';
   static const String modules = '${baseUrl}modules';

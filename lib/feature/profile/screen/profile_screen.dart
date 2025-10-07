@@ -8,6 +8,7 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/profile/model/user_model.dart';
 import 'package:fetchtrue/feature/profile/screen/add_address_screen.dart';
 import 'package:fetchtrue/feature/profile/screen/additional_details_screen.dart';
+import 'package:fetchtrue/feature/profile/screen/bank_kyc_screen.dart';
 import 'package:fetchtrue/feature/profile/screen/update_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -232,6 +233,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           trailing: const Icon(Icons.add, color: Colors.grey),
                         ),
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddAddressScreen(user: user!),)),
+                      ),
+                      10.height,
+
+                      CustomContainer(
+                        border: false,
+                        color: CustomColor.whiteColor,
+                        margin: EdgeInsets.zero,
+                        child: ListTile(
+                          minVerticalPadding: 0,
+                          minTileHeight: 0,
+                          contentPadding: EdgeInsets.all(0),
+                          title: const Text('Bank KYC'),
+                          subtitle: const Text('Complete Bank KYC'),
+                          trailing: const Icon(Icons.add, color: Colors.grey),
+                        ),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BankKycScreen(userId: user!.id.toString()),)),
                       ),
                     ],
                   ),
