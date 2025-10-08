@@ -468,7 +468,7 @@ Widget _buildEnhancedMainCard(BuildContext context ,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                // Text(packages['includes']['title'].toString(), style: textStyle12(context, color: CustomColor.blackColor),),
+              if(team.length == 10)
                 Text(packages['includes']['des'].toString(), style: textStyle12(context, color: Colors.grey.shade600,),),
             ],
           ),

@@ -85,7 +85,7 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
                                     padding: EdgeInsets.zero,
                                     margin: EdgeInsets.zero,
                                     networkImg: ads.fileUrl,
-                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: ads.service.id),)),
+                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: ads.service.id, providerId: ''),)),
                                   ),
                                 ),
                                 Padding(

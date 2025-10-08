@@ -6,11 +6,15 @@ import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/bank_details/bank_detail_bloc.dart';
+import '../bloc/bank_details/bank_detail_event.dart';
+import '../bloc/bank_details/bank_detail_state.dart';
 import '../bloc/bank_kyc/bank_kyc_bloc.dart';
 import '../bloc/bank_kyc/bank_kyc_event.dart';
 import '../bloc/bank_kyc/bank_kyc_state.dart';
 import '../model/bank_kyc_model.dart';
 import '../repository/bank_kyc_repository.dart';
+import '../repository/bank_detail_repository.dart';
 
 class BankKycScreen extends StatefulWidget {
   final String userId;
@@ -73,14 +77,20 @@ class _BankKycScreenState extends State<BankKycScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Bank KYC Verification',
-        showBackButton: true,
-      ),
-      body: BlocProvider(
-        create: (_) => BankKycBloc(BankKycRepository()),
-        child: BlocConsumer<BankKycBloc, BankKycState>(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => BankKycBloc(BankKycRepository())),
+        BlocProvider(
+          create: (_) => BankDetailBloc(BankDetailRepository())
+            ..add(FetchBankDetailEvent(widget.userId)),
+        ),
+      ],
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Bank KYC Verification',
+          showBackButton: true,
+        ),
+        body: BlocListener<BankKycBloc, BankKycState>(
           listener: (context, state) {
             if (state is BankKycSuccess) {
               showCustomToast('${CustomLogEmoji.done} Bank KYC Submitted Successfully ✅');
@@ -89,68 +99,86 @@ class _BankKycScreenState extends State<BankKycScreen> {
               showCustomToast('${CustomLogEmoji.fail} ${state.message}');
             }
           },
-          builder: (context, state) {
-            final isLoading = state is BankKycLoading;
+          child: BlocBuilder<BankDetailBloc, BankDetailState>(
+            builder: (context, state) {
+              if (state is BankDetailLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ListView(
-                children: [
-                  const Text(
-                    "Fill your bank details carefully 👇",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 20),
+              if (state is BankDetailLoaded) {
+                final detail = state.bankDetail;
 
-                  CustomLabelFormField(
-                    context,
-                    'Account Number',
-                    controller: accountController,
-                    keyboardType: TextInputType.number,
-                    hint: 'Account Number',
-                    isRequired: true,
-                  ),
-                  const SizedBox(height: 15),
+                accountController.text = detail.accountNumber;
+                ifscController.text = detail.ifsc;
+                bankController.text = detail.bankName;
+                branchController.text = detail.branchName;
+              }
 
-                  CustomLabelFormField(
-                    context,
-                    'IFSC Code',
-                    controller: ifscController,
-                    keyboardType: TextInputType.text,
-                    hint: 'IFSC Code',
-                    isRequired: true,
-                  ),
-                  const SizedBox(height: 15),
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: BlocBuilder<BankKycBloc, BankKycState>(
+                  builder: (context, kycState) {
+                    final isLoading = kycState is BankKycLoading;
+                    return ListView(
+                      children: [
+                        const Text(
+                          "Fill your bank details carefully 👇",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 20),
 
-                  CustomLabelFormField(
-                    context,
-                    'Bank Name',
-                    controller: bankController,
-                    keyboardType: TextInputType.text,
-                    hint: 'Bank Name',
-                    isRequired: true,
-                  ),
-                  const SizedBox(height: 15),
+                        CustomLabelFormField(
+                          context,
+                          'Account Number',
+                          controller: accountController,
+                          keyboardType: TextInputType.number,
+                          hint: 'Account Number',
+                          isRequired: true,
+                        ),
+                        const SizedBox(height: 15),
 
-                  CustomLabelFormField(
-                    context,
-                    'Branch Name',
-                    controller: branchController,
-                    keyboardType: TextInputType.text,
-                    hint: 'Branch Name',
-                    isRequired: true,
-                  ),
-                  const SizedBox(height: 25),
+                        CustomLabelFormField(
+                          context,
+                          'IFSC Code',
+                          controller: ifscController,
+                          keyboardType: TextInputType.text,
+                          hint: 'IFSC Code',
+                          isRequired: true,
+                        ),
+                        const SizedBox(height: 15),
 
-                  CustomButton(
-                    isLoading: isLoading,
-                    label: 'Submit KYC',
-                    onPressed: () => _validateAndSubmit(context),
-                  ),
-                ],
-              ),
-            );
-          },
+                        CustomLabelFormField(
+                          context,
+                          'Bank Name',
+                          controller: bankController,
+                          keyboardType: TextInputType.text,
+                          hint: 'Bank Name',
+                          isRequired: true,
+                        ),
+                        const SizedBox(height: 15),
+
+                        CustomLabelFormField(
+                          context,
+                          'Branch Name',
+                          controller: branchController,
+                          keyboardType: TextInputType.text,
+                          hint: 'Branch Name',
+                          isRequired: true,
+                        ),
+                        const SizedBox(height: 25),
+
+                        CustomButton(
+                          isLoading: isLoading,
+                          label: 'Submit KYC',
+                          onPressed: () => _validateAndSubmit(context),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

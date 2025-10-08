@@ -141,7 +141,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ServiceDetailsScreen(serviceId: data.id),
+                              builder: (context) => ServiceDetailsScreen(serviceId: data.id,
+                               providerId: '',),
                             ),
                           ),
                           child: Column(

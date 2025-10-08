@@ -61,7 +61,7 @@ class LegalAllServiceWidget extends StatelessWidget {
                    children: List.generate(services.length, (index) {
                      final data = services[index];
 
-                     return ServiceCardWidget(data: data,);
+                     return ServiceCardWidget(data: data, providerId: '');
                    },),
                  ),
                ),

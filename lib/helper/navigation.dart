@@ -190,9 +190,10 @@ final GoRouter router = GoRouter(
       path: '/service/:serviceId',
       pageBuilder: (context, state) {
         final serviceId = state.pathParameters['serviceId']!;
+        final providerId = state.extra as String?;
         return CustomTransitionPage(
           key: state.pageKey,
-          child: ServiceDetailsScreen(serviceId: serviceId),
+          child: ServiceDetailsScreen(serviceId: serviceId,  providerId: providerId.toString(),),
           transitionsBuilder: _fadeTransition,
         );
       },
@@ -205,6 +206,7 @@ final GoRouter router = GoRouter(
         return WalletScreen(userId: userId);
       },
     ),
+
     GoRoute(
       path: '/my-team',
       builder: (context, state) => const TeamBuildScreen(),

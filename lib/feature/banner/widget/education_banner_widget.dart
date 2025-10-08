@@ -80,7 +80,10 @@ class _EducationBannerWidgetState extends State<EducationBannerWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                            builder: (_) => ServiceDetailsScreen(
+                                serviceId: banner.service!,
+                              providerId: '',
+                            ),
                           ),
                         );
                       }

@@ -14,7 +14,8 @@ import '../model/service_model.dart';
 
 class ServiceCardWidget extends StatelessWidget {
   final ServiceModel data;
-  const ServiceCardWidget({super.key, required this.data});
+  final String providerId;
+  const ServiceCardWidget({super.key, required this.data, required this.providerId});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +151,7 @@ class ServiceCardWidget extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () => context.push('/service/${data.id}'),
+      onTap: () => context.push('/service/${data.id}', extra: providerId),
     );
   }
 }

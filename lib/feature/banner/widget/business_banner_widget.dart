@@ -81,7 +81,10 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                            builder: (_) => ServiceDetailsScreen(
+                                serviceId: banner.service!,
+                                providerId: '',
+                            ),
                           ),
                         );
                       }

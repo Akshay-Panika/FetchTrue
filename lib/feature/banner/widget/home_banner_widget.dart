@@ -93,6 +93,7 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
                           MaterialPageRoute(
                             builder: (_) => ServiceDetailsScreen(
                               serviceId: banner.service!,
+                                providerId: ''
                             ),
                           ),
                         );

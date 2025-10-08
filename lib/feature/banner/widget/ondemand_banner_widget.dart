@@ -80,7 +80,7 @@ class _OnDemandBannerWidgetState extends State<OnDemandBannerWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!),
+                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!, providerId: '',),
                           ),
                         );
                       }

@@ -137,6 +137,7 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
                             margin: EdgeInsets.only(top: 10),
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(
                               serviceId: data.id,
+                                providerId: ''
                             ),
                             )),
                             child: Column(
