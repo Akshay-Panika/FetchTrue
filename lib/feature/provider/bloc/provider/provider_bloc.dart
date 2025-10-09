@@ -7,15 +7,29 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
 
   ProviderBloc(this.repository) : super(ProviderInitial()) {
     // Fetch all providers
+    // on<GetProviders>((event, emit) async {
+    //   emit(ProviderLoading());
+    //   try {
+    //     final provider = await repository.getProvider();
+    //     emit(ProvidersLoaded(providers: provider)); // original list
+    //   } catch (e) {
+    //     emit(ProviderError(e.toString()));
+    //   }
+    // });
+
     on<GetProviders>((event, emit) async {
       emit(ProviderLoading());
       try {
-        final provider = await repository.getProvider();
-        emit(ProvidersLoaded(providers: provider)); // original list
+        final provider = await repository.getProvider(
+          lat: event.lat,
+          lng: event.lng,
+        );
+        emit(ProvidersLoaded(providers: provider));
       } catch (e) {
         emit(ProviderError(e.toString()));
       }
     });
+
 
     // Fetch single provider by id
     on<GetProviderById>((event, emit) async {
@@ -38,27 +52,3 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   }
 }
 
-// class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
-//   final ProviderRepository repository;
-//   ProviderBloc(this.repository) : super(ProviderInitial()) {
-//     on<GetProviders>((event, emit) async {
-//       emit(ProviderLoading());
-//       try {
-//         final provider = await repository.getProvider();
-//         emit(ProvidersLoaded(provider));
-//       } catch (e) {
-//         emit(ProviderError(e.toString()));
-//       }
-//     });
-//
-//     on<GetProviderById>((event, emit) async {
-//       emit(ProviderLoading());
-//       try {
-//         final providerById = await repository.getProviderById(event.id);
-//         emit(ProviderLoaded(providerById!));
-//       } catch (e) {
-//         emit(ProviderError(e.toString()));
-//       }
-//     });
-//   }
-// }

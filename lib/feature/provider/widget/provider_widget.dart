@@ -29,7 +29,7 @@ class ProviderWidget extends StatelessWidget {
     Dimensions dimensions = Dimensions(context);
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(18.5204, 73.8563))),
         BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
       ],
       child: MultiBlocListener(

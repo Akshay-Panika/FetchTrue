@@ -3,7 +3,6 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_image.dart';
 import '../bloc/gallery/gallery_bloc.dart';
 import '../bloc/gallery/gallery_event.dart';

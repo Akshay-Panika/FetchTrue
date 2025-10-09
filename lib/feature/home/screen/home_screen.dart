@@ -1,22 +1,12 @@
-import 'package:fetchtrue/core/costants/custom_color.dart';
-import 'package:fetchtrue/core/costants/custom_image.dart';
+
 import 'package:fetchtrue/core/costants/dimension.dart';
-import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/feature/home/widget/understanding_fetch_true_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../banner/widget/home_banner_widget.dart';
 import '../../internet/network_wrapper_screen.dart';
 import '../../module/widget/module_widget.dart';
 import '../../offer/screen/offer_widget.dart';
-import '../../service/bloc/trending_franchise/franchise_bloc.dart';
-import '../../service/bloc/trending_franchise/trending_franchise_event.dart';
-import '../../service/bloc/trending_franchise/trending_franchise_state.dart';
-import '../../service/model/service_model.dart';
-import '../../service/model/trending_franchise_model.dart';
-import '../../service/repository/trending_franchise_repository.dart';
 import '../widget/feature_widget.dart';
 import '../widget/profile_card_widget.dart';
 import '../widget/refer_and_earn_widget.dart';

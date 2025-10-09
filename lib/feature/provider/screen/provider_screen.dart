@@ -4,10 +4,12 @@ import 'package:fetchtrue/feature/module/model/module_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../address/address_notifier.dart';
 import '../../favorite/widget/favorite_provider_button_widget.dart';
 import '../../module/bloc/module_bloc.dart';
 import '../../module/bloc/module_event.dart';
@@ -23,10 +25,20 @@ class ProviderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+    final lat = addressNotifier.latitude;
+    final lng = addressNotifier.longitude;
+
+    if (lat == null || lng == null) {
+      return const Scaffold(
+        appBar: const CustomAppBar(title: 'Provider', showBackButton: true, showSearchIcon: false,),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(lat, lng))),
         BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
       ],
       child: Scaffold(

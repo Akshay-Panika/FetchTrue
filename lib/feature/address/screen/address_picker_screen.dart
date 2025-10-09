@@ -5,6 +5,7 @@ import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/core/widgets/custom_text_tield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/costants/custom_color.dart';
@@ -115,13 +116,22 @@ class _AddressPickerScreenState extends State<AddressPickerScreen> {
   }
 
 
-  void _confirmAddress() {
+  void _confirmAddress() async {
     if (_currentCity != null && _currentState != null) {
+      geo.Position position = await geo.Geolocator.getCurrentPosition(
+        desiredAccuracy: geo.LocationAccuracy.high,
+      );
+
       Provider.of<AddressNotifier>(context, listen: false).setConfirmedAddress(
         _currentCity!,
         _currentState!,
+        lat: position.latitude,
+        lng: position.longitude,
       );
-      Navigator.pop(context);
+
+      if (context.mounted) {
+        GoRouter.of(context).go('/dashboard'); // Direct navigation
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please wait for location or refresh.')),

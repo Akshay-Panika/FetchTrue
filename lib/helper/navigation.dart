@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../feature/address/screen/address_picker_screen.dart';
 import '../feature/auth/screen/splash_screen.dart';
 import '../feature/category/business/screen/business_screen.dart';
 import '../feature/category/education/screen/education_screen.dart';
@@ -225,6 +226,16 @@ final GoRouter router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: '/address',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const AddressPickerScreen(),
+        transitionsBuilder: _fadeTransition,
+      ),
+    ),
+
 
 
   ],

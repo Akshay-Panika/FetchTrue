@@ -12,6 +12,7 @@ import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../../core/widgets/no_user_sign_widget.dart';
+import '../../address/address_notifier.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../module/bloc/module_bloc.dart';
 import '../../module/bloc/module_event.dart';
@@ -271,10 +272,15 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
 
   @override
   Widget build(BuildContext context) {
-
+    final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+    final lat = addressNotifier.latitude;
+    final lng = addressNotifier.longitude;
+    if (lat == null || lng == null) {
+      return  Center(child: CircularProgressIndicator());
+    }
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(lat, lng))),
         BlocProvider(create: (_) => ModuleBloc(ModuleRepository())..add(GetModules())),
       ],
       child: MultiBlocListener(

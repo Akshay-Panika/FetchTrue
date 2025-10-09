@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/costants/dimension.dart';
 import '../../../../core/widgets/custom_sliver_appbar.dart';
+import '../../../address/address_notifier.dart';
 import '../../../auth/user_notifier/user_notifier.dart';
 import '../../../banner/widget/finance_banner_widget.dart';
 import '../../../highlight_serive/highlight_widget.dart';
@@ -55,11 +56,13 @@ class _FinanceServiceScreenState extends State<FinanceServiceScreen> {
     Dimensions dimensions = Dimensions(context);
     final userSession = Provider.of<UserSession>(context);
     final double searchBarHeight = dimensions.screenHeight*0.06;
-
+    final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+    final lat = addressNotifier.latitude;
+    final lng = addressNotifier.longitude;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
+          create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(lat!, lng!)),
         ),
       ],
       child: Scaffold(

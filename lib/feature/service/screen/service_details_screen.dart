@@ -275,6 +275,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../address/address_notifier.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../checkout/screen/checkout_screen.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
@@ -311,10 +312,20 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
+
+    final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+    final lat = addressNotifier.latitude;
+    final lng = addressNotifier.longitude;
+    if (lat == null || lng == null) {
+      return const Scaffold(
+        appBar: const CustomAppBar(title: 'Service Details', showBackButton: true, showSearchIcon: false,),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ServiceBloc(ServiceRepository())..add(GetServices())),
-        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders())),
+        BlocProvider(create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(lat, lng))),
       ],
       child: Scaffold(
         appBar: CustomAppBar(
@@ -398,7 +409,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
           },
         ),
 
-        /// ✅ Bottom Buttons
+        /// Bottom Buttons
         bottomNavigationBar: BlocBuilder<ProviderBloc, ProviderState>(
           builder: (context, providerState) {
             return SafeArea(

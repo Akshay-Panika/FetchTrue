@@ -7,9 +7,11 @@ import 'package:fetchtrue/feature/service/widget/subscribed_provider_widget.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_button.dart';
+import '../../address/address_notifier.dart';
 import '../../checkout/screen/checkout_screen.dart';
 import '../../provider/bloc/provider/provider_bloc.dart';
 import '../../provider/bloc/provider/provider_event.dart';
@@ -36,6 +38,13 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
     builder: (context) {
 
       Dimensions dimensions = Dimensions(context);
+      final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+      final lat = addressNotifier.latitude;
+      final lng = addressNotifier.longitude;
+
+      if (lat == null || lng == null) {
+        return Center(child: CircularProgressIndicator());
+      }
 
       return StatefulBuilder(
         builder: (context, setState) {
@@ -93,7 +102,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                   }
 
                                   return BlocProvider(
-                                    create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders()),
+                                    create: (_) => ProviderBloc(ProviderRepository())..add(GetProviders(lat, lng)),
                                     child: BlocBuilder<ProviderBloc, ProviderState>(
 
                                       builder: (context, state) {

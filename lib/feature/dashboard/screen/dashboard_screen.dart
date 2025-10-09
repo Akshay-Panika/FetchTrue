@@ -3,8 +3,12 @@ import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../academy/screen/academy_screen.dart';
+import '../../address/address_notifier.dart';
+import '../../address/screen/address_dialog_widget.dart';
+import '../../address/screen/address_picker_screen.dart';
 import '../../home/screen/home_screen.dart';
 import '../../lead/screen/lead_screen.dart';
 import '../../more/screen/more_screen.dart';
@@ -32,6 +36,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     AcademyScreen(),
     MoreScreen(),
   ];
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
+      final currentAddress = addressNotifier.confirmedAddress;
+
+      if (currentAddress == null) {
+        _showAddressDialog();
+      }
+    });
+  }
+
+
+  void _showAddressDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AddressDialogWidget();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
