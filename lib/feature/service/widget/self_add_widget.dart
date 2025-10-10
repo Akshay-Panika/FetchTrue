@@ -215,8 +215,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
 
                                                             childRetting: (inService.provider?.id != null)
                                                                 ? BlocProvider(
-                                                              create: (_) => ProviderReviewBloc(ProviderReviewRepository())
-                                                                ..add(FetchProviderReviews(inService.provider!.id)),
+                                                              create: (_) => ProviderReviewBloc(ProviderReviewRepository())..add(FetchProviderReviews(inService.provider!.id)),
                                                               child: BlocBuilder<ProviderReviewBloc, ProviderReviewState>(
                                                                 builder: (context, state) {
                                                                   if (state is ProviderReviewLoading) {

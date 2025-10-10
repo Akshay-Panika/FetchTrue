@@ -265,24 +265,6 @@ Widget _fadeTransition(
 }
 
 
-// Widget _fadeTransition(
-//     BuildContext context,
-//     Animation<double> animation,
-//     Animation<double> secondaryAnimation,
-//     Widget child,
-//     ) {
-//   // Curved animation for smoothness
-//   final curvedAnimation = CurvedAnimation(
-//     parent: animation,
-//     curve: Curves.easeInOut,
-//   );
-//
-//   return FadeTransition(
-//     opacity: curvedAnimation,
-//     child: child,
-//   );
-// }
-
 
 
 

@@ -24,9 +24,8 @@ class AddressNotifier extends ChangeNotifier {
     if (city != null && state != null) {
       _confirmedAddress = '$city, $state';
     } else {
-      _confirmedAddress = 'Select Address';
+      _confirmedAddress = '';
     }
-
     notifyListeners();
   }
 

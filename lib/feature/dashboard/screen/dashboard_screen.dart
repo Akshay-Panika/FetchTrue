@@ -46,7 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
       final currentAddress = addressNotifier.confirmedAddress;
 
-      if (currentAddress == null) {
+      if (currentAddress == null || currentAddress.isEmpty) {
         _showAddressDialog();
       }
     });
