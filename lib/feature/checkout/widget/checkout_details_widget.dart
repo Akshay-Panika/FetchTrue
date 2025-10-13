@@ -37,7 +37,7 @@ class CheckoutDetailsWidget extends StatefulWidget {
   final String serviceId;
   final String providerId;
   final String status;
-  final Function(CheckOutModel) onPaymentDone;
+  final Function(CheckOutModel, String zoneId, String couponCode) onPaymentDone;
 
   const CheckoutDetailsWidget({
     super.key,
@@ -53,6 +53,7 @@ class CheckoutDetailsWidget extends StatefulWidget {
 
 class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
+  CouponModel? selectedCoupon;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,10 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         listener: (context, state) {
           if (state is CheckoutSuccess) {
             showCustomToast("Checkout successful");
-            widget.onPaymentDone(state.model);
+            // widget.onPaymentDone(state.model);
+
+            widget.onPaymentDone(state.model, selectedCoupon!.zone!.id.toString(), selectedCoupon!.couponCode.toString());
+
           } else if (state is CheckoutFailure) {
             showCustomToast(state.error);
           }
@@ -153,8 +157,8 @@ class CheckoutWidget extends StatefulWidget {
   final String commission;
   final String? providerId;
   final CommissionModel commissionCharge;
-  final Function(CheckOutModel) onPaymentDone;
-
+  // final Function(CheckOutModel) onPaymentDone;
+  final Function(CheckOutModel, String, String) onPaymentDone;
 
   const CheckoutWidget({
     super.key,
@@ -348,6 +352,15 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             return;
                           }
 
+                          String couponZoneId = selectedCoupon?.zone?.id.toString() ?? '';
+                          String couponCode = selectedCoupon?.couponCode ?? '';
+
+                          if(selectedCoupon != null && (couponZoneId.isEmpty || couponCode.isEmpty)){
+                            showCustomToast("Coupon data is incomplete");
+                            return;
+                          }
+
+
                           final checkoutData = CheckOutModel(
                             user: userSession.userId.toString(),
                             provider: widget.providerId,
@@ -378,7 +391,14 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                           );
 
                           // print('provider Id :${widget.providerId}');
-                         widget.onPaymentDone(checkoutData);
+                         // widget.onPaymentDone(checkoutData);
+                          widget.onPaymentDone(
+                            checkoutData,
+                            couponZoneId,
+                            couponCode,
+                          );
+
+
                       },)
                     ],
                   ),

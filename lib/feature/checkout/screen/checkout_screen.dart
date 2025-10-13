@@ -14,7 +14,8 @@ class CheckoutScreen extends StatefulWidget {
   final String serviceId;
   final String providerId;
   final String status;
-  const CheckoutScreen({super.key, required this.serviceId, required this.providerId, required this.status});
+
+  const CheckoutScreen({super.key, required this.serviceId, required this.providerId, required this.status,});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -26,6 +27,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String? _bookingId;
   String? _dateTime;
   String? _amount;
+
+  String zoneId = '';
+  String couponCode = '';
 
 
   final steps = [
@@ -71,13 +75,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: Column(
                 children: [
                   if (_paymentStep == 0)
+
+                    /*
+                    couponCode: couponCode,
+                      zoneId: zoneId,  ye es esn se lena he
+                     */
                     CheckoutDetailsWidget(
                      serviceId: widget.serviceId,
                       providerId: widget.providerId,
                       status: widget.status,
-                      onPaymentDone: (CheckOutModel model) {
+                      onPaymentDone: (CheckOutModel model, String zoneIdValue, String couponCodeValue) {
                         setState(() {
                           checkoutData = model;
+                          zoneId = zoneIdValue;
+                          couponCode = couponCodeValue;
                           _paymentStep = 1;
                         });
                       },
@@ -86,6 +97,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   else if (_paymentStep == 1)
                     CheckPaymentWidget(
                       checkoutData: checkoutData!,
+                      couponCode: couponCode,
+                      zoneId: zoneId,
                       onPaymentDone: (String bookingIdFromPayment, String dateTime, String amount ) {
                         setState(() {
                           _bookingId = bookingIdFromPayment;
@@ -94,7 +107,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           _paymentStep = 2;
                         });
                       },
-
                     )
                   else
                      CheckoutPaymentDoneWidget(bookingId: _bookingId ??'', dateTime: _dateTime ?? '', amount: _amount ??'',),

@@ -101,10 +101,10 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                       Navigator.push(context, MaterialPageRoute(builder: (_) =>  TeamBuildScreen()));
                     }),
         
-                    // if(userSession.isLoggedIn)
-                    // _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
-                    //   Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
-                    // }),
+                    if(userSession.isLoggedIn)
+                    _buildTile(context, Icons.local_offer_outlined, "Coupon", () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CouponScreen()));
+                    }),
         
         
                     _buildTile(context, Icons.person_4_outlined, "Provider", () {
@@ -155,9 +155,9 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                       // Navigator.push(context, MaterialPageRoute(builder: (_) => const RefundPolicyScreen()));
                     }),
         
-                    _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
-                    }),
+                    // _buildTile(context, Icons.cancel_outlined, "Cancellation Policy", () {
+                    //   Navigator.push(context, MaterialPageRoute(builder: (_) => const CancellationPolicyScreen()));
+                    // }),
                   ]),
         
                   _buildSection(context, "Others", [

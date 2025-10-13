@@ -272,6 +272,10 @@ class _ProviderListStatic extends StatelessWidget {
             }
           }
 
+          if (providers.isEmpty) {
+            return SizedBox.shrink();
+          }
+
           return SliverList(
             delegate: SliverChildBuilderDelegate(
                   (context, index) {

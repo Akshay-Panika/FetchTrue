@@ -10,6 +10,12 @@ import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../coupon/bloc/coupon/coupon_state.dart';
+import '../../coupon/bloc/coupon_apply/coupon_apply_bloc.dart';
+import '../../coupon/bloc/coupon_apply/coupon_apply_event.dart';
+import '../../coupon/bloc/coupon_apply/coupon_apply_state.dart';
+import '../../coupon/model/coupon_apply_model.dart';
+import '../../coupon/repository/coupon_apply_repository.dart';
 import '../../lead/bloc/lead/lead_bloc.dart';
 import '../../lead/bloc/lead/lead_event.dart';
 import '../../profile/bloc/user/user_bloc.dart';
@@ -24,13 +30,15 @@ import '../widget/wallet_card_widget.dart';
 
 
 class CheckPaymentWidget extends StatefulWidget {
-  final void Function(String bookingId, String dateTime, String amount) onPaymentDone;
+  final void Function(String bookingId, String dateTime, String amount,) onPaymentDone;
   final CheckOutModel checkoutData;
+  final String zoneId;
+  final String couponCode;
 
   const CheckPaymentWidget({
     super.key,
     required this.onPaymentDone,
-    required this.checkoutData,
+    required this.checkoutData, required this.zoneId, required this.couponCode,
   });
 
   @override
@@ -67,9 +75,11 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
 
           if(userState is UserLoaded){
             final user = userState.user;
-            return BlocProvider(
-              create: (_) => CheckoutBloc(repository: CheckOutRepository()),
-
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => CheckoutBloc(repository: CheckOutRepository())),
+                BlocProvider(create: (_) => CouponApplyBloc(CouponApplyRepository())),
+              ],
               child: BlocListener<CheckoutBloc, CheckoutState>(
                 listener: (context, state) {
                   if (state is CheckoutSuccess) {
@@ -91,7 +101,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                         phone: user.mobileNumber,
                         email: user.email,
                         onPaymentSuccess: () {
-                          widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2));
+                          widget.onPaymentDone(bookingId, createdAt, payableAmount.toStringAsFixed(2), );
                         },
                       );
                     }
@@ -158,32 +168,68 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             BlocBuilder<CheckoutBloc, CheckoutState>(
                               builder: (context, state) {
                                 final isLoading = state is CheckoutLoading;
-                                return CustomButton(
-                                  isLoading: isLoading,
-                                  label: 'Book Now',
-                                  onPressed: () {
-                                    // if (selectedPayment == null) {
-                                    //   showCustomToast('Please select a payment method');
-                                    //   return;
-                                    // }
+                                return BlocConsumer<CouponApplyBloc, CouponApplyState>(
+                                  listener: (context, couponState) {
+                                    if (couponState is CouponApplySuccess) {
+                                      print('Coupon Applied');
+                                    } else if (couponState is CouponApplyFailure) {
+                                      print('❌ Coupon apply failed ${couponState.error}');
+                                      // showCustomToast("❌ Coupon apply failed");
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    final isCouponLoading = state is CouponApplyLoading;
+                                    return CustomButton(
+                                      isLoading: isLoading || isCouponLoading,
+                                      label: 'Book Now',
+                                      onPressed: () async{
 
-                                    /// prepare model
-                                    final checkoutModel = widget.checkoutData.copyWith(
-                                      paymentMethod: [
-                                        if (selectedPayment == PaymentMethod.cashFree) 'cashfree',
-                                        if (selectedPayment == PaymentMethod.afterConsultation) 'pac',
-                                        if (walletAppliedAmount > 0) 'wallet',
-                                      ],
-                                      walletAmount: walletAppliedAmount,
-                                      paidAmount: 0,
-                                      // paidAmount: payableAmount,
-                                      orderStatus: 'processing',
-                                      remainingAmount: selectedPayment == PaymentMethod.afterConsultation ? serviceAmount.toDouble() : (serviceAmount - payableAmount - walletAppliedAmount).clamp(0, double.infinity).toDouble(),
-                                      paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
-                                      isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
+                                        final couponBloc = context.read<CouponApplyBloc>();
+
+                                        couponBloc.add(
+                                          ApplyCouponEvent(
+                                            CouponApplyModel(
+                                              couponCode: widget.couponCode,
+                                              userId: user.id,
+                                              purchaseAmount: '${serviceAmount.toStringAsFixed(2)}',
+                                              serviceId: widget.checkoutData.id.toString(),
+                                              zoneId: widget.zoneId,
+                                            ),
+                                          ),
+                                        );
+
+                                        // Wait for coupon response
+                                        final couponState = await couponBloc.stream.firstWhere(
+                                              (state) => state is CouponApplySuccess || state is CouponApplyFailure,
+                                        );
+
+
+
+                                        // if (selectedPayment == null) {
+                                        //   showCustomToast('Please select a payment method');
+                                        //   return;
+                                        // }
+
+                                        /// prepare model
+                                        final checkoutModel = widget.checkoutData.copyWith(
+                                          paymentMethod:['pac'],
+                                          // paymentMethod: [
+                                          //   if (selectedPayment == PaymentMethod.cashFree) 'cashfree',
+                                          //   if (selectedPayment == PaymentMethod.afterConsultation) 'pac',
+                                          //   if (walletAppliedAmount > 0) 'wallet',
+                                          // ],
+                                          walletAmount: walletAppliedAmount,
+                                          paidAmount: 0,
+                                          // paidAmount: payableAmount,
+                                          orderStatus: 'processing',
+                                          remainingAmount: selectedPayment == PaymentMethod.afterConsultation ? serviceAmount.toDouble() : (serviceAmount - payableAmount - walletAppliedAmount).clamp(0, double.infinity).toDouble(),
+                                          paymentStatus: selectedPayment == PaymentMethod.afterConsultation ? 'unpaid' : 'pending',
+                                          isPartialPayment: selectedPayment == PaymentMethod.cashFree ? selectedCashFreeOption == CashFreeOption.partial : false,
+                                        );
+
+                                        context.read<CheckoutBloc>().add(CheckoutRequestEvent(checkoutModel));
+                                      },
                                     );
-
-                                    context.read<CheckoutBloc>().add(CheckoutRequestEvent(checkoutModel));
                                   },
                                 );
                               },
