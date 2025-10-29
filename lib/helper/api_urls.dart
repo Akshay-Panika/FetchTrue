@@ -43,4 +43,5 @@ class ApiUrls{
   static const Client_secret= 'cfsk_ma_test_dc62307065968e39980c69ffe07fa7dd_2f0a9615';
 
   static const cashfreeUrl  =  '${baseUrl}cashfree/order';
+  static const payuGatewayUrl  =  '${baseUrl}pay-u/create-payment-link';
 }
