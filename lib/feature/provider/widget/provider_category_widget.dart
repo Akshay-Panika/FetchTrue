@@ -44,13 +44,33 @@ class _ProviderCategoryWidgetState extends State<ProviderCategoryWidget> {
 }
 
 /// StickyHeaderDelegate
+// class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+//   final Widget child;
+//   _StickyHeaderDelegate({required this.child});
+//
+//   @override
+//   double get minExtent => 100;
+//
+//   @override
+//   double get maxExtent => 100;
+//
+//   @override
+//   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+//     return Container(
+//       color: CustomColor.whiteColor,
+//       child: child,
+//     );
+//   }
+//
+//   @override
+//   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+// }
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   _StickyHeaderDelegate({required this.child});
 
   @override
-  double get minExtent => 100;
-
+  double get minExtent => 60;
   @override
   double get maxExtent => 100;
 
@@ -58,97 +78,16 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: CustomColor.whiteColor,
+      height: (maxExtent - shrinkOffset).clamp(minExtent, maxExtent),
       child: child,
     );
   }
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) => true;
 }
 
 /// Filter header (static for slivers)
-// class _FilterHeaderStatic extends StatefulWidget {
-//   final String? moduleId;
-//   const _FilterHeaderStatic({super.key, this.moduleId});
-//
-//   @override
-//   State<_FilterHeaderStatic> createState() => _FilterHeaderStaticState();
-// }
-//
-// class _FilterHeaderStaticState extends State<_FilterHeaderStatic> {
-//   final providerFilter = ['All', 'Newly Joined', 'Popular', 'Top Rated'];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<ProviderBloc, ProviderState>(
-//       builder: (context, state) {
-//         String selectedFilter = 'All';
-//         int storeCount = 0;
-//         if (state is ProvidersLoaded) {
-//           selectedFilter = state.selectedFilter;
-//           storeCount = state.providers
-//               .where((e) => e.kycCompleted == true && e.storeInfo?.module == widget.moduleId)
-//               .length;
-//         }
-//
-//         return Container(
-//           color: CustomColor.whiteColor,
-//           padding: const EdgeInsets.all(8),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text('Near By Provider', style: textStyle14(context)),
-//                   Text('$storeCount Store near you',
-//                       style: textStyle12(context,
-//                           fontWeight: FontWeight.w400, color: Colors.grey.shade600)),
-//                 ],
-//               ),
-//               const SizedBox(height: 5),
-//               SizedBox(
-//                 height: 30,
-//                 child: ListView.builder(
-//                   scrollDirection: Axis.horizontal,
-//                   itemCount: providerFilter.length,
-//                   itemBuilder: (context, index) {
-//                     final filter = providerFilter[index];
-//                     final isSelected = filter == selectedFilter;
-//                     return GestureDetector(
-//                       onTap: () {
-//                         context.read<ProviderBloc>().add(FilterProvidersEvent(filter));                      },
-//                       child: Container(
-//                         margin: const EdgeInsets.only(right: 12),
-//                         padding:
-//                         const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-//                         decoration: BoxDecoration(
-//                           color: isSelected ? CustomColor.appColor : Colors.transparent,
-//                           border: Border.all(color: CustomColor.greyColor, width: 0.3),
-//                           borderRadius: BorderRadius.circular(8),
-//                         ),
-//                         child: Center(
-//                           child: Text(
-//                             filter,
-//                             style: textStyle12(context,
-//                                 fontWeight: FontWeight.w400,
-//                                 color: isSelected
-//                                     ? CustomColor.whiteColor
-//                                     : Colors.grey.shade600),
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
 class _FilterHeaderStatic extends StatefulWidget {
   final String? moduleId;
   const _FilterHeaderStatic({super.key, this.moduleId});

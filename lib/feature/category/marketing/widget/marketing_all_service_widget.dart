@@ -71,7 +71,7 @@ class MarketingAllServiceWidget extends StatelessWidget {
          }
 
          else if (state is ServiceError) {
-           // print('Dio Error: ${state.message}');
+           print('Dio Error: ${state.message}');
            return Center(child: Text('No Service'));
          }
          return const SizedBox.shrink();

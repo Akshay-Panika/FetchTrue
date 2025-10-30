@@ -27,9 +27,9 @@ import '../bloc/payu_gateway/payu_gateway_bloc.dart';
 import '../model/checkout_model.dart';
 import '../model/payu_gateway_model.dart';
 import '../model/payu_gateway_response_model.dart';
-import '../repository/checkout_cashfree_repository.dart';
 import '../repository/checkout_repository.dart';
 import '../repository/payu_gateway_repository.dart';
+import '../screen/payu_open_in_app_view_screen.dart';
 import '../widget/wallet_card_widget.dart';
 
 

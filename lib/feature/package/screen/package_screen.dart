@@ -1,48 +1,73 @@
+// Flutter & Third-party
+import 'package:fetchtrue/feature/profile/repository/user_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
+// Core Constants
 import 'package:fetchtrue/core/costants/custom_color.dart';
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
+
+// Core Widgets
 import 'package:fetchtrue/core/widgets/custom_amount_text.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
+import 'package:fetchtrue/core/widgets/custom_appbar.dart';
 import 'package:fetchtrue/core/widgets/formate_price.dart';
-import 'package:fetchtrue/feature/package/repository/package_repository.dart';
-import 'package:fetchtrue/feature/package/screen/package_benefits_screen.dart';
-import 'package:fetchtrue/feature/profile/model/user_model.dart';
+import 'package:fetchtrue/core/widgets/no_user_sign_widget.dart';
+
+// Helpers
 import 'package:fetchtrue/helper/Contact_helper.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import '../../../core/widgets/custom_appbar.dart';
-import '../../../core/widgets/no_user_sign_widget.dart';
+
+// Features → Auth
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../auth/user_notifier/user_notifier.dart';
-import '../../five_x/bloc/five_x/fivex_bloc.dart';
-import '../../five_x/bloc/five_x/fivex_event.dart';
-import '../../five_x/bloc/five_x/fivex_state.dart';
-import '../../five_x/model/FiveXModel.dart';
-import '../../five_x/repository/fivex_repository.dart';
-import '../../five_x/screen/five_x_screen.dart';
+
+// Features → Profile
+import '../../profile/model/user_model.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../../team_build/bloc/my_team/my_team_bloc.dart';
-import '../../team_build/bloc/my_team/my_team_event.dart';
-import '../../team_build/bloc/my_team/my_team_state.dart';
-import '../../team_build/model/my_team_model.dart';
-import '../../team_build/repository/my_team_repository.dart';
+
+// Features → Package
+import '../model/package_model.dart';
+import '../model/package_buy_payment_model.dart';
+import '../model/referral_user_model.dart';
+import '../repository/package_repository.dart';
+import '../repository/package_buy_payment_repository.dart';
+import '../repository/referral_repository.dart';
+import '../bloc/package/package_bloc.dart';
 import '../bloc/package/package_event.dart';
+import '../bloc/package/package_state.dart';
+import '../bloc/package_payment/package_buy_payment_bloc.dart';
+import '../bloc/package_payment/package_buy_payment_event.dart';
+import '../bloc/package_payment/package_buy_payment_state.dart';
 import '../bloc/referral/referral_bloc.dart';
 import '../bloc/referral/referral_event.dart';
 import '../bloc/referral/referral_state.dart';
-import '../model/referral_user_model.dart';
-import '../repository/referral_repository.dart';
 import '../widget/gift_package_widget.dart';
-import '../bloc/package/package_bloc.dart';
-import '../bloc/package/package_state.dart';
-import '../model/package_model.dart';
-import '../repository/package_buy_repository.dart';
 import '../widget/gp_progress_widget.dart';
+import '../widget/package_data.dart';
 import '../widget/sgp_progress_widget.dart';
+import '../screen/package_benefits_screen.dart';
+import '../screen/package_payment_webview_screen.dart';
+
+// Features → FiveX
+import '../../five_x/model/FiveXModel.dart';
+import '../../five_x/repository/fivex_repository.dart';
+import '../../five_x/bloc/five_x/fivex_bloc.dart';
+import '../../five_x/bloc/five_x/fivex_event.dart';
+import '../../five_x/bloc/five_x/fivex_state.dart';
+import '../../five_x/screen/five_x_screen.dart';
+
+// Features → Team Build
+import '../../team_build/model/my_team_model.dart';
+import '../../team_build/repository/my_team_repository.dart';
+import '../../team_build/bloc/my_team/my_team_bloc.dart';
+import '../../team_build/bloc/my_team/my_team_event.dart';
+import '../../team_build/bloc/my_team/my_team_state.dart';
+
 
 class PackageScreen extends StatefulWidget {
   @override
@@ -52,111 +77,13 @@ class PackageScreen extends StatefulWidget {
 class _PackageScreenState extends State<PackageScreen> {
   String selectedPlan = 'gp';
 
-  final Map<String, Map<String, dynamic>> packages = {
-    'gp': {
-      'packageName': 'Growth Partner (GP)',
-      'price': '₹30,000 - ₹50,000/Month',
-      'monthFixEarning':'Monthly Fix Earning: ₹4,000/Month',
-      'des':[
-        {
-          'headline':'Revenue',
-          'des':[
-            'Earn 5% to 15% revenue share.'
-          ],
-        },
-        {
-          'headline':'Team Building Income',
-          'des':[
-            'Earn ₹5,000 for every GP you onboard',
-            'Get ₹3,000 when your onboarded GP brings another.'
-          ]
-        },
-        {
-          'headline':'Marketing Support',
-          'des':[
-            'Support within 3-6 hours.',
-            'Full support system.',
-            'Expert help, anytime you need it.'
-          ],
-        },
-      ],
-      'includes': {
-        'title': 'How to promoted GP to SGP?',
-        'des': 'Recruit 10 Growth Partner to become a Super Growth Partner (SGP)'
-      },
-    },
-    'sgp': {
-      'packageName': 'Super Growth Partner (SGP)',
-      'price': '₹50,000 - ₹70,000/Month',
-      'monthFixEarning':'Monthly Fix Earning: ₹4,000/Month',
-      'des':[
-        {
-          'headline':'Revenue',
-          'des':['Earn up to 15% revenue share on all successful leads you generate.']
-        },
-        {
-          'headline':'Team Building Income',
-          'des':[
-            'Earn ₹5,000 for every GP you onboard',
-            'Get ₹3,000 when your onboarded GP brings another.'
-          ]
-        },
-        {
-          'headline':'Team Revenue Income',
-          'des':['Extra earn 5% to 8% for team revenue.']
-        },
-        {
-          'headline':'Marketing Support',
-          'des':[
-            'Support within 3-6 hours.',
-            'Full support system.',
-            'Expert help, anytime you need it.'
-          ],
-        },
-      ],
-      'includes': {
-        'title':'How to promoted SGP to PGP?',
-        'des':'Support 3 (SGPs) in your team to qualify as a Premium Growth Partner (PGP).'
-      },
-    },
-    'pgp': {
-      'packageName': 'Premium Growth Partner (PGP)',
-      'price': '₹70,000 - ₹1,00,000/Month ',
-      'monthFixEarning':'Monthly Fix Earning: ₹4,000/Month',
-      'des':[
-        {
-          'headline':'Revenue',
-          'des':['Earn up to 15% revenue share on all successful leads you generate.']
-        },
-        {
-          'headline':'Team Building Income',
-          'des':[
-            'Earn ₹5,000 for every GP you onboard',
-            'Get ₹3,000 when your onboarded GP brings another.'
-          ]
-        },
-        {
-          'headline':'Team Revenue Income',
-          'des':[
-            'Extra earn 5% to 8% for direct team revenue.',
-            'Extra earn 3% to 7% for indirect team revenue.'
-          ]
-        },
-        {
-          'headline':'Marketing Support',
-          'des':[
-            'Support within 3-6 hours.',
-            'Full support system.',
-            'Expert help, anytime you need it.'
-          ],
-        },
-      ],
-      'includes': {
-        'title':'How to promoted PGP?',
-        'des': 'You are a Premium Growth Partner (PGP) and eligible for unlimited earnings.'
-      }
-    },
-  };
+  void _reloadAllData(BuildContext context, String userId) {
+    context.read<UserBloc>().add(GetUserById(userId));
+    context.read<PackageBloc>().add(FetchPackages());
+    context.read<FiveXBloc>().add(FetchFiveX());
+    context.read<ReferralBloc>().add(LoadReferrals(userId));
+    context.read<MyTeamBloc>().add(FetchMyTeam(userId));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,10 +99,13 @@ class _PackageScreenState extends State<PackageScreen> {
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => UserBloc(UserRepository())..add(GetUserById(userSession.userId!))),
         BlocProvider(create: (_) => PackageBloc(PackageRepository())..add(FetchPackages())),
         BlocProvider(create: (_) => FiveXBloc(FiveXRepository())..add(FetchFiveX())),
         BlocProvider(create: (_) => ReferralBloc(ReferralRepository())..add(LoadReferrals(userSession.userId!))),
         BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())..add(FetchMyTeam(userSession.userId!))),
+        BlocProvider(create: (_) => PackagePaymentBloc(repository: PackageBuyPaymentRepository())),
+
       ],
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
@@ -186,11 +116,9 @@ class _PackageScreenState extends State<PackageScreen> {
               if (userState is UserInitial || userState is UserLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (userState is UserError) {
-                debugPrint('Error: ${userState.massage}');
-              }
 
               if(userState is UserLoaded){
+
                 return MultiBlocListener(
                   listeners: [
                     BlocListener<PackageBloc, PackageState>(
@@ -215,38 +143,31 @@ class _PackageScreenState extends State<PackageScreen> {
                     ),
                   ],
 
-                  child: Builder(builder: (context) {
-                    final packageState = context.watch<PackageBloc>().state;
-                    final fiveXState = context.watch<FiveXBloc>().state;
-                    final referralState = context.watch<ReferralBloc>().state;
-                    final teamState = context.watch<MyTeamBloc>().state;
-
-                    if (packageState is PackageLoading || fiveXState is FiveXLoading ||
-                        referralState is ReferralLoading || teamState is MyTeamLoading) {
-                      return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
-                    }
-                    if(packageState is PackageLoaded && fiveXState is FiveXLoaded && referralState is ReferralLoaded && teamState is MyTeamLoaded) {
-                      final package = packageState.packages.first;
-                      final fiveX = fiveXState.data.first;
-                      final referral = referralState.referrals;
-                      final teams = teamState.response;
-
-                      return DefaultTabController(
-                        length: 3,
-                        child: SafeArea(
-                          child: RefreshIndicator(
-                            color: CustomColor.appColor,
-                            onRefresh: ()async {
-                              final userId = userState.user.id;
-                              context.read<UserBloc>().add(GetUserById(userId));
-                              context.read<PackageBloc>().add(FetchPackages());
-                              context.read<FiveXBloc>().add(FetchFiveX());
-                              context.read<ReferralBloc>().add(LoadReferrals(userId));
-                              context.read<MyTeamBloc>().add(FetchMyTeam(userId));
-                              await context.read<UserBloc>().stream
-                                  .firstWhere((state) => state is UserLoaded || state is UserError)
-                                  .timeout(const Duration(seconds: 5));
-                            },
+                  child:  RefreshIndicator(
+                    color: CustomColor.appColor,
+                    onRefresh: () async {
+                      _reloadAllData(context, userSession.userId!);
+                      await Future.delayed(const Duration(seconds: 1));
+                    },
+                    child: Builder(builder: (context) {
+                      final packageState = context.watch<PackageBloc>().state;
+                      final fiveXState = context.watch<FiveXBloc>().state;
+                      final referralState = context.watch<ReferralBloc>().state;
+                      final teamState = context.watch<MyTeamBloc>().state;
+                    
+                      if (packageState is PackageLoading || fiveXState is FiveXLoading ||
+                          referralState is ReferralLoading || teamState is MyTeamLoading) {
+                        return  Center(child: CircularProgressIndicator(color: CustomColor.appColor,));
+                      }
+                      if(packageState is PackageLoaded && fiveXState is FiveXLoaded && referralState is ReferralLoaded && teamState is MyTeamLoaded) {
+                        final package = packageState.packages.first;
+                        final fiveX = fiveXState.data.first;
+                        final referral = referralState.referrals;
+                        final teams = teamState.response;
+                    
+                        return DefaultTabController(
+                          length: 3,
+                          child: SafeArea(
                             child: CustomScrollView(
                               slivers: [
                                 /// Tabs
@@ -278,7 +199,7 @@ class _PackageScreenState extends State<PackageScreen> {
                                     ),
                                   ),
                                 ),
-
+                    
                                 /// Body
                                 SliverToBoxAdapter(
                                   child: Column(
@@ -286,9 +207,11 @@ class _PackageScreenState extends State<PackageScreen> {
                                       _buildEnhancedMainCard(context,
                                           userState.user,
                                           packages[selectedPlan]!,package, selectedPlan, referral, teams),
-
+                    
                                       if (selectedPlan == 'gp')
-                                        PaymentCard(package: package, user: userState.user, fiveX: fiveX,),
+                                        PaymentCard(package: package, user: userState.user, fiveX: fiveX, onPaymentSuccess: () {
+                                          _reloadAllData(context, userSession.userId!);
+                                        },),
                                       if (selectedPlan == 'sgp')
                                         Column(
                                           children: [
@@ -380,20 +303,24 @@ class _PackageScreenState extends State<PackageScreen> {
                                     ],
                                   ),
                                 ),
-
+                    
                                 SliverToBoxAdapter(child: 50.height),
                               ],
                             ),
                           ),
-                        ),
-                      );
-
-                    }
-
-                    return const SizedBox.shrink();
-
-                  },),
+                        );
+                    
+                      }
+                    
+                      return const SizedBox.shrink();
+                    
+                    },),
+                  ),
                 );
+              }
+
+              if (userState is UserError) {
+                debugPrint('Error: ${userState.massage}');
               }
 
               return SizedBox.shrink();
@@ -581,14 +508,15 @@ class PaymentCard extends StatefulWidget {
   final PackageModel package;
   final UserModel user;
   final FiveXModel fiveX;
-  const PaymentCard({super.key, required this.package, required this.user, required this.fiveX});
+  final VoidCallback? onPaymentSuccess;
+
+  const PaymentCard({super.key, required this.package, required this.user, required this.fiveX, this.onPaymentSuccess});
 
   @override
   State<PaymentCard> createState() => _PaymentCardState();
 }
 
 class _PaymentCardState extends State<PaymentCard> {
-  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -706,15 +634,17 @@ class _PaymentCardState extends State<PaymentCard> {
                   padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
                   color: CustomColor.appColor,
                   child: Text('Active Now', style: textStyle14(context, color: CustomColor.whiteColor),),
-                  onTap: () {
-                    showActivateBottomSheet(context, package, user);
+                  onTap: () async {
+                    final result = await showActivateBottomSheet(context, package, user);
+                    if (result == true) {
+                      widget.onPaymentSuccess?.call();
+                    }
                   },
-
                 ),
 
               if(user.remainingAmount != 0)
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
@@ -724,67 +654,72 @@ class _PaymentCardState extends State<PaymentCard> {
                         Text('Remaining Amount: ₹ ${user.remainingAmount}'),
                       ],
                     ),
-                    
-                    CustomContainer(
-                      color: CustomColor.appColor,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.call, color: CustomColor.whiteColor,size: 18,),
-                          Expanded(child: Text('Remaining Amount Pay After Contact Fetch True Member',textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.whiteColor),)),
-                        ],
-                      ),
-                      onTap: () {
-                        ContactHelper.call('9272003735');
+
+                    BlocConsumer<PackagePaymentBloc, PackagePaymentState>(
+                      listener: (context, state) async {
+                        if (state is PackagePaymentSuccess) {
+                          final paymentUrl = state.response.result?.paymentLink ?? "";
+                          if (paymentUrl.isNotEmpty) {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PackagePaymentWebViewScreen(paymentUrl: paymentUrl),
+                              ),
+                            );
+
+                            // ✅ Payment successful → refresh all data
+                            if (result == true && context.mounted) {
+                              final userSession = Provider.of<UserSession>(context, listen: false);
+                              context.read<UserBloc>().add(GetUserById(userSession.userId!));
+                              context.read<PackageBloc>().add(FetchPackages());
+                              context.read<FiveXBloc>().add(FetchFiveX());
+                              context.read<ReferralBloc>().add(LoadReferrals(userSession.userId!));
+                              context.read<MyTeamBloc>().add(FetchMyTeam(userSession.userId!));
+                            }
+                          }
+                        } else if (state is PackagePaymentFailure) {
+                          showCustomSnackBar(context, "Payment Failed: ${state.error}");
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is PackagePaymentLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        return CustomContainer(
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                          color: CustomColor.appColor,
+                          onTap: () {
+                            final orderId = "package_${DateTime.now().millisecondsSinceEpoch}";
+                            final model = PackageBuyPaymentModel(
+                              subAmount: user.remainingAmount!.round(),
+                              isPartialPaymentAllowed: false,
+                              description: "Fetch True Payment",
+                              orderId: orderId,
+                              customer: Customer(
+                                customerId: user.id,
+                                customerName: user.fullName,
+                                customerEmail: user.email,
+                                customerPhone: user.mobileNumber,
+                              ),
+                              udf: Udf(
+                                udf1: orderId,
+                                udf2: '',
+                                udf3: user.id,
+                              ),
+                            );
+
+                            // ✅ Trigger payment creation event
+                            context.read<PackagePaymentBloc>().add(CreatePaymentLinkEvent(model));
+                          },
+                          child: Text(
+                            'Active Now',
+                            style: textStyle14(context, color: CustomColor.whiteColor),
+                          ),
+                        );
                       },
                     ),
-                    // CustomContainer(
-                    //   color: CustomColor.appColor,
-                    //   margin: EdgeInsets.zero,
-                    //   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
-                    //   onTap: isLoading
-                    //       ? null
-                    //       : () async {
-                    //     setState(() => isLoading = true);
-                    //
-                    //     DateTime now = DateTime.now();
-                    //     String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
-                    //
-                    //
-                    //     final isSuccess =
-                    //     await packageBuyPaymentRepository(
-                    //       context: context,
-                    //       // orderId: 'package_${formattedDate}',
-                    //       customerId: '${user.id}',
-                    //       customerName: '${user.fullName}',
-                    //       customerPhone: '${user.mobileNumber}',
-                    //       customerEmail: '${user.email}',
-                    //       amount: user.remainingAmount!,
-                    //     );
-                    //
-                    //     setState(() => isLoading = false);
-                    //
-                    //     if (isSuccess) {
-                    //       // Payment successful → Refresh User
-                    //       context.read<UserBloc>().add(GetUserById(user.id));
-                    //       // if (context.mounted) {Navigator.pop(context);}
-                    //     }
-                    //   },
-                    //   child: isLoading
-                    //       ? const SizedBox(
-                    //     width: 20,
-                    //     height: 20,
-                    //     child: CircularProgressIndicator(
-                    //       strokeWidth: 2,
-                    //       color: Colors.white,
-                    //     ),
-                    //   )
-                    //       : Text(
-                    //     'Pay Now',
-                    //     style: textStyle14(context,
-                    //         color: CustomColor.whiteColor),
-                    //   ),
-                    // ),
+
                   ],
                 ),
             ],
@@ -822,171 +757,200 @@ Widget _buildIconText(BuildContext context, IconData icon, String label){
   );
 }
 
-void showActivateBottomSheet(BuildContext context, PackageModel package, UserModel user) {
-  showModalBottomSheet(
+Future<bool?> showActivateBottomSheet(
+    BuildContext context,
+    PackageModel package,
+    UserModel user,
+    ) async {
+  final selectedOptionNotifier = ValueNotifier<String>("full");
+  bool? paymentSuccess;
+
+  await showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: CustomColor.whiteColor,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) {
-      String selectedOption = "full"; // default value
-      bool isLoading = false;
+    builder: (bottomSheetContext) {
+      return BlocConsumer<PackagePaymentBloc, PackagePaymentState>(
+        listener: (context, state) async {
+          if (state is PackagePaymentSuccess) {
+            final paymentUrl = state.response.result?.paymentLink ?? "";
+            if (paymentUrl.isNotEmpty) {
+              Navigator.of(bottomSheetContext, rootNavigator: true).pop();
+              paymentSuccess = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PackagePaymentWebViewScreen(paymentUrl: paymentUrl),
+                ),
+              );
+              if (paymentSuccess == true && context.mounted) {
+                final userSession = Provider.of<UserSession>(context, listen: false);
+                context.read<UserBloc>().add(GetUserById(userSession.userId!));
+                context.read<PackageBloc>().add(FetchPackages());
+                context.read<FiveXBloc>().add(FetchFiveX());
+                context.read<ReferralBloc>().add(LoadReferrals(userSession.userId!));
+                context.read<MyTeamBloc>().add(FetchMyTeam(userSession.userId!));
+              }
+            }
+          } else if (state is PackagePaymentFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("❌ Error: ${state.error}")),
+            );
+          }
+        },
+        builder: (context, state) {
+          final totalAmount = package.discountedPrice + package.deposit;
+          final halfAmount = totalAmount / 2;
 
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                15.height,
-                Text('Amount: ₹ 10,000', style: textStyle16(context)),
-                Text('This time you pay only ₹ 10,000, and Remaining amount ₹ ${(package.discountedPrice+package.deposit)-10000} pay after process complete', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                // Text('Amount: ₹ ${formatPrice(package.discountedPrice+package.deposit)}', style: textStyle16(context)),
-                // 15.height,
-                // Text(
-                //   'Select Payment Option',
-                //   style: textStyle14(context,
-                //       fontWeight: FontWeight.w400,
-                //       color: CustomColor.descriptionColor),
-                // ),
-                //
-                // CustomContainer(
-                //   border: true,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       // Full Payment Option
-                //       Row(
-                //         children: [
-                //           Radio<String>(
-                //             value: "full",
-                //             activeColor: CustomColor.appColor,
-                //             groupValue: selectedOption,
-                //             onChanged: (value) {
-                //               setState(() {
-                //                 selectedOption = value!;
-                //               });
-                //             },
-                //           ),
-                //           Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             children: [
-                //               const Text('Full Payment'),
-                //               CustomAmountText(amount: '${formatPrice(package.discountedPrice+package.deposit)}'),
-                //             ],
-                //           ),
-                //         ],
-                //       ),
-                //
-                //       // Half Payment Option
-                //       Row(
-                //         children: [
-                //           Radio<String>(
-                //             value: "half",
-                //             activeColor: CustomColor.appColor,
-                //             groupValue: selectedOption,
-                //             onChanged: (value) {
-                //               setState(() {
-                //                 selectedOption = value!;
-                //               });
-                //             },
-                //           ),
-                //           Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             children: [
-                //               const Text('Half Payment'),
-                //               CustomAmountText(amount: '${formatPrice((package.discountedPrice+package.deposit)/2)}'),
-                //             ],
-                //           ),
-                //         ],
-                //       ),
-                //     ],
-                //   ),
-                // ),
+          return ValueListenableBuilder<String>(
+            valueListenable: selectedOptionNotifier,
+            builder: (context, selectedOption, _) {
+              final subAmount =
+              selectedOption == "full" ? totalAmount : halfAmount;
 
-                15.height,
-                Row(
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  top: 20,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: InkWell(
-                        child: Center(
-                            child: Text(
-                              'Cancel',
-                              style: textStyle14(context,
-                                  color: CustomColor.redColor),
-                            )),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-
-                    Expanded(
-                      child: CustomContainer(
-                        color: CustomColor.appColor,
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        onTap: isLoading ? null
-                            : () async {
-                          setState(() => isLoading = true);
-
-                          DateTime now = DateTime.now();
-                          String formattedDate = DateFormat("ddMMyyyy_HHmmss").format(now);
-
-
-                          final isSuccess =
-                          await packageBuyPaymentRepository(
-                            context: context,
-                            // orderId: 'package_${formattedDate}',
-                            customerId: '${user.id}',
-                            customerName: '${user.fullName}',
-                            customerPhone: '${user.mobileNumber}',
-                            customerEmail: '${user.email}',
-                            amount: 1,
-                            // amount: selectedOption == "full" ? (package.discountedPrice+package.deposit).round() : ((package.discountedPrice+package.deposit)/2).round(),
-                          );
-
-                          setState(() => isLoading = false);
-
-                          if (isSuccess) {
-                            // Payment successful → Refresh User
-                            context.read<UserBloc>().add(GetUserById(user.id));
-                            if (context.mounted) {Navigator.pop(context);}
-                          }
-                        },
-                        child: Center(
-                          child: isLoading
-                              ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                              : Text(
-                            'Pay Now',
-                            style: textStyle14(context,
-                                color: CustomColor.whiteColor),
+                    Text('Amount: ₹ ${formatPrice(totalAmount)}',
+                        style: textStyle16(context)),
+                    15.height,
+                    Text('Select Payment Option',
+                        style: textStyle12(
+                            context, color: CustomColor.descriptionColor)),
+                    CustomContainer(
+                      border: true,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _radioOption(
+                            context,
+                            title: "Full Payment",
+                            amount: formatPrice(totalAmount),
+                            value: "full",
+                            groupValue: selectedOption,
+                            onChanged: (v) => selectedOptionNotifier.value = v!,
                           ),
-                        ),
+                          _radioOption(
+                            context,
+                            title: "Half Payment",
+                            amount: formatPrice(halfAmount),
+                            value: "half",
+                            groupValue: selectedOption,
+                            onChanged: (v) => selectedOptionNotifier.value = v!,
+                          ),
+                        ],
                       ),
                     ),
+                    20.height,
+                    if (state is PackagePaymentLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  style: textStyle14(context,
+                                      color: CustomColor.redColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: CustomContainer(
+                              color: CustomColor.appColor,
+                              padding:
+                              const EdgeInsets.symmetric(vertical: 8),
+                              onTap: () {
+                                final orderId =
+                                    "package_${DateTime.now().millisecondsSinceEpoch}";
+                                final model = PackageBuyPaymentModel(
+                                  subAmount: subAmount.round(),
+                                  isPartialPaymentAllowed:
+                                  selectedOption == "half",
+                                  description: "Fetch True Payment",
+                                  orderId: orderId,
+                                  customer: Customer(
+                                    customerId: user.id,
+                                    customerName: user.fullName,
+                                    customerEmail: user.email,
+                                    customerPhone: user.mobileNumber,
+                                  ),
+                                  udf: Udf(
+                                    udf1: orderId,
+                                    udf2: '',
+                                    udf3: user.id,
+                                  ),
+                                );
+
+                                context.read<PackagePaymentBloc>().add(
+                                    CreatePaymentLinkEvent(model));
+                              },
+                              child: Center(
+                                child: Text(
+                                  'Proceed to Pay',
+                                  style: textStyle14(context,
+                                      color: CustomColor.whiteColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
-
-                50.height,
-              ],
-            ),
+              );
+            },
           );
         },
       );
     },
   );
+
+  return paymentSuccess;
 }
+
+Widget _radioOption(
+    BuildContext context, {
+      required String title,
+      required String amount,
+      required String value,
+      required String groupValue,
+      required ValueChanged<String?> onChanged,
+    }) {
+  return Row(
+    children: [
+      Radio<String>(
+        value: value,
+        activeColor: CustomColor.appColor,
+        groupValue: groupValue,
+        onChanged: onChanged,
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: textStyle12(context)),
+          CustomAmountText(amount: amount),
+        ],
+      ),
+    ],
+  );
+}
+
+
 
 Widget _labelText(
     BuildContext context,
