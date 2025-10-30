@@ -1,5 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/shimmer_box.dart';
+import 'package:fetchtrue/feature/service/screen/service_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -182,7 +183,10 @@ class TrendingFranchiseServiceWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        onTap: () => context.push('/service/${data.id}'),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: ''),));
+                        },
+                        // onTap: () => context.push('/service/${data.id}'),
                       );
                     },
                   ),

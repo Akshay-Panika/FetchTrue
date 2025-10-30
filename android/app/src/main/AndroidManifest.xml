@@ -1,24 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fetchtrue.bizbooster2x">
 
-
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <!-- Address -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
-
     <!-- Package visibility for UPI apps (Android 11+) -->
     <queries>
         <package android:name="com.phonepe.app" />
         <package android:name="com.google.android.apps.nbu.paisa.user" />
         <package android:name="net.one97.paytm" />
-    </queries>
 
+        <!-- Intent query merged here -->
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
 
     <application
         android:label="Fetch True"
@@ -33,7 +35,7 @@
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="false"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
 
             <meta-data
@@ -46,6 +48,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Firebase Messaging Service -->
         <service
             android:name="com.google.firebase.messaging.FirebaseMessagingService"
             android:exported="true">
@@ -54,16 +57,8 @@
             </intent-filter>
         </service>
 
-
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT" />
-            <data android:mimeType="text/plain" />
-        </intent>
-    </queries>
 </manifest>
