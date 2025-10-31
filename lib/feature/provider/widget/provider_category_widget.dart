@@ -212,7 +212,18 @@ class _ProviderListStatic extends StatelessWidget {
           }
 
           if (providers.isEmpty) {
-            return SizedBox.shrink();
+            // 🔧 Fix here:
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    "No providers found.",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ),
+            );
           }
 
           return SliverList(

@@ -91,8 +91,8 @@ class LeadsDetailsWidget extends StatelessWidget {
 Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user) {
   final userSession = Provider.of<UserSession>(context);
 
-  final paidAmount = lead.paidAmount!.toStringAsFixed(2);
-  final remainingAmount = lead.remainingAmount!.toStringAsFixed(2);
+  final paidAmount = lead.paidAmount!;
+  final remainingAmount = lead.remainingAmount!;
   final status = lead.paymentStatus;
   String capitalize(String text) {
     if (text.isEmpty) return text;
@@ -126,105 +126,92 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
                 Text('Payment Status', style: textStyle12(context)),
                 10.width,
                 Text('( ${capitalize(status!)} )', style: textStyle12(context, color: getStatusColor(status)),)
-
               ],
             ),
-
 
             /// Paid / Remaining Amounts
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                  if(status == 'paid')
+                  if(status == 'paid' || status == 'pending')
                   _buildRow(
                     context,
                     title: 'Paid Amount',
-                    amount: '₹ ${paidAmount}',
+                    amount: '₹ ${formatPrice(paidAmount)}',
                   ),
 
-                  if(status == 'pending')
+
+                  if(status == 'pending' || status == 'unpaid')
                   _buildRow(
                     context,
                     title: 'Remaining Amount',
-                    amount: '₹ ${remainingAmount}',
+                    amount: '₹ ${formatPrice(remainingAmount)}',
                   ),
               ],
             ),
+
+
             const Divider(),
 
-            CustomContainer(
-              color: CustomColor.appColor,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.call, color: CustomColor.whiteColor,size: 18,),
-                  Expanded(child: Text('Remaining Amount Pay After Contact Fetch True Member',textAlign: TextAlign.center,style: textStyle12(context, color: CustomColor.whiteColor),)),
-                ],
-              ),
-              onTap: () {
-                ContactHelper.call('9272003735');
-              },
-            ),
-
             /// Pay Now Button
-            // if (status == 'unpaid')
-            //   Padding(
-            //     padding: const EdgeInsets.only(top: 10),
-            //     child: InkWell(
-            //       onTap: () {
-            //         _showPaymentBottomSheet(
-            //           context,
-            //           lead, user,
-            //               () {
-            //             context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
-            //           },
-            //         );
-            //       },
-            //       child: Text(
-            //         'Pay Now',
-            //         style: textStyle14(context, color: CustomColor.appColor),
-            //       ),
-            //     ),
-            //   ),
+            if (status == 'unpaid')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: InkWell(
+                  onTap: () {
+                    _showPaymentBottomSheet(
+                      context,
+                      lead, user,
+                          () {
+                        context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Pay Now',
+                    style: textStyle14(context, color: CustomColor.appColor),
+                  ),
+                ),
+              ),
 
 
-            // /// Remaining Payment Button
-            //  if(status == 'pending')
-            //   Padding(
-            //     padding: const EdgeInsets.only(top: 10),
-            //     child: RemainingPaymentButton(lead: lead, user: user,),
-            //   ),
+            /// Remaining Payment Button
+             if(status == 'pending')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: RemainingPaymentButton(lead: lead, user: user,),
+              ),
           ],
         ),
       ),
 
       /// Share Button
-      // if(status != 'paid')
-      // Positioned(
-      //   top: -5,
-      //   right: 5,
-      //   child: IconButton(
-      //     onPressed: () {
-      //       final userSession = Provider.of<UserSession>(context, listen: false);
-      //       final serviceId = lead.service?.id;
-      //       final userId = (serviceId != null && serviceId.isNotEmpty)
-      //           ? userSession.userId
-      //           : null;
-      //
-      //       print('-----------serviceId: $serviceId------userId: $userId---------');
-      //
-      //       if (userId != null) {
-      //         final shareUrl =
-      //             'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
-      //         Share.share('Check out this service on FetchTrue:\n$shareUrl');
-      //       } else {
-      //         showCustomSnackBar(context, 'Please wait data is loading.');
-      //       }
-      //     },
-      //     icon: Icon(Icons.share, color: CustomColor.appColor),
-      //   ),
-      // ),
+      if(status != 'paid')
+      Positioned(
+        top: -5,
+        right: 5,
+        child: IconButton(
+          onPressed: () {
+            final userSession = Provider.of<UserSession>(context, listen: false);
+            final serviceId = lead.service?.id;
+            final userId = (serviceId != null && serviceId.isNotEmpty)
+                ? userSession.userId
+                : null;
+
+            print('-----------serviceId: $serviceId------userId: $userId---------');
+
+            if (userId != null) {
+              final shareUrl =
+                  'https://fetchtrue-service-page.vercel.app/?serviceId=$serviceId&userId=$userId';
+              Share.share('Check out this service on FetchTrue:\n$shareUrl');
+            } else {
+              showCustomSnackBar(context, 'Please wait data is loading.');
+            }
+          },
+          icon: Icon(Icons.share, color: CustomColor.appColor),
+        ),
+      ),
     ],
   );
 }
@@ -427,8 +414,7 @@ void _showPaymentBottomSheet(
                                 ),
                               ),
 
-                              SizedBox(
-                                  height: dimensions.screenHeight * 0.1),
+                              SizedBox(height: dimensions.screenHeight * 0.1),
 
                               /// Final Amount and Button
                               Row(
@@ -608,7 +594,7 @@ Widget _buildBookingSummary(BuildContext context, LeadModel lead) {
         _buildRow(
           context,
           title: 'Grand Total',
-          amount: '₹ ${lead.totalAmount?.toStringAsFixed(2)}',
+          amount: '₹ ${lead.totalAmount?.toStringAsFixed(0)}',
           // amount: '₹ ${formatPrice(lead.totalAmount)}',
         ),
       ],
