@@ -99,6 +99,44 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
               ],
               child: BlocListener<CheckoutBloc, CheckoutState>(
                 listener: (context, state) {
+                  // if (state is CheckoutSuccess) {
+                  //
+                  //   _bookingId = state.model.bookingId ?? '';
+                  //   _createdAt = state.model.createdAt?.toString() ?? '';
+                  //   _payableAmount = state.model.paidAmount?.toDouble() ?? payableAmount;
+                  //
+                  //   print('Booking confirmed. ID: $_bookingId');
+                  //
+                  //   if (selectedPayment == PaymentMethod.afterConsultation) {
+                  //     showCustomSnackBar(context, 'Booking done! Pay after consultation.');
+                  //     widget.onPaymentDone(_bookingId, _createdAt, _payableAmount.toStringAsFixed(2));
+                  //     return;
+                  //   }
+                  //
+                  //   if (selectedPayment == PaymentMethod.payU) {
+                  //     final payuModel = PayUGatewayModel(
+                  //       // subAmount: payableAmount,
+                  //       subAmount: 1,
+                  //       isPartialPaymentAllowed: selectedPayUOption == PayUOption.partial,
+                  //       description: "Service Payment",
+                  //       orderId: "checkout_${state.model.id}",
+                  //       customer: PayUCustomer(
+                  //         customerId: user.id,
+                  //         customerName: user.fullName,
+                  //         customerEmail: user.email,
+                  //         customerPhone: user.mobileNumber,
+                  //       ),
+                  //       udf: PayUUdf(
+                  //         udf1: "checkout_${state.model.id}",
+                  //         udf2: state.model.id.toString(),
+                  //         udf3: user.id,
+                  //       ),
+                  //     );
+                  //
+                  //     context.read<PayUGatewayBloc>().add(CreatePayULinkEvent(payuModel));
+                  //   }
+                  //
+                  // }
                   if (state is CheckoutSuccess) {
                     _bookingId = state.model.bookingId ?? '';
                     _createdAt = state.model.createdAt?.toString() ?? '';
@@ -109,16 +147,20 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                     if (selectedPayment == PaymentMethod.afterConsultation) {
                       showCustomSnackBar(context, 'Booking done! Pay after consultation.');
                       widget.onPaymentDone(_bookingId, _createdAt, _payableAmount.toStringAsFixed(2));
+
+                      // ✅ Lead refresh without navigation
+                      context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
                       return;
                     }
 
                     if (selectedPayment == PaymentMethod.payU) {
+                      final timestamp = DateTime.now().millisecondsSinceEpoch;
+                      final orderId = "checkout_$timestamp";
                       final payuModel = PayUGatewayModel(
-                        // subAmount: payableAmount,
-                        subAmount: 1,
+                        subAmount: payableAmount,
                         isPartialPaymentAllowed: selectedPayUOption == PayUOption.partial,
                         description: "Service Payment",
-                        orderId: "checkout_${state.model.id}",
+                        orderId: orderId,
                         customer: PayUCustomer(
                           customerId: user.id,
                           customerName: user.fullName,
@@ -126,16 +168,19 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                           customerPhone: user.mobileNumber,
                         ),
                         udf: PayUUdf(
-                          udf1: "checkout_${state.model.id}",
+                         udf1:orderId,
                           udf2: state.model.id.toString(),
                           udf3: user.id,
                         ),
                       );
 
                       context.read<PayUGatewayBloc>().add(CreatePayULinkEvent(payuModel));
-                    }
 
+                      // ✅ Payment initiated, refresh LeadBloc immediately
+                      context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+                    }
                   }
+
                 },
                 child: BlocListener<PayUGatewayBloc, PayUGatewayState>(
                   listener: (context, state) {
@@ -205,8 +250,8 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                       if (couponState is CouponApplySuccess) {
                                         print('Coupon Applied');
                                       } else if (couponState is CouponApplyFailure) {
-                                        // print('❌ Coupon apply failed ${couponState.error}');
-                                        // showCustomToast("❌ Coupon apply failed");
+                                        print('❌ Coupon apply failed ${couponState.error}');
+                                        showCustomToast("❌ Coupon apply failed");
                                       }
                                     },
                                     builder: (context, state) {

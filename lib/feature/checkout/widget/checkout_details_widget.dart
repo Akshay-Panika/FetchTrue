@@ -33,6 +33,7 @@ import '../model/checkout_model.dart';
 import '../model/commission_model.dart';
 import '../repository/checkout_repository.dart';
 
+
 class CheckoutDetailsWidget extends StatefulWidget {
   final String serviceId;
   final String providerId;
@@ -142,7 +143,6 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
         },
       ),
     );
-
 
 
   }

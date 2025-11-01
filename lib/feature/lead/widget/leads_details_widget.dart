@@ -134,6 +134,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
+                     10.height,
                   if(status == 'paid' || status == 'pending')
                   _buildRow(
                     context,
@@ -155,7 +156,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
             const Divider(),
 
             /// Pay Now Button
-            if (status == 'unpaid')
+            // if (status == 'unpaid')
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: InkWell(
@@ -177,11 +178,11 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
 
 
             /// Remaining Payment Button
-             if(status == 'pending')
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: RemainingPaymentButton(lead: lead, user: user,),
-              ),
+            //  if(status == 'pending')
+            //   Padding(
+            //     padding: const EdgeInsets.only(top: 10),
+            //     child: RemainingPaymentButton(lead: lead, user: user,),
+            //   ),
           ],
         ),
       ),
@@ -345,11 +346,7 @@ void _showPaymentBottomSheet(
                                               paymentType = value!;
                                               payableAmount = fullAmount;
                                               if (isWalletApplied) {
-                                                payableAmount =
-                                                    (payableAmount -
-                                                        walletBalance)
-                                                        .clamp(
-                                                        0, double.infinity);
+                                                payableAmount = (payableAmount - walletBalance).clamp(0, double.infinity);
                                               }
                                             });
                                           },
@@ -384,11 +381,7 @@ void _showPaymentBottomSheet(
                                               paymentType = value!;
                                               payableAmount = halfAmount;
                                               if (isWalletApplied) {
-                                                payableAmount =
-                                                    (payableAmount -
-                                                        walletBalance)
-                                                        .clamp(
-                                                        0, double.infinity);
+                                                payableAmount = (payableAmount - walletBalance).clamp(0, double.infinity);
                                               }
                                             });
                                           },
@@ -425,6 +418,8 @@ void _showPaymentBottomSheet(
                                     'Pay Amount: ₹ ${payableAmount.toStringAsFixed(2)}',
                                     style: textStyle14(context),
                                   ),
+
+                                  /// Pay Now
                                   SizedBox(
                                     width: dimensions.screenHeight * 0.15,
                                     child: CustomButton(
@@ -433,8 +428,7 @@ void _showPaymentBottomSheet(
                                       onPressed: () async {
                                         setState(() => isLoading = true);
 
-                                        final result =
-                                        await initiateCheckoutServicePayment(
+                                        final result = await initiateCheckoutServicePayment(
                                           context: context,
                                           orderId: 'checkout_$formattedOrderId',
                                           checkoutId: lead.id.toString(),
@@ -449,8 +443,7 @@ void _showPaymentBottomSheet(
 
                                         if (result == true) {
                                           onPaymentSuccess?.call();
-                                          Navigator.pop(bottomSheetContext,
-                                              true);
+                                          Navigator.pop(bottomSheetContext, true);
                                         }
                                       },
                                     ),

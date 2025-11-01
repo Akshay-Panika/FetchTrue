@@ -188,8 +188,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                             Icon(CupertinoIcons.person_crop_circle_badge_checkmark,
-                                color: CustomColor.appColor),
+                             Icon(CupertinoIcons.person_crop_circle_badge_checkmark, color: CustomColor.appColor),
                             const SizedBox(width: 6),
                             Text(
                               'Self Add',
@@ -230,8 +229,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                             children: const [
                               Icon(Icons.share, color: Colors.white),
                               SizedBox(width: 6),
-                              Text(
-                                'Share To Customer',
+                              Text('Share To Customer',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
