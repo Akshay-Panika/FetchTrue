@@ -39,8 +39,9 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
             return _adsShimmer(dimensions);
           } else if (state is AdsLoaded) {
             // final adsList = state.ads.data;
+
             final adsList = state.ads.where((moduleService) =>
-            moduleService.category.module == widget.moduleId).toList();
+            moduleService.category.module == widget.moduleId && moduleService.isApproved == true).toList();
 
             if(adsList.isEmpty){
               return SizedBox.shrink();

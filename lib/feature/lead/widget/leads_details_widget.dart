@@ -13,6 +13,10 @@ import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../checkout/bloc/payu_gateway/payu_gateway_bloc.dart';
+import '../../checkout/model/payu_gateway_model.dart';
+import '../../checkout/repository/payu_gateway_repository.dart';
+import '../../checkout/screen/payu_open_in_app_view_screen.dart';
 import '../../profile/model/user_model.dart';
 import '../../wallet/bloc/wallet_bloc.dart';
 import '../../wallet/bloc/wallet_event.dart';
@@ -219,323 +223,309 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
 
 
 void _showPaymentBottomSheet(
-    BuildContext context, LeadModel lead,UserModel user, VoidCallback? onPaymentSuccess,) {
-  Dimensions dimensions = Dimensions(context);
-
+    BuildContext context,
+    LeadModel lead,
+    UserModel user,
+    VoidCallback? onPaymentSuccess,
+    ) {
+  final dimensions = Dimensions(context);
   final fullAmount = lead.totalAmount!.toDouble();
   final halfAmount = fullAmount / 2;
 
-  // 👇 Ye variables bottomSheet scope me rakho (StatefulBuilder ke bahar)
-  String paymentType = 'full';
-  double payableAmount = fullAmount;
-  bool isWalletApplied = false;
-  bool isLoading = false;
+  // 🧩 Reactive state using ValueNotifier
+  final paymentType = ValueNotifier<String>('full');
+  final payableAmount = ValueNotifier<double>(fullAmount);
+  final isWalletApplied = ValueNotifier<bool>(false);
   double walletBalance = 0;
-
-  final now = DateTime.now();
-  final formattedOrderId =
-      "${now.day.toString().padLeft(2, '0')}/"
-      "${now.month.toString().padLeft(2, '0')}/"
-      "${now.year.toString().substring(2)}/_"
-      "${now.hour.toString().padLeft(2, '0')}:"
-      "${now.minute.toString().padLeft(2, '0')}:"
-      "${now.second.toString().padLeft(2, '0')}";
 
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true,
+    isScrollControlled: false,
     backgroundColor: Colors.transparent,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (bottomSheetContext) {
-      return DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (context, scrollController) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              return BlocProvider(
-                create: (_) => WalletBloc(WalletRepository())
-                  ..add(FetchWalletByUserId(user.id)),
-                child: BlocBuilder<WalletBloc, WalletState>(
-                  builder: (context, state) {
-                    if (state is WalletLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is WalletLoaded) {
-                      walletBalance = state.wallet.balance;
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) =>
+            WalletBloc(WalletRepository())..add(FetchWalletByUserId(user.id)),
+          ),
+          BlocProvider(
+            create: (_) => PayUGatewayBloc(PayUGatewayRepository()),
+          ),
+        ],
+        child: BlocBuilder<WalletBloc, WalletState>(
+          builder: (context, walletState) {
+            if (walletState is WalletLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (walletState is WalletLoaded) {
+              walletBalance = walletState.wallet.balance;
 
-                      return SingleChildScrollView(
-                        controller: scrollController,
-                        child: CustomContainer(
-                          color: CustomColor.whiteColor,
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
-                                style: textStyle14(context),
-                              ),
-                              const SizedBox(height: 10),
-
-                              /// Wallet Container
-                              // CustomContainer(
-                              //   margin: EdgeInsets.zero,
-                              //   child: Row(
-                              //     mainAxisAlignment:
-                              //     MainAxisAlignment.spaceBetween,
-                              //     children: [
-                              //       Column(
-                              //         crossAxisAlignment:
-                              //         CrossAxisAlignment.start,
-                              //         children: [
-                              //           CustomAmountText(
-                              //             amount: walletBalance
-                              //                 .toStringAsFixed(2),
-                              //             fontWeight: FontWeight.w500,
-                              //             fontSize: 14,
-                              //             color: CustomColor.appColor,
-                              //           ),
-                              //           Text('Wallet Balance',
-                              //               style: textStyle12(context)),
-                              //         ],
-                              //       ),
-                              //       TextButton(
-                              //         onPressed: () {
-                              //           setState(() {
-                              //             isWalletApplied = !isWalletApplied;
-                              //             if (isWalletApplied) {
-                              //               payableAmount =
-                              //                   (payableAmount - walletBalance)
-                              //                       .clamp(0, double.infinity);
-                              //             } else {
-                              //               payableAmount = paymentType == 'full'
-                              //                   ? fullAmount
-                              //                   : halfAmount;
-                              //             }
-                              //           });
-                              //         },
-                              //         child: Text(isWalletApplied
-                              //             ? 'Remove'
-                              //             : 'Apply'),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              const SizedBox(height: 10),
-
-                              /// Payment Type
-                              CustomContainer(
-                                margin: EdgeInsets.zero,
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    /// Full Payment
-                                    Row(
-                                      children: [
-                                        Radio<String>(
-                                          value: 'full',
-                                          groupValue: paymentType,
-                                          activeColor: CustomColor.appColor,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              paymentType = value!;
-                                              payableAmount = fullAmount;
-                                              if (isWalletApplied) {
-                                                payableAmount = (payableAmount - walletBalance).clamp(0, double.infinity);
-                                              }
-                                            });
-                                          },
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Full Payment',
-                                                style: textStyle12(context)),
-                                            CustomAmountText(
-                                              amount:
-                                              fullAmount.toStringAsFixed(2),
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: CustomColor.appColor,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    /// Partial Payment
-                                    Row(
-                                      children: [
-                                        Radio<String>(
-                                          value: 'half',
-                                          groupValue: paymentType,
-                                          activeColor: CustomColor.appColor,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              paymentType = value!;
-                                              payableAmount = halfAmount;
-                                              if (isWalletApplied) {
-                                                payableAmount = (payableAmount - walletBalance).clamp(0, double.infinity);
-                                              }
-                                            });
-                                          },
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Partial Payment',
-                                                style: textStyle12(context)),
-                                            CustomAmountText(
-                                              amount:
-                                              halfAmount.toStringAsFixed(2),
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                              color: CustomColor.appColor,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(height: dimensions.screenHeight * 0.1),
-
-                              /// Final Amount and Button
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'Pay Amount: ₹ ${payableAmount.toStringAsFixed(2)}',
-                                    style: textStyle14(context),
-                                  ),
-
-                                  /// Pay Now
-                                  SizedBox(
-                                    width: dimensions.screenHeight * 0.15,
-                                    child: CustomButton(
-                                      isLoading: isLoading,
-                                      label: 'Pay Now',
-                                      onPressed: () async {
-                                        setState(() => isLoading = true);
-
-                                        final result = await initiateCheckoutServicePayment(
-                                          context: context,
-                                          orderId: 'checkout_$formattedOrderId',
-                                          checkoutId: lead.id.toString(),
-                                          amount: payableAmount,
-                                          customerId: lead.serviceCustomer!.id.toString(),
-                                          name: user.fullName,
-                                          phone: user.mobileNumber,
-                                          email: user.email,
-                                        );
-
-                                        setState(() => isLoading = false);
-
-                                        if (result == true) {
-                                          onPaymentSuccess?.call();
-                                          Navigator.pop(bottomSheetContext, true);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (state is WalletError) {
-                      return const Center(
-                          child: Text("Failed to load wallet"));
+              return BlocConsumer<PayUGatewayBloc, PayUGatewayState>(
+                listener: (context, payuState) {
+                  if (payuState is PayUGatewaySuccess) {
+                    final paymentUrl =
+                        payuState.response.result?.paymentLink ?? "";
+                    if (paymentUrl.isNotEmpty) {
+                      openInAppWebView(context, paymentUrl, () {
+                        onPaymentSuccess?.call();
+                        Navigator.pop(bottomSheetContext, true);
+                      });
+                    } else {
+                      showCustomSnackBar(context, "Payment link not found");
                     }
-                    return const SizedBox();
-                  },
-                ),
+                  } else if (payuState is PayUGatewayFailure) {
+                    showCustomSnackBar(context, payuState.message);
+                  }
+                },
+                builder: (context, payuState) {
+                  final isLoading = payuState is PayUGatewayLoading;
+
+                  return ValueListenableBuilder(
+                    valueListenable: paymentType,
+                    builder: (context, selectedType, _) {
+                      return ValueListenableBuilder(
+                        valueListenable: payableAmount,
+                        builder: (context, amount, _) {
+                          return CustomContainer(
+                            color: CustomColor.whiteColor,
+                            padding:  EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                 Column(
+                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                   children: [
+                                     Text(
+                                       'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
+                                       style: textStyle14(context),
+                                     ),
+                                     10.height,
+
+                                     /// Payment Type Selection
+                                     CustomContainer(
+                                       margin: EdgeInsets.zero,
+                                       child: Row(
+                                         mainAxisAlignment:
+                                         MainAxisAlignment.spaceBetween,
+                                         children: [
+                                           _paymentOption(
+                                             context,
+                                             label: 'Full Payment',
+                                             value: 'full',
+                                             groupValue: selectedType,
+                                             amount: fullAmount,
+                                             onSelect: (val) {
+                                               paymentType.value = val;
+                                               double newAmount = fullAmount;
+                                               if (isWalletApplied.value) {
+                                                 newAmount = (newAmount -
+                                                     walletBalance)
+                                                     .clamp(0, double.infinity);
+                                               }
+                                               payableAmount.value = newAmount;
+                                             },
+                                           ),
+                                           _paymentOption(
+                                             context,
+                                             label: 'Partial Payment',
+                                             value: 'half',
+                                             groupValue: selectedType,
+                                             amount: halfAmount,
+                                             onSelect: (val) {
+                                               paymentType.value = val;
+                                               double newAmount = halfAmount;
+                                               if (isWalletApplied.value) {
+                                                 newAmount = (newAmount -
+                                                     walletBalance)
+                                                     .clamp(0, double.infinity);
+                                               }
+                                               payableAmount.value = newAmount;
+                                             },
+                                           ),
+                                         ],
+                                       ),
+                                     ),
+
+                                   ],
+                                 ),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Pay Amount: ₹ ${amount.toStringAsFixed(2)}',
+                                        style: textStyle14(context),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                        dimensions.screenHeight * 0.15,
+                                        child: CustomButton(
+                                          isLoading: isLoading,
+                                          label: 'Pay Now',
+                                          onPressed: () {
+                                            final timestamp = DateTime.now()
+                                                .millisecondsSinceEpoch;
+                                            final orderId =
+                                                "checkout_$timestamp";
+
+                                            final payuModel =
+                                            PayUGatewayModel(
+                                              subAmount: amount,
+                                              isPartialPaymentAllowed:
+                                              selectedType == 'half',
+                                              description:
+                                              "Service Payment",
+                                              orderId: orderId,
+                                              customer: PayUCustomer(
+                                                customerId: user.id,
+                                                customerName: user.fullName,
+                                                customerEmail: user.email,
+                                                customerPhone:
+                                                user.mobileNumber,
+                                              ),
+                                              udf: PayUUdf(
+                                                udf1: orderId,
+                                                udf2: '',
+                                                udf3: user.id,
+                                              ),
+                                            );
+
+                                            context
+                                                .read<PayUGatewayBloc>()
+                                                .add(CreatePayULinkEvent(
+                                                payuModel));
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
               );
-            },
-          );
-        },
+            } else {
+              return const Center(child: Text("Failed to load wallet"));
+            }
+          },
+        ),
       );
     },
   );
 }
 
-
-class RemainingPaymentButton extends StatefulWidget {
-  final LeadModel lead;
-  final UserModel user;
-  const RemainingPaymentButton({super.key, required this.lead, required this.user});
-
-  @override
-  State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
-}
-
-class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
-  bool _isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-
-    final now = DateTime.now();
-
-    // Safe Order ID for Payment Gateway
-    final formattedOrderId =
-        "${now.day.toString().padLeft(2, '0')}_"
-        "${now.month.toString().padLeft(2, '0')}_"
-        "${now.year.toString().substring(2)}_"
-        "${now.hour.toString().padLeft(2, '0')}-"
-        "${now.minute.toString().padLeft(2, '0')}-"
-        "${now.second.toString().padLeft(2, '0')}";
-
-    return InkWell(
-      onTap: _isLoading ? null : () async {
-        setState(() {_isLoading = true;});
-
-        final result = await initiateCheckoutServicePayment(
-          context: context,
-          orderId: 'checkout_$formattedOrderId',
-          checkoutId: widget.lead.id.toString(),
-          amount: widget.lead.remainingAmount,
-          customerId: widget.lead.serviceCustomer!.id.toString(),
-          name: widget.user.fullName,
-          phone: widget.user.mobileNumber,
-          email: widget.user.email,
-        );
-
-        setState(() {
-          _isLoading = false;
-        });
-
-        if (result == true) {
-          context.read<LeadBloc>().add(FetchLeadsByUser(widget.user.id));
-        }
-      },
-      child: _isLoading
-          ? SizedBox(
-        height: 20,
-        width: 20,
-        child: CircularProgressIndicator(
-          color: CustomColor.appColor,
-          strokeWidth: 2.0,
-        ),
-      )
-          : Text(
-        'Pay Now',
-        style: textStyle14(context, color: CustomColor.appColor),
+/// Payment option widget
+Widget _paymentOption(
+    BuildContext context, {
+      required String label,
+      required String value,
+      required String groupValue,
+      required double amount,
+      required Function(String) onSelect,
+    }) {
+  return Row(
+    children: [
+      Radio<String>(
+        value: value,
+        groupValue: groupValue,
+        activeColor: CustomColor.appColor,
+        onChanged: (val) => onSelect(val!),
       ),
-    );
-  }
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: textStyle12(context)),
+          CustomAmountText(
+            amount: amount.toStringAsFixed(2),
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: CustomColor.appColor,
+          ),
+        ],
+      ),
+    ],
+  );
 }
+
+
+
+// class RemainingPaymentButton extends StatefulWidget {
+//   final LeadModel lead;
+//   final UserModel user;
+//   const RemainingPaymentButton({super.key, required this.lead, required this.user});
+//
+//   @override
+//   State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
+// }
+//
+// class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
+//   bool _isLoading = false;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     final now = DateTime.now();
+//
+//     // Safe Order ID for Payment Gateway
+//     final formattedOrderId =
+//         "${now.day.toString().padLeft(2, '0')}_"
+//         "${now.month.toString().padLeft(2, '0')}_"
+//         "${now.year.toString().substring(2)}_"
+//         "${now.hour.toString().padLeft(2, '0')}-"
+//         "${now.minute.toString().padLeft(2, '0')}-"
+//         "${now.second.toString().padLeft(2, '0')}";
+//
+//     return InkWell(
+//       onTap: _isLoading ? null : () async {
+//         setState(() {_isLoading = true;});
+//
+//         final result = await initiateCheckoutServicePayment(
+//           context: context,
+//           orderId: 'checkout_$formattedOrderId',
+//           checkoutId: widget.lead.id.toString(),
+//           amount: widget.lead.remainingAmount,
+//           customerId: widget.lead.serviceCustomer!.id.toString(),
+//           name: widget.user.fullName,
+//           phone: widget.user.mobileNumber,
+//           email: widget.user.email,
+//         );
+//
+//         setState(() {
+//           _isLoading = false;
+//         });
+//
+//         if (result == true) {
+//           context.read<LeadBloc>().add(FetchLeadsByUser(widget.user.id));
+//         }
+//       },
+//       child: _isLoading
+//           ? SizedBox(
+//         height: 20,
+//         width: 20,
+//         child: CircularProgressIndicator(
+//           color: CustomColor.appColor,
+//           strokeWidth: 2.0,
+//         ),
+//       )
+//           : Text(
+//         'Pay Now',
+//         style: textStyle14(context, color: CustomColor.appColor),
+//       ),
+//     );
+//   }
+// }
 
 Widget _buildBookingSummary(BuildContext context, LeadModel lead) {
 
