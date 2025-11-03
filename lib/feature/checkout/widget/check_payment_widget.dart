@@ -1,4 +1,5 @@
 
+import 'package:fetchtrue/core/widgets/formate_price.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -37,12 +38,11 @@ class CheckPaymentWidget extends StatefulWidget {
   final void Function(String bookingId, String dateTime, String amount,) onPaymentDone;
   final CheckOutModel checkoutData;
   final String zoneId;
-  final String couponCode;
 
   const CheckPaymentWidget({
     super.key,
     required this.onPaymentDone,
-    required this.checkoutData, required this.zoneId, required this.couponCode,
+    required this.checkoutData, required this.zoneId,
   });
 
   @override
@@ -65,8 +65,8 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
   Widget build(BuildContext context) {
     final userSession = Provider.of<UserSession>(context);
 
-    final num serviceAmount = widget.checkoutData.totalAmount ?? 0.0;
-    final double partialAmount = double.parse((serviceAmount / 2).toStringAsFixed(2));
+    final num serviceAmount = (widget.checkoutData.totalAmount ?? 0).round();
+    final partialAmount = (serviceAmount / 2);
     final double payableAmount = (
         (selectedPayment == null
             ? 0
@@ -99,44 +99,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
               ],
               child: BlocListener<CheckoutBloc, CheckoutState>(
                 listener: (context, state) {
-                  // if (state is CheckoutSuccess) {
-                  //
-                  //   _bookingId = state.model.bookingId ?? '';
-                  //   _createdAt = state.model.createdAt?.toString() ?? '';
-                  //   _payableAmount = state.model.paidAmount?.toDouble() ?? payableAmount;
-                  //
-                  //   print('Booking confirmed. ID: $_bookingId');
-                  //
-                  //   if (selectedPayment == PaymentMethod.afterConsultation) {
-                  //     showCustomSnackBar(context, 'Booking done! Pay after consultation.');
-                  //     widget.onPaymentDone(_bookingId, _createdAt, _payableAmount.toStringAsFixed(2));
-                  //     return;
-                  //   }
-                  //
-                  //   if (selectedPayment == PaymentMethod.payU) {
-                  //     final payuModel = PayUGatewayModel(
-                  //       // subAmount: payableAmount,
-                  //       subAmount: 1,
-                  //       isPartialPaymentAllowed: selectedPayUOption == PayUOption.partial,
-                  //       description: "Service Payment",
-                  //       orderId: "checkout_${state.model.id}",
-                  //       customer: PayUCustomer(
-                  //         customerId: user.id,
-                  //         customerName: user.fullName,
-                  //         customerEmail: user.email,
-                  //         customerPhone: user.mobileNumber,
-                  //       ),
-                  //       udf: PayUUdf(
-                  //         udf1: "checkout_${state.model.id}",
-                  //         udf2: state.model.id.toString(),
-                  //         udf3: user.id,
-                  //       ),
-                  //     );
-                  //
-                  //     context.read<PayUGatewayBloc>().add(CreatePayULinkEvent(payuModel));
-                  //   }
-                  //
-                  // }
                   if (state is CheckoutSuccess) {
                     _bookingId = state.model.bookingId ?? '';
                     _createdAt = state.model.createdAt?.toString() ?? '';
@@ -210,7 +172,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                             children: [
                               15.height,
                               /// wallet
-                              Text('Price: ₹ ${serviceAmount.toStringAsFixed(2)}', style: textStyle16(context)),
+                              Text('Price: ₹ ${formatPrice(widget.checkoutData.totalAmount??0)}', style: textStyle16(context)),
 
                               // WalletCardWidget(
                               //   userId: userSession.userId!,
@@ -260,20 +222,6 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                                         isLoading: isLoading || isCouponLoading,
                                         label: 'Book Now',
                                         onPressed: () async{
-
-                                          final couponBloc = context.read<CouponApplyBloc>();
-
-                                          couponBloc.add(
-                                            ApplyCouponEvent(
-                                              CouponApplyModel(
-                                                couponCode: widget.couponCode,
-                                                userId: user.id,
-                                                purchaseAmount: '${serviceAmount.toStringAsFixed(2)}',
-                                                serviceId: widget.checkoutData.id.toString(),
-                                                zoneId: widget.zoneId,
-                                              ),
-                                            ),
-                                          );
 
                                           if (selectedPayment == null) {
                                             showCustomToast('Please select a payment method');

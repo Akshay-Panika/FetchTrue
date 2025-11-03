@@ -66,12 +66,12 @@ class LeadsDetailsWidget extends StatelessWidget {
                 customerDetails(context, lead),
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
-                /// Payment status card
-                _buildPaymentStatus(context, lead, user),
-                SizedBox(height: dimensions.screenHeight*0.015,),
-
                 /// Booking summary card
                 _buildBookingSummary(context,lead),
+                SizedBox(height: dimensions.screenHeight*0.015,),
+
+                /// Payment status card
+                _buildPaymentStatus(context, lead, user),
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
                 /// Provider Card
@@ -156,37 +156,37 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
               ],
             ),
 
-
-            const Divider(),
-
             /// Pay Now Button
-            // if (status == 'unpaid')
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: InkWell(
-                  onTap: () {
-                    _showPaymentBottomSheet(
-                      context,
-                      lead, user,
-                          () {
-                        context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
-                      },
-                    );
-                  },
-                  child: Text(
-                    'Pay Now',
-                    style: textStyle14(context, color: CustomColor.appColor),
+            if (status == 'unpaid')
+              Column(
+                children: [
+                  const Divider(),
+                  10.height,
+                  InkWell(
+                    onTap: () {
+                      _showPaymentBottomSheet(
+                        context,
+                        lead, user,
+                            () {
+                          context.read<LeadBloc>().add(FetchLeadsByUser(userSession.userId!));
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Pay Now',
+                      style: textStyle14(context, color: CustomColor.appColor),
+                    ),
                   ),
-                ),
+                ],
               ),
 
 
             /// Remaining Payment Button
-            //  if(status == 'pending')
-            //   Padding(
-            //     padding: const EdgeInsets.only(top: 10),
-            //     child: RemainingPaymentButton(lead: lead, user: user,),
-            //   ),
+             if(status == 'pending')
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: RemainingPaymentButton(lead: lead, user: user,),
+              ),
           ],
         ),
       ),
@@ -229,12 +229,12 @@ void _showPaymentBottomSheet(
     VoidCallback? onPaymentSuccess,
     ) {
   final dimensions = Dimensions(context);
-  final fullAmount = lead.totalAmount!.toDouble();
+  final fullAmount = lead.totalAmount!.round();
   final halfAmount = fullAmount / 2;
 
   // 🧩 Reactive state using ValueNotifier
   final paymentType = ValueNotifier<String>('full');
-  final payableAmount = ValueNotifier<double>(fullAmount);
+  final payableAmount = ValueNotifier<double>(fullAmount.toDouble());
   final isWalletApplied = ValueNotifier<bool>(false);
   double walletBalance = 0;
 
@@ -266,11 +266,11 @@ void _showPaymentBottomSheet(
               return BlocConsumer<PayUGatewayBloc, PayUGatewayState>(
                 listener: (context, payuState) {
                   if (payuState is PayUGatewaySuccess) {
-                    final paymentUrl =
-                        payuState.response.result?.paymentLink ?? "";
+                    final paymentUrl = payuState.response.result?.paymentLink ?? "";
                     if (paymentUrl.isNotEmpty) {
                       openInAppWebView(context, paymentUrl, () {
                         onPaymentSuccess?.call();
+                        Navigator.pop(context);
                         Navigator.pop(bottomSheetContext, true);
                       });
                     } else {
@@ -300,7 +300,7 @@ void _showPaymentBottomSheet(
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                    children: [
                                      Text(
-                                       'Service Amount : ₹ ${fullAmount.toStringAsFixed(2)}',
+                                       'Service Amount : ₹ ${fullAmount.toStringAsFixed(0)}',
                                        style: textStyle14(context),
                                      ),
                                      10.height,
@@ -317,10 +317,10 @@ void _showPaymentBottomSheet(
                                              label: 'Full Payment',
                                              value: 'full',
                                              groupValue: selectedType,
-                                             amount: fullAmount,
+                                             amount: fullAmount.toDouble(),
                                              onSelect: (val) {
                                                paymentType.value = val;
-                                               double newAmount = fullAmount;
+                                               double newAmount = fullAmount.toDouble();
                                                if (isWalletApplied.value) {
                                                  newAmount = (newAmount -
                                                      walletBalance)
@@ -370,37 +370,28 @@ void _showPaymentBottomSheet(
                                           isLoading: isLoading,
                                           label: 'Pay Now',
                                           onPressed: () {
-                                            final timestamp = DateTime.now()
-                                                .millisecondsSinceEpoch;
-                                            final orderId =
-                                                "checkout_$timestamp";
+                                            final timestamp = DateTime.now().millisecondsSinceEpoch;
+                                            final orderId = "checkout_$timestamp";
 
                                             final payuModel =
                                             PayUGatewayModel(
-                                              subAmount: amount,
-                                              isPartialPaymentAllowed:
-                                              selectedType == 'half',
-                                              description:
-                                              "Service Payment",
+                                              subAmount: double.parse(amount.toStringAsFixed(0)),
+                                              isPartialPaymentAllowed: false,
+                                              description: "Service Payment",
                                               orderId: orderId,
                                               customer: PayUCustomer(
                                                 customerId: user.id,
-                                                customerName: user.fullName,
-                                                customerEmail: user.email,
-                                                customerPhone:
-                                                user.mobileNumber,
+                                                customerName: user.fullName ?? '',
+                                                customerEmail: user.email ?? '',
+                                                customerPhone: user.mobileNumber ?? '',
                                               ),
                                               udf: PayUUdf(
                                                 udf1: orderId,
-                                                udf2: '',
-                                                udf3: user.id,
+                                                udf2: lead.id ?? '',
+                                                udf3: lead.serviceCustomer?.id ?? '',
                                               ),
                                             );
-
-                                            context
-                                                .read<PayUGatewayBloc>()
-                                                .add(CreatePayULinkEvent(
-                                                payuModel));
+                                            context.read<PayUGatewayBloc>().add(CreatePayULinkEvent(payuModel));
                                           },
                                         ),
                                       ),
@@ -424,6 +415,87 @@ void _showPaymentBottomSheet(
       );
     },
   );
+}
+
+
+class RemainingPaymentButton extends StatelessWidget {
+  final LeadModel lead;
+  final UserModel user;
+  const RemainingPaymentButton({
+    super.key,
+    required this.lead,
+    required this.user,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => PayUGatewayBloc(PayUGatewayRepository()),
+      child: BlocConsumer<PayUGatewayBloc, PayUGatewayState>(
+        listener: (context, payuState) {
+          if (payuState is PayUGatewaySuccess) {
+            final paymentUrl = payuState.response.result?.paymentLink ?? "";
+            if (paymentUrl.isNotEmpty) {
+              // ✅ Directly open PayU payment page inside WebView
+              openInAppWebView(context, paymentUrl, () {
+                // ✅ On successful payment
+                showCustomSnackBar(context, "Remaining Payment Successful!");
+                context.read<LeadBloc>().add(FetchLeadsByUser(user.id));
+              });
+            } else {
+              showCustomSnackBar(context, "Payment link not found");
+            }
+          } else if (payuState is PayUGatewayFailure) {
+            showCustomSnackBar(context, payuState.message);
+          }
+        },
+        builder: (context, payuState) {
+          final isLoading = payuState is PayUGatewayLoading;
+          return InkWell(
+            onTap: () {
+              final remainingAmount = double.parse( lead.remainingAmount.toStringAsFixed(0));
+              final timestamp = DateTime.now().millisecondsSinceEpoch;
+              final orderId = "checkout_$timestamp";
+
+              print('-----------------$remainingAmount');
+              final payuModel = PayUGatewayModel(
+                subAmount: remainingAmount,
+                isPartialPaymentAllowed: false,
+                description: "Remaining Payment",
+                orderId: orderId,
+                customer: PayUCustomer(
+                  customerId: user.id,
+                  customerName: user.fullName,
+                  customerEmail: user.email,
+                  customerPhone: user.mobileNumber,
+                ),
+                udf: PayUUdf(
+                  udf1: orderId,
+                  udf2: lead.id.toString(),
+                  udf3: lead.serviceCustomer!.id.toString(),
+                ),
+              );
+
+              context.read<PayUGatewayBloc>().add(CreatePayULinkEvent(payuModel));
+            },
+            child: isLoading
+                ? const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+                : Text(
+              'Pay Now',
+              style: textStyle14(context, color: CustomColor.appColor),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
 /// Payment option widget
@@ -459,73 +531,6 @@ Widget _paymentOption(
   );
 }
 
-
-
-// class RemainingPaymentButton extends StatefulWidget {
-//   final LeadModel lead;
-//   final UserModel user;
-//   const RemainingPaymentButton({super.key, required this.lead, required this.user});
-//
-//   @override
-//   State<RemainingPaymentButton> createState() => _RemainingPaymentButtonState();
-// }
-//
-// class _RemainingPaymentButtonState extends State<RemainingPaymentButton> {
-//   bool _isLoading = false;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//
-//     final now = DateTime.now();
-//
-//     // Safe Order ID for Payment Gateway
-//     final formattedOrderId =
-//         "${now.day.toString().padLeft(2, '0')}_"
-//         "${now.month.toString().padLeft(2, '0')}_"
-//         "${now.year.toString().substring(2)}_"
-//         "${now.hour.toString().padLeft(2, '0')}-"
-//         "${now.minute.toString().padLeft(2, '0')}-"
-//         "${now.second.toString().padLeft(2, '0')}";
-//
-//     return InkWell(
-//       onTap: _isLoading ? null : () async {
-//         setState(() {_isLoading = true;});
-//
-//         final result = await initiateCheckoutServicePayment(
-//           context: context,
-//           orderId: 'checkout_$formattedOrderId',
-//           checkoutId: widget.lead.id.toString(),
-//           amount: widget.lead.remainingAmount,
-//           customerId: widget.lead.serviceCustomer!.id.toString(),
-//           name: widget.user.fullName,
-//           phone: widget.user.mobileNumber,
-//           email: widget.user.email,
-//         );
-//
-//         setState(() {
-//           _isLoading = false;
-//         });
-//
-//         if (result == true) {
-//           context.read<LeadBloc>().add(FetchLeadsByUser(widget.user.id));
-//         }
-//       },
-//       child: _isLoading
-//           ? SizedBox(
-//         height: 20,
-//         width: 20,
-//         child: CircularProgressIndicator(
-//           color: CustomColor.appColor,
-//           strokeWidth: 2.0,
-//         ),
-//       )
-//           : Text(
-//         'Pay Now',
-//         style: textStyle14(context, color: CustomColor.appColor),
-//       ),
-//     );
-//   }
-// }
 
 Widget _buildBookingSummary(BuildContext context, LeadModel lead) {
 

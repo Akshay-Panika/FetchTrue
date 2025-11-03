@@ -97,7 +97,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   else if (_paymentStep == 1)
                     CheckPaymentWidget(
                       checkoutData: checkoutData!,
-                      couponCode: couponCode,
                       zoneId: zoneId,
                       onPaymentDone: (String bookingIdFromPayment, String dateTime, String amount ) {
                         setState(() {
