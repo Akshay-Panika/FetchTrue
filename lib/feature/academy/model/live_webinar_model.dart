@@ -27,11 +27,12 @@ class LiveWebinar {
   final String date;
   final String startTime;
   final String endTime;
+  final bool closeStatus; // ✅ Added field
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int version;
   final List<String> users;
-  final List<UserStatus> user;  // Changed here
+  final List<UserStatus> user;
 
   LiveWebinar({
     required this.id,
@@ -42,6 +43,7 @@ class LiveWebinar {
     required this.date,
     required this.startTime,
     required this.endTime,
+    required this.closeStatus, // ✅ Added field
     required this.createdAt,
     required this.updatedAt,
     required this.version,
@@ -59,6 +61,7 @@ class LiveWebinar {
       date: json['date'] ?? '',
       startTime: json['startTime'] ?? '',
       endTime: json['endTime'] ?? '',
+      closeStatus: json['closeStatus'] ?? false, // ✅ parse from backend
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

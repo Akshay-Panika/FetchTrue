@@ -86,4 +86,5 @@ class CustomLogEmoji {
   static const String answer = "💬";       // Answer / Chat
   static const String mail = "📧";         // Email
   static const String phone = "📞";        // Call
+  static const String thunderbolt = "⚡";     // Call
 }

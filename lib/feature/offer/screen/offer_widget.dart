@@ -39,7 +39,7 @@ class OfferWidget extends StatelessWidget {
                     children: [
                       Expanded(child: Container(
                         width: double.infinity,
-                        color: Colors.green.shade50,
+                        color: CustomColor.appColor.withOpacity(0.05),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

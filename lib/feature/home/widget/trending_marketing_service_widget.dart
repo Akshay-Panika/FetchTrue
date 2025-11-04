@@ -16,6 +16,7 @@ import '../../service/bloc/trending_marketing/trending_marketing_event.dart';
 import '../../service/bloc/trending_marketing/trending_marketing_state.dart';
 import '../../service/model/trending_marketing_model.dart';
 import '../../service/repository/trending_marketing_repository.dart';
+import '../../service/screen/service_details_screen.dart';
 
 
 class TrendingMarketingServiceWidget extends StatelessWidget {
@@ -181,7 +182,10 @@ class TrendingMarketingServiceWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        onTap: () => context.push('/service/${data.id}'),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: ''),));
+                        },
+                        // onTap: () => context.push('/service/${data.id}'),
                       );
                     },
                   ),

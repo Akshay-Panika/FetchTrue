@@ -21,6 +21,7 @@ import '../../service/model/trending_education_model.dart';
 import '../../service/model/trending_franchise_model.dart';
 import '../../service/repository/trending_educational_repository.dart';
 import '../../service/repository/trending_franchise_repository.dart';
+import '../../service/screen/service_details_screen.dart';
 
 
 class TrendingEducationServiceWidget extends StatelessWidget {
@@ -186,7 +187,10 @@ class TrendingEducationServiceWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        onTap: () => context.push('/service/${data.id}'),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: ''),));
+                        },
+                        // onTap: () => context.push('/service/${data.id}'),
                       );
                     },
                   ),

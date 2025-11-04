@@ -150,7 +150,7 @@ class _CheckPaymentWidgetState extends State<CheckPaymentWidget> {
                       final paymentUrl = state.response.result?.paymentLink;
                       if (paymentUrl != null && paymentUrl.isNotEmpty) {
                         openInAppWebView(context,paymentUrl, () {
-                          showCustomToast('Payment Completed!');
+                          // showCustomToast('Payment Completed!');
                           widget.onPaymentDone(_bookingId, _createdAt, _payableAmount.toStringAsFixed(2));
                         });
 

@@ -1,5 +1,8 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
+import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/banner/widget/home_banner_widget.dart';
+import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
+import 'package:fetchtrue/feature/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +20,14 @@ import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_state.dart';
+import '../../team_build/bloc/my_team/my_team_bloc.dart';
+import '../../team_build/bloc/my_team/my_team_event.dart';
+import '../../team_build/bloc/my_team/my_team_state.dart';
+import '../../team_build/repository/my_team_repository.dart';
+import '../../wallet/bloc/wallet_bloc.dart';
+import '../../wallet/bloc/wallet_event.dart';
+import '../../wallet/bloc/wallet_state.dart';
+import '../../wallet/repository/wallet_repository.dart';
 
 class CustomHomeSliverAppbarWidget extends StatefulWidget {
   final double searchBarHeight;
@@ -39,57 +50,69 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-
     final userSession = Provider.of<UserSession>(context);
-    final _isLogIn = userSession.isLoggedIn;
-
     final addressNotifier = Provider.of<AddressNotifier>(context);
     final currentAddress = addressNotifier.confirmedAddress;
 
 
-    if (!_isLogIn) {
+    if (!userSession.isLoggedIn) {
       return _buildSliverAppBar(
         context,
         widget.isCollapsed,
         name: "Guest",
         photo: null,
         currentAddress: currentAddress,
+        userId: userSession.userId.toString(),
       );
     }
 
-    return BlocBuilder<UserBloc, UserState>(
-      buildWhen: (previous, current) {
-        return !(previous is UserLoaded && current is UserLoading);
-      },
-      builder: (context, state) {
-
-         if (state is UserLoading) {
-          return SliverToBoxAdapter(child: _profileShimmer(dimensions));
-        }
-
-          if (state is UserLoaded) {
-          final user = state.user;
-          return _buildSliverAppBar(
-            context,
-            widget.isCollapsed,
-            name: user.fullName ?? "Guest",
-            photo: user.profilePhoto,
-            packageActive: user.packageActive,
-            packageStatus: user.packageStatus,
-            currentAddress: currentAddress,
-          );
-        } else if (state is UserError) {
-          debugPrint("Error: ${state.massage}");
-          return _buildSliverAppBar(
-            context,
-            widget.isCollapsed,
-            name: "Guest",
-            photo: null,
-            currentAddress: currentAddress,
-          );
-        }
-        return const SliverToBoxAdapter(child: SizedBox.shrink());
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => WalletBloc(WalletRepository())
+            ..add(FetchWalletByUserId(userSession.userId.toString())),
+        ),
+        BlocProvider(
+          create: (_) => MyTeamBloc(MyTeamRepository())
+            ..add(FetchMyTeam(userSession.userId.toString())),
+        ),
+      ],
+      child: BlocBuilder<UserBloc, UserState>(
+        buildWhen: (previous, current) {
+          return !(previous is UserLoaded && current is UserLoading);
+        },
+        builder: (context, state) {
+      
+           if (state is UserLoading) {
+            return SliverToBoxAdapter(child: _profileShimmer(dimensions));
+          }
+      
+            if (state is UserLoaded) {
+            final user = state.user;
+            return _buildSliverAppBar(
+              context,
+              widget.isCollapsed,
+              name: user.fullName ?? "Guest",
+              photo: user.profilePhoto,
+              packageActive: user.packageActive,
+              packageStatus: user.packageStatus,
+              currentAddress: currentAddress,
+              userId: userSession.userId.toString(),
+            );
+          } else if (state is UserError) {
+            debugPrint("Error: ${state.massage}");
+            return _buildSliverAppBar(
+              context,
+              widget.isCollapsed,
+              name: "Guest",
+              photo: null,
+              currentAddress: currentAddress,
+              userId: userSession.userId.toString(),
+            );
+          }
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        },
+      ),
     );
   }
 
@@ -100,10 +123,10 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
         String? photo,
         bool? packageActive,
         String? packageStatus,
-        required String currentAddress
+        required String currentAddress,
+        required String userId,
       }) {
     Dimensions dimensions = Dimensions(context);
-
     return SliverAppBar(
       expandedHeight: (_bannerAvailable ? dimensions.screenHeight*0.25 : 0) + widget.searchBarHeight,
       pinned: true,
@@ -220,16 +243,45 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
           ),
         ),
         10.width,
-        IconButton(
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NotificationScreen()),
-          ),
-          icon: Icon(
-            Icons.notifications_active_outlined,
-            color: (!_bannerAvailable || isCollapsed) ? CustomColor.iconColor : Colors.white,
-          ),
+
+        BlocBuilder<WalletBloc, WalletState>(
+          builder: (context, state) {
+            String label = '';
+            if (state is WalletLoaded) {
+              label = "₹${state.wallet.balance}";
+            }
+            return ActionCircleButton(
+              iconPath: 'assets/icon/wallet_icon.png',
+              label: label.isEmpty ? '₹0' : label,
+              activeColor: CustomColor.appColor,
+              inactiveColor: Colors.white,
+              isActive: !_bannerAvailable || isCollapsed,
+              onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => WalletScreen(userId: userId)),
+              ),
+            );
+          },
         ),
+        BlocBuilder<MyTeamBloc, MyTeamState>(
+          builder: (context, state) {
+            String teamCount = '';
+            if (state is MyTeamLoaded) {
+              teamCount = "${state.response.length}";
+            }
+            return ActionCircleButton(
+              iconPath: 'assets/icon/team_build_icon.png',
+              label: teamCount.isEmpty ? '0' : teamCount,
+              activeColor: CustomColor.appColor,
+              inactiveColor: Colors.white,
+              isActive: !_bannerAvailable || isCollapsed,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TeamBuildScreen()),
+              ),
+            );
+          },
+        ),
+        10.width,
       ],
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(widget.searchBarHeight),
@@ -241,6 +293,88 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
     );
   }
 }
+
+
+
+class ActionCircleButton extends StatelessWidget {
+  final String iconPath;
+  final String? label;
+  final Color activeColor;
+  final Color inactiveColor;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const ActionCircleButton({
+    Key? key,
+    required this.iconPath,
+    this.label,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.isActive,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = isActive ? activeColor : inactiveColor;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      onTap: onTap,
+      child: SizedBox(
+        height: 50,
+        width: 50,
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            // 🟦 Wallet Icon Circle
+            CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.black12,
+              child: Image.asset(
+                iconPath,
+                color: iconColor,
+                height: 18,
+              ),
+            ),
+
+            /// ₹ Label (right-top aligned)
+            if (label != null && label!.isNotEmpty)
+              Positioned(
+                right: -4,
+                bottom: 0,
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: activeColor,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: activeColor.withOpacity(0.4),
+                        blurRadius: 3,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    label!,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
 Widget _profileShimmer(Dimensions dimensions){

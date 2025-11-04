@@ -68,7 +68,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
         body: BlocBuilder<ServiceBloc, ServiceState>(
           builder: (context, state) {
             if (state is ServiceLoading) {
-              return const LinearProgressIndicator(minHeight: 2.5);
+              return  LinearProgressIndicator(minHeight: 2.5, color: CustomColor.appColor,);
             }
 
             else if (state is ServiceLoaded) {

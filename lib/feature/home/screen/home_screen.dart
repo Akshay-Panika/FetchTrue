@@ -49,8 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = Dimensions(context);
-    final userSession = Provider.of<UserSession>(context);
-    final double searchBarHeight = dimensions.screenHeight*0.06;
+    final double searchBarHeight = dimensions.screenHeight*0.08;
 
     return NetworkWrapper(
       child: Scaffold(
@@ -62,9 +61,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               searchBarHeight: searchBarHeight,),
 
             /// Futures
-            if (userSession.isLoggedIn)
-            SliverToBoxAdapter(child: FeatureWidget(userId: userSession.userId!,)),
-            SliverToBoxAdapter(child: 15.height),
+            // if (userSession.isLoggedIn)
+            // SliverToBoxAdapter(child: FeatureWidget(userId: userSession.userId!,)),
+            SliverToBoxAdapter(child: 10.height),
 
             /// Modules
             SliverToBoxAdapter(child: ModuleWidget()),

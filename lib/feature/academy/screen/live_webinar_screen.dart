@@ -1,218 +1,197 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../bloc/live_webinar/live_webinar_bloc.dart';
 import '../model/live_webinar_model.dart';
-import '../repository/live_webinar_service.dart';
+import '../repository/live_webinar_repository.dart';
 import 'enroll_now_screen.dart';
 
-class LiveWebinarScreen extends StatefulWidget {
+class LiveWebinarScreen extends StatelessWidget {
   const LiveWebinarScreen({super.key});
 
   @override
-  State<LiveWebinarScreen> createState() => _LiveWebinarScreenState();
-}
-
-class _LiveWebinarScreenState extends State<LiveWebinarScreen> {
-  late Future<LiveWebinarModel?> webinarFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    webinarFuture = LiveWebinarService().fetchLiveWebinars();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    Dimensions dimensions = Dimensions(context);
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Live Webinar', showBackButton: true),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: FutureBuilder<LiveWebinarModel?>(
-            future: webinarFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return _buildLiveWebinarShimmer(context);
-              }
+    return BlocProvider(
+      create: (_) => LiveWebinarBloc(LiveWebinarRepository())..add(FetchLiveWebinarsEvent()),
+      child: Scaffold(
+        appBar: const CustomAppBar(title: 'Live Webinar', showBackButton: true),
+        body: BlocBuilder<LiveWebinarBloc, LiveWebinarState>(
+          builder: (context, state) {
+            if (state is LiveWebinarLoading) {
+              return _buildLiveWebinarShimmer(context);
+            }
 
-              if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-                return const Center(child: Text('Failed to load webinars.'));
-              }
+            if (state is LiveWebinarError) {
+              return Center(child: Text(state.message));
+            }
 
-              final webinars = snapshot.data!.data;
+            if (state is LiveWebinarLoaded) {
+              final webinars = state.liveWebinarModel.data;
+              final dimensions = Dimensions(context);
 
-              if(webinars.isEmpty){
-                return Column(
-                  children: [
-                    SizedBox(height: dimensions.screenHeight*0.4,),
-                    const Center(child: Text('No Webinars.')),
-                  ],
+              if (webinars.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: dimensions.screenHeight * 0.3),
+                    child: const Text('No Webinars available'),
+                  ),
                 );
               }
 
-              return Column(
-                children: [
-                  ListView.builder(
-                    itemCount: webinars.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final webinar = webinars[index];
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    /// 🔹 Webinar List
+                    ListView.builder(
+                      itemCount: webinars.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
+                      itemBuilder: (context, index) {
+                        final webinar = webinars[index];
+                        return _buildWebinarCard(context, webinar, dimensions);
+                      },
+                    ),
+                    30.height,
+                    Text('-: Attend at least 3 live webinars to move forward :-',
+                      style: textStyle14(context)),
 
-                      // final List<dynamic> userList = webinar.user;
-
-                      return CustomContainer(
-                        color: CustomColor.whiteColor,
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
-                        child: Column(
-                          children: [
-                            CustomContainer(
-                              margin: EdgeInsets.zero,
-                              networkImg: webinar.imageUrl,
-                              height: dimensions.screenHeight * 0.18,
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          webinar.name,
-                                          style: textStyle12(context),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                  Text(webinar.description, style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis,maxLines: 2,),
-
-                                  8.height,
-
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Start: ${webinar.startTime}', style: textStyle12(context, fontWeight: FontWeight.w400)),
-                                          SizedBox(width: dimensions.screenWidth * 0.03),
-                                          Text('End: ${webinar.endTime}', style: textStyle12(context, fontWeight: FontWeight.w400)),
-                                        ],
-                                      ),
-
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => EnrollNowScreen(webinar: webinar),
-                                            ),
-                                          );
-                                        },
-                                        child: CustomContainer(
-                                          color: CustomColor.appColor,
-                                          margin: EdgeInsets.zero,
-                                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                                          child: Text('Enroll Now', style: textStyle12(context, color: CustomColor.whiteColor)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text('Date: ${webinar.date}', style: textStyle12(context, fontWeight: FontWeight.w400)),
-
-                                  const SizedBox(height: 8),
-
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  30.height,
-
-                  Text('-: Attend at least 3 live webinar to move forward :-', style: textStyle16(context),),
-                  ListView.builder(
-                    itemCount: webinars.length < 3 ? webinars.length : 3,
-                    // itemCount: webinars.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-
-                      final data = webinars[index];
-
-                      return CustomContainer(
-                        border: false,
-                        color: CustomColor.whiteColor,
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomContainer(
-                                  width: dimensions.screenWidth * 0.4,
-                                  height: dimensions.screenHeight * 0.1,
-                                  margin: EdgeInsets.zero,
-                                  networkImg: data.imageUrl,
-                                  child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: Icon(Icons.library_add_check_outlined, color: CustomColor.whiteColor),
-                                  ),
-                                ),
-                                Text('Date: ${data.date}', style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400)),
-
-                              ],
-                            ),
-
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all( 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text('${data.name}', style: textStyle12(context),overflow: TextOverflow.ellipsis, maxLines: 2,),
-                                    Text('${data.description}', style: textStyle12(context, color: CustomColor.greyColor, fontWeight: FontWeight.w400),overflow: TextOverflow.ellipsis, maxLines: 2,),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  20.height,
-                ],
+                    /// 🔹 Recent Webinars (Top 3)
+                    ListView.builder(
+                      itemCount: webinars.length < 3 ? webinars.length : 3,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
+                      itemBuilder: (context, index) {
+                        final data = webinars[index];
+                        return _buildMiniCard(context, data, dimensions);
+                      },
+                    ),
+                    20.height,
+                  ],
+                ),
               );
-            },
-          ),
+            }
+
+            return const SizedBox();
+          },
         ),
       ),
     );
   }
+
+  // ✅ Webinar Main Card
+  Widget _buildWebinarCard(BuildContext context, LiveWebinar webinar, Dimensions dimensions) {
+    return CustomContainer(
+      color: CustomColor.whiteColor,
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+      child: Column(
+        children: [
+          CustomContainer(
+            margin: EdgeInsets.zero,
+            networkImg: webinar.imageUrl,
+            height: dimensions.screenHeight * 0.18,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(webinar.name, style: textStyle12(context)),
+                Text(webinar.description,
+                    style: textStyle12(context,
+                        color: CustomColor.descriptionColor,
+                        fontWeight: FontWeight.w400),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2),
+                8.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text('Start: ${webinar.startTime}', style: textStyle12(context)),
+                        10.width,
+                        Text('End: ${webinar.endTime}', style: textStyle12(context)),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EnrollNowScreen(webinarId: webinar.id,),
+                          ),
+                        );
+                      },
+                      child: CustomContainer(
+                        color: CustomColor.appColor,
+                        margin: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: Text('Enroll Now',
+                            style: textStyle12(context, color: CustomColor.whiteColor)),
+                      ),
+                    ),
+                  ],
+                ),
+                Text('Date: ${webinar.date}', style: textStyle12(context)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ✅ Mini Card for bottom section
+  Widget _buildMiniCard(BuildContext context, LiveWebinar data, Dimensions dimensions) {
+    return CustomContainer(
+      border: false,
+      color: CustomColor.whiteColor,
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.only(top: dimensions.screenHeight * 0.015),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomContainer(
+            width: dimensions.screenWidth * 0.4,
+            height: dimensions.screenHeight * 0.1,
+            margin: EdgeInsets.zero,
+            networkImg: data.imageUrl,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Icon(Icons.library_add_check_outlined, color: CustomColor.whiteColor),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data.name, style: textStyle12(context)),
+                  Text(data.description,
+                      style: textStyle12(context,
+                          color: CustomColor.greyColor, fontWeight: FontWeight.w400),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+
 
 Widget _buildLiveWebinarShimmer(BuildContext context) {
   Dimensions dimensions = Dimensions(context);
@@ -232,7 +211,7 @@ Widget _buildLiveWebinarShimmer(BuildContext context) {
           child: Column(
             children: [
               CustomContainer(
-                height: dimensions.screenHeight * 0.15,
+                height: dimensions.screenHeight * 0.16,
                 width: double.infinity,
                 margin: EdgeInsets.zero,
                 color: Colors.grey[300],
