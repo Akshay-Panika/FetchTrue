@@ -54,7 +54,6 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
     final addressNotifier = Provider.of<AddressNotifier>(context);
     final currentAddress = addressNotifier.confirmedAddress;
 
-
     if (!userSession.isLoggedIn) {
       return _buildSliverAppBar(
         context,
@@ -63,6 +62,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
         photo: null,
         currentAddress: currentAddress,
         userId: userSession.userId.toString(),
+        showWalletAndTeam: false, // Guest user - no wallet/team
       );
     }
 
@@ -82,15 +82,15 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
           return !(previous is UserLoaded && current is UserLoading);
         },
         builder: (context, state) {
-      
-           if (state is UserLoading) {
+          if (state is UserLoading) {
             return SliverToBoxAdapter(child: _profileShimmer(dimensions));
           }
-      
-            if (state is UserLoaded) {
+
+          if (state is UserLoaded) {
             final user = state.user;
+            // FIXED: Pass the context from Builder which has access to BlocProviders
             return _buildSliverAppBar(
-              context,
+              context, // This context now has access to WalletBloc and MyTeamBloc
               widget.isCollapsed,
               name: user.fullName ?? "Guest",
               photo: user.profilePhoto,
@@ -98,6 +98,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
               packageStatus: user.packageStatus,
               currentAddress: currentAddress,
               userId: userSession.userId.toString(),
+              showWalletAndTeam: true,
             );
           } else if (state is UserError) {
             debugPrint("Error: ${state.massage}");
@@ -108,6 +109,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
               photo: null,
               currentAddress: currentAddress,
               userId: userSession.userId.toString(),
+              showWalletAndTeam: false,
             );
           }
           return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -125,14 +127,14 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
         String? packageStatus,
         required String currentAddress,
         required String userId,
+        required bool showWalletAndTeam, // New parameter
       }) {
     Dimensions dimensions = Dimensions(context);
     return SliverAppBar(
-      expandedHeight: (_bannerAvailable ? dimensions.screenHeight*0.25 : 0) + widget.searchBarHeight,
+      expandedHeight: (_bannerAvailable ? dimensions.screenHeight * 0.25 : 0) + widget.searchBarHeight,
       pinned: true,
       stretch: true,
       elevation: 0,
-      // elevation: isCollapsed ? 0.2 : 0,
       shadowColor: Colors.black26,
       backgroundColor: Colors.white,
       leading: Padding(
@@ -165,20 +167,21 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
               child: Text(name),
             ),
             AnimatedDefaultTextStyle(
-              duration:  Duration(milliseconds: 300),
-              style: TextStyle(fontSize: 14, color:
-                (!_bannerAvailable || isCollapsed) ? CustomColor.descriptionColor : Colors.white,
+              duration: Duration(milliseconds: 300),
+              style: TextStyle(
+                fontSize: 14,
+                color: (!_bannerAvailable || isCollapsed) ? CustomColor.descriptionColor : Colors.white,
               ),
-              child:  Text('$currentAddress'),
+              child: Text('$currentAddress'),
             ),
           ],
         ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddressPickerScreen()),
-            );
-          }
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddressPickerScreen()),
+          );
+        },
       ),
       titleSpacing: 15,
       leadingWidth: 50,
@@ -188,7 +191,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
           fit: StackFit.expand,
           children: [
             Container(
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -218,14 +221,19 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
             MaterialPageRoute(builder: (context) => PackageScreen()),
           ),
           child: Container(
-            padding:  EdgeInsets.symmetric(vertical: dimensions.screenHeight*0.005, horizontal: dimensions.screenHeight*0.015),
+            padding: EdgeInsets.symmetric(
+              vertical: dimensions.screenHeight * 0.005,
+              horizontal: dimensions.screenHeight * 0.015,
+            ),
             decoration: BoxDecoration(
               border: Border.all(color: CustomColor.appColor, width: 0.5),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(Icons.verified_outlined, size: 14,
+                Icon(
+                  Icons.verified_outlined,
+                  size: 14,
                   color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
                 ),
                 10.width,
@@ -233,9 +241,7 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
                   packageActive == true ? '${packageStatus}' : 'Package',
                   style: textStyle12(
                     context,
-                    color: (!_bannerAvailable || isCollapsed)
-                        ? CustomColor.appColor
-                        : Colors.white,
+                    color: (!_bannerAvailable || isCollapsed) ? CustomColor.appColor : Colors.white,
                   ),
                 ),
               ],
@@ -244,57 +250,62 @@ class _CustomHomeSliverAppbarWidgetState extends State<CustomHomeSliverAppbarWid
         ),
         10.width,
 
-        BlocBuilder<WalletBloc, WalletState>(
-          builder: (context, state) {
-            String label = '';
-            if (state is WalletLoaded) {
-              label = "₹${state.wallet.balance}";
-            }
-            return ActionCircleButton(
-              iconPath: 'assets/icon/wallet_icon.png',
-              label: label.isEmpty ? '₹0' : label,
-              activeColor: CustomColor.appColor,
-              inactiveColor: Colors.white,
-              isActive: !_bannerAvailable || isCollapsed,
-              onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => WalletScreen(userId: userId)),
-              ),
-            );
-          },
-        ),
-        BlocBuilder<MyTeamBloc, MyTeamState>(
-          builder: (context, state) {
-            String teamCount = '';
-            if (state is MyTeamLoaded) {
-              teamCount = "${state.response.length}";
-            }
-            return ActionCircleButton(
-              iconPath: 'assets/icon/team_build_icon.png',
-              label: teamCount.isEmpty ? '0' : teamCount,
-              activeColor: CustomColor.appColor,
-              inactiveColor: Colors.white,
-              isActive: !_bannerAvailable || isCollapsed,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const TeamBuildScreen()),
-              ),
-            );
-          },
-        ),
+        // FIXED: Only show if user is logged in and blocs are available
+        if (showWalletAndTeam) ...[
+          BlocBuilder<WalletBloc, WalletState>(
+            builder: (context, state) {
+              String label = '';
+              if (state is WalletLoaded) {
+                label = "₹${state.wallet.balance}";
+              }
+              return ActionCircleButton(
+                iconPath: 'assets/icon/wallet_icon.png',
+                label: label.isEmpty ? '₹0' : label,
+                activeColor: CustomColor.appColor,
+                inactiveColor: Colors.white,
+                isActive: !_bannerAvailable || isCollapsed,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => WalletScreen(userId: userId)),
+                ),
+              );
+            },
+          ),
+          BlocBuilder<MyTeamBloc, MyTeamState>(
+            builder: (context, state) {
+              String teamCount = '';
+              if (state is MyTeamLoaded) {
+                teamCount = "${state.response.length}";
+              }
+              return ActionCircleButton(
+                iconPath: 'assets/icon/team_build_icon.png',
+                label: teamCount.isEmpty ? '0' : teamCount,
+                activeColor: CustomColor.appColor,
+                inactiveColor: Colors.white,
+                isActive: !_bannerAvailable || isCollapsed,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TeamBuildScreen()),
+                ),
+              );
+            },
+          ),
+        ],
         10.width,
       ],
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(widget.searchBarHeight),
-        child:  Padding(
-          padding: EdgeInsets.symmetric(horizontal: dimensions.screenHeight*0.012, vertical: dimensions.screenHeight*0.006),
-          child: CustomSearchBar(moduleId: '',),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: dimensions.screenHeight * 0.012,
+            vertical: dimensions.screenHeight * 0.006,
+          ),
+          child: CustomSearchBar(moduleId: ''),
         ),
       ),
     );
   }
 }
-
-
 
 class ActionCircleButton extends StatelessWidget {
   final String iconPath;
@@ -328,7 +339,6 @@ class ActionCircleButton extends StatelessWidget {
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
-            // 🟦 Wallet Icon Circle
             CircleAvatar(
               radius: 16,
               backgroundColor: Colors.black12,
@@ -338,15 +348,12 @@ class ActionCircleButton extends StatelessWidget {
                 height: 18,
               ),
             ),
-
-            /// ₹ Label (right-top aligned)
             if (label != null && label!.isNotEmpty)
               Positioned(
                 right: -4,
                 bottom: 0,
                 child: Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: activeColor,
                     borderRadius: BorderRadius.circular(20),
@@ -375,12 +382,9 @@ class ActionCircleButton extends StatelessWidget {
   }
 }
 
-
-
-Widget _profileShimmer(Dimensions dimensions){
-
+Widget _profileShimmer(Dimensions dimensions) {
   return Container(
-    height: dimensions.screenHeight*0.35,
+    height: dimensions.screenHeight * 0.35,
     child: Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
@@ -388,7 +392,7 @@ Widget _profileShimmer(Dimensions dimensions){
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50.0,horizontal: 15),
+            padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +401,7 @@ Widget _profileShimmer(Dimensions dimensions){
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    CircleAvatar(backgroundColor: CustomColor.whiteColor,),
+                    CircleAvatar(backgroundColor: CustomColor.whiteColor),
                     10.width,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,7 +414,6 @@ Widget _profileShimmer(Dimensions dimensions){
                     )
                   ],
                 ),
-
                 Row(
                   children: [
                     ShimmerBox(height: 30, width: 60),
@@ -422,10 +425,9 @@ Widget _profileShimmer(Dimensions dimensions){
               ],
             ),
           ),
-
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 8.0),
-            child: CustomSearchBar(moduleId: '',),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: CustomSearchBar(moduleId: ''),
           ),
         ],
       ),

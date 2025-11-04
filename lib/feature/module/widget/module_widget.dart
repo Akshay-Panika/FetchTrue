@@ -58,7 +58,7 @@ class ModuleWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  20.height,
+                  10.height,
                   Center(
                     child: GridView.builder(
                       itemCount: modules.length,
