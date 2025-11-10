@@ -37,6 +37,7 @@ class UnderstandingFetchTrueWidget extends StatelessWidget {
                     videoUrl: item.videoUrl,
                     title: item.fullName,
                     coverImg: item.imageUrl,
+                    des: item.description,
                   );
                 },
               ),
@@ -55,12 +56,14 @@ class UnderstandingFetchTrueWidget extends StatelessWidget {
 class UnderstandingVideoCard extends StatefulWidget {
   final String videoUrl;
   final String title;
+  final String des;
   final String coverImg;
 
   const UnderstandingVideoCard({
     super.key,
     required this.videoUrl,
     required this.title,
+    required this.des,
     required this.coverImg,
   });
 
@@ -91,7 +94,7 @@ class _UnderstandingVideoCardState extends State<UnderstandingVideoCard> {
     Dimensions dimensions = Dimensions(context);
 
     return SizedBox(
-      width: dimensions.screenHeight * 0.3,
+      width: dimensions.screenHeight * 0.32,
       child: CustomContainer(
         border: true,
         color: Colors.white,
@@ -114,8 +117,6 @@ class _UnderstandingVideoCardState extends State<UnderstandingVideoCard> {
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
-                      const Icon(Icons.play_circle,
-                          size: 50, color: Colors.white),
                     ],
                   ),
                 ),
@@ -123,11 +124,12 @@ class _UnderstandingVideoCardState extends State<UnderstandingVideoCard> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.title,
-                style: textStyle12(context),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.title, style: textStyle12(context), overflow: TextOverflow.ellipsis, maxLines: 2,),
+                  Text(widget.des, style: textStyle12(context, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis, maxLines: 2,),
+                ],
               ),
             ),
           ],

@@ -44,4 +44,5 @@ class ApiUrls{
 
   static const cashfreeUrl  =  '${baseUrl}cashfree/order';
   static const payuGatewayUrl  =  '${baseUrl}pay-u/create-payment-link';
+
 }

@@ -12,7 +12,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.fetchtrue.bizbooster2x"
+    namespace = "com.example.fetch_true"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.fetchtrue.bizbooster2x"
+        applicationId = "com.example.fetch_true"
         minSdk = 24
         targetSdk = 36
         versionCode = flutter.versionCode

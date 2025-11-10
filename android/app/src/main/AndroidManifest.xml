@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fetchtrue.bizbooster2x">
+    package="com.example.fetch_true">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />

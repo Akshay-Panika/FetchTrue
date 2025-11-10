@@ -69,6 +69,16 @@ class ProviderScreen extends StatelessWidget {
                   final providers = providerState.providers.where((e) => e.kycCompleted == true).toList();
                   final modules = moduleState.modules;
 
+                  if(providers.isEmpty){
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.person, size: 50,color: Colors.grey.shade600,),
+                        Center(child: Text('No Provider')),
+                      ],
+                    );
+                  }
+
                   return ListView.builder(
                     itemCount: providers.length,
                     padding: EdgeInsetsGeometry.symmetric(horizontal: 10),

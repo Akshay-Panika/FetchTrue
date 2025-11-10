@@ -235,12 +235,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 30.0),
                       child: CustomButton(
+                        label: "Verify Number",
                         isLoading: _isVerifyingNumber,
-                        label: 'Verify Number',
-                        onPressed: () {
-                          if (_isVerifyingNumber) return;
-                          _verifyNumber();
-                        },
+                        onPressed: _isVerifyingNumber ? null : () => _verifyNumber(),
                       ),
                     ),
 

@@ -31,7 +31,16 @@
           "package_name": "com.fetchtrue.bizbooster2x"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1041578063290-rs114m1dlappj8e2bnj9ug8o88q908qc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fetchtrue.bizbooster2x",
+            "certificate_hash": "e151b512c9fddd68c1093b8444f3b0fbe07671fc"
+          }
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC4P_Pf34I0keVooS6gsFeMvY-1kycK68c"

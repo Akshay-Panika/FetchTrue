@@ -11,7 +11,6 @@ import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../../helper/Contact_helper.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../checkout/bloc/payu_gateway/payu_gateway_bloc.dart';
 import '../../checkout/model/payu_gateway_model.dart';
@@ -22,11 +21,15 @@ import '../../wallet/bloc/wallet_bloc.dart';
 import '../../wallet/bloc/wallet_event.dart';
 import '../../wallet/bloc/wallet_state.dart';
 import '../../wallet/repository/wallet_repository.dart';
+import '../bloc/extra_service/extra_service_bloc.dart';
+import '../bloc/extra_service/extra_service_event.dart';
+import '../bloc/extra_service/extra_service_state.dart';
 import '../bloc/lead/lead_bloc.dart';
 import '../bloc/lead/lead_event.dart';
 import '../bloc/lead/lead_state.dart';
+import '../model/extra_service_model.dart';
 import '../model/lead_model.dart';
-import '../repository/checkout_service_buy_repository.dart';
+import '../repository/extra_service_repository.dart';
 import 'customer_card_widget.dart';
 import 'lead_card_widget.dart';
 
@@ -49,7 +52,7 @@ class LeadsDetailsWidget extends StatelessWidget {
           if (lead == null) {
             return const Center(child: Text("Lead not found"));
           }
-          return SingleChildScrollView(
+           return SingleChildScrollView(
             padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
             child: Column(
               children: [
@@ -76,6 +79,32 @@ class LeadsDetailsWidget extends StatelessWidget {
 
                 /// Provider Card
                 ProviderCardWidget(providerId: lead.provider,),
+                SizedBox(height: dimensions.screenHeight*0.015,),
+
+             BlocProvider(
+                 create: (_) => ExtraServiceBloc(ExtraServiceRepository())..add(FetchExtraServiceEvent(leadId)),
+             child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
+                      builder: (context, state) {
+                        if (state is ExtraServiceLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        else if (state is ExtraServiceLoaded) {
+                          if (state.services.isEmpty) {
+                            return SizedBox.shrink();
+                          }
+                          final extraService = state.services.first;
+
+                          return  _extraService(context, extraService);
+
+                        }
+                        else if (state is ExtraServiceError) {
+                          debugPrint(state.message);
+                          return const SizedBox.shrink();
+                        }
+                        return const SizedBox.shrink();
+                      }
+                  ),
+                ),
                 50.height
               ],
             ),
@@ -439,7 +468,7 @@ class RemainingPaymentButton extends StatelessWidget {
               // ✅ Directly open PayU payment page inside WebView
               openInAppWebView(context, paymentUrl, () {
                 // ✅ On successful payment
-                showCustomSnackBar(context, "Remaining Payment Successful!");
+                // showCustomSnackBar(context, "Remaining Payment Successful!");
                 context.read<LeadBloc>().add(FetchLeadsByUser(user.id));
               });
             } else {
@@ -534,60 +563,107 @@ Widget _paymentOption(
 
 Widget _buildBookingSummary(BuildContext context, LeadModel lead) {
 
-  return CustomContainer(
-    border: true,
-    color: CustomColor.whiteColor,
-    margin: EdgeInsets.zero,
-    child: Column(
-      spacing: 10,
-      children: [
-        _buildRow(
-          context,
-          title: 'Listing Price',
-          amount: '₹ ${lead.listingPrice?.toStringAsFixed(2)}',
-        ),
-        _buildRow(
-          context,
-          title: 'Service Discount (${lead.service!.discount}%)',
-          amount: '- ₹ ${lead.serviceDiscountPrice?.toStringAsFixed(2)}',
-        ),
-        _buildRow(
-          context,
-          title: 'Price After Discount',
-          amount: '₹ ${lead.service!.discountedPrice?.toStringAsFixed(2)}',
-        ),
+  return Column(
+    children: [
+      CustomContainer(
+        border: true,
+        color: CustomColor.whiteColor,
+        margin: EdgeInsets.zero,
+        child: Column(
+          spacing: 10,
+          children: [
+            _buildRow(
+              context,
+              title: 'Listing Price',
+              amount: '₹ ${lead.listingPrice?.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              context,
+              title: 'Service Discount (${lead.service!.discount}%)',
+              amount: '- ₹ ${lead.serviceDiscountPrice?.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              context,
+              title: 'Price After Discount',
+              amount: '₹ ${lead.service!.discountedPrice?.toStringAsFixed(2)}',
+            ),
 
-        if(lead.couponDiscount!=0)
-        _buildRow(
-          context,
-          title: 'Coupon Discount (${lead.couponDiscount}${lead.couponDiscountType})',
-          amount: '- ₹ ${lead.couponDiscountPrice?.toStringAsFixed(2)}',
+            if(lead.couponDiscount!=0)
+            _buildRow(
+              context,
+              title: 'Coupon Discount (${lead.couponDiscount}${lead.couponDiscountType})',
+              amount: '- ₹ ${lead.couponDiscountPrice?.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              context,
+              title: 'Service GST (${lead.gst}%)',
+              amount: '+ ₹ ${lead.serviceGSTPrice?.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              context,
+              title: 'Platform Fee (₹ ${lead.platformFee})',
+              amount: '+ ₹ ${lead.platformFeePrice?.toStringAsFixed(2)}',
+            ),
+            _buildRow(
+              context,
+              title: 'Fetch True Assurity Charges (${lead.assurityfee} %)',
+              amount: '+ ₹ ${lead.assurityChargesPrice?.toStringAsFixed(2)}',
+            ),
+            Divider(thickness: 0.4),
+            _buildRow(
+              context,
+              title: 'Grand Total',
+              amount: '₹ ${lead.totalAmount?.toStringAsFixed(0)}',
+              // amount: '₹ ${formatPrice(lead.totalAmount)}',
+            ),
+          ],
         ),
-        _buildRow(
-          context,
-          title: 'Service GST (${lead.gst}%)',
-          amount: '+ ₹ ${lead.serviceGSTPrice?.toStringAsFixed(2)}',
-        ),
-        _buildRow(
-          context,
-          title: 'Platform Fee (₹ ${lead.platformFee})',
-          amount: '+ ₹ ${lead.platformFeePrice?.toStringAsFixed(2)}',
-        ),
-        _buildRow(
-          context,
-          title: 'Fetch True Assurity Charges (${lead.assurityfee} %)',
-          amount: '+ ₹ ${lead.assurityChargesPrice?.toStringAsFixed(2)}',
-        ),
-        Divider(thickness: 0.4),
-        _buildRow(
-          context,
-          title: 'Grand Total',
-          amount: '₹ ${lead.totalAmount?.toStringAsFixed(0)}',
-          // amount: '₹ ${formatPrice(lead.totalAmount)}',
-        ),
-      ],
-    ),
+      ),
+    ],
   );
+}
+
+Widget _extraService(BuildContext context, ExtraServiceModel extraService){
+  return CustomContainer(
+      margin: EdgeInsets.zero,
+      color: CustomColor.whiteColor,
+      border: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Extra Service', style: textStyle12(context, color: Colors.grey.shade600),),
+          Text(extraService.serviceName, style: textStyle12(context),),
+
+          10.height,
+
+          Column(
+            spacing: 10,
+            children: [
+              _buildRow(
+                context,
+                title: 'Listing Price',
+                amount: '₹ ${extraService.price.toStringAsFixed(2)}',
+              ),
+
+              _buildRow(
+                context,
+                title: 'Discount (${extraService.discount})',
+                amount: '₹ ${extraService.total.toStringAsFixed(2)}',
+              ),
+            ],
+          ),
+          10.height,
+
+          Row(
+            children: [
+              Text('You Will Earn Commission', style: textStyle12(context, color: CustomColor.appColor),),
+              10.width,
+              Text(extraService.commission,style: textStyle12(context),),
+            ],
+          ),
+        ],
+      ),
+    );
 }
 
 Widget _buildRow(BuildContext context, {required String title, required String amount,}){

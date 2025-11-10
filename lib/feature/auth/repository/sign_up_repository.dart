@@ -36,32 +36,3 @@ class SignUpRepository {
     }
   }
 }
-
-
-// class SignUpRepository {
-//   Future<Response> registerUser({
-//     required String fullName,
-//     required String email,
-//     required String mobileNumber,
-//     required String password,
-//     required String referredBy,
-//     required bool isAgree,
-//   }) async {
-//     try {
-//       final response = await OldApiClient.dio.post(
-//         ApiUrls.signUp,
-//         data: {
-//           "fullName": fullName,
-//           "email": email,
-//           "mobileNumber": mobileNumber,
-//           "password": password,
-//           "referredBy": referredBy,
-//           "isAgree": isAgree,
-//         },
-//       );
-//       return response;
-//     } on DioException catch (e) {
-//       throw e.response?.data['error'] ?? "Something went wrong";
-//     }
-//   }
-// }

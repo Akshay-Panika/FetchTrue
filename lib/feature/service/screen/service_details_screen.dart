@@ -155,8 +155,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          final serviceId =
-                          services.isNotEmpty ? services.first.id : null;
+                          final serviceId = services.isNotEmpty ? services.first.id : null;
                           if (serviceId == null) {
                             showCustomToast('Please wait, data is loading.');
                             return;
@@ -174,13 +173,12 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                                 builder: (context) => CheckoutScreen(
                                   serviceId: serviceId,
                                   providerId: providerId,
-                                  status: 'inService',
+                                  status: 'default',
                                 ),
                               ),
                             );
                           } else if (providerState is ProvidersLoaded) {
-                            showCustomBottomSheet(context,
-                                serviceId: serviceId);
+                            showCustomBottomSheet(context, serviceId: serviceId);
                           } else {
                             showCustomToast('Please wait data is loading.');
                           }

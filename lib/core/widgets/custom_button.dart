@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-
 import '../costants/custom_color.dart';
-
 
 class CustomButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final FutureOr<void> Function()? onPressed; // ✅ async & sync दोनों चलेगा
   final Color? buttonColor;
   final Color? textColor;
   final bool isLoading;
@@ -28,23 +27,42 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: isLoading ? null : onPressed,
+      onTap: isLoading
+          ? null
+          : () async {
+        if (onPressed != null) {
+          await onPressed!(); // ✅ async-safe
+        }
+      },
+      borderRadius: BorderRadius.circular(8.0),
       child: Container(
         height: height,
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: buttonColor ?? CustomColor.appColor,
+          color: isLoading
+              ? (buttonColor ?? CustomColor.appColor).withOpacity(0.7)
+              : (buttonColor ?? CustomColor.appColor),
           borderRadius: BorderRadius.circular(8.0),
         ),
-        padding: padding,
+        padding: padding ?? const EdgeInsets.symmetric(vertical: 10),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
           height: 25,
           width: 25,
-          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.3),
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2.3,
+          ),
         )
-            : Text(label, style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: textColor?? CustomColor.whiteColor),),
+            : Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: textColor ?? CustomColor.whiteColor,
+          ),
+        ),
       ),
     );
   }

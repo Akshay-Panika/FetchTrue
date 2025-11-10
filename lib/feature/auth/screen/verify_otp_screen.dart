@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:fetchtrue/core/costants/custom_log_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
@@ -44,11 +43,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       setState(() {
         _isButtonEnabled = _otpController.text.trim().length == 6;
       });
-    });
-
-    // OTP automatically fill के लिए Firebase callback
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _sendOtpWithAutoFill();
     });
   }
 

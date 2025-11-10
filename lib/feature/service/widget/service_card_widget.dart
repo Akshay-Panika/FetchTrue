@@ -9,6 +9,7 @@ import '../../../core/widgets/custom_network_mage.dart';
 import '../../../core/widgets/formate_price.dart';
 import '../../favorite/widget/favorite_service_button_widget.dart';
 import '../model/service_model.dart';
+import '../screen/service_details_screen.dart';
 
 class ServiceCardWidget extends StatelessWidget {
   final ServiceModel data;
@@ -149,7 +150,10 @@ class ServiceCardWidget extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () => context.push('/service/${data.id}', extra: providerId),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: providerId),));
+      },
+      // onTap: () => context.push('/service/${data.id}', extra: providerId),
     );
   }
 }

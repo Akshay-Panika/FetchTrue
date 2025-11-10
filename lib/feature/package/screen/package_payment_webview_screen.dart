@@ -42,11 +42,7 @@ class _PackagePaymentWebViewScreenState
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Complete Payment"),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-      ),
+
       body: SafeArea(
         child: Stack(
           children: [

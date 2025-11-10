@@ -773,149 +773,148 @@ Future<bool?> showActivateBottomSheet(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (bottomSheetContext) {
-      return BlocConsumer<PackagePaymentBloc, PackagePaymentState>(
-        listener: (context, state) async {
-          if (state is PackagePaymentSuccess) {
-            final paymentUrl = state.response.result?.paymentLink ?? "";
-            if (paymentUrl.isNotEmpty) {
-              Navigator.of(bottomSheetContext, rootNavigator: true).pop();
-              paymentSuccess = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PackagePaymentWebViewScreen(paymentUrl: paymentUrl),
-                ),
-              );
-              if (paymentSuccess == true && context.mounted) {
-                final userSession = Provider.of<UserSession>(context, listen: false);
-                context.read<UserBloc>().add(GetUserById(userSession.userId!));
-                context.read<PackageBloc>().add(FetchPackages());
-                context.read<FiveXBloc>().add(FetchFiveX());
-                context.read<ReferralBloc>().add(LoadReferrals(userSession.userId!));
-                context.read<MyTeamBloc>().add(FetchMyTeam(userSession.userId!));
+      return BlocProvider.value(
+        value: context.read<PackagePaymentBloc>(),
+        child: BlocConsumer<PackagePaymentBloc, PackagePaymentState>(
+          listener: (context, state) async {
+            if (state is PackagePaymentSuccess) {
+              final paymentUrl = state.response.result?.paymentLink ?? "";
+              if (paymentUrl.isNotEmpty) {
+                Navigator.of(bottomSheetContext, rootNavigator: true).pop();
+                paymentSuccess = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PackagePaymentWebViewScreen(paymentUrl: paymentUrl),
+                  ),
+                );
+                if (paymentSuccess == true && context.mounted) {
+                  final userSession = Provider.of<UserSession>(context, listen: false);
+                  context.read<UserBloc>().add(GetUserById(userSession.userId!));
+                  context.read<PackageBloc>().add(FetchPackages());
+                  context.read<FiveXBloc>().add(FetchFiveX());
+                  context.read<ReferralBloc>().add(LoadReferrals(userSession.userId!));
+                  context.read<MyTeamBloc>().add(FetchMyTeam(userSession.userId!));
+                }
               }
-            }
-          } else if (state is PackagePaymentFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("❌ Error: ${state.error}")),
-            );
-          }
-        },
-        builder: (context, state) {
-          final totalAmount = package.discountedPrice + package.deposit;
-          final halfAmount = totalAmount / 2;
-
-          return ValueListenableBuilder<String>(
-            valueListenable: selectedOptionNotifier,
-            builder: (context, selectedOption, _) {
-              final subAmount =
-              selectedOption == "full" ? totalAmount : halfAmount;
-
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                  top: 20,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Amount: ₹ ${formatPrice(totalAmount)}',
-                        style: textStyle16(context)),
-                    15.height,
-                    Text('Select Payment Option',
-                        style: textStyle12(
-                            context, color: CustomColor.descriptionColor)),
-                    CustomContainer(
-                      border: true,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _radioOption(
-                            context,
-                            title: "Full Payment",
-                            amount: formatPrice(totalAmount),
-                            value: "full",
-                            groupValue: selectedOption,
-                            onChanged: (v) => selectedOptionNotifier.value = v!,
-                          ),
-                          _radioOption(
-                            context,
-                            title: "Half Payment",
-                            amount: formatPrice(halfAmount),
-                            value: "half",
-                            groupValue: selectedOption,
-                            onChanged: (v) => selectedOptionNotifier.value = v!,
-                          ),
-                        ],
-                      ),
-                    ),
-                    20.height,
-                    if (state is PackagePaymentLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: () => Navigator.pop(context),
-                              child: Center(
-                                child: Text(
-                                  'Cancel',
-                                  style: textStyle14(context,
-                                      color: CustomColor.redColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: CustomContainer(
-                              color: CustomColor.appColor,
-                              padding:
-                              const EdgeInsets.symmetric(vertical: 8),
-                              onTap: () {
-                                final orderId =
-                                    "package_${DateTime.now().millisecondsSinceEpoch}";
-                                final model = PackageBuyPaymentModel(
-                                  subAmount: subAmount.round(),
-                                  isPartialPaymentAllowed:
-                                  selectedOption == "half",
-                                  description: "Fetch True Payment",
-                                  orderId: orderId,
-                                  customer: Customer(
-                                    customerId: user.id,
-                                    customerName: user.fullName,
-                                    customerEmail: user.email,
-                                    customerPhone: user.mobileNumber,
-                                  ),
-                                  udf: Udf(
-                                    udf1: orderId,
-                                    udf2: '',
-                                    udf3: user.id,
-                                  ),
-                                );
-
-                                context.read<PackagePaymentBloc>().add(
-                                    CreatePaymentLinkEvent(model));
-                              },
-                              child: Center(
-                                child: Text(
-                                  'Proceed to Pay',
-                                  style: textStyle14(context,
-                                      color: CustomColor.whiteColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
+            } else if (state is PackagePaymentFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("❌ Error: ${state.error}")),
               );
-            },
-          );
-        },
+            }
+          },
+          builder: (context, state) {
+            final totalAmount = package.discountedPrice + package.deposit;
+            final halfAmount = totalAmount / 2;
+        
+            return ValueListenableBuilder<String>(
+              valueListenable: selectedOptionNotifier,
+              builder: (context, selectedOption, _) {
+                final subAmount =
+                selectedOption == "full" ? totalAmount : halfAmount;
+        
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                    top: 20,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Amount: ₹ ${formatPrice(totalAmount)}',
+                          style: textStyle16(context)),
+                      15.height,
+                      Text('Select Payment Option',
+                          style: textStyle12(
+                              context, color: CustomColor.descriptionColor)),
+                      CustomContainer(
+                        border: true,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _radioOption(
+                              context,
+                              title: "Full Payment",
+                              amount: formatPrice(totalAmount),
+                              value: "full",
+                              groupValue: selectedOption,
+                              onChanged: (v) => selectedOptionNotifier.value = v!,
+                            ),
+                            _radioOption(
+                              context,
+                              title: "Half Payment",
+                              amount: formatPrice(halfAmount),
+                              value: "half",
+                              groupValue: selectedOption,
+                              onChanged: (v) => selectedOptionNotifier.value = v!,
+                            ),
+                          ],
+                        ),
+                      ),
+                      20.height,
+                      if (state is PackagePaymentLoading)
+                        const Center(child: CircularProgressIndicator())
+                      else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Center(
+                                  child: Text(
+                                    'Cancel',
+                                    style: textStyle14(context,
+                                        color: CustomColor.redColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: CustomContainer(
+                                color: CustomColor.appColor,
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 8),
+                                onTap: () {
+                                  final orderId =
+                                      "package_${DateTime.now().millisecondsSinceEpoch}";
+                                  final model = PackageBuyPaymentModel(
+                                    subAmount: subAmount.round(),
+                                    isPartialPaymentAllowed:
+                                    selectedOption == "half",
+                                    description: "Fetch True Payment",
+                                    orderId: orderId,
+                                    customer: Customer(
+                                      customerId: user.id,
+                                      customerName: user.fullName,
+                                      customerEmail: user.email,
+                                      customerPhone: user.mobileNumber,
+                                    ),
+                                    udf: Udf(
+                                      udf1: orderId,
+                                      udf2: '',
+                                      udf3: user.id,
+                                    ),
+                                  );
+        
+                                  context.read<PackagePaymentBloc>().add(CreatePaymentLinkEvent(model));
+                                },
+                                child: Center(
+                                  child: Text('Proceed to Pay',
+                                    style: textStyle14(context, color: CustomColor.whiteColor),),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
       );
     },
   );

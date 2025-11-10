@@ -39,110 +39,121 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       return _profileCard();
     }
 
-    return CustomContainer(
-      color: CustomColor.whiteColor,
-      padding: EdgeInsets.zero,
-      child: BlocBuilder<UserBloc, UserState>(
-        builder: (context, state) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
 
-          if (state is UserInitial) {
-            context.read<UserBloc>().add(GetUserById(userSession.userId!));
-            return   _buildShimmerEffect();
-          }
-          else if(state is UserLoading){
-            return   _buildShimmerEffect();
-          }
-          else if (state is UserLoaded) {
-            final user = state.user;
-            return Stack(
+        if (state is UserInitial) {
+          context.read<UserBloc>().add(GetUserById(userSession.userId!));
+          return   _buildShimmerEffect();
+        }
+        else if(state is UserLoading){
+          return   _buildShimmerEffect();
+        }
+        else if (state is UserLoaded) {
+          final user = state.user;
+          return Container(
+            color: CustomColor.canvasColor,
+            child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
 
-                      Row(
+                    ListTile(
+                      contentPadding: EdgeInsets.only(top: 10,left: 10),
+                      leading:  CircleAvatar(
+                        radius: 35,
+                          backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                          backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
+                              ? NetworkImage(user.profilePhoto!)
+                              : AssetImage(CustomImage.nullImage),
+                        ),
+                      title:  Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 35,
-                            backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                            backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
-                                ? NetworkImage(user.profilePhoto!)
-                                : AssetImage(CustomImage.nullImage),
+                          Text('${user.fullName}', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                          Text('${user.email}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                          Text('ID: ${user.userId}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                        ],
+                      ),
+                    ),
 
-                          ),
-                         10.width,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                    CustomContainer(
+                      color: CustomColor.whiteColor,
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Text('${user.fullName}', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                              Text('${user.email}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                              Text('ID: ${user.userId}', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                              Text('Account Info'),
+                              10.width,
+                              Icon(Icons.visibility, size: 20,)
+                            ],
+                          ),
+
+
+                          Divider(),
+
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildStatus(icon:CupertinoIcons.calendar,
+                                value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
+                                    ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
+                                    ? user.createdAt as DateTime
+                                    : DateTime.parse(user.createdAt.toString()))
+                                    : 'Not available',
+                                valueType: 'Joining date',
+                              ),
+
+                              Container(width: 1,height: 35,color: Colors.grey.shade500,),
+
+                              BlocBuilder<LeadBloc, LeadState>(
+                                builder: (context, state) {
+                                  if (state is LeadLoading) {
+                                    return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                                  } else if (state is LeadLoaded) {
+                                    final allLeads = state.allLeads ?? [];
+                                    final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
+
+
+                                    return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '${completedLeads.length}', valueType: 'Lead Completed');
+
+                                  } else if (state is LeadError) {
+                                    return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                                  }
+                                  return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
+                                },
+                              ),
+
+                              Container(width: 1,height: 35,color: Colors.grey.shade500,),
+
+                              BlocProvider(
+                                create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
+                                child: BlocBuilder<WalletBloc, WalletState>(
+                                  builder: (context, state) {
+                                    if (state is WalletLoading) {
+                                      return  _buildStatus(icon: Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
+                                    } else if (state is WalletLoaded) {
+                                      final wallet = state.wallet;
+                                      return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
+                                    } else if (state is WalletError) {
+                                      return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
+                                    }
+                                    return const SizedBox();
+                                  },
+                                ),
+                              ),
+
                             ],
                           ),
                         ],
                       ),
-                      const Divider(),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildStatus(icon:CupertinoIcons.calendar,
-                            value: (user.createdAt != null && user.createdAt.toString().isNotEmpty)
-                                ? DateFormat('dd MMM yyyy').format(user.createdAt is DateTime
-                                ? user.createdAt as DateTime
-                                : DateTime.parse(user.createdAt.toString()))
-                                : 'Not available',
-                            valueType: 'Joining date',
-                          ),
-
-                          Container(width: 1,height: 35,color: Colors.grey.shade500,),
-
-                          BlocBuilder<LeadBloc, LeadState>(
-                            builder: (context, state) {
-                              if (state is LeadLoading) {
-                                 return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                              } else if (state is LeadLoaded) {
-                                final allLeads = state.allLeads ?? [];
-                                final completedLeads = allLeads.where((e) => e.isCompleted == true).toList();
-
-
-                                return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '${completedLeads.length}', valueType: 'Lead Completed');
-
-                              } else if (state is LeadError) {
-                                return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                              }
-                              return  _buildStatus(icon:Icons.check_circle_outline_outlined,value: '00', valueType: 'Lead Completed');
-                            },
-                          ),
-
-                          Container(width: 1,height: 35,color: Colors.grey.shade500,),
-
-                          BlocProvider(
-                            create: (_) => WalletBloc(WalletRepository())..add(FetchWalletByUserId(userSession.userId!)),
-                            child: BlocBuilder<WalletBloc, WalletState>(
-                              builder: (context, state) {
-                                if (state is WalletLoading) {
-                                 return  _buildStatus(icon: Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
-                                } else if (state is WalletLoaded) {
-                                  final wallet = state.wallet;
-                                  return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '${wallet.balance == 0? 0 :wallet.balance}', valueType: 'Total Earning');
-                                } else if (state is WalletError) {
-                                  return  _buildStatus(icon:Icons.currency_rupee_outlined,value: '00', valueType: 'Total Earning');
-                                }
-                                return const SizedBox();
-                              },
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),],
                 ),
                 Positioned(
-                    top: 0,right: 0,
+                    top: 20,right: 0,
                     child: InkWell(
                   onTap: () {
                     Navigator.push(
@@ -158,8 +169,8 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       color: CustomColor.appColor,
                       border: Border.all(color: CustomColor.appColor, width: 0.5),
                       borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
                       ),
                     ),
                     child:  Row(
@@ -172,62 +183,15 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                   ),
                 ))
               ],
-            );
-          } else if (state is UserError) {
-            print('Error: ${state.massage}');
-            return Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+            ),
+          );
 
-                  // Profile Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 35,
-                            backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                            backgroundImage:  AssetImage(CustomImage.nullImage),
-                          ),
-                          10.width,
-
-                          // Name & Email
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                              Text('guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                              Text('#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const Divider(),
-
-                  // Status Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildStatus(icon: CupertinoIcons.calendar,value:  '00', valueType: 'Joining date'),
-                      Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                      _buildStatus(icon:Icons.check_circle_outline_outlined,value:  '00', valueType: 'Lead Completed'),
-                      Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                      _buildStatus(icon: Icons.currency_rupee_outlined,value:  '00', valueType: 'Total Earning'),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }
+        } else if (state is UserError) {
+          print('Error: ${state.massage}');
           return SizedBox.shrink();
-        },
-      ),
+        }
+        return SizedBox.shrink();
+      },
     );
   }
 
@@ -242,58 +206,57 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     String? lead,
     String? earning,
   }) {
-    return CustomContainer(
-      color: CustomColor.whiteColor,
-      // margin: EdgeInsets.zero,
-      // padding: EdgeInsets.zero,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-      
-          // Profile Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top:10.0,left: 10),
+          child: ListTile(
+            leading:  CircleAvatar(
+              radius: 35,
+              backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+              backgroundImage: profile != null && profile.isNotEmpty
+                  ? NetworkImage(profile) as ImageProvider
+                  : AssetImage(CustomImage.nullImage),
+            ),
+            title:  Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name ?? 'Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                Text(email ?? 'guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                Text(id ?? '#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+              ],
+            ),
+          ),
+        ),
+
+        // Status Row
+        CustomContainer(
+          color: CustomColor.whiteColor,
+          child: Column(
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 35,
-                    backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-                    backgroundImage: profile != null && profile.isNotEmpty
-                        ? NetworkImage(profile) as ImageProvider
-                        : AssetImage(CustomImage.nullImage),
-                  ),
-                 10.width,
-      
-                  // Name & Email
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(name ?? 'Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                      Text(email ?? 'guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                      Text(id ?? '#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                    ],
-                  ),
+                  Text('Account Info'),
+                  10.width,
+                  Icon(Icons.visibility, size: 20,)
+                ],
+              ),
+              10.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
+                  Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                  _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
+                  Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                  _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
                 ],
               ),
             ],
           ),
-      
-          const Divider(),
-      
-          // Status Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
-              Container(width: 1,height: 35,color: Colors.grey.shade500,),
-              _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
-              Container(width: 1,height: 35,color: Colors.grey.shade500,),
-              _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

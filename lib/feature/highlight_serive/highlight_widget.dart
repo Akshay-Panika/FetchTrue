@@ -37,7 +37,8 @@ class _HighlightServiceWidgetState extends State<HighlightServiceWidget> {
         builder: (context, state) {
           if (state is AdsLoading) {
             return _adsShimmer(dimensions);
-          } else if (state is AdsLoaded) {
+          }
+          else if (state is AdsLoaded) {
             // final adsList = state.ads.data;
 
             final adsList = state.ads.where((moduleService) =>

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/custom_image.dart';
 import '../../../core/costants/dimension.dart';
@@ -12,19 +12,43 @@ import '../../../helper/Contact_helper.dart';
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
 
-  /// 📧 In-App Email Send Function
-  Future<void> _sendEmail() async {
-    final Email email = Email(
-      body: 'Hello FetchTrue Team,',
-      subject: 'Support Request',
-      recipients: ['info@fetchtrue.com'],
-      isHTML: false,
+  /// 📧 Open Gmail app if available, else open Gmail web
+  Future<void> _openEmail(BuildContext context) async {
+    const String email = 'info@fetchtrue.com';
+    const String subject = 'Support Request';
+    const String body = 'Hello FetchTrue Team,';
+
+    final Uri gmailWebUri = Uri.parse(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=$subject&body=$body',
     );
 
     try {
-      await FlutterEmailSender.send(email);
+      // Gmail app intent (works even if mailto fails)
+      final androidGmailUri = Uri(
+        scheme: 'mailto',
+        path: email,
+        query: 'subject=$subject&body=$body',
+      );
+
+      // 🔹 Try opening Gmail app explicitly
+      bool launched = await launchUrl(
+        androidGmailUri,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!launched) {
+        // 🔸 If app not opened, open Gmail Web fallback
+        await launchUrl(gmailWebUri, mode: LaunchMode.externalApplication);
+      }
     } catch (e) {
-      debugPrint("Error sending email: $e");
+      debugPrint("Error launching Gmail: $e");
+      try {
+        await launchUrl(gmailWebUri, mode: LaunchMode.externalApplication);
+      } catch (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to open email.')),
+        );
+      }
     }
   }
 
@@ -53,7 +77,7 @@ class HelpSupportScreen extends StatelessWidget {
                 style: textStyle12(context, color: CustomColor.descriptionColor),
               ),
               InkWell(
-                onTap: _sendEmail,
+                onTap: () => _openEmail(context),
                 child: Text(
                   'info@fetchtrue.com',
                   style: textStyle14(context, color: CustomColor.appColor),
@@ -86,7 +110,7 @@ class HelpSupportScreen extends StatelessWidget {
                   Expanded(
                     child: CustomContainer(
                       color: CustomColor.appColor.withOpacity(0.2),
-                      onTap: _sendEmail,
+                      onTap: () => _openEmail(context),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -120,7 +144,7 @@ class HelpSupportScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

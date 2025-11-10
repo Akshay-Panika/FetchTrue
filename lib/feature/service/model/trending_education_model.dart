@@ -1,3 +1,22 @@
+// trending_education_model.dart
+// ✅ Safe and optimized model (int/double conversion handled)
+
+int _toInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  if (value is double) return value.toInt();
+  if (value is String) return int.tryParse(value) ?? 0;
+  return 0;
+}
+
+double _toDouble(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  if (value is String) return double.tryParse(value) ?? 0.0;
+  return 0.0;
+}
+
 class TrendingEducationModel {
   final String id;
   final String moduleId;
@@ -25,7 +44,7 @@ class TrendingEducationModel {
       isTrending: json["isTrending"] ?? false,
       createdAt: json["createdAt"] ?? "",
       updatedAt: json["updatedAt"] ?? "",
-      v: json["__v"] ?? 0,
+      v: _toInt(json["__v"]),
     );
   }
 
@@ -100,29 +119,30 @@ class ServiceId {
   factory ServiceId.fromJson(Map<String, dynamic> json) {
     return ServiceId(
       serviceDetails: ServiceDetails.fromJson(json["serviceDetails"] ?? {}),
-      franchiseDetails: FranchiseDetails.fromJson(json["franchiseDetails"] ?? {}),
+      franchiseDetails:
+      FranchiseDetails.fromJson(json["franchiseDetails"] ?? {}),
       id: json["_id"] ?? "",
       serviceName: json["serviceName"] ?? "",
       category: json["category"] ?? "",
       subcategory: json["subcategory"] ?? "",
-      price: json["price"] ?? 0,
-      discount: json["discount"] ?? 0,
-      gst: json["gst"] ?? 0,
+      price: _toInt(json["price"]),
+      discount: _toInt(json["discount"]),
+      gst: _toInt(json["gst"]),
       includeGst: json["includeGst"] ?? false,
-      gstInRupees: json["gstInRupees"] ?? 0,
-      totalWithGst: json["totalWithGst"] ?? 0,
-      discountedPrice: json["discountedPrice"] ?? 0,
+      gstInRupees: _toInt(json["gstInRupees"]),
+      totalWithGst: _toInt(json["totalWithGst"]),
+      discountedPrice: _toInt(json["discountedPrice"]),
       thumbnailImage: json["thumbnailImage"] ?? "",
       bannerImages: List<String>.from(json["bannerImages"] ?? []),
       tags: List<String>.from(json["tags"] ?? []),
       keyValues: json["keyValues"] ?? [],
-      averageRating: (json["averageRating"] ?? 0).toDouble(),
-      totalReviews: json["totalReviews"] ?? 0,
+      averageRating: _toDouble(json["averageRating"]),
+      totalReviews: _toInt(json["totalReviews"]),
       recommendedServices: json["recommendedServices"] ?? false,
       isDeleted: json["isDeleted"] ?? false,
       createdAt: json["createdAt"] ?? "",
       updatedAt: json["updatedAt"] ?? "",
-      v: json["__v"] ?? 0,
+      v: _toInt(json["__v"]),
       providerPrices: (json["providerPrices"] as List<dynamic>? ?? [])
           .map((e) => ProviderPrice.fromJson(e))
           .toList(),
@@ -302,7 +322,7 @@ class ProviderPrice {
       provider: json["provider"] ?? "",
       providerMRP: json["providerMRP"] ?? "",
       providerDiscount: json["providerDiscount"] ?? "",
-      providerPrice: json["providerPrice"] ?? 0,
+      providerPrice: _toInt(json["providerPrice"]),
       providerCommission: json["providerCommission"] ?? "",
       status: json["status"] ?? "",
       id: json["_id"] ?? "",
