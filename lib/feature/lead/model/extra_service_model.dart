@@ -21,8 +21,31 @@ class ExtraServiceModel {
       price: (json['price'] ?? 0).toDouble(),
       discount: (json['discount'] ?? 0).toDouble(),
       total: (json['total'] ?? 0).toDouble(),
-      commission: json['commission'] ?? '',
+      commission: json['commission']?.toString() ?? '',
       isLeadApproved: json['isLeadApproved'] ?? false,
+    );
+  }
+}
+
+/// 🔹 New Parent Model for API response
+class ExtraServiceResponse {
+  final bool isAdminApproved;
+  final List<ExtraServiceModel> services;
+
+  ExtraServiceResponse({
+    required this.isAdminApproved,
+    required this.services,
+  });
+
+  factory ExtraServiceResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? {};
+    final List<dynamic> extraServiceList = data['extraService'] ?? [];
+
+    return ExtraServiceResponse(
+      isAdminApproved: data['isAdminApproved'] ?? false,
+      services: extraServiceList
+          .map((item) => ExtraServiceModel.fromJson(item))
+          .toList(),
     );
   }
 }

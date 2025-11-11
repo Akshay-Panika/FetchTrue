@@ -19,6 +19,7 @@ import '../../delete_account/screen/delete_account_screen.dart';
 import '../../favorite/screen/favorite_screen.dart';
 import '../../help_support/screen/help_support_screen.dart';
 import '../../internet/network_wrapper_screen.dart';
+import '../../my_wallet/screen/wallet_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
@@ -27,7 +28,6 @@ import '../../profile/screen/profile_screen.dart';
 import '../../provider/screen/provider_screen.dart';
 import '../../settings/screen/setting_screen.dart';
 import '../../team_build/screen/team_build_screen.dart';
-import '../../wallet/screen/wallet_screen.dart';
 
 
 class MoreScreen extends StatefulWidget {
@@ -96,7 +96,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                                child: Column(
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
-                                   Text('Description', style: textStyle12(context, color: Colors.grey.shade600),),
+                                   Text('Active Your Package', style: textStyle12(context, color: Colors.grey.shade600),),
                                    CustomContainer(
                                        margin: EdgeInsets.only(top: 5),
                                        color: CustomColor.appColor,

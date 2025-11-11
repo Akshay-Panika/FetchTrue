@@ -1,15 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/text_style.dart';
-import '../../../core/widgets/custom_amount_text.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/repository/wallet_repository.dart';
+import '../../my_wallet/bloc/wallet/wallet_bloc.dart';
+import '../../my_wallet/bloc/wallet/wallet_event.dart';
+import '../../my_wallet/bloc/wallet/wallet_state.dart';
+import '../../my_wallet/repository/wallet_repository.dart';
 
 class WalletCardWidget extends StatefulWidget {
   final String userId;

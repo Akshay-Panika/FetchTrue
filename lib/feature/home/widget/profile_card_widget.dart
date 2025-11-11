@@ -2,7 +2,6 @@ import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/widgets/custom_container.dart';
 import 'package:fetchtrue/feature/banner/widget/home_banner_widget.dart';
 import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
-import 'package:fetchtrue/feature/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +15,11 @@ import '../../../core/widgets/shimmer_box.dart';
 import '../../address/address_notifier.dart';
 import '../../address/screen/address_picker_screen.dart';
 import '../../auth/user_notifier/user_notifier.dart';
+import '../../my_wallet/bloc/wallet/wallet_bloc.dart';
+import '../../my_wallet/bloc/wallet/wallet_event.dart';
+import '../../my_wallet/bloc/wallet/wallet_state.dart';
+import '../../my_wallet/repository/wallet_repository.dart';
+import '../../my_wallet/screen/wallet_screen.dart';
 import '../../notification/screen/notification_screen.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
@@ -24,10 +28,7 @@ import '../../team_build/bloc/my_team/my_team_bloc.dart';
 import '../../team_build/bloc/my_team/my_team_event.dart';
 import '../../team_build/bloc/my_team/my_team_state.dart';
 import '../../team_build/repository/my_team_repository.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/repository/wallet_repository.dart';
+
 
 class CustomHomeSliverAppbarWidget extends StatefulWidget {
   final double searchBarHeight;

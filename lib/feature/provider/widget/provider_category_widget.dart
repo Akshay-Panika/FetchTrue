@@ -44,27 +44,6 @@ class _ProviderCategoryWidgetState extends State<ProviderCategoryWidget> {
 }
 
 /// StickyHeaderDelegate
-// class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-//   final Widget child;
-//   _StickyHeaderDelegate({required this.child});
-//
-//   @override
-//   double get minExtent => 100;
-//
-//   @override
-//   double get maxExtent => 100;
-//
-//   @override
-//   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-//     return Container(
-//       color: CustomColor.whiteColor,
-//       child: child,
-//     );
-//   }
-//
-//   @override
-//   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
-// }
 class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   _StickyHeaderDelegate({required this.child});
@@ -214,15 +193,7 @@ class _ProviderListStatic extends StatelessWidget {
           if (providers.isEmpty) {
             // 🔧 Fix here:
             return const SliverToBoxAdapter(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text(
-                    "No providers found.",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ),
+              child: SizedBox.shrink(),
             );
           }
 

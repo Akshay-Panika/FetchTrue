@@ -16,11 +16,11 @@ import '../../checkout/bloc/payu_gateway/payu_gateway_bloc.dart';
 import '../../checkout/model/payu_gateway_model.dart';
 import '../../checkout/repository/payu_gateway_repository.dart';
 import '../../checkout/screen/payu_open_in_app_view_screen.dart';
+import '../../my_wallet/bloc/wallet/wallet_bloc.dart';
+import '../../my_wallet/bloc/wallet/wallet_event.dart';
+import '../../my_wallet/bloc/wallet/wallet_state.dart';
+import '../../my_wallet/repository/wallet_repository.dart';
 import '../../profile/model/user_model.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/repository/wallet_repository.dart';
 import '../bloc/extra_service/extra_service_bloc.dart';
 import '../bloc/extra_service/extra_service_event.dart';
 import '../bloc/extra_service/extra_service_state.dart';
@@ -74,6 +74,7 @@ class LeadsDetailsWidget extends StatelessWidget {
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
                 /// Payment status card
+                if(lead.orderStatus == 'cancel')
                 _buildPaymentStatus(context, lead, user),
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
@@ -82,29 +83,64 @@ class LeadsDetailsWidget extends StatelessWidget {
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
              BlocProvider(
-                 create: (_) => ExtraServiceBloc(ExtraServiceRepository())..add(FetchExtraServiceEvent(leadId)),
-             child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
-                      builder: (context, state) {
-                        if (state is ExtraServiceLoading) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        else if (state is ExtraServiceLoaded) {
-                          if (state.services.isEmpty) {
-                            return SizedBox.shrink();
-                          }
-                          final extraService = state.services.first;
+               create: (_) => ExtraServiceBloc(ExtraServiceRepository())
+                 ..add(FetchExtraServiceEvent(leadId)),
+               child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
+                 builder: (context, state) {
+                   if (state is ExtraServiceLoading) {
+                     return const Center(child: CircularProgressIndicator());
+                   }
 
-                          return  _extraService(context, extraService);
+                   if (state is ExtraServiceLoaded) {
+                     if (state.services.isEmpty) return const SizedBox.shrink();
 
-                        }
-                        else if (state is ExtraServiceError) {
-                          debugPrint(state.message);
-                          return const SizedBox.shrink();
-                        }
-                        return const SizedBox.shrink();
-                      }
-                  ),
-                ),
+                     final extraService = state.services.first;
+
+                     if (state.isAdminApproved) {
+                       return _extraService(context, extraService);
+                     } else {
+                       return const Text("Admin approval pending...");
+                     }
+
+                   }
+
+                   if (state is ExtraServiceError) {
+                     debugPrint(state.message);
+                     return const SizedBox.shrink();
+                   }
+
+                   return const SizedBox.shrink();
+                 },
+               ),
+             ),
+
+             // BlocProvider(
+                 //     create: (_) => ExtraServiceBloc(ExtraServiceRepository())..add(FetchExtraServiceEvent(leadId)),
+                 // child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
+                 //          builder: (context, state) {
+                 //            if (state is ExtraServiceLoading) {
+                 //              return const Center(child: CircularProgressIndicator());
+                 //            }
+                 //            else if (state is ExtraServiceLoaded) {
+                 //              if (state.services.isEmpty) {
+                 //                return SizedBox.shrink();
+                 //              }
+                 //              final extraService = state.services.first;
+                 //
+                 //              if(extraService.isLeadApproved == true){
+                 //                return  _extraService(context, extraService);
+                 //              }
+                 //              return SizedBox.shrink();
+                 //
+                 //            }
+                 //            else if (state is ExtraServiceError) {
+                 //              debugPrint(state.message);
+                 //              return const SizedBox.shrink();
+                 //            }
+                 //            return const SizedBox.shrink();
+                 //          }
+                 //      ),
+                 //    ),
                 50.height
               ],
             ),
@@ -186,7 +222,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
             ),
 
             /// Pay Now Button
-            if (status == 'unpaid')
+            if (status == 'unpaid' && status == 'cancel')
               Column(
                 children: [
                   const Divider(),

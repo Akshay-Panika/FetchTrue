@@ -12,11 +12,15 @@ class ExtraServiceLoading extends ExtraServiceState {}
 
 class ExtraServiceLoaded extends ExtraServiceState {
   final List<ExtraServiceModel> services;
+  final bool isAdminApproved;
 
-  ExtraServiceLoaded(this.services);
+  ExtraServiceLoaded({
+    required this.services,
+    required this.isAdminApproved,
+  });
 
   @override
-  List<Object?> get props => [services];
+  List<Object?> get props => [services, isAdminApproved];
 }
 
 class ExtraServiceError extends ExtraServiceState {

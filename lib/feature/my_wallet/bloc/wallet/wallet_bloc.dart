@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/wallet_repository.dart';
 import 'wallet_event.dart';
 import 'wallet_state.dart';
-import '../repository/wallet_repository.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository walletRepository;

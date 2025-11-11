@@ -12,14 +12,15 @@ import '../../../core/widgets/custom_container.dart';
 import '../../auth/user_notifier/user_notifier.dart';
 import '../../lead/bloc/lead/lead_bloc.dart';
 import '../../lead/bloc/lead/lead_state.dart';
+import '../../my_wallet/bloc/wallet/wallet_bloc.dart';
+import '../../my_wallet/bloc/wallet/wallet_event.dart';
+import '../../my_wallet/bloc/wallet/wallet_state.dart';
+import '../../my_wallet/repository/wallet_repository.dart';
 import '../../package/screen/package_screen.dart';
 import '../../profile/bloc/user/user_bloc.dart';
 import '../../profile/bloc/user/user_event.dart';
 import '../../profile/bloc/user/user_state.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/repository/wallet_repository.dart';
+
 
 class ProfileCardWidget extends StatefulWidget {
   const ProfileCardWidget({super.key,});
@@ -90,8 +91,6 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                               Icon(Icons.visibility, size: 20,)
                             ],
                           ),
-
-
                           Divider(),
 
 

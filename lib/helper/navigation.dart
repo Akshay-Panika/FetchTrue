@@ -12,11 +12,11 @@ import '../feature/category/marketing/screen/marketing_screen.dart';
 import '../feature/category/onboarding/screen/onboarding_screen.dart';
 import '../feature/category/ondemand/screen/ondemand_screen.dart';
 import '../feature/dashboard/screen/dashboard_screen.dart';
+import '../feature/my_wallet/screen/wallet_screen.dart';
 import '../feature/provider/screen/provider__details_screen.dart';
 import '../feature/service/screen/service_details_screen.dart';
 import '../feature/subcategory/screen/subcategory_screen.dart';
 import '../feature/team_build/screen/team_build_screen.dart';
-import '../feature/wallet/screen/wallet_screen.dart';
 
 
 final GoRouter router = GoRouter(

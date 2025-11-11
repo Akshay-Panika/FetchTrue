@@ -13,9 +13,9 @@ import '../../package/bloc/package/package_event.dart';
 import '../../package/bloc/package/package_state.dart';
 import '../../package/model/package_model.dart';
 import '../../package/repository/package_repository.dart';
-import '../bloc/wallet_bloc.dart';
-import '../bloc/wallet_event.dart';
-import '../bloc/wallet_state.dart';
+import '../bloc/wallet/wallet_bloc.dart';
+import '../bloc/wallet/wallet_event.dart';
+import '../bloc/wallet/wallet_state.dart';
 import '../model/wallet_model.dart';
 import '../repository/wallet_repository.dart';
 import 'history_screen.dart';
@@ -71,7 +71,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: Column(
                     children: [
 
-                      _buildStatsCard(context, wallet, package),
+                      _buildStatsCard(context, wallet, package, widget.userId),
                       10.height,
 
                       Container(
@@ -117,7 +117,7 @@ class _WalletScreenState extends State<WalletScreen> {
 }
 
 /// wallet card
-Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel package) {
+Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel package, String userId) {
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -164,7 +164,7 @@ Widget _buildStatsCard(BuildContext context,WalletModel wallet, PackageModel pac
                     color: CustomColor.greenColor
                   ),
 
-                  TextButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionHistoryScreen(),)),
+                  TextButton.icon(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionHistoryScreen(userId: userId,),)),
                       icon: Icon(Icons.history, color: CustomColor.appColor,),
                       label: Text('History', style: textStyle14(context, color: CustomColor.appColor),))
                 ],

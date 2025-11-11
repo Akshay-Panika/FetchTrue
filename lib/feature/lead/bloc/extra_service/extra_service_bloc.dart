@@ -10,8 +10,12 @@ class ExtraServiceBloc extends Bloc<ExtraServiceEvent, ExtraServiceState> {
     on<FetchExtraServiceEvent>((event, emit) async {
       emit(ExtraServiceLoading());
       try {
-        final services = await repository.fetchExtraServices(event.checkoutId);
-        emit(ExtraServiceLoaded(services));
+        final response = await repository.fetchExtraServices(event.checkoutId);
+
+        emit(ExtraServiceLoaded(
+          services: response.services,
+          isAdminApproved: response.isAdminApproved,
+        ));
       } catch (e) {
         emit(ExtraServiceError(e.toString()));
       }

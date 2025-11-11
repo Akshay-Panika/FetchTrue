@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/wallet_model.dart';
+import '../../model/wallet_model.dart';
 
 abstract class WalletState extends Equatable {
   const WalletState();

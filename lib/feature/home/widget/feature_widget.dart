@@ -1,7 +1,6 @@
 import 'package:fetchtrue/core/costants/dimension.dart';
 import 'package:fetchtrue/core/costants/text_style.dart';
 import 'package:fetchtrue/feature/team_build/screen/team_build_screen.dart';
-import 'package:fetchtrue/feature/wallet/screen/wallet_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,15 +8,15 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/widgets/custom_container.dart';
-import '../../../core/widgets/shimmer_box.dart';
+import '../../my_wallet/bloc/wallet/wallet_bloc.dart';
+import '../../my_wallet/bloc/wallet/wallet_event.dart';
+import '../../my_wallet/bloc/wallet/wallet_state.dart';
+import '../../my_wallet/repository/wallet_repository.dart';
 import '../../team_build/bloc/my_team/my_team_bloc.dart';
 import '../../team_build/bloc/my_team/my_team_event.dart';
 import '../../team_build/bloc/my_team/my_team_state.dart';
 import '../../team_build/repository/my_team_repository.dart';
-import '../../wallet/bloc/wallet_bloc.dart';
-import '../../wallet/bloc/wallet_event.dart';
-import '../../wallet/bloc/wallet_state.dart';
-import '../../wallet/repository/wallet_repository.dart';
+
 
 class FeatureWidget extends StatefulWidget {
   final String userId;

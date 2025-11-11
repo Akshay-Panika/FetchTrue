@@ -200,24 +200,24 @@ class _SignInScreenState extends State<SignInScreen> {
                   20.height,
 
 
-                  Row(
-                    children: [
-                      Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
-                      Text('Or Continue with'),
-                      Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
-                    ],
-                  ),
-                  30.height,
-                  Row(
-                    spacing: 50,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.googleIcon, height: 30,)),
-                      // InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.facebookIcon, height: 35,)),
-                      InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.appleIcon, height: 30,)),
-                    ],
-                  )
+                  // Row(
+                  //   children: [
+                  //     Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
+                  //     Text('Or Continue with'),
+                  //     Expanded(child: CustomContainer(padding: EdgeInsetsDirectional.symmetric(vertical: 0.5,), color: CustomColor.appColor,)),
+                  //   ],
+                  // ),
+                  // 30.height,
+                  // Row(
+                  //   spacing: 50,
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: [
+                  //     InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.googleIcon, height: 30,)),
+                  //     // InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.facebookIcon, height: 35,)),
+                  //     InkWell(onTap: () => CustomAlertDialog(context,title: 'Alert!', content: 'Dear Franchise This Feature Is Not Valid', onConfirm: () {}, ),child: Image.asset(CustomIcon.appleIcon, height: 30,)),
+                  //   ],
+                  // )
 
                 ],
               ),
