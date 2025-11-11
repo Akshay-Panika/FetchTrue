@@ -64,7 +64,7 @@ class SgpProgressWidget extends StatelessWidget {
             ],
           ),
 
-          if(remaining < 3)
+          if(remaining < 2)
           CustomContainer(
             border: false,
             color: CustomColor.whiteColor,

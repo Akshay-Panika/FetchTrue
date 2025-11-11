@@ -84,6 +84,7 @@ class _BusinessBannerWidgetState extends State<BusinessBannerWidget> {
                             builder: (_) => ServiceDetailsScreen(
                                 serviceId: banner.service!,
                                 providerId: '',
+                                isStore: false,
                             ),
                           ),
                         );

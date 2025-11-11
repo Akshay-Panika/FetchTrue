@@ -52,8 +52,9 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
         }
         else if (state is UserLoaded) {
           final user = state.user;
-          return Container(
-            color: CustomColor.canvasColor,
+          return CustomContainer(
+            color: CustomColor.whiteColor,
+            padding: EdgeInsets.zero,
             child: Stack(
               children: [
                 Column(
@@ -63,7 +64,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                     ListTile(
                       contentPadding: EdgeInsets.only(top: 10,left: 10),
                       leading:  CircleAvatar(
-                        radius: 35,
+                        radius: 36,
                           backgroundColor: CustomColor.greyColor.withOpacity(0.2),
                           backgroundImage: (user.profilePhoto != null && user.profilePhoto!.isNotEmpty)
                               ? NetworkImage(user.profilePhoto!)
@@ -82,14 +83,25 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
                     CustomContainer(
                       color: CustomColor.whiteColor,
+                      border: true,
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Text('Account Info'),
-                              10.width,
-                              Icon(Icons.visibility, size: 20,)
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PackageScreen(),
+                                ),
+                              );
+                            },
+                            child:Row(
+                              children: [
+                                Icon(Icons.verified_outlined, size: 16, color: CustomColor.greenColor,),
+                                SizedBox(width: 5),
+                                Text(user.packageActive == true ? 'Level ${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.appColor)),
+                              ],
+                            ),
                           ),
                           Divider(),
 
@@ -151,36 +163,6 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       ),
                     ),],
                 ),
-                Positioned(
-                    top: 20,right: 0,
-                    child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PackageScreen(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: CustomColor.appColor,
-                      border: Border.all(color: CustomColor.appColor, width: 0.5),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                    ),
-                    child:  Row(
-                      children: [
-                        Icon(Icons.verified_outlined, size: 16, color: CustomColor.whiteColor,),
-                        SizedBox(width: 5),
-                        Text(user.packageActive == true ? '${user.packageStatus}' :'Package', style: textStyle12(context, color: CustomColor.whiteColor)),
-                      ],
-                    ),
-                  ),
-                ))
               ],
             ),
           );
@@ -205,57 +187,62 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     String? lead,
     String? earning,
   }) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top:10.0,left: 10),
-          child: ListTile(
-            leading:  CircleAvatar(
-              radius: 35,
-              backgroundColor: CustomColor.greyColor.withOpacity(0.2),
-              backgroundImage: profile != null && profile.isNotEmpty
-                  ? NetworkImage(profile) as ImageProvider
-                  : AssetImage(CustomImage.nullImage),
+    return CustomContainer(
+      color: Colors.white,
+      padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top:10.0,left: 10),
+            child: ListTile(
+              leading:  CircleAvatar(
+                radius: 35,
+                backgroundColor: CustomColor.greyColor.withOpacity(0.2),
+                backgroundImage: profile != null && profile.isNotEmpty
+                    ? NetworkImage(profile) as ImageProvider
+                    : AssetImage(CustomImage.nullImage),
+              ),
+              title:  Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name ?? 'Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
+                  Text(email ?? 'guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                  Text(id ?? '#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                ],
+              ),
             ),
-            title:  Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+
+          // Status Row
+          CustomContainer(
+            color: CustomColor.whiteColor,
+            border: true,
+            child: Column(
               children: [
-                Text(name ?? 'Guest', style: textStyle14(context), overflow: TextOverflow.ellipsis,),
-                Text(email ?? 'guest@test.com', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
-                Text(id ?? '#0000000', style:  textStyle12(context,color: Colors.grey.shade600, fontWeight: FontWeight.w400),),
+                Row(
+                  children: [
+                    Text('Account Info'),
+                    10.width,
+                    Icon(Icons.visibility, size: 20,)
+                  ],
+                ),
+                10.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                    _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
+                    Container(width: 1,height: 35,color: Colors.grey.shade500,),
+                    _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
+                  ],
+                ),
               ],
             ),
           ),
-        ),
-
-        // Status Row
-        CustomContainer(
-          color: CustomColor.whiteColor,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text('Account Info'),
-                  10.width,
-                  Icon(Icons.visibility, size: 20,)
-                ],
-              ),
-              10.height,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildStatus(icon: CupertinoIcons.calendar,value: date ?? '00', valueType: 'Joining date'),
-                  Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                  _buildStatus(icon:Icons.check_circle_outline_outlined,value: lead ?? '00', valueType: 'Lead Completed'),
-                  Container(width: 1,height: 35,color: Colors.grey.shade500,),
-                  _buildStatus(icon: Icons.currency_rupee_outlined,value: earning ?? '00', valueType: 'Total Earning'),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

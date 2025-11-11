@@ -26,10 +26,11 @@ import '../widget/self_add_widget.dart';
 class ServiceDetailsScreen extends StatefulWidget {
   final String serviceId;
   final String providerId;
+  final bool isStore;
   const ServiceDetailsScreen({
     super.key,
     required this.serviceId,
-    required this.providerId,
+    required this.providerId, required this.isStore,
   });
 
   @override
@@ -174,11 +175,12 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen>
                                   serviceId: serviceId,
                                   providerId: providerId,
                                   status: 'default',
+                                  isStore: widget.isStore,
                                 ),
                               ),
                             );
                           } else if (providerState is ProvidersLoaded) {
-                            showCustomBottomSheet(context, serviceId: serviceId);
+                            showCustomBottomSheet(context, serviceId: serviceId, isStore: widget.isStore);
                           } else {
                             showCustomToast('Please wait data is loading.');
                           }

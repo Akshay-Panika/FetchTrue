@@ -38,6 +38,7 @@ class CheckoutDetailsWidget extends StatefulWidget {
   final String serviceId;
   final String providerId;
   final String status;
+  final bool isStore;
   final Function(CheckOutModel, String zoneId, String couponCode) onPaymentDone;
 
   const CheckoutDetailsWidget({
@@ -46,6 +47,7 @@ class CheckoutDetailsWidget extends StatefulWidget {
     required this.serviceId,
     required this.providerId,
     required this.status,
+    required this.isStore,
   });
 
   @override
@@ -58,6 +60,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.isStore);
+    print('-------${widget.providerId}');
     return BlocProvider(
       create: (_) => CheckoutBloc(repository: CheckOutRepository()),
       child: BlocConsumer<CheckoutBloc, CheckoutState>(
@@ -106,7 +110,7 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                               discountPrice: service.discountedPrice.toString(),
                               discount: service.discount.toString(),
                               commission: service.franchiseDetails.commission.toString(),
-                              providerId: widget.status == 'default' ? null : widget.providerId,
+                              providerId:  widget.isStore == true ? widget.providerId :widget.status == 'default' ? null : widget.providerId,
                               commissionCharge: commissionCharge,
                               onPaymentDone: widget.onPaymentDone,
                             );
@@ -122,7 +126,8 @@ class _CheckoutDetailsWidgetState extends State<CheckoutDetailsWidget> {
                               discountPrice: providerPriceData.providerPrice.toString(),
                               discount: providerPriceData.providerDiscount.toString(),
                               commission: providerPriceData.providerCommission.toString(),
-                              providerId: widget.status == 'default' ? null : widget.providerId,
+                              providerId:  widget.isStore == true ? widget.providerId :widget.status == 'default' ? null : widget.providerId,
+                              // providerId: widget.status == 'default' ? null : widget.providerId,
                               commissionCharge: commissionCharge,
                               onPaymentDone: widget.onPaymentDone,
                             );

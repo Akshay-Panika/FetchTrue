@@ -80,7 +80,7 @@ class _OnboardingBannerWidgetState extends State<OnboardingBannerWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!, providerId: ''),
+                            builder: (_) => ServiceDetailsScreen(serviceId: banner.service!, providerId: '',  isStore: false,),
                           ),
                         );
                       }

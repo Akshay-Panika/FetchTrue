@@ -242,7 +242,7 @@ class _FavoriteServiceWidgetState extends State<FavoriteServiceWidget> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: ''),
+                      builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: '', isStore: false,),
                     ),
                   ),
                 );

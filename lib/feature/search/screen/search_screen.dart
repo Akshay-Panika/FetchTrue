@@ -142,6 +142,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ServiceDetailsScreen(serviceId: data.id,
+                                isStore: false,
                                providerId: '',),
                             ),
                           ),

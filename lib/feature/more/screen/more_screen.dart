@@ -61,7 +61,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
             slivers: [
               SliverAppBar(
                 floating: true,
-                toolbarHeight: dimensions.screenHeight*0.23,
+                toolbarHeight: dimensions.screenHeight*0.25,
                 backgroundColor:Colors.transparent,
                 flexibleSpace: FlexibleSpaceBar(
                   background: ProfileCardWidget(),

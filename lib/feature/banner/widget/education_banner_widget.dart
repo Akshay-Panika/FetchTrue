@@ -83,6 +83,7 @@ class _EducationBannerWidgetState extends State<EducationBannerWidget> {
                             builder: (_) => ServiceDetailsScreen(
                                 serviceId: banner.service!,
                               providerId: '',
+                              isStore: false,
                             ),
                           ),
                         );

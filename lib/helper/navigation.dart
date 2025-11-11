@@ -192,9 +192,10 @@ final GoRouter router = GoRouter(
       pageBuilder: (context, state) {
         final serviceId = state.pathParameters['serviceId']!;
         final providerId = state.extra as String?;
+        final isStore = state.extra as bool?;
         return CustomTransitionPage(
           key: state.pageKey,
-          child: ServiceDetailsScreen(serviceId: serviceId,  providerId: providerId.toString(),),
+          child: ServiceDetailsScreen(serviceId: serviceId,  providerId: providerId.toString(), isStore: isStore!,),
           transitionsBuilder: _fadeTransition,
         );
       },

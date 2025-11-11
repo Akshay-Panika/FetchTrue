@@ -183,7 +183,7 @@ class TrendingMarketingServiceWidget extends StatelessWidget {
                           ],
                         ),
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: ''),));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: '',  isStore: false,),));
                         },
                         // onTap: () => context.push('/service/${data.id}'),
                       );

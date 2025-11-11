@@ -73,74 +73,47 @@ class LeadsDetailsWidget extends StatelessWidget {
                 _buildBookingSummary(context,lead),
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
+                BlocProvider(
+                  create: (_) => ExtraServiceBloc(ExtraServiceRepository())
+                    ..add(FetchExtraServiceEvent(leadId)),
+                  child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
+                    builder: (context, state) {
+                      if (state is ExtraServiceLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (state is ExtraServiceLoaded) {
+                        if (state.services.isEmpty) return const SizedBox.shrink();
+
+                        final extraService = state.services.first;
+
+                        if (state.isAdminApproved) {
+                          return _extraService(context, extraService);
+                        } else {
+                          return const Text("Admin approval pending...");
+                        }
+
+                      }
+
+                      if (state is ExtraServiceError) {
+                        debugPrint(state.message);
+                        return const SizedBox.shrink();
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+                SizedBox(height: dimensions.screenHeight*0.015,),
+
                 /// Payment status card
-                if(lead.orderStatus == 'cancel')
+                if(lead.isCanceled != true)
                 _buildPaymentStatus(context, lead, user),
                 SizedBox(height: dimensions.screenHeight*0.015,),
 
                 /// Provider Card
                 ProviderCardWidget(providerId: lead.provider,),
                 SizedBox(height: dimensions.screenHeight*0.015,),
-
-             BlocProvider(
-               create: (_) => ExtraServiceBloc(ExtraServiceRepository())
-                 ..add(FetchExtraServiceEvent(leadId)),
-               child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
-                 builder: (context, state) {
-                   if (state is ExtraServiceLoading) {
-                     return const Center(child: CircularProgressIndicator());
-                   }
-
-                   if (state is ExtraServiceLoaded) {
-                     if (state.services.isEmpty) return const SizedBox.shrink();
-
-                     final extraService = state.services.first;
-
-                     if (state.isAdminApproved) {
-                       return _extraService(context, extraService);
-                     } else {
-                       return const Text("Admin approval pending...");
-                     }
-
-                   }
-
-                   if (state is ExtraServiceError) {
-                     debugPrint(state.message);
-                     return const SizedBox.shrink();
-                   }
-
-                   return const SizedBox.shrink();
-                 },
-               ),
-             ),
-
-             // BlocProvider(
-                 //     create: (_) => ExtraServiceBloc(ExtraServiceRepository())..add(FetchExtraServiceEvent(leadId)),
-                 // child: BlocBuilder<ExtraServiceBloc, ExtraServiceState>(
-                 //          builder: (context, state) {
-                 //            if (state is ExtraServiceLoading) {
-                 //              return const Center(child: CircularProgressIndicator());
-                 //            }
-                 //            else if (state is ExtraServiceLoaded) {
-                 //              if (state.services.isEmpty) {
-                 //                return SizedBox.shrink();
-                 //              }
-                 //              final extraService = state.services.first;
-                 //
-                 //              if(extraService.isLeadApproved == true){
-                 //                return  _extraService(context, extraService);
-                 //              }
-                 //              return SizedBox.shrink();
-                 //
-                 //            }
-                 //            else if (state is ExtraServiceError) {
-                 //              debugPrint(state.message);
-                 //              return const SizedBox.shrink();
-                 //            }
-                 //            return const SizedBox.shrink();
-                 //          }
-                 //      ),
-                 //    ),
                 50.height
               ],
             ),
@@ -222,7 +195,7 @@ Widget _buildPaymentStatus(BuildContext context, LeadModel lead, UserModel user)
             ),
 
             /// Pay Now Button
-            if (status == 'unpaid' && status == 'cancel')
+            if (status == 'unpaid')
               Column(
                 children: [
                   const Divider(),

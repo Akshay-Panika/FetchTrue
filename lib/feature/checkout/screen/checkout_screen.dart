@@ -14,8 +14,8 @@ class CheckoutScreen extends StatefulWidget {
   final String serviceId;
   final String providerId;
   final String status;
-
-  const CheckoutScreen({super.key, required this.serviceId, required this.providerId, required this.status,});
+  final bool isStore;
+  const CheckoutScreen({super.key, required this.serviceId, required this.providerId, required this.status, required this.isStore,});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -81,6 +81,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       zoneId: zoneId,  ye es esn se lena he
                      */
                     CheckoutDetailsWidget(
+                     isStore: widget.isStore,
                      serviceId: widget.serviceId,
                       providerId: widget.providerId,
                       status: widget.status,

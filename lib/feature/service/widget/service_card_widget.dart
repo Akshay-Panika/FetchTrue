@@ -14,7 +14,8 @@ import '../screen/service_details_screen.dart';
 class ServiceCardWidget extends StatelessWidget {
   final ServiceModel data;
   final String providerId;
-  const ServiceCardWidget({super.key, required this.data, required this.providerId});
+  final bool isStore;
+  const ServiceCardWidget({super.key, required this.data, required this.providerId, required this.isStore});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +152,7 @@ class ServiceCardWidget extends StatelessWidget {
         ],
       ),
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: providerId),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetailsScreen(serviceId: data.id, providerId: providerId, isStore: isStore,),));
       },
       // onTap: () => context.push('/service/${data.id}', extra: providerId),
     );

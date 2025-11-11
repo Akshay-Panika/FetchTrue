@@ -36,7 +36,7 @@ class GpProgressWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          if(remaining < 10)
+          if(remaining <= 10)
           Column(
             children: [
               ClipRRect(
@@ -56,18 +56,18 @@ class GpProgressWidget extends StatelessWidget {
                   _labelBox(context, "$targetCount", CustomColor.greenColor),
                 ],
               ),
-              15.height,
-              Text(
-                remaining > 0
-                    ? 'Almost there! Build your team with just $remaining more partners, you’ll become a SGP.'
-                    : '🎉 Congratulations! You have completed your team and become a SGP!',
-                style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
-              ),
-              10.height,
             ],
           ),
+          15.height,
+          Text(
+            remaining > 0
+                ? 'Almost there! Build your team with just $remaining more partners, you’ll become a SGP.'
+                : '🎉 Congratulations! You have completed your team and become a SGP!',
+            style: textStyle12(context, color: CustomColor.descriptionColor, fontWeight: FontWeight.w400),
+          ),
+          10.height,
 
-          if(remaining < 10 )
+          if(remaining <= 10 )
           CustomContainer(
             border: false,
             color: CustomColor.whiteColor,

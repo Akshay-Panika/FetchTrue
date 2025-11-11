@@ -53,7 +53,7 @@ class BusinessAllServiceWidget extends StatelessWidget {
                    scrollDirection: Axis.horizontal,
                    children: List.generate(services.length, (index) {
                      final data = services[index];
-                     return ServiceCardWidget(data: data, providerId: '',);
+                     return ServiceCardWidget(data: data, providerId: '', isStore: false,);
                    },),
                  ),
                ),

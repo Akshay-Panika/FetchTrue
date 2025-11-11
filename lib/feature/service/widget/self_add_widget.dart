@@ -27,9 +27,9 @@ import '../bloc/service/service_state.dart';
 import '../repository/service_repository.dart';
 
 
-void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
+void showCustomBottomSheet(BuildContext context, {required String serviceId, required bool isStore}) {
   String? selectedProviderId;
-  String selectedType = "default"; // default, outService, inService
+  String selectedType = "default";
 
   showModalBottomSheet(
     context: context,
@@ -280,6 +280,7 @@ void showCustomBottomSheet(BuildContext context, {required String serviceId}) {
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) => CheckoutScreen(
+                                                              isStore: isStore,
                                                               serviceId: serviceId,
                                                               providerId: selectedProviderId ?? "",
                                                               status: selectedType,

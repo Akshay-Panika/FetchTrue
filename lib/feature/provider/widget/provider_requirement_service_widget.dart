@@ -66,7 +66,7 @@ class ProviderRequirementServiceWidget extends StatelessWidget {
                    children: List.generate(services.length, (index) {
                      final data = services[index];
 
-                     return ServiceCardWidget(data: data, providerId: provider.id);
+                     return ServiceCardWidget(data: data, providerId: provider.id, isStore: true,);
 
                    },),
                  ),
