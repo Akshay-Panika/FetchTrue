@@ -112,7 +112,7 @@ class ModuleWidget extends StatelessWidget {
                               'It Services': '/it',
                               'Education': '/education',
                               'On-Demand': '/ondemand',
-                              'Onboarding': '/onboarding',
+                              'AI Hub': '/ai-hub',
                             };
 
                             final route = moduleRoutes[module.name];

@@ -133,12 +133,12 @@ class _TeamCardWidgetState extends State<TeamCardWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           InkWell(
-                              onTap: () => ContactHelper.call(widget.phone!),
+                              onTap: () => ContactHelper.call('+91${widget.phone}'),
                               child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
 
 
                           InkWell(
-                              onTap: () => ContactHelper.whatsapp(widget.phone!, 'Hello ${widget.name}!'),
+                              onTap: () => ContactHelper.whatsapp('+91${widget.phone}', 'Hello ${widget.name}!'),
                               child: Image.asset(CustomIcon.whatsappIcon, height: 25,color: CustomColor.greenColor,)),
                         ],
                       ),

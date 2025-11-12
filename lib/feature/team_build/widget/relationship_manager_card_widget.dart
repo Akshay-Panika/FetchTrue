@@ -79,11 +79,11 @@ class RelationshipManagerCardWidget extends StatelessWidget {
                     Row(
                       children: [
                         InkWell(
-                            onTap: () => ContactHelper.call(phone!),
+                            onTap: () => ContactHelper.call('+91${phone}'),
                             child: Image.asset(CustomIcon.phoneIcon, height: 25,color: CustomColor.appColor,)),
                         35.width,
                         InkWell(
-                            onTap: () => ContactHelper.whatsapp(phone!, 'Hello ${name}!'),
+                            onTap: () => ContactHelper.whatsapp('+91${phone}', 'Hello ${name}!'),
                             child: Image.asset(CustomIcon.whatsappIcon, height: 25,color: CustomColor.greenColor,)),
                         10.width,
                       ],

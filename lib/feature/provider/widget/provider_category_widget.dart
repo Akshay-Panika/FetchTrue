@@ -87,7 +87,7 @@ class _FilterHeaderStaticState extends State<_FilterHeaderStatic> {
         if (state is ProvidersLoaded) {
           selectedFilter = state.selectedFilter;
           providers = state.providers
-              .where((e) => e.kycCompleted == true && e.storeInfo?.module == widget.moduleId)
+              .where((e) => e.kycCompleted == true && e.storeInfo?.module == widget.moduleId && e.subscribedServices.isNotEmpty)
               .toList();
         }
 
@@ -176,7 +176,7 @@ class _ProviderListStatic extends StatelessWidget {
         } else if (state is ProvidersLoaded) {
           // List<ProviderModel> providers = state.filteredProviders;
           List<ProviderModel> providers = state.filteredProviders
-              .where((e) => e.kycCompleted == true && e.storeInfo?.module == moduleId)
+              .where((e) => e.kycCompleted == true && e.storeInfo?.module == moduleId && e.subscribedServices.isNotEmpty)
               .toList();
 
           // Filter & Sort

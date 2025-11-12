@@ -74,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           slivers: [
             CustomSliverAppbar(
               moduleId: widget.moduleId,
-              title: 'Onboarding Service',
+              title: 'AI Hub',
               imageUrl: widget.imageUrl,
               isCollapsed: _isCollapsed,
               searchBarHeight: searchBarHeight,
@@ -90,9 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             SliverToBoxAdapter(child: ProviderWidget(moduleId: widget.moduleId,),),
 
-            SliverToBoxAdapter(
-              child: OnboardingAllServiceWidget(moduleId: widget.moduleId,),
-            ),
+            SliverToBoxAdapter(child: OnboardingAllServiceWidget(moduleId: widget.moduleId,),),
 
             /// Provider Store
             ...ProviderCategoryWidget.slivers(widget.moduleId),

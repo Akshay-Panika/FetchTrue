@@ -10,6 +10,7 @@ import '../../../helper/Contact_helper.dart';
 import '../model/lead_model.dart';
 
 Widget customerDetails(BuildContext context, LeadModel lead){
+
   final phoneNumber = lead.serviceCustomer!.phone.toString();
   final message = 'Hello, I am contacting you from Fetch True.';
 
@@ -34,7 +35,7 @@ Widget customerDetails(BuildContext context, LeadModel lead){
                 Text('Address: ${lead.serviceCustomer!.address}, ${lead.serviceCustomer!.city}, ${lead.serviceCustomer!.state}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
 
                 if(lead.notes!.isNotEmpty)
-                  Text('Note : ${lead.notes}',  style:  textStyle12(context, fontWeight: FontWeight.w400)),
+                Text('Note : ${lead.notes}', style: textStyle12(context, fontWeight: FontWeight.w400)),
               ],
             ),
           ],
@@ -46,12 +47,11 @@ Widget customerDetails(BuildContext context, LeadModel lead){
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                InkWell(onTap: () => ContactHelper.whatsapp(phoneNumber.toString(), message),
+                InkWell(onTap: () => ContactHelper.whatsapp('+91$phoneNumber', message),
                     child: Image.asset(CustomIcon.whatsappIcon, height: 25, )),
                 40.width,
-                InkWell(onTap: () => ContactHelper.call(phoneNumber.toString()),
+                InkWell(onTap: () => ContactHelper.call('+91$phoneNumber'),
                     child: Image.asset(CustomIcon.phoneIcon, height: 25, color: CustomColor.appColor,)),
-
               ],
             ))
       ],

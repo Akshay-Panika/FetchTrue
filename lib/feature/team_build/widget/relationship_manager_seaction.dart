@@ -17,7 +17,6 @@ import '../../profile/bloc/user_by_id/user_by_id_event.dart';
 import '../../profile/bloc/user_by_id/user_by_id_state.dart';
 import '../../profile/model/user_model.dart';
 import '../../profile/repository/user_by_id_repojetory.dart';
-import '../../profile/repository/user_repository.dart';
 import '../bloc/my_team/my_team_bloc.dart';
 import '../bloc/user_confirm_referral/user_confirm_referral_bloc.dart';
 import '../bloc/user_confirm_referral/user_confirm_referral_event.dart';
@@ -25,7 +24,6 @@ import '../bloc/user_confirm_referral/user_confirm_referral_state.dart';
 import '../bloc/user_referral/user_referral_bloc.dart';
 import '../bloc/user_referral/user_referral_event.dart';
 import '../bloc/user_referral/user_referral_state.dart';
-import '../model/my_team_model.dart' hide Address;
 import '../repository/my_team_repository.dart';
 import '../repository/user_referral_repository.dart';
 

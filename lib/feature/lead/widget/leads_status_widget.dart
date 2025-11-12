@@ -191,6 +191,38 @@ class _LeadsStatusWidgetState extends State<LeadsStatusWidget> {
                                           ),
                                         5.height,
 
+                                        if (lead.document != null && lead.document!.isNotEmpty)
+                                          InkWell(
+                                            onTap: () async {
+                                              final url = lead.document!;
+                                              if (await canLaunchUrl(Uri.parse(url))) {
+                                                await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text('Could not open document')),
+                                                );
+                                              }
+                                            },
+                                            child: CustomContainer(
+                                              width: 300,
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.insert_drive_file, color: CustomColor.appColor),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(
+                                                    child: Text(
+                                                      "Document: ${lead.document!.split('/').last}",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(fontSize: 13),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        5.height,
+
+
                                         if (lead.paymentLink != null && lead.paymentLink!.isNotEmpty)
                                           CustomContainer(
                                             width: 300,

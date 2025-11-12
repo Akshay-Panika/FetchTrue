@@ -156,7 +156,7 @@ final GoRouter router = GoRouter(
 
     // Onboarding
     GoRoute(
-      path: '/onboarding/:moduleId',
+      path: '/ai-hub/:moduleId',
       pageBuilder: (context, state) {
         final moduleId = state.pathParameters['moduleId']!;
         final imageUrl = state.uri.queryParameters['image'] ?? '';

@@ -60,7 +60,7 @@ class ProviderWidget extends StatelessWidget {
               }
 
               if(providerState is ProvidersLoaded && moduleState is ModuleLoaded){
-                final providers = providerState.providers.where((e) => e.kycCompleted == true && e.storeInfo?.module== moduleId).toList();
+                final providers = providerState.providers.where((e) => e.kycCompleted == true && e.storeInfo?.module== moduleId && e.subscribedServices.isNotEmpty).toList();
                 final modules = moduleState.modules;
 
                 if(providers.isEmpty){
