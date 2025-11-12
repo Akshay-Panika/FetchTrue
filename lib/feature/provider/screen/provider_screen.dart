@@ -122,10 +122,10 @@ class ProviderScreen extends StatelessWidget {
                                         Container(
                                             padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
                                             decoration: BoxDecoration(
-                                                color: CustomColor.greenColor,
+                                                color: provider.isStoreOpen== true ?CustomColor.greenColor: Colors.grey.shade500,
                                                 borderRadius: BorderRadius.circular(5)
                                             ),
-                                            child: Text('Open', style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
+                                            child: Text(provider.isStoreOpen== true ? "Open":"Close", style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
                                       ],
                                     ),
                                     10.width,

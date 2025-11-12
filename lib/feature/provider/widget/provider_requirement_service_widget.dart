@@ -51,7 +51,6 @@ class ProviderRequirementServiceWidget extends StatelessWidget {
              return SizedBox.shrink();
            }
 
-
            return  Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
@@ -65,8 +64,7 @@ class ProviderRequirementServiceWidget extends StatelessWidget {
                    scrollDirection: Axis.horizontal,
                    children: List.generate(services.length, (index) {
                      final data = services[index];
-
-                     return ServiceCardWidget(data: data, providerId: provider.id, isStore: true,);
+                     return ServiceCardWidget(data: data, providerId: provider.id, isStore: true,isStoreOpen: provider.isStoreOpen,);
 
                    },),
                  ),

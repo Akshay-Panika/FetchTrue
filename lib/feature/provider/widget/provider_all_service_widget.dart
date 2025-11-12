@@ -17,7 +17,7 @@ import '../model/provider_model.dart';
 
 class ProviderAllServiceWidget extends StatelessWidget {
  final ProviderModel provider;
-  const ProviderAllServiceWidget({super.key, required this.provider});
+ const ProviderAllServiceWidget({super.key, required this.provider,});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class ProviderAllServiceWidget extends StatelessWidget {
                    scrollDirection: Axis.horizontal,
                    children: List.generate(services.length, (index) {
                      final data = services[index];
-                     return ServiceCardWidget(data: data, providerId: provider.id,  isStore: true,);
+                     return ServiceCardWidget(data: data, providerId: provider.id,  isStore: true, isStoreOpen:  provider.isStoreOpen,);
                    },),
                  ),
                ),

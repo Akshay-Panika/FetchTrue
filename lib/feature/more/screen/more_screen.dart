@@ -81,15 +81,15 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                          child: CustomContainer(
                            color: CustomColor.whiteColor,
                            padding: EdgeInsets.zero,
-                           border: true,
                            child: Column(
                              crossAxisAlignment: CrossAxisAlignment.start,
                              children: [
                                CustomContainer(
                                  width: double.infinity,
                                  margin: EdgeInsets.zero,
+                                 padding: EdgeInsets.zero,
                                  height: 60,
-                                 child: Icon(Icons.image, color: Colors.grey,),
+                                 assetsImg: 'assets/image/packageRefer.png',
                                ),
 
                                Padding(padding: EdgeInsetsGeometry.all(10),
@@ -119,15 +119,15 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                           child: CustomContainer(
                             color: CustomColor.whiteColor,
                             padding: EdgeInsets.zero,
-                            border: true,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomContainer(
                                   width: double.infinity,
                                   margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.zero,
                                   height: 60,
-                                  child: Icon(Icons.image, color: Colors.grey,),
+                                  assetsImg: 'assets/image/referEarn.png',
                                 ),
 
                                 Padding(padding: EdgeInsetsGeometry.all(10),

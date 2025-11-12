@@ -20,6 +20,8 @@ class ProviderModel {
   final StoreInfo? storeInfo;
   final KYC? kyc;
   final List<SubscribedService> subscribedServices;
+  final bool? isStoreOpen; // ✅ नया field
+  final String? providerId; // ✅ नया field
 
   ProviderModel({
     required this.id,
@@ -43,11 +45,13 @@ class ProviderModel {
     this.storeInfo,
     this.kyc,
     required this.subscribedServices,
+    this.isStoreOpen,
+    this.providerId,
   });
 
   factory ProviderModel.fromJson(Map<String, dynamic> json) {
     return ProviderModel(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       fullName: json['fullName'] ?? '',
       phoneNo: json['phoneNo'] ?? '',
       email: json['email'] ?? '',
@@ -65,11 +69,14 @@ class ProviderModel {
       averageRating: (json['averageRating'] ?? 0).toDouble(),
       totalReviews: json['totalReviews'] ?? 0,
       galleryImages: List<String>.from(json['galleryImages'] ?? []),
-      storeInfo: json['storeInfo'] != null ? StoreInfo.fromJson(json['storeInfo']) : null,
+      storeInfo:
+      json['storeInfo'] != null ? StoreInfo.fromJson(json['storeInfo']) : null,
       kyc: json['kyc'] != null ? KYC.fromJson(json['kyc']) : null,
       subscribedServices: (json['subscribedServices'] as List? ?? [])
           .map((e) => SubscribedService.fromJson(e))
           .toList(),
+      isStoreOpen: json['isStoreOpen'],
+      providerId: json['providerId'],
     );
   }
 }
@@ -89,6 +96,7 @@ class StoreInfo {
   final String country;
   final String? tax;
   final Location? location;
+  final String? aboutUs; // ✅ नया field
 
   StoreInfo({
     required this.storeName,
@@ -105,6 +113,7 @@ class StoreInfo {
     required this.country,
     this.tax,
     this.location,
+    this.aboutUs,
   });
 
   factory StoreInfo.fromJson(Map<String, dynamic> json) {
@@ -122,7 +131,9 @@ class StoreInfo {
       state: json['state'] ?? '',
       country: json['country'] ?? '',
       tax: json['tax'],
-      location: json['location'] != null ? Location.fromJson(json['location']) : null,
+      aboutUs: json['aboutUs'],
+      location:
+      json['location'] != null ? Location.fromJson(json['location']) : null,
     );
   }
 }
@@ -139,9 +150,9 @@ class Location {
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       type: json['type'] ?? '',
-      coordinates: List<double>.from(
-        (json['coordinates'] as List).map((e) => e.toDouble()),
-      ),
+      coordinates: (json['coordinates'] as List? ?? [])
+          .map((e) => (e as num).toDouble())
+          .toList(),
     );
   }
 }
@@ -172,7 +183,6 @@ class KYC {
   }
 }
 
-
 class SubscribedService {
   final String id;
   final String serviceName;
@@ -194,7 +204,7 @@ class SubscribedService {
     return SubscribedService(
       id: json['_id'] ?? '',
       serviceName: json['serviceName'] ?? '',
-      price: (json['price'] as num).toDouble(),
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       discountedPrice: (json['discountedPrice'] as num?)?.toDouble() ?? 0.0,
       isDeleted: json['isDeleted'] ?? false,
       category: json['category'] != null
@@ -203,7 +213,6 @@ class SubscribedService {
     );
   }
 }
-
 
 class ServiceCategory {
   final String id;
@@ -216,7 +225,7 @@ class ServiceCategory {
 
   factory ServiceCategory.fromJson(Map<String, dynamic> json) {
     return ServiceCategory(
-      id: json['_id'],
+      id: json['_id'] ?? '',
       name: json['name'] ?? '',
     );
   }

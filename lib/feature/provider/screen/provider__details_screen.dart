@@ -172,12 +172,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                                    Divider(),
 
                                    Text(
-                                     "Disclaimer: The information provided about this provider, "
-                                         "including services, pricing, reviews, and gallery, is sourced "
-                                         "from the provider or public data. While we strive to ensure "
-                                         "accuracy, FetchTrue does not guarantee completeness, reliability, "
-                                         "or availability of this information. Please verify details directly "
-                                         "with the provider before making any decisions.",
+                                     "Disclaimer: ${provider.storeInfo?.aboutUs?.isEmpty ?? true ? 'N/A' : provider.storeInfo!.aboutUs}",
                                      style: TextStyle(
                                        fontSize: 14,
                                        color: Colors.grey.shade600,
@@ -236,10 +231,10 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                     Container(
                         padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                            color: CustomColor.greenColor,
+                            color:data.isStoreOpen== true? CustomColor.greenColor:Colors.grey.shade500,
                             borderRadius: BorderRadius.circular(5)
                         ),
-                        child: Text('Open', style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
+                        child: Text(data.isStoreOpen== true ?'Open':"Close", style: TextStyle(fontSize: 12, color: CustomColor.whiteColor),))
                   ],
                 ),
                 10.width,
