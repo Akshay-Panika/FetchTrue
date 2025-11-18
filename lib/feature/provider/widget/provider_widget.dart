@@ -146,7 +146,7 @@ class ProviderWidget extends StatelessWidget {
                                                 Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(provider.storeInfo!.storeName,style: textStyle12(context),),
+                                                    Text(provider.storeInfo!.storeName.toString(),style: textStyle12(context),),
                                                     2.height,
                                                     Text(
                                                       '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
@@ -217,14 +217,14 @@ class ProviderWidget extends StatelessWidget {
                                         ),
                                         onTap: () {
                                           context.push(
-                                            '/provider/${provider.id}?name=${Uri.encodeComponent(provider.storeInfo!.storeName)}',
+                                            '/provider/${provider.id}?name=${Uri.encodeComponent(provider.storeInfo!.storeName.toString())}',
                                           );
                                         },
                                       ),
 
                                       Positioned(
                                           top: 10,right: 10,
-                                          child: FavoriteProviderButtonWidget(providerId: provider.id,))
+                                          child: FavoriteProviderButtonWidget(providerId: provider.id.toString(),))
                                     ],
                                   );
                                 }, ),

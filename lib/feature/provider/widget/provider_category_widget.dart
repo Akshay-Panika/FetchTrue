@@ -220,7 +220,7 @@ class _ProviderListStatic extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                               Padding(
+                              Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: FavoriteProviderButtonWidget(providerId: provider.id,),
                               ),

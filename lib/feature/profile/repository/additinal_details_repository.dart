@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:fetchtrue/helper/api_urls.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../core/costants/custom_log_emoji.dart';
@@ -18,10 +19,16 @@ class UserAdditionalDetailsService {
 
     } on DioException catch (e){
       if (e.response != null) {
-        debugPrint("${CustomLogEmoji.error} Additional Details API Error [${e.response?.statusCode}]: ${e.response?.data}");
+        final serverMessage = e.response?.data?["message"] ?? "Something went wrong";
+
+        debugPrint("${CustomLogEmoji.error} Additional Details API Error [${e.response?.statusCode}]: $serverMessage");
+
+        throw Exception(serverMessage);
+
       }
       else {
         debugPrint("${CustomLogEmoji.network} Additional Details Network Error: ${e.message}");
+
       }
       rethrow;
     }

@@ -366,7 +366,7 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    provider.storeInfo!.storeName,
+                                    provider.storeInfo!.storeName.toString(),
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
@@ -393,7 +393,7 @@ class _FavoriteProviderWidgetState extends State<FavoriteProviderWidget> {
                         Positioned(
                             top: 10,
                             right: 10,
-                            child: FavoriteProviderButtonWidget(providerId: provider.id)
+                            child: FavoriteProviderButtonWidget(providerId: provider.id.toString())
                         ),
                       ],
                     ),

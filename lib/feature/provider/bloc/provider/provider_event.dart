@@ -31,4 +31,3 @@ class FilterProvidersEvent extends ProviderEvent {
   @override
   List<Object?> get props => [filter];
 }
-

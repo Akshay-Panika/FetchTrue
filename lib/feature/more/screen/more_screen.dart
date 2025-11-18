@@ -141,7 +141,7 @@ class _MoreScreenState extends State<MoreScreen> with WidgetsBindingObserver {
                                           padding: EdgeInsets.symmetric(horizontal: 10),
                                           child: Text('Refer & Earn', style: textStyle12(context, color: CustomColor.whiteColor),)),
                                     ],
-                                  ),)
+                                  ),),
 
                               ],
                             ),

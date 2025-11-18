@@ -24,8 +24,9 @@ import '../widget/subcategory_widget.dart';
 
 class SubcategoryScreen extends StatefulWidget {
   final String categoryId;
+  final String subcategoryId;
   final String categoryName;
-  const SubcategoryScreen({super.key, required this.categoryId, required this.categoryName});
+  const SubcategoryScreen({super.key, required this.categoryId, required this.categoryName, required this.subcategoryId});
 
   @override
   State<SubcategoryScreen> createState() => _SubcategoryScreenState();
@@ -37,7 +38,15 @@ class _SubcategoryScreenState extends State<SubcategoryScreen> {
   String selectedFilter = 'All';
 
   @override
+  void initState() {
+    super.initState();
+    selectedSubcategoryId = widget.subcategoryId;
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    print(widget.categoryName);
     Dimensions dimensions = Dimensions(context);
     return Scaffold(
       appBar: CustomAppBar(title: widget.categoryName, showBackButton: true, showFavoriteIcon: true,),

@@ -133,7 +133,7 @@ class ProviderScreen extends StatelessWidget {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(provider.storeInfo!.storeName,style: textStyle14(context),),
+                                        Text(provider.storeInfo!.storeName.toString(),style: textStyle14(context),),
                                         Text(
                                           '⭐ ${provider.averageRating} (${provider.totalReviews} Review)',
                                           style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
@@ -204,13 +204,13 @@ class ProviderScreen extends StatelessWidget {
                             Positioned(
                                 top: 0,
                                 right: 0,
-                                child: FavoriteProviderButtonWidget(providerId: provider.id,)
+                                child: FavoriteProviderButtonWidget(providerId: provider.id.toString(),)
                             ),
                           ],
                         ),
                         onTap: () {
                           context.push(
-                            '/provider/${provider.id}?name=${Uri.encodeComponent(provider.storeInfo!.storeName)}',
+                            '/provider/${provider.id}?name=${Uri.encodeComponent(provider.storeInfo!.storeName.toString())}',
                           );
                         },
                       );

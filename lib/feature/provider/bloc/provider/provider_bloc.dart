@@ -51,4 +51,3 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     });
   }
 }
-

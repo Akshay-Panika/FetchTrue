@@ -67,12 +67,14 @@ class _OnDemandBannerWidgetState extends State<OnDemandBannerWidget> {
                       if (banner.selectionType == 'referralUrl') {
                         CustomUrlLaunch(banner.referralUrl);
                       } else if (banner.selectionType == 'subcategory') {
+                        print(banner.subcategory!.category!.name);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => SubcategoryScreen(
-                              categoryId: banner.subcategory!.category,
-                              categoryName: banner.subcategory!.name,
+                              categoryId: banner.subcategory!.category!.id,
+                              categoryName: banner.subcategory!.category!.name,
+                              subcategoryId: banner.subcategory!.id,
                             ),
                           ),
                         );

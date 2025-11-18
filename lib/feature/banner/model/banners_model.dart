@@ -52,7 +52,7 @@ class SubCategoryModel {
   final String id;
   final String name;
   final String image;
-  final String category;
+  final CategoryModel? category;
   final bool isDeleted;
   final String createdAt;
   final String updatedAt;
@@ -72,10 +72,29 @@ class SubCategoryModel {
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
       image: json['image'] ?? '',
-      category: json['category'] ?? '',
+      category: json['category'] != null
+          ? CategoryModel.fromJson(json['category'])
+          : null,
       isDeleted: json['isDeleted'] ?? false,
       createdAt: json['createdAt'] ?? '',
       updatedAt: json['updatedAt'] ?? '',
+    );
+  }
+}
+
+class CategoryModel {
+  final String id;
+  final String name;
+
+  CategoryModel({
+    required this.id,
+    required this.name,
+  });
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
     );
   }
 }

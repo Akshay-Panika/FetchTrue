@@ -64,7 +64,7 @@ class ProviderRequirementServiceWidget extends StatelessWidget {
                    scrollDirection: Axis.horizontal,
                    children: List.generate(services.length, (index) {
                      final data = services[index];
-                     return ServiceCardWidget(data: data, providerId: provider.id, isStore: true,isStoreOpen: provider.isStoreOpen,);
+                     return ServiceCardWidget(data: data, providerId: provider.id.toString(), isStore: true,isStoreOpen: provider.isStoreOpen,);
 
                    },),
                  ),

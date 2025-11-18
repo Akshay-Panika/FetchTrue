@@ -153,7 +153,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                              ),
 
                              /// Reviews
-                             ProviderReviewScreen(providerId: provider.id),
+                             ProviderReviewScreen(providerId: provider.id.toString()),
 
                              /// About
                              Padding(
@@ -162,8 +162,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  mainAxisAlignment: MainAxisAlignment.start,
                                  children: [
-
-                                   // Text('ID: ${provider}', style: textStyle14(context), textAlign: TextAlign.center,),
+                                   Text('ID: ${provider.providerId}', style: textStyle14(context), textAlign: TextAlign.center,),
                                    Text('Name: ${provider.fullName}', style: textStyle14(context, fontWeight: FontWeight.w400)),
                                    Text('Email: ${provider.storeInfo!.storeEmail}', style: textStyle14(context, fontWeight: FontWeight.w400)),
                                    Text('Phone: ${provider.storeInfo!.storePhone}', style: textStyle14(context, fontWeight: FontWeight.w400)),
@@ -171,13 +170,8 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
 
                                    Divider(),
 
-                                   Text(
-                                     "Disclaimer: ${provider.storeInfo?.aboutUs?.isEmpty ?? true ? 'N/A' : provider.storeInfo!.aboutUs}",
-                                     style: TextStyle(
-                                       fontSize: 14,
-                                       color: Colors.grey.shade600,
-                                       height: 2,
-                                     ),
+                                   Text("Disclaimer: ${provider.storeInfo?.aboutUs?.isEmpty ?? true ? 'N/A' : provider.storeInfo!.aboutUs}",
+                                     style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 2,),
                                      textAlign: TextAlign.justify,
                                    )
                                  ],
@@ -185,7 +179,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                              ),
 
                              /// Gallery
-                             GalleryWidget(providerId: provider.id,)
+                             GalleryWidget(providerId: provider.id.toString(),)
                            ],
                          ),
                        ),
@@ -242,7 +236,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(data.storeInfo!.storeName,style: textStyle12(context),),
+                      Text(data.storeInfo!.storeName.toString(),style: textStyle12(context),),
                       2.height,
                       Text(
                         '⭐ ${data.averageRating} (${data.totalReviews} Review)',
@@ -285,7 +279,7 @@ class _ProviderDetailsScreenState extends State<ProviderDetailsScreen> {
           Positioned(
               top: 10,
               right: 10,
-              child: FavoriteProviderButtonWidget(providerId: data.id,)
+              child: FavoriteProviderButtonWidget(providerId: data.id.toString(),)
           ),
         ],
       ),

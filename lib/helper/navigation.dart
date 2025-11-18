@@ -178,7 +178,7 @@ final GoRouter router = GoRouter(
           key: state.pageKey,
           child: SubcategoryScreen(
             categoryId: categoryId,
-            categoryName: categoryName,
+            categoryName: categoryName, subcategoryId: '',
           ),
           transitionsBuilder: _fadeTransition,
         );
