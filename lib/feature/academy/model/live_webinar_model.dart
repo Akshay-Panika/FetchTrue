@@ -10,10 +10,9 @@ class LiveWebinarModel {
   factory LiveWebinarModel.fromJson(Map<String, dynamic> json) {
     return LiveWebinarModel(
       success: json['success'] ?? false,
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => LiveWebinar.fromJson(e))
-          .toList() ??
-          [],
+      data: (json['data'] as List<dynamic>? ?? [])
+          .map((e) => LiveWebinar.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -27,12 +26,11 @@ class LiveWebinar {
   final String date;
   final String startTime;
   final String endTime;
-  final bool closeStatus; // ✅ Added field
+  final bool closeStatus;
+  final List<UserStatus> user; // 👈 exact matched
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int version;
-  final List<String> users;
-  final List<UserStatus> user;
 
   LiveWebinar({
     required this.id,
@@ -43,12 +41,11 @@ class LiveWebinar {
     required this.date,
     required this.startTime,
     required this.endTime,
-    required this.closeStatus, // ✅ Added field
+    required this.closeStatus,
+    required this.user,
     required this.createdAt,
     required this.updatedAt,
     required this.version,
-    required this.users,
-    required this.user,
   });
 
   factory LiveWebinar.fromJson(Map<String, dynamic> json) {
@@ -57,41 +54,46 @@ class LiveWebinar {
       name: json['name'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
       description: json['description'] ?? '',
-      displayVideoUrls: List<String>.from(json['displayVideoUrls'] ?? []),
+      displayVideoUrls:
+      (json['displayVideoUrls'] as List<dynamic>? ?? [])
+          .map((e) => e.toString())
+          .toList(),
       date: json['date'] ?? '',
       startTime: json['startTime'] ?? '',
       endTime: json['endTime'] ?? '',
-      closeStatus: json['closeStatus'] ?? false, // ✅ parse from backend
+      closeStatus: json['closeStatus'] ?? false,
+
+      /// user array (list of objects)
+      user: (json['user'] as List<dynamic>? ?? [])
+          .map((e) => UserStatus.fromJson(e))
+          .toList(),
+
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,
       updatedAt: json['updatedAt'] != null
           ? DateTime.tryParse(json['updatedAt'])
           : null,
+
       version: json['__v'] ?? 0,
-      users: List<String>.from(json['users'] ?? []),
-      user: (json['user'] as List<dynamic>?)
-          ?.map((e) => UserStatus.fromJson(e))
-          .toList() ??
-          [],
     );
   }
 }
 
 class UserStatus {
-  final String userId;
+  final String user;
   final bool status;
   final String id;
 
   UserStatus({
-    required this.userId,
+    required this.user,
     required this.status,
     required this.id,
   });
 
   factory UserStatus.fromJson(Map<String, dynamic> json) {
     return UserStatus(
-      userId: json['user'] ?? '',
+      user: json['user'] ?? '',
       status: json['status'] ?? false,
       id: json['_id'] ?? '',
     );

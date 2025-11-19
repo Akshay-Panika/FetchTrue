@@ -20,14 +20,19 @@ import '../bloc/provider/provider_event.dart';
 import '../bloc/provider/provider_state.dart';
 import '../repository/provider_repository.dart';
 
+
 class ProviderScreen extends StatelessWidget {
   const ProviderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     final addressNotifier = Provider.of<AddressNotifier>(context, listen: false);
     final lat = addressNotifier.latitude;
     final lng = addressNotifier.longitude;
+
+    print(lat);
+    print(lng);
 
     if (lat == null || lng == null) {
       return const Scaffold(
@@ -47,6 +52,7 @@ class ProviderScreen extends StatelessWidget {
         body: SafeArea(
           child: MultiBlocListener(
             listeners: [
+
               BlocListener<ProviderBloc, ProviderState>(listener: (context, state) {
                 if (state is ProviderError) debugPrint('Provider Error: ${state.message}');
               },),

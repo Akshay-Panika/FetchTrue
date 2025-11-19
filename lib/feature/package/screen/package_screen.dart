@@ -1,4 +1,5 @@
 // Flutter & Third-party
+import 'package:fetchtrue/feature/package/repository/RewardClaimDataRepo.dart';
 import 'package:fetchtrue/feature/package/repository/reward_repository.dart';
 import 'package:fetchtrue/feature/profile/repository/user_repository.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ import '../../profile/bloc/user/user_state.dart';
 import '../bloc/reward/reward_bloc.dart';
 import '../bloc/reward/reward_event.dart';
 import '../bloc/reward/reward_state.dart';
+import '../bloc/reward_claim/reward_claim_bloc.dart';
+import '../bloc/reward_claim_data/reward_claim_data_bloc.dart';
 import '../model/package_model.dart';
 import '../model/package_buy_payment_model.dart';
 import '../model/referral_user_model.dart';
@@ -50,6 +53,8 @@ import '../bloc/package_payment/package_buy_payment_state.dart';
 import '../bloc/referral/referral_bloc.dart';
 import '../bloc/referral/referral_event.dart';
 import '../bloc/referral/referral_state.dart';
+import '../repository/reward_claim_repository.dart';
+import '../widget/claim_widget.dart';
 import '../widget/gift_package_widget.dart';
 import '../widget/gp_progress_widget.dart';
 import '../widget/package_data.dart';
@@ -110,6 +115,11 @@ class _PackageScreenState extends State<PackageScreen> {
         BlocProvider(create: (_) => MyTeamBloc(MyTeamRepository())..add(FetchMyTeam(userSession.userId!))),
         BlocProvider(create: (_) => PackagePaymentBloc(repository: PackageBuyPaymentRepository())),
         BlocProvider(create: (_) => RewardBloc(RewardRepository())..add(FetchRewardsEvent()),),
+
+        BlocProvider(create: (_) => RewardClaimBloc(RewardClaimRepository()),),
+        BlocProvider(
+          create: (_) => ClaimNowDataBloc(ClaimNowDataRepository()),
+        ),
 
       ],
       child: Scaffold(
@@ -219,67 +229,12 @@ class _PackageScreenState extends State<PackageScreen> {
                                         },),
 
 
-                            if (selectedPlan == 'sgp' || selectedPlan == 'pgp')
-                        Container(
-                          height: 500,
-                          padding: EdgeInsets.all(20),
-                          child: BlocBuilder<RewardBloc, RewardState>(
-                            builder: (context, state) {
-                              if (state is RewardLoading) {
-                                return const Center(child: CircularProgressIndicator());
-                              }
-
-                              if (state is RewardLoaded) {
-
-                                final filteredRewards = state.rewards.where((reward) {
-                                  return reward.packageType.toLowerCase() == selectedPlan.toLowerCase();
-                                }).toList();
-
-                                if (filteredRewards.isEmpty) {
-                                  return const Center(
-                                    child: Text("No rewards found for this plan"),
-                                  );
-                                }
-
-                                return ListView.builder(
-                                  itemCount: filteredRewards.length,
-                                  scrollDirection: Axis.vertical,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final item = filteredRewards[index];
-
-                                    return Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Image.network(item.photo),
-                                        const SizedBox(height: 10),
-                                        CustomContainer(
-                                          width: 200,
-                                          color: CustomColor.appColor,
-                                          child: Center(
-                                            child: Text(
-                                              'Claim Now',
-                                              style: textStyle14(context, color: CustomColor.whiteColor),
-                                            ),
-                                          ),
+                                      if (selectedPlan == 'sgp' || selectedPlan == 'pgp')
+                                        ClaimWidget(
+                                          selectedPlan: selectedPlan,
+                                          packageLevel: userState.user.packageStatus.toString(),
                                         ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-
-                              if (state is RewardError) {
-                               print(state.message);
-                               return SizedBox.shrink();
-                              }
-
-                              return const SizedBox();
-                            },
-                          ),
-                        )
-                      ],
+                                     ],
                                   ),
                                 ),
                     

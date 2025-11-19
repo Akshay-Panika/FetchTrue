@@ -1,11 +1,14 @@
+import 'package:fetchtrue/core/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../core/costants/custom_color.dart';
 import '../../../core/costants/dimension.dart';
 import '../../../core/costants/text_style.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../../../core/widgets/custom_container.dart';
+import '../../auth/user_notifier/user_notifier.dart';
 import '../bloc/live_webinar/live_webinar_bloc.dart';
 import '../model/live_webinar_model.dart';
 import '../repository/live_webinar_repository.dart';
@@ -16,6 +19,7 @@ class LiveWebinarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userSession = Provider.of<UserSession>(context);
 
     return BlocProvider(
       create: (_) => LiveWebinarBloc(LiveWebinarRepository())..add(FetchLiveWebinarsEvent()),
@@ -32,8 +36,11 @@ class LiveWebinarScreen extends StatelessWidget {
             }
 
             if (state is LiveWebinarLoaded) {
-              final webinars = state.liveWebinarModel.data;
               final dimensions = Dimensions(context);
+              final webinars = state.liveWebinarModel.data;
+
+
+
 
               if (webinars.isEmpty) {
                 return Center(
@@ -43,6 +50,12 @@ class LiveWebinarScreen extends StatelessWidget {
                   ),
                 );
               }
+
+              final userJoinedWebinars = webinars.where((webinar) {
+                return webinar.user.any(
+                      (u) => u.user == userSession.userId.toString() && u.status == true,
+                );
+              }).toList();
 
               return SingleChildScrollView(
                 child: Column(
@@ -55,21 +68,24 @@ class LiveWebinarScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
                       itemBuilder: (context, index) {
                         final webinar = webinars[index];
-                        return _buildWebinarCard(context, webinar, dimensions);
+                        return _buildWebinarCard(context, webinar, dimensions,userSession.userId.toString() );
                       },
                     ),
                     30.height,
-                    Text('-: Attend at least 3 live webinars to move forward :-',
-                      style: textStyle14(context)),
+
+                    if (userJoinedWebinars.length >= 1)
+                    Text('-: Attend at least 3 live webinars to move forward :-', style: textStyle14(context)),
 
                     /// 🔹 Recent Webinars (Top 3)
                     ListView.builder(
-                      itemCount: webinars.length < 3 ? webinars.length : 3,
+                      itemCount: userJoinedWebinars.length < 3
+                          ? userJoinedWebinars.length
+                          : 3,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: dimensions.screenWidth * 0.03),
                       itemBuilder: (context, index) {
-                        final data = webinars[index];
+                        final data = userJoinedWebinars[index];
                         return _buildMiniCard(context, data, dimensions);
                       },
                     ),
@@ -87,7 +103,10 @@ class LiveWebinarScreen extends StatelessWidget {
   }
 
   // ✅ Webinar Main Card
-  Widget _buildWebinarCard(BuildContext context, LiveWebinar webinar, Dimensions dimensions) {
+  Widget _buildWebinarCard(BuildContext context, LiveWebinar webinar, Dimensions dimensions, String userId) {
+    final bool alreadyJoined = webinar.user.any(
+          (u) => u.user == userId && u.status == true,
+    );
     return CustomContainer(
       color: CustomColor.whiteColor,
       padding: EdgeInsets.zero,
@@ -124,6 +143,12 @@ class LiveWebinarScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
+
+                        if (userId.isEmpty || userId == "null") {
+                          showCustomToast('Please sign in first!');
+                          return;
+                        }
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -134,8 +159,8 @@ class LiveWebinarScreen extends StatelessWidget {
                       child: CustomContainer(
                         color: CustomColor.appColor,
                         margin: EdgeInsets.zero,
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                        child: Text('Enroll Now',
+                        padding:  EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: Text(alreadyJoined?'Enrolled':'Enroll Now',
                             style: textStyle12(context, color: CustomColor.whiteColor)),
                       ),
                     ),
