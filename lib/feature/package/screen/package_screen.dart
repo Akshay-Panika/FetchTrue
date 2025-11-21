@@ -38,6 +38,7 @@ import '../bloc/reward/reward_event.dart';
 import '../bloc/reward/reward_state.dart';
 import '../bloc/reward_claim/reward_claim_bloc.dart';
 import '../bloc/reward_claim_data/reward_claim_data_bloc.dart';
+import '../bloc/reward_claim_data/reward_claim_data_event.dart';
 import '../model/package_model.dart';
 import '../model/package_buy_payment_model.dart';
 import '../model/referral_user_model.dart';
@@ -92,6 +93,7 @@ class _PackageScreenState extends State<PackageScreen> {
     context.read<FiveXBloc>().add(FetchFiveX());
     context.read<ReferralBloc>().add(LoadReferrals(userId));
     context.read<MyTeamBloc>().add(FetchMyTeam(userId));
+    context.read<ClaimNowDataBloc>().add(FetchClaimNowDataEvent());
   }
 
   @override
@@ -117,9 +119,7 @@ class _PackageScreenState extends State<PackageScreen> {
         BlocProvider(create: (_) => RewardBloc(RewardRepository())..add(FetchRewardsEvent()),),
 
         BlocProvider(create: (_) => RewardClaimBloc(RewardClaimRepository()),),
-        BlocProvider(
-          create: (_) => ClaimNowDataBloc(ClaimNowDataRepository()),
-        ),
+        BlocProvider(create: (_) => ClaimNowDataBloc(ClaimNowDataRepository()),),
 
       ],
       child: Scaffold(
